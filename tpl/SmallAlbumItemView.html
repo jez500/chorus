@@ -1,0 +1,10 @@
+<a class="album-small-row album-row-<%= albumid %>" href='#album/<%= albumid %>' data-id="<%= albumid %>">
+    <% if ( app.parseImage(thumbnail) ) { %>
+        <span class="image">
+            <img src="<%= app.parseImage(thumbnail) %>"/>
+        </span>
+    <% } %>
+
+
+    <p class="list-item"><%= ( typeof label != "undefined" ? label : album ) %></p>
+</a>

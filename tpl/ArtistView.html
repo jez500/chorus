@@ -1,0 +1,24 @@
+<div id="details" class="tabbable">
+
+    <% if( fanart != '' ){ %>
+    <div class="artist-fanart">
+        <img src="<%= app.parseImage(fanart) %>" />
+    </div>
+    <% } %>
+
+    <div id="artist-tabs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#album-list" data-toggle="tab">Music</a></li>
+            <li data-id="about"><a href="#artist-meta" data-toggle="tab">About</a></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div id="album-list" class="tab-pane active">
+            <div class="loading-box">Music is loading</div>
+        </div>
+        <div id="artist-meta" class="tab-pane">
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,13 @@
+<a class="artist-row-large artist-row-large-<%= artistid %>" href='#artist/<%= artistid %>' data-id="<%= artistid %>">
+    <% if ( app.parseImage(thumbnail) ) { %>
+        <span class="image">
+            <img src="<%= app.parseImage(thumbnail) %>"/>
+        </span>
+    <% } %>
+    <% if ( app.parseImage(fanart) ) { %>
+        <span class="fanart">
+            <img src="<%= app.parseImage(fanart) %>"/>
+        </span>
+    <% } %>
+    <p class="list-item"><%= artist %></p>
+</a>

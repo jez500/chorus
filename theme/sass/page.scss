@@ -1,0 +1,687 @@
+@import "base";
+//@import "libs";
+
+$height-logo: 105px;
+$height-header: 50px;
+$height-footer: 70px;
+
+$width-header: 50px;
+$width-sidebar-first: 305px + $width-header;
+$width-sidebar-second:360px;
+
+
+@mixin box-sizing($type){
+  -webkit-box-sizing: $type; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing:$type;    /* Firefox, other Gecko */
+  box-sizing: $type;         /* Opera/IE 8+ */
+}
+
+
+//resets
+div, header, footer, a {
+  @include box-sizing(border-box);
+}
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+html {
+  overflow-y: scroll;
+}
+.loading-box {
+  font-size: 30px;
+  color: $color-asbestos;
+  background: $color-whitesmoke;
+  padding: 20px 10px;
+  width: 70%;
+  margin: 80px auto 0 auto;
+  text-align: center;
+}
+
+.jspContainer:focus {
+  outline: none;
+}
+.jspVerticalBar {
+  width: 20px;
+  .jspTrack {
+    background: $color-mist;
+  }
+  .jspDrag {
+    background: $color-concrete;
+  }
+}
+
+
+//structure
+#header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: $height-footer;
+  width: $width-header;
+  background: $color-mist;
+  z-index: 5;
+
+  //logo
+  #logo {
+    width: $width-header;
+    height: $height-logo;
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #fff;
+    display: block;
+    font-size: 20px;
+    background: $color-concrete;
+    text-decoration: none;
+    span {
+      -ms-transform:rotate(270deg); /* IE 9 */
+      -moz-transform:rotate(270deg); /* moz */
+      -webkit-transform:rotate(270deg); /* Safari and Chrome */
+      transform:rotate(270deg);
+      margin-top: 43px;
+      padding-top: 20px;
+      display: block;
+      font-family: helmet, helvetica, arial, san-serif;
+    }
+  }
+
+  .mainnav {
+    margin-top: $height-logo + 10;
+    width: $width-header;
+    ul {
+      li {
+        text-align: center;
+        font-size: 26px;
+        a {
+          color: $color-concrete;
+          display: block;
+          padding: 12px 0;
+          &:hover {
+            color: $color-asbestos;
+          }
+        }
+        &.active {
+          a {
+            color: $color-slate;
+          }
+        }
+      }
+    }
+  }
+}
+
+#main {
+  margin-left: $width-sidebar-first;
+  margin-top: $height-header;
+  padding-bottom: $height-footer;
+}
+
+#content {
+  padding: 0;
+  margin-right: $width-sidebar-second;
+}
+#page-header {
+  background: rgba(236, 240, 241, 0.84);
+  color: $color-asbestos;
+  height: $height-header;
+  position: fixed;
+  left: $width-header;
+  top: 0;
+  right: 0;
+  z-index: 2;
+
+  h1 {
+    font-weight: normal;
+    margin: 0px;
+    color: $color-slate;
+    font-size: 22px;
+    line-height: $height-header;
+    padding-left: 10px;
+
+    a {
+      color: $color-concrete;
+      display: block;
+      float: left;
+      width: 290px;
+      margin-right: 20px;
+      height: $height-header;
+      overflow: hidden;
+      position: relative;
+      white-space: nowrap;
+      &:hover {
+        color: $color-slate;
+      }
+    }
+
+  }
+}
+
+#footer {
+  background: $color-slate;
+  height: $height-footer;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  .footer-right,
+  .footer-left {
+    width: $width-sidebar-first;
+    height: $height-footer;
+    float: left;
+    background: $color-light-slate;
+  }
+  .footer-right {
+    float: right;
+    width: $width-sidebar-second;
+  }
+}
+
+#sidebar-first {
+  width: $width-sidebar-first - $width-header;
+  background: #f9f9f9;
+  position: fixed;
+  top: $height-header;
+  left: $width-header;
+  bottom: $height-footer;
+  z-index: 0;
+ .artist-list {
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   top: 0;
+ }
+
+}
+
+#sidebar-second {
+  width: $width-sidebar-second;
+  background: $color-mist;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  .sidebar-header {
+    width: $width-sidebar-second;
+    height: $height-header;
+    background: $color-concrete;
+    overflow-y: auto;
+  }
+}
+
+#search-box {
+  position: absolute;
+  top: 0;
+  right: $width-sidebar-second;
+  display: none;
+  #search {
+    border: none;
+    height: $height-header - 20px;
+    padding: 10px;
+    font-size: 18px;
+    color: #bbb;
+    width: 200px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.27);
+    &:hover,
+    &:focus {
+      color: $color-asbestos;
+      background: rgba(255, 255, 255, 0.47);
+    }
+  }
+}
+//show when library ready
+.audio-library-ready #search-box {
+  display: block;
+}
+
+//Typography
+body {
+  color: $color-slate;
+  font-size: 14px;
+}
+a {
+  text-decoration: none;
+}
+h2, h3, h4 {
+  font-weight: normal;
+  margin: 15px 0 10px;
+  line-height: 1.2;
+  font-size: 22px;
+}
+h3 {
+  line-height: 1.3;
+  font-size: 19px;
+}
+h4 {
+  font-weight: bold;
+  line-height: 1.4;
+  font-size: 16px;
+}
+
+//notify
+#notify {
+  position: absolute;
+  right: 0;
+  bottom: $height-footer;
+  width: $width-sidebar-second;
+  padding: 10px;
+  background: rgba(255,255,255,0.8);
+  border-top: 2px solid $color-wet-asphalt;
+  color: $color-slate;
+  opacity: 1;
+  transition: 0.8s all ease;
+  &.hidden {
+    right: -$width-sidebar-second;
+    opacity: 0.5;
+  }
+}
+
+
+//SECTIONS
+
+//Artists
+#sidebar-first {
+  .abs {
+    position: absolute;
+  }
+  //overflow-y: auto;
+
+  ul.album-list-small,
+  ul.artist-list {
+    padding: 5px 0;
+    li {
+      a {
+        display: block;
+        overflow: hidden;
+        padding: 5px;
+        color: $color-asbestos;
+        .image {
+          width: 60px;
+          height: 40px;
+          overflow: hidden;
+          float: left;
+          margin-right: 10px;
+          img {
+            width: 100%;
+            display: block;
+          }
+        }
+        &:hover {
+          background: #fff;
+          color: $color-slate;
+        }
+        &.active {
+          background: $color-asbestos;
+          color: #fff;
+          font-size: 120%;
+          .image {
+            width: 120px;
+            height: 110px;
+          }
+          p {
+            max-width: 160px;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+  ul.album-list-small {
+    li a.active .image {
+      width: 80px;
+      height: 80px;
+    }
+  }
+}
+
+
+.artist-fanart {
+  overflow: hidden;
+  height: 300px;
+  margin-top: -#{$height-header + 5};
+  img {
+    width: 100%;
+    margin-top: -5%;
+    min-width: 600px;
+  }
+}
+.artist-detail {
+  padding: 8px 0;
+  p {
+    margin: 0;
+
+  }
+  p.description {
+    padding: 10px 10px;
+  }
+  &.full {
+    p.description {
+      height: auto;
+    }
+    .artist-image {
+      height: auto;
+    }
+  }
+  .sub-title {
+    padding-left: 10px;
+  }
+  .right-col {
+    float: right;
+    width: 100%;
+    max-width: 360px;
+    margin: 5px 10px 10px 15px;
+    img {
+      width: 100%;
+    }
+  }
+}
+
+/* Album list */
+$album-tracks-width: 80%;
+$album-meta-width: 100 - $album-tracks-width;
+
+.album-list {
+  padding: 0 5px;
+}
+
+/* Album */
+.album-row {
+  clear: both;
+  padding: 10px 5px;
+  .album-title {
+    margin: 0;
+    padding: 10px;
+    background: #E8ECEC;
+    font-size: 17px;
+    width: $album-tracks-width - 1;
+    @include box-sizing(border-box);
+
+    a {
+      color: $color-asbestos;
+    }
+  }
+  .album-info {
+    float: right;
+    width: $album-meta-width;
+    padding-bottom: 10px;
+    color: $color-asbestos;
+    img {
+      width: 100%;
+    }
+
+  }
+  .tracks {
+    float: left;
+    width: $album-tracks-width;
+  }
+}
+
+.album-page {
+   .album-row {
+     .album-title {
+       display: none;
+     }
+   }
+}
+
+.artist-teaser {
+  .artist-header {
+    display: block;
+    height: 170px;
+    overflow: hidden;
+    background: $color-concrete;
+    position: relative;
+    img {
+      width: 100%;
+    }
+    .artist-name {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      padding: 10px;
+      font-weight: normal;
+      color: #eee;
+      background: rgba(0,0,0,0.3);
+    }
+  }
+  .other-albums {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 175px;
+  }
+}
+
+#artist-tabs {
+  background: $color-concrete;
+  padding: 5px 5px 0 0;
+  ul {
+    border-bottom: none;
+    margin-bottom: 5px;
+  }
+  a {
+    color: #f6f6f6;
+    border-radius: 2px 2px 0px 0px;
+    border-color: $color-concrete;
+    border-bottom-color: #fff;
+    &:hover {
+      background: $color-asbestos;
+      //border-color: $color-asbestos;
+    }
+  }
+  li {
+    margin-left: 5px;
+    &.active {
+      a {
+        color: $color-slate;
+        font-weight: bold;
+        &:hover {
+          background: #fff;
+          border-bottom-color: #fff;
+        }
+      }
+    }
+  }
+
+
+}
+
+/* Track listing */
+.song-list {
+  padding: 0 10px;
+  li {
+    .track {
+      border-bottom: 1px solid #F0F0F0;
+      color: $color-concrete;
+      height: 35px;
+      .track-col {
+        float: left;
+        height: 35px;
+        padding: 5px;
+        width: 5%;
+        line-height: 26px;
+        font-size: 12px;
+        @include box-sizing(border-box);
+        &.song-title {
+          width: 80%;
+          overflow: hidden;
+          color: $color-slate;
+          font-size: 14px;
+        }
+      }
+    }
+    &:last-child .track {
+      border-bottom: 0;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+
+
+/* landing page (isotope) **/
+$imgblock-width-small: 150px;
+$imgblock-width-large: 310px;
+
+#main-content {
+  position: relative;
+}
+.album-list-landing,
+.rand-list {
+  margin: 0px 0 0 0px;
+  padding: 5px 0 0 5px;
+  position: relative;
+  z-index: 0;
+  min-height: 600px;
+  height: 100%;
+  overflow: hidden;
+  background: $color-whitesmoke;
+  li {
+    width: $imgblock-width-small;
+    height: $imgblock-width-small;
+    padding: 3px;
+    background: #eee;
+    margin: 2px;
+    .fanart {
+      overflow: hidden;
+      position: relative;
+      width: $imgblock-width-small;
+      height: $imgblock-width-small;
+      img {
+        position: absolute;
+        width: $imgblock-width-small + 140px;
+      }
+    }
+    &.width2 {
+      width: $imgblock-width-large + 160px;
+      height: $imgblock-width-large;
+      float: left;
+      a {
+        height: $imgblock-width-large;
+      }
+      .fanart {
+        width: $imgblock-width-large;
+        height: $imgblock-width-large;
+        img {
+          left: -80px;
+
+          width: $imgblock-width-large + 320px;
+        }
+      }
+    }
+  }
+  a {
+    display: block;
+    overflow: hidden;
+
+
+    height: $imgblock-width-small;
+    p {
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: rgba(236, 240, 241, 0.84);
+      bottom: 0;
+      padding: 5px;
+      color: $color-slate;
+      margin: 3px;
+    }
+    .image {
+      display: none;
+    }
+    img {
+      width: 100%;
+    }
+    .fanart {
+
+    }
+  }
+}
+
+.album-list-landing {
+  $offset: $width-sidebar-first - $width-header;
+  margin-left: -$offset;
+  a {
+    .image {
+      display: block;
+    }
+  }
+  li {
+    &.width2 {
+      width: 310px;
+    }
+  }
+}
+
+
+/* Start: Recommended Isotope styles - Move */
+
+/**** Isotope Filtering ****/
+
+.isotope-item {
+  z-index: 2;
+}
+
+.isotope-hidden.isotope-item {
+  pointer-events: none;
+  z-index: 1;
+}
+
+/**** Isotope CSS3 transitions ****/
+
+.isotope,
+.isotope .isotope-item {
+  -webkit-transition-duration: 0.8s;
+  -moz-transition-duration: 0.8s;
+  -ms-transition-duration: 0.8s;
+  -o-transition-duration: 0.8s;
+  transition-duration: 0.8s;
+}
+
+.isotope {
+  -webkit-transition-property: height, width;
+  -moz-transition-property: height, width;
+  -ms-transition-property: height, width;
+  -o-transition-property: height, width;
+  transition-property: height, width;
+}
+
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+  -moz-transition-property:    -moz-transform, opacity;
+  -ms-transition-property:     -ms-transform, opacity;
+  -o-transition-property:      -o-transform, opacity;
+  transition-property:         transform, opacity;
+}
+
+/**** disabling Isotope CSS3 transitions ****/
+
+.isotope.no-transition,
+.isotope.no-transition .isotope-item,
+.isotope .isotope-item.no-transition {
+  -webkit-transition-duration: 0s;
+  -moz-transition-duration: 0s;
+  -ms-transition-duration: 0s;
+  -o-transition-duration: 0s;
+  transition-duration: 0s;
+}
+
+/* End: Recommended Isotope styles */
+
+
+
+/* disable CSS transitions for containers with infinite scrolling*/
+.isotope.infinite-scrolling {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}

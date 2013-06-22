@@ -1,0 +1,16 @@
+<div class="album-row album-row-<%= albumid %>">
+
+    <div class="album-info">
+        <a class="" href='#album/<%= albumid %>'>
+            <% if ( app.parseImage(thumbnail) ) { %>
+        <span class="image">
+            <img src="<%= app.parseImage(thumbnail) %>"/>
+        </span>
+            <% } %>
+        </a>
+    </div>
+    <p class="album-title"><a class="" href='#album/<%= albumid %>'><%= album %></a></p>
+    <div class="tracks">
+        Tracks
+    </div>
+</div>

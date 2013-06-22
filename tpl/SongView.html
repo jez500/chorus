@@ -1,0 +1,6 @@
+<div class="track" data-type="song" data-id="<%= songid %>" data-path="<%= file %>">
+    <span class="track-col song-tracknum"><%= (parseInt(track) > 0 ? track : "") %></span>
+    <span class="track-col song-title"><%= label %> </span>
+    <span class="track-col song-duration"><%= app.helpers.secToTime(duration) %></span>
+    <span class="track-col song-playcount"><i class="icon-ellipsis-vertical"></i></span>
+</div>
