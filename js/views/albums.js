@@ -38,8 +38,6 @@ app.AlbumItemView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
 
     // songs
-    //this.songs = new app.SongCollection({songs: this.model.attributes.songs});
-    //console.log(this.model.attributes.songs);
     this.songList = new app.SongListView({"model":this.model.attributes.songs});
     $(".tracks", this.$el).html(this.songList.render().el);
     return this;

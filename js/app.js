@@ -54,14 +54,14 @@ var app = {
     "album",
     "track",
     "duration",
-    "comment",
-    "lyrics",
+    //"comment",
+    //"lyrics",
     //"musicbrainztrackid",
     //"musicbrainzartistid",
     //"musicbrainzalbumid",
     //"musicbrainzalbumartistid",
     "playcount",
-    "fanart",
+    //"fanart",
     "thumbnail",
     "file",
     "albumid",
@@ -70,7 +70,8 @@ var app = {
     "genreid",
     "artistid",
     "displayartist",
-    "albumartistid"],
+    "albumartistid"
+  ],
 
   // filters
   albumFilters: [],
@@ -91,7 +92,8 @@ var app = {
     "AristsRandView",
     "ArtistLargeItemView",
     "SmallAlbumItemView",
-    "AlbumArtistView"
+    "AlbumArtistView",
+    "PlaylistItemView"
   ]
 };
 
@@ -100,7 +102,7 @@ var app = {
 app.Router = Backbone.Router.extend({
 
   routes: {
-    "":                     "home",
+    "":                     "albums",
     "contact":              "contact",
     "artist/:id":           "artist",
     "artist/:id/:task":     "artist",
@@ -121,9 +123,11 @@ app.Router = Backbone.Router.extend({
     this.$sidebarSecond = $('#sidebar-second');
     this.$mainContent = $('#main-content');
     this.$title = $('#title');
+
   },
 
-  home: function () {
+  home: function () { //Not in use atm
+
     // Since the home view never changes, we instantiate it and render it only once
     if (!app.homelView) {
       app.homelView = new app.HomeView();
@@ -150,39 +154,36 @@ app.Router = Backbone.Router.extend({
 
 
   artist: function (id, task) {
+    $('body').addClass('sidebar').removeClass('no-sidebar');
     if(typeof task == "undefined"){
       task = 'view';
     }
-    console.log(task);
-    app.store.libraryCall(function(){
-      // load the artists view first
-      if (!app.artistsView) {
-        app.artistsView = new app.ArtistsView();
-        app.artistsView.render();
-      }
-      // only load if not already rendered
-      if($('.artist-view').length == 0){
-        $('#content').html(app.artistsView.el);
-      }
 
-      var artist = new app.Artist({"id": parseInt(id), "fields":app.artistFields}),
+    app.artistsView = new app.ArtistsView();
+    app.artistsView.render();
+
+    // only load if not already rendered
+    if($('#sidebar-first .artist-list').length == 0){
+ //       $('#content').html(app.artistsView.el);
+    }
+
+    var artist = new app.Artist({"id": parseInt(id), "fields":app.artistFields}),
           self = this;
 
-      artist.fetch({
-        success: function (data) {
-          console.log(data);
-          $('#main-content').html(new app.ArtistView({model: data}).render().el);
-          $('#title').html('<a href="#/artists">Artists</a><b></b>' + data.attributes.artist);
-        }
-      });
-    }, 'artistsReady');
-    //app.shellView.selectMenuItem();
+    artist.fetch({
+      success: function (data) {
+        console.log(data);
+        $('#content').html(new app.ArtistView({model: data}).render().el);
+        $('#title').html('<a href="#/artists">Artists</a><b></b>' + data.attributes.artist);
+      }
+    });
+
   },
 
 
 
   album: function (id) {
-
+    $('body').addClass('sidebar').removeClass('no-sidebar');
     // get album
     var model = {'attributes': {"albumid" : id}};
     app.cached.albumView = new app.AlbumView({"model": model, "type":"album"});
@@ -200,6 +201,7 @@ app.Router = Backbone.Router.extend({
 
 
   albums: function(){
+    $('body').addClass('no-sidebar').removeClass('sidebar');
     var self = this;
     app.cached.recentlyAddedAlbums = new app.AlbumRecentXbmcCollection();
     app.cached.recentlyAddedAlbums.fetch({"success": function(albums){
@@ -214,22 +216,15 @@ app.Router = Backbone.Router.extend({
 
   //artists page
   artists: function(){
+    $('body').addClass('sidebar').removeClass('no-sidebar');
 
-    //load library first
-    app.store.libraryCall(function(){
+    // render
+    app.artistsView = new app.ArtistsView();
+    $('#content').html(app.artistsView.render().el);
 
-      //cache
-      if (!app.artistsView) {
-        app.artistsView = new app.ArtistsView();
-        //app.artistsView.render();
-      }
-      console.log(app.artistsView.el);
-      $('#content').html(app.artistsView.render().el);
-      //this.$sidebarFirst.html(app.artistsView.sideBar);
-      $('#title').html('Artists');
-      app.shellView.selectMenuItem('artists');
+    $('#title').html('Artists');
+    app.shellView.selectMenuItem('artists');
 
-    },'artistsReady');
   }
 
 
@@ -250,7 +245,7 @@ $(document).on("ready", function () {
   },'artistsReady');
 
   app.store.libraryCall(function(){
-    console.log(app.stores);
+    console.log('loaded stores:', app.stores);
     $('body').addClass('audio-library-ready');
     app.notification('Library loaded');
   },'songsReady');

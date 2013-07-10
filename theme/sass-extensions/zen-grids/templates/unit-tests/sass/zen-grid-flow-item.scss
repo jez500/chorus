@@ -1,0 +1,60 @@
+/**
+ * @file
+ * Test zen-grid-flow-item()
+ */
+
+@import "zen";
+
+#test-zen-grid-flow-item {
+  /* Test zen-grid-flow-item(1) without setting $column-count */
+  @include zen-grid-flow-item(1);
+
+  /* Test zen-grid-flow-item(1, 4) with 12 column grid and 20px gutter */
+  @include zen-grid-flow-item(1, 4);
+
+  /* Test zen-grid-flow-item(1, 4) with 15px gutter */
+  $zen-gutter-width: 15px;
+  @include zen-grid-flow-item(1, 4);
+  $zen-gutter-width: 20px;
+
+  /* Test zen-grid-flow-item(1, 4) with 15px gutter and $zen-float-direction: right */
+  $zen-gutter-width: 15px;
+  $zen-float-direction: right;
+  @include zen-grid-flow-item(1, 4);
+  $zen-gutter-width: 20px;
+  $zen-float-direction: left;
+
+  /* Test zen-grid-flow-item(1, 4) with 15px gutter and $alpha-gutter: true */
+  $zen-gutter-width: 15px;
+  @include zen-grid-flow-item(1, 4, $alpha-gutter: true);
+  $zen-gutter-width: 20px;
+
+  /* Test zen-grid-flow-item(1, 4) with 15px gutter and $omega-gutter: false */
+  $zen-gutter-width: 15px;
+  @include zen-grid-flow-item(1, 4, $omega-gutter: false);
+  $zen-gutter-width: 20px;
+
+  /* Test zen-grid-flow-item(3, 4) with 20px gutter and $alpha-gutter: true */
+  @include zen-grid-flow-item(3, 4, $alpha-gutter: true);
+
+  /* Test zen-grid-flow-item(3, 4) with 20px gutter and $omega-gutter: false */
+  @include zen-grid-flow-item(3, 4, $omega-gutter: false);
+
+  /* Test zen-grid-flow-item(1, 4) with 15px gutter, $zen-float-direction: right and $alpha-gutter: true */
+  $zen-gutter-width: 15px;
+  $zen-float-direction: right;
+  @include zen-grid-flow-item(1, 4, $alpha-gutter: true);
+  $zen-gutter-width: 20px;
+  $zen-float-direction: left;
+
+  /* Test zen-grid-flow-item(1, 4) with $zen-box-sizing: content-box and 10% gutter */
+  $zen-gutter-width: 10%;
+  $zen-box-sizing: content-box;
+  @include zen-grid-flow-item(1, 4);
+  $zen-gutter-width: 20px;
+  $zen-box-sizing: border-box;
+
+  /* Test zen-grid-flow-item(1, 4) with $zen-auto-include-flow-item-base: false */
+  $zen-auto-include-flow-item-base: false;
+  @include zen-grid-flow-item(1, 4);
+}

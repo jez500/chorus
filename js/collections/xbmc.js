@@ -12,7 +12,7 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   model: app.Song,
   //collection params
   arg1: app.songFields, //fields
-  arg2: {"start": 0, "end": 500}, //count
+  arg2: {"start": 0, "end": 500}, //function(){console.log(this.models[0]); return {"start": 0, "end": 500}}, //count
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //method/params
   methods: {
@@ -44,7 +44,6 @@ app.SongFilteredXbmcCollection = Backbone.Collection.extend({
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //apply our filter - Required! or call will fail
   arg4: function(){
-    console.log(this.models[0]);
     return this.models[0].attributes.filter;
   },
   //method/params
@@ -137,6 +136,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    console.log(resp);
     return resp.artists;
   }
-})
+});

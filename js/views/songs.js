@@ -22,6 +22,10 @@ app.SongView = Backbone.View.extend({
 
   tagName:"li",
 
+  events: {
+    "dblclick .song-title": "playSong"
+  },
+
   initialize:function () {
     this.model.on("change", this.render, this);
     this.model.on("destroy", this.close, this);
@@ -30,6 +34,12 @@ app.SongView = Backbone.View.extend({
   render:function () {
     this.$el.html(this.template(this.model.attributes));
     return this;
-  }
+  },
+
+   playSong: function(event){
+     console.log(event);
+     var song = this.model.attributes;
+     app.AudioController.playSongById(song.songid, song.albumid, true);
+   }
 
 });

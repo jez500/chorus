@@ -1,5 +1,7 @@
 
-
+/**
+ * A collection of Artists.
+ */
 app.ArtistCollection = Backbone.Collection.extend({
 
   model: app.Artist,
@@ -15,7 +17,7 @@ app.ArtistCollection = Backbone.Collection.extend({
       //random block
       if(type == 'rand'){
         app.store.randomArtists(function(data){
-          console.log(data);
+
           options.success(data);
         });
       }
@@ -25,7 +27,9 @@ app.ArtistCollection = Backbone.Collection.extend({
 });
 
 
-/* a single album and its songs */
+/**
+ * A collection of Albums.
+ */
 app.AlbumsCollection = Backbone.Collection.extend({
   model: app.Album,
 
@@ -40,7 +44,9 @@ app.AlbumsCollection = Backbone.Collection.extend({
 });
 
 
-/* a single album and its songs */
+/**
+ * A single album and its songs.
+ */
 app.AlbumCollection = Backbone.Collection.extend({
   model: app.Album,
 
@@ -55,19 +61,40 @@ app.AlbumCollection = Backbone.Collection.extend({
 });
 
 
-
-
+/**
+ * Get every song, should not be rendered at once!
+ * Its generally a big collection.
+ */
 app.SongCollection = Backbone.Collection.extend({
   model: app.Song,
 
   sync: function(method, model, options) {
     if (method === "read") {
-      console.log(model,options);
-      options.success(options.songs);
+      options.success(app.stores.allSongs.models);
     }
   }
 
 });
+
+
+
+app.PlaylistCollection = Backbone.Collection.extend({
+  model: app.PlaylistItem,
+
+  sync: function(method, model, options) {
+    if (method === "read") {
+      console.log('read');
+      app.AudioController.getPlaylistItems(function(result){
+
+        options.success(result.items);
+      });
+
+    }
+  }
+
+});
+
+
 
 
 
@@ -103,38 +130,35 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     var self = this;
 
+
+    self.songsIndexed = false;
+    self.albumsIndexed = false;
+    self.albumsIndexed = false;
+
+
+  };
+
+
+  this.indexxaSongs = function(maxcount){
+    var self = this,
+        defaultMax = 50000; // 50,000 songs
+        model = [{attributes: {limit: (typeof maxcount != 'undefined' && !isNaN(parseInt(maxcount * 1)) ? maxcount : defaultMax)}}]; //basic model with limit
+
     //get all songs
-    this.allSongs = new app.SongXbmcCollection();
-    this.allXbmcArtists = new app.ArtistXbmcCollection();
-    this.allXbmcAlbums = new app.AlbumXbmcCollection();
 
-    // fetch all artists
-    this.allXbmcArtists.fetch({"success": function(artists){
+    this.allSongs = new app.SongXbmcCollection({"model": model});
 
-      // assign to memory
-      app.stores.allArtists = artists;
-
-      self.msg = 'artists ready';
-      $(window).trigger('artistsReady');
-
-    }});
-
-    // fetch all songs
-    this.allXbmcAlbums.fetch({"success": function(albums){
-
-      // assign to memory
-      app.stores.allAlbums = albums;
-
-      self.msg = 'albums ready';
-      $(window).trigger('albumsReady');
-
-    }});
-
-    // fetch all songs (slowest part)
+    // fetch all songs (very slow and locks up ui a bit)
     this.allSongs.fetch({"success": function(data){
       console.log('songs fetched', data);
       // assign to store
       self.parseAudio(data.models);
+
+      //cache
+      app.stores.allSongs = data;
+
+      //flag as indexed
+      self.songsIndexed = true;
 
       self.state = {ready: true, msg: 'songs ready'};
       $(window).trigger('songsReady');
@@ -162,18 +186,68 @@ app.MemoryStore = function (successCallback, errorCallback) {
   };
 
   this.allArtists = function(callback){
-    // get the collection
+    var self = this;
+
+    if(self.artistsIndexed === true){
       var collection = app.stores.allArtists;
       callLater(callback, collection);
-    return collection;
+      return collection;
+    }
+
+    // fetch all artists
+    this.allXbmcArtists = new app.ArtistXbmcCollection();
+    this.allXbmcArtists.fetch({"success": function(artists){
+
+
+      artists.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+
+      // assign to memory
+      app.stores.allArtists = artists;
+
+      self.msg = 'artists ready';
+      console.log(self.msg);
+      $(window).trigger('artistsReady');
+
+      self.artistsIndexed = true;
+
+      // get the collection
+      var collection = app.stores.allArtists;
+      callLater(callback, collection);
+      return collection;
+
+    }});
+
+
 
   };
 
   this.allAlbums = function(callback){
-    // get the collection
-    var collection = app.stores.allAlbums;
-    callLater(callback, collection);
-    return collection;
+    var self = this;
+
+    if(self.albumsIndexed === true){
+      var collection = app.stores.allAlbums;
+      callLater(callback, collection);
+      return collection;
+    }
+
+    // fetch all albums
+    this.allXbmcAlbums = new app.AlbumXbmcCollection();
+    this.allXbmcAlbums.fetch({"success": function(albums){
+
+      // assign to memory
+      app.stores.allAlbums = albums;
+
+      self.msg = 'albums ready';
+      $(window).trigger('albumsReady');
+
+      self.albumsIndexed = true;
+
+      var collection = app.stores.allAlbums;
+      callLater(callback, collection);
+      return collection;
+
+    }});
+
 
   };
 
@@ -184,43 +258,49 @@ app.MemoryStore = function (successCallback, errorCallback) {
   this.randomArtists = function(callback){
 
     // get a random collection
-    var data = this.allArtists(),
-      artists = data.models,
-      randArtists = _.shuffle(artists),
-      farts = [], count = 30, i = 0;
+    this.allArtists(function(data){
+        artists = data.models,
+          randArtists = _.shuffle(artists),
+          farts = [], count = 30, i = 0;
 
-    // only add content with artwork
-    _.each(randArtists,function(a){
-      if(i < count){
-        if(a.attributes.fanart.length != 0 && a.attributes.thumbnail.length != 0){
-          farts.push(a);
-          i++;
-        }
-      }
-    });
-    //topup with thumbs
-    if(farts.length < count){
-      _.each(randArtists,function(a){
-        if(i < count){
-          if(a.attributes.thumbnail.length != 0){
-            farts.push(a);
-            i++;
+        // only add content with artwork
+        _.each(randArtists,function(a){
+          if(i < count){
+            if(a.attributes.fanart.length != 0 && a.attributes.thumbnail.length != 0){
+              farts.push(a);
+              i++;
+            }
           }
+        });
+        //topup with thumbs
+        if(farts.length < count){
+          _.each(randArtists,function(a){
+            if(i < count){
+              if(a.attributes.thumbnail.length != 0){
+                farts.push(a);
+                i++;
+              }
+            }
+          });
         }
+        callLater(callback, farts);
       });
-    }
-    callLater(callback, farts);
+
   };
 
   this.getArtist = function(id, callback){
-    var self = this;
-    // get the collection
-    $.each(app.stores.allArtists.models, function(i,data){
-      if(typeof data.attributes != "undefined" && data.attributes.artistid == id){
-        callLater(callback,  data);
 
-      }
+    this.allArtists(function(){
+      var self = this;
+      // get the collection
+      $.each(app.stores.allArtists.models, function(i,data){
+        if(typeof data.attributes != "undefined" && data.attributes.artistid == id){
+          callLater(callback,  data);
+
+        }
+      });
     });
+
   };
 
   /*
@@ -229,7 +309,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
    */
   this.getAlbums = function(id, type, callback){
     var data = {}, albums = [], self = this, key = type + id, filter = type + 'id', plural = type + 's';
-    console.log(id);
+
     // if cache exists
     if(app.helpers.exists(app.stores[plural])
       && app.helpers.exists(app.stores[plural][key])
@@ -243,7 +323,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
     if(albums.length == 0) {
       // songs by filter
       data[filter] = id;
-      console.log(data);
+
       var songs = new app.SongFilteredXbmcCollection({"filter": data});
       songs.fetch({"success": function(songs){
         //parse into albums

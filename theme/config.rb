@@ -20,6 +20,7 @@ firesass = false
 css_dir         = "css"
 sass_dir        = "sass"
 images_dir      = "images"
+extensions_dir  = "sass-extensions"
 javascripts_dir = "js"
 
 

@@ -1,8 +1,9 @@
 <a class="artist-row artist-row-<%= artistid %>" href='#artist/<%= artistid %>' data-id="<%= artistid %>">
     <% if ( app.parseImage(thumbnail) ) { %>
         <span class="image">
-            <img src="<%= app.parseImage(thumbnail) %>"/>
+            <img class="lazy" src="<%= app.parseImage() %>" data-original="<%= app.parseImage(thumbnail) %>" width="45" height="45"/>
         </span>
     <% } %>
-    <p class="list-item"><%= artist %></p>
+    <p class="list-item artist-title"><%= artist %></p>
+    <p class="list-item artist-meta"></p>
 </a>

@@ -14,39 +14,28 @@ app.AlbumView = Backbone.View.extend({
       var alb = data.models[0].attributes,
           sidebarSelector = '#sidebar-first .album-row-' + alb.albumid;
 
+      // populate main content
       $('#album-list').html(self.albumsView.render().el);
 
+      // set title
       $('#title').html('<a href="#artist/' + alb.artistid + '">' + alb.artist + '</a>' + alb.album);
 
       //remove any existing active
       $('#sidebar-first .album-small-row').removeClass('active');
 
-      //check if album exists in current sidebar list and only rerender if not
+      //check if album exists in current sidebar list and only render if not
       if($(sidebarSelector).length == 0){
-        app.store.libraryCall(function(){
 
-          //add the sidebar view
-          self.albumArtistView = new app.AlbumArtistView({"model":data.models[0]});
-          $('#sidebar-first').html(self.albumArtistView.render().el);
+        //add the sidebar view
+        self.albumArtistView = new app.AlbumArtistView({"model":data.models[0]});
+        app.helpers.setFirstSidebarContent(self.albumArtistView.render().el);
 
-        }, 'albumsReady');
       } else {
         //set active row
         $(sidebarSelector).addClass('active');
       }
 
-
-
-
-
-
-
-
     }});
-
-
-
-
 
     return this;
   }
@@ -68,7 +57,6 @@ app.AlbumArtistView = Backbone.View.extend({
   render:function () {
     var self = this;
 
-
     this.artistModel.fetch({success:function(artist){
 
       //base template
@@ -81,7 +69,7 @@ app.AlbumArtistView = Backbone.View.extend({
       //get the artists albums
       self.albumList = new app.AlbumCollection();
       self.albumList.fetch({"id": artist.attributes.artistid, "type": "artist", "success": function(data){
-        console.log(data);
+
         self.albumsView = new app.SmallAlbumsList({model: data});
         $('#sidebar-first .other-albums').html(self.albumsView.render().el);
 
@@ -90,7 +78,7 @@ app.AlbumArtistView = Backbone.View.extend({
 
         //scrollbars
         app.helpers.addScrollBar('.other-albums');
-        console.log(data);
+
       }});
 
     }});

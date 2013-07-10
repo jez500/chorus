@@ -14,7 +14,7 @@ app.Artist = Backbone.Model.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
-      app.store.getArtist(parseInt(this.id), function (data) { console.log(data);
+      app.store.getArtist(parseInt(this.id), function (data) { 
    //     app.store.artistAlbums(data.attributes.artistid, function(albums){
    //       data.attributes.albums = albums;
           options.success(data.attributes);
@@ -53,7 +53,7 @@ app.Song = Backbone.Model.extend({
 
   },
 
-  //defaults: app.songFields,
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -62,5 +62,17 @@ app.Song = Backbone.Model.extend({
       });*/
     }
   }
+
+});
+
+
+app.PlaylistItem= Backbone.Model.extend({
+
+  initialize:function () {
+
+  },
+
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]}
+
 
 });

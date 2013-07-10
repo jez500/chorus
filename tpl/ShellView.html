@@ -25,6 +25,11 @@
     </div>
 </div>
 
+<div id="sidebar-first">
+    <div class="sidebar-content">
+
+    </div>
+</div>
 
 <div id="sidebar-second">
     <div class="sidebar-inner">
@@ -32,18 +37,44 @@
 
         </div>
     </div>
+    <div class="sidebar-items">
+
+    </div>
 </div>
 
 <footer id="footer">
     <div class="footer-inner">
-        <div class="footer-left">
-
+        <div class="footer-left actions-primary">
+            <span class="player-prev player-button"><i class="icon-backward"></i></span>
+            <span class="player-play player-button"><i class="icon-play"></i></span>
+            <span class="player-next player-button"><i class="icon-forward"></i></span>
         </div>
         <div class="footer-right">
-
+            <div class="volume-wrapper">
+                <div id="volume"></div>
+            </div>
+            <div class="actions-wrapper actions-secondary">
+                <span class="player-mute player-button"><i class="icon-volume-down"></i></span>
+                <span class="player-repeat player-button"><i class="icon-repeat"></i></span>
+                <span class="player-random player-button"><i class="icon-random"></i></span>
+                <span class="player-menu player-button"><i class="icon-ellipsis-vertical"></i></span>
+            </div>
         </div>
         <div class="footer-center">
-
+            <div id="now-playing">
+                <a href="#now-playing" class="song-image">
+                    <img src="/theme/images/default.png" id="playing-thumb" />
+                </a>
+                <a href="#now-playing" class="song-title">Nothing Playing</a>
+                <span class="song-meta">No Artist</span>
+            </div>
+            <div class="progress-wrapper">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="time">
+                <div class="time-cur">0:00</div>
+                <div class="time-total">0:00</div>
+            </div>
         </div>
     </div>
     <div id="notify"><div class="content">Yo, you even connected</div></div>

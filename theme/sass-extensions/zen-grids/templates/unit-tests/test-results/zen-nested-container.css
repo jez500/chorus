@@ -1,0 +1,24 @@
+/**
+ * @file
+ * Test zen-nested-container()
+ */
+/* line 8, ../sass/zen-nested-container.scss */
+#test-zen-nested-container {
+  /* Test zen-nested-container() */
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* line 13, ../sass/zen-nested-container.scss */
+#test-zen-nested-container-2 {
+  /* Test zen-nested-container() with $legacy-support-for-ie7: true */
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* line 20, ../sass/zen-nested-container.scss */
+#test-zen-nested-container-3 {
+  /* Test zen-nested-container() with $legacy-support-for-ie6: true */
+  padding-left: 0;
+  padding-right: 0;
+}

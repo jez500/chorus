@@ -17,13 +17,12 @@ app.ArtistView = Backbone.View.extend({
     //select appropriate sidebar item
     $('.artist-row').removeClass('active');
     var $actRow =  $('.artist-row-' + this.model.id).addClass('active');
-    $('.artist-list').scrollTo($actRow);
+    $('#sidebar-first .sidebar-content').scrollTo($actRow);
 
-    //get the albums
-   // var artistid =  parseInt(this.model.attributes.artistid);
-  //  var albums = new app.AlbumsView({"data": {"filters" : [{"artistid":artistid}]}, "fields":app.artistFields});
 
-  //  $('#album-list').html(albums.render().el);
+
+    app.artistsView = new app.ArtistsView();
+    app.artistsView.renderSidebar();
 
     return this;
   }
@@ -49,30 +48,12 @@ app.ArtistSummaryView = Backbone.View.extend({
     self.albumList.fetch({"id": this.model.attributes.artistid, "type": "artist", "success": function(data){
       self.albumsView = new app.AlbumsList({model: data, className: 'album-list'});
       $('#album-list').html(self.albumsView.render().el);
-      console.log(data);
+
+      // get artist stats and add to sidebar active
+      var meta = app.helpers.parseArtistSummary(data);
+      $('.artist-list .active .artist-meta').html(meta);
+
     }});
-
-
-
-/*
-    this.songList.fetch({"success": function(data){
-      console.log(data);
-      var albums = app.store.parseArtistSongsToAlbums(data.models);
-      console.log(albums);
-    }});
-*/
-
-
-/*    app.store.libraryCall(function(){
-
-      self.albumList = new app.AlbumCollection();
-      self.albumList.fetch({"id": self.model.attributes.artistid, "success": function(data){
-        self.albumsView = new app.AlbumsList({model: data, className: 'album-list'});
-        $('#album-list').html(self.albumsView.render().el);
-        console.log(data);
-      }});
-    }, 'songsReady');*/
-
 
     return this;
   },

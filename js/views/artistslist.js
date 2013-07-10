@@ -17,7 +17,7 @@ app.AristsListView = Backbone.View.extend({
 
   render:function () {
     this.$el.empty();
-
+console.log(this.models);
     _.each(this.model.models, function (artist) {
       this.$el.append(new app.ArtistListItemView({model:artist}).render().el);
     }, this);

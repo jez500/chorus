@@ -1,16 +1,33 @@
 
-//colors
+
+// colors
+$color-header: rgba(235, 236, 236, 0.84);
 $color-mist: #D7DCDD;
+$color-mist: #D7D8D8;
 $color-concrete: #B8C1C4;
+$color-concrete: #ACAEAF;
 $color-asbestos: #7F8C8D;
-$color-clouds: #ECF0F1;
+$color-asbestos: #6E7374;
+$color-clouds: #EEEFF0;
 $color-silver: #BDC3C7;
 $color-whitesmoke: #f7f7f7;
 $color-slate: #606768;
+$color-slate: #2b2f30;
 $color-light-slate: #6c7374;
+$color-light-slate: #3b3f40;
 $color-wet-asphalt: #34495E;
 $color-midnight-blue: #2C3E50;
 $color-orange: #F39C12;
 $color-carrot: #E67E22;
 $color-green-sea: #16A085;
+$color-pastel-orange: #FFD786;
+
+
+
+@import "compass/support";  // Add Compass' IE and vendor prefix support variables.
+@import "compass/utilities/general/clearfix"; // Better than Drupal's clearfix.
+@import "compass/utilities/sprites"; // See http://compass-style.org/help/tutorials/spriting/
+@import "compass/css3";     // Use one CSS3 mixin instead of multiple vendor prefixes.
+@import "compass/typography/vertical_rhythm"; // Helps set up a vertical rhythm.
+
 

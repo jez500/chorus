@@ -55,22 +55,21 @@ $(document).ready(function(){
   /**
    * Apply a js scroll bar with default settings
    */
+  app.helpers.scrollbarSettings = {
+    cursorwidth: 8,
+    cursorminheight: 37,
+    touchbehavior: false,
+    cursorcolor: '#606768'
+  };
+
   app.helpers.addScrollBar = function(selector, options){
 
-    $('.nicescroll-rails').remove();
+    //$('.nicescroll-rails').remove();
 
-    var settings = {
-      cursorwidth: 8,
-      cursorminheight: 37,
-      touchbehavior: false,
-      cursorcolor: '#606768'
-    };
-    //settings = $.extend(settings, options);
+    settings = $.extend(app.helpers.scrollbarSettings, options);
 
-    //add nicescroll
-    app.helpers.scroller = $(selector).niceScroll(settings);
-    console.log($(selector));
   };
+
 
 
   app.helpers.addIsotope = function(selector){
@@ -84,17 +83,80 @@ $(document).ready(function(){
         $(data).addClass('width2');
       }
     });
-console.log('heer');
+
     $container.isotope({
       // options
       itemSelector : 'li',
       layoutMode : 'masonry'
     });
-  }
+  };
+
+
+  /**
+   * Populate the first sidebar
+   */
+  app.helpers.setFirstSidebarContent = function(content){
+    // ensure sidebar is visible
+    $('body').addClass('sidebar').removeClass('no-sidebar');
+    // add the content
+    $('#sidebar-first .sidebar-content').html(content);
+
+  };
+
+  /**
+   * A song has artists and artist ids as an array, this parses them into links
+   * @param item
+   * assumes artist and artistid are properties and arrays
+   */
+  app.helpers.parseArtistsArray = function(item){
+    var meta = [];
+    for(i in item.artist){
+      meta.push('<a href="#artist/' + item.artistid[i] + '">' + item.artist[i] + '</a>');
+    }
+    return meta.join(', ');
+  };
 
 
 
+  app.helpers.parseArtistSummary = function(data){
+    var totals = {songs:0,albums:0,time:0};
+    for(i in data.models){
+      totals.albums++;
+      for(s in data.models[i].attributes.songs){
+        totals.songs++;
+        totals.time = totals.time + parseInt(data.models[i].attributes.songs[s].attributes.duration);
+      }
+    }
+    console.log('totals',totals);
 
+    var meta = [];
+    meta.push( totals.songs + ' Songs' );
+    meta.push( totals.albums + ' Albums' );
+    meta.push( Math.floor( (totals.time / 60) ) + ' Mins' );
+
+    return meta.join('<br />');
+  };
+
+
+  /* Alphabetical sort callback */
+  app.helpers.aphabeticalSort = function(a,b){
+    var nameA=a.toLowerCase(), nameB=b.toLowerCase();
+    if (nameA < nameB){ //sort string ascending
+      return -1;
+    }
+    if (nameA > nameB){
+      return 1;
+    }
+    return 0; //default return value (no sorting)
+  };
+
+  /* is a value an int */
+  app.helpers.isInt = function(value){
+    if(app.helpers.exists(value)){
+      return ((parseFloat(value) == parseInt(value)) && !isNaN(value));
+    }
+    return false;
+  };
 
   /*
   * @TODO! refactor/fix namespace for below functions to use app.helpers, need to check all code for usage
@@ -106,7 +168,7 @@ console.log('heer');
 
     var deferreds = [];
 
-    $.each(views, function(index, view) { console.log(view);
+    $.each(views, function(index, view) {
       if (app[view]) {
         deferreds.push($.get('tpl/' + view + '.html', function(data) {
           app[view].prototype.template = _.template(data);
@@ -139,7 +201,7 @@ console.log('heer');
   app.notification = function(msg){
     var $notify = $('#notify');
     if(msg !== false && msg != ''){
-      console.log('show');
+
       $notify.find('.content').html(msg);
       $notify.removeClass('hidden');
       clearTimeout(notificationTimoutObj);
