@@ -9,7 +9,7 @@ app.ShellView = Backbone.View.extend({
     //    $('.navbar-search', this.el).append(this.searchresultsView.render().el);
 
     //set playlist
-    app.AudioController.refreshPlaylist(function(result){
+    app.AudioController.playlistRefresh(function(result){
       console.log('playlist',result);
     });
 
@@ -68,6 +68,8 @@ app.ShellView = Backbone.View.extend({
 
     if(key.length > 1){
 
+      this.selectMenuItem('search', 'sidebar');
+
       //empty content as we append
       var $content = $('#content'),
           $title = $('#title');
@@ -92,9 +94,14 @@ app.ShellView = Backbone.View.extend({
 
 
       //get albums
-      var $albums = $('#search-albums');
+      var $albums = $('#search-albums'),
+          loading = '<div class="loading-box">Loading Albums</div>';
+
+      $albums.html(loading);
+
       this.albumList = new app.AlbumsCollection();
       this.albumList.fetch({success: function(data){
+        $albums.empty();
         // filter based on string match
         var albums = data.models.filter(function (element) {
           var label = element.attributes.label;
@@ -110,26 +117,39 @@ app.ShellView = Backbone.View.extend({
 
       //get songs
       var $songs = $('#search-songs'),
+          indexing = false,
+          indexingCopy = '<div class="loading-box">Loading Songs - Very slow!</div>',
           notIndexedCopy =
             '<p class="text-copy">To search song titles we need to load the entire song collection into the browser,' +
-            'this takes a very long time with large libraries and locks up all other requests to xbmc' +
+            'this takes a very long and some non-cached stuff might not work while while indexing' +
             ' so no controlls work while indexing. <br /><br />' +
             '<a id="index-songs-btn" href="#index-songs" class="btn btn-large btn-inverse">Ok, Index the songs</a></p>';
 
-      if(!app.store.songsIndexed){
-        $songs.html(notIndexedCopy);
+
+      $songs.html(indexingCopy);
+
+      if(app.store.songsIndexed !== true){
+
+        // check if indexing
+        indexing = (typeof self.indexing != 'undefined' && self.indexing === true);
+        // provide correct copy
+        $songs.html((indexing ? indexingCopy : notIndexedCopy));
 
         // attach lookup to click
         $('#index-songs-btn').click(function(e){
-         // e.preventDefault();
+          self.indexing = true;
+          $songs.html(indexingCopy);
           // update and search
-         // app.store.indexSongs();
-        //  self.searchSongs(key);
+          app.store.indexSongs(function(data){
+            key = $('#search').val();
+            self.searchSongs(key);
+            self.indexing = false;
+          });
         });
 
       } else {
         // already indexed
-      //  self.searchSongs(key);
+        self.searchSongs(key);
       }
 
     }
@@ -154,12 +174,37 @@ app.ShellView = Backbone.View.extend({
     }
   },
 
-  selectMenuItem: function(menuItem) {
+
+  /**
+   * This acts as layout definer wrapper
+   * @param menuItem
+   * @param sidebar
+   */
+  selectMenuItem: function(menuItem, sidebar) {
+
+    var $body = $('body');
+
+    //sidebar - reset and add
+    $body.removeClass('sidebar').removeClass('no-sidebar').addClass(sidebar);
+
+    // layout changes for different pages
+    if(menuItem == 'home'){
+      //specific to home
+      $body.addClass('home');
+    } else {
+      if($('.backstretch').length > 0){
+        $.backstretch("destroy", false);
+      }
+      $body.removeClass('home');
+    }
+
+
     $('.mainnav li').removeClass('active');
     if (menuItem) {
       $('.' + menuItem).addClass('active');
     }
   },
+
 
   //player commands
   playerPrev:function(){
@@ -200,16 +245,25 @@ app.ShellView = Backbone.View.extend({
       .parent().attr('href', '#album/' + data.item.albumid);
 
     //set title
-    $nowPlaying.find('.song-title').html(data.item.label); //now playing
+    $('.playing-song-title').html(data.item.label); //now playing
     document.title = data.item.label + ' | Chorus.'; //doc
 
     //set artists
     var meta = app.helpers.parseArtistsArray(data.item),
         $playlistActive = $('.playlist .playing-row');
 
-    $nowPlaying.find('.song-meta').html(meta);
+    $('.playing-song-meta').html(meta);
     $playlistActive.find('.playlist-meta').html(meta);
     $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
+
+    // if backstretch exists and changed, update
+    var $bs = $('.backstretch img'),
+        origImg = $bs.attr('src'),
+        newImg = app.parseImage(data.item.fanart);
+    if($bs.length > 0 && origImg != newImg){
+      //$bs.attr('src', newImg);
+      $.backstretch(newImg);
+    }
 
    //progress section
 

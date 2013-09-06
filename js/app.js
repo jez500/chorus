@@ -102,7 +102,7 @@ var app = {
 app.Router = Backbone.Router.extend({
 
   routes: {
-    "":                     "albums",
+    "":                     "home",
     "contact":              "contact",
     "artist/:id":           "artist",
     "artist/:id/:task":     "artist",
@@ -114,47 +114,36 @@ app.Router = Backbone.Router.extend({
   initialize: function () {
     app.shellView = new app.ShellView();
     $('body').html(app.shellView.render().el);
-    // Close the search dropdown on click anywhere in the UI
-    $('body').click(function () {
-      $('.dropdown').removeClass("open");
-    });
+
     this.$content = $("#content");
-    this.$sidebarFirst = $('#sidebar-first');
-    this.$sidebarSecond = $('#sidebar-second');
-    this.$mainContent = $('#main-content');
     this.$title = $('#title');
 
   },
 
   home: function () { //Not in use atm
 
-    // Since the home view never changes, we instantiate it and render it only once
-    if (!app.homelView) {
-      app.homelView = new app.HomeView();
+    var self = this;
+    app.AudioController.getNowPlaying(function(data){
+      // if something is playing, try and find some meta
+      console.log(data);
+      this.$bs = $.backstretch(app.parseImage(data.item.fanart));
+
+      app.homelView = new app.HomeView({model:data.item});
       app.homelView.render();
-    } else {
-      console.log('reusing home view');
-      app.homelView.delegateEvents(); // delegate events when the view is recycled
-    }
-    this.$content.html(app.homelView.el);
 
-    this.$content.append();
-    this.$title.html('Home');
-    app.shellView.selectMenuItem('home-menu');
-  },
+      self.$content.html(app.homelView.el);
+      self.$title.html('');
+      app.shellView.selectMenuItem('home', 'no-sidebar');
 
-  contact: function () {
-    if (!app.contactView) {
-      app.contactView = new app.ContactView();
-      app.contactView.render();
-    }
-    this.$content.html(app.contactView.el);
-    app.shellView.selectMenuItem('contact-menu');
+    });
+
   },
 
 
   artist: function (id, task) {
-    $('body').addClass('sidebar').removeClass('no-sidebar');
+
+    app.shellView.selectMenuItem('artist', 'sidebar');
+
     if(typeof task == "undefined"){
       task = 'view';
     }
@@ -162,28 +151,37 @@ app.Router = Backbone.Router.extend({
     app.artistsView = new app.ArtistsView();
     app.artistsView.render();
 
-    // only load if not already rendered
-    if($('#sidebar-first .artist-list').length == 0){
- //       $('#content').html(app.artistsView.el);
-    }
-
     var artist = new app.Artist({"id": parseInt(id), "fields":app.artistFields}),
           self = this;
 
     artist.fetch({
       success: function (data) {
         console.log(data);
-        $('#content').html(new app.ArtistView({model: data}).render().el);
-        $('#title').html('<a href="#/artists">Artists</a><b></b>' + data.attributes.artist);
+        self.$content.html(new app.ArtistView({model: data}).render().el);
+        self.$title.html('<a href="#/artists">Artists</a><b></b>' + data.attributes.artist);
       }
     });
 
   },
 
 
+  //artists page
+  artists: function(){
+    app.shellView.selectMenuItem('artist', 'sidebar');
+
+    // render
+    app.artistsView = new app.ArtistsView();
+    $('#content').html(app.artistsView.render().el);
+
+    $('#title').html('Artists');
+
+
+  },
+
+
 
   album: function (id) {
-    $('body').addClass('sidebar').removeClass('no-sidebar');
+    app.shellView.selectMenuItem('album', 'sidebar');
     // get album
     var model = {'attributes': {"albumid" : id}};
     app.cached.albumView = new app.AlbumView({"model": model, "type":"album"});
@@ -201,7 +199,7 @@ app.Router = Backbone.Router.extend({
 
 
   albums: function(){
-    $('body').addClass('no-sidebar').removeClass('sidebar');
+    app.shellView.selectMenuItem('album', 'no-sidebar');
     var self = this;
     app.cached.recentlyAddedAlbums = new app.AlbumRecentXbmcCollection();
     app.cached.recentlyAddedAlbums.fetch({"success": function(albums){
@@ -211,20 +209,6 @@ app.Router = Backbone.Router.extend({
       //add isotope
       app.helpers.addIsotope('ul.album-list-landing');
     }});
-  },
-
-
-  //artists page
-  artists: function(){
-    $('body').addClass('sidebar').removeClass('no-sidebar');
-
-    // render
-    app.artistsView = new app.ArtistsView();
-    $('#content').html(app.artistsView.render().el);
-
-    $('#title').html('Artists');
-    app.shellView.selectMenuItem('artists');
-
   }
 
 
@@ -243,6 +227,7 @@ $(document).on("ready", function () {
     $('body').addClass('artists-ready');
     app.notification('Artists loaded');
   },'artistsReady');
+
 
   app.store.libraryCall(function(){
     console.log('loaded stores:', app.stores);

@@ -12,8 +12,11 @@ app.AudioController = {
 };
 
 
-
-app.AudioController.refreshPlaylist = function(callback){
+/**
+ * Refresh the playlist
+ * @param callback
+ */
+app.AudioController.playlistRefresh = function(callback){
 
   app.AudioController.getPlaylistItems(function(result){
 
@@ -24,6 +27,21 @@ app.AudioController.refreshPlaylist = function(callback){
       console.log('now playing',data);
     });
 
+    //sortable
+    this.$sortable = $( "ul.playlist", this.el );
+    console.log(this.$sortable);
+    this.$sortable.sortable({
+      placeholder: "playlist-item-placeholder",
+      handle: ".menubtn",
+      items: "> li",
+      axis: "y",
+      stop: function( event, ui ) {
+        console.log('stopped', ui);
+        console.log('stopped', ui.position);
+        console.log('stopped', ui.originalPosition);
+      }
+    });
+
     if(app.helpers.exists(callback)){
       callback(result);
     }
@@ -32,23 +50,110 @@ app.AudioController.refreshPlaylist = function(callback){
 
 };
 
+
+
+
+/**
+ * Adds an artist/album/song to the playlist
+ * @param type
+ *  eg. artistid, albumid, songid
+ * @param id
+ *  value of type
+ *
+ */
+app.AudioController.playlistAdd = function(type, id, callback){
+
+  var filter = {};
+  filter[type] = id;
+
+  //add the album to the playlist
+  app.xbmcController.command('Playlist.Add', [app.AudioController.playlistId,filter], function(data){
+
+    //get playlist items
+    app.AudioController.getPlaylistItems(function(result){
+
+      //update cache
+      app.AudioController.currentPlaylist = result;
+
+      callback(result);
+
+    })
+  });
+
+};
+
+
+/**
+ * Clear then adds an artist/album/song to the playlist
+ * @param type
+ *  eg. artistid, albumid, songid
+ * @param id
+ *  value of type
+ *
+ */
+app.AudioController.playlistClearAdd = function(type, id, callback){
+
+  // clear playlist
+  app.xbmcController.command('Playlist.Clear', [app.AudioController.playlistId], function(data){
+    app.notification('Playlist Cleared');
+    app.AudioController.playlistAdd(type, id, callback);
+  });
+
+};
+
+
+
+/**
+ * Adds an an artist/album/song to the playlist then starts playing
+ * @param playSongId
+ *  song to play
+ * @param type
+ *  eg. artistid, albumid, songid
+ * @param id
+ *  value of type
+ *
+ */
+app.AudioController.playlistPlaySongId = function(playSongId, callback){
+
+    //@TODO: fix below to be nicer
+
+    //find the song and play it
+    var playing = false;
+    $.each(app.AudioController.currentPlaylist.items, function(i,d){
+      //matching song!
+      if(d.id == playSongId && playing === false){
+        app.AudioController.playPlaylistPosition(i, function(data){
+          //update playlist
+          app.AudioController.playlistRefresh();
+          //notify
+          app.notification('Now playing "' + d.label + '"');
+        });
+        playing = true;
+      }
+    });
+
+};
+
+
+
+
+
 /**
  * Play Song
  */
-app.AudioController.playSongById = function(songid, albumid, clearList){
+app.AudioController.playSongById = function(songid, type, id, clearList){
 
   if(app.helpers.exists(clearList) && clearList === true){
     // clear playlist first
-    app.xbmcController.command('Playlist.Clear', [app.AudioController.playlistId], function(data){
-      app.notification('Playlist Cleared');
-      app.AudioController.playSongInAlbum(songid, albumid);
+    app.AudioController.playlistClearAdd( type, id, function(result){
+      app.AudioController.playlistPlaySongId(songid);
     });
   } else {
-    //just add the album
-    app.AudioController.playSongInAlbum(songid, albumid);
+    //just add
+    app.AudioController.playlistAdd( type, id, function(result){
+      app.AudioController.playlistPlaySongId(songid);
+    });
   }
-
-
 
 };
 
@@ -57,34 +162,29 @@ app.AudioController.playSongById = function(songid, albumid, clearList){
  * @param songid
  * @param albumid
  */
-app.AudioController.playSongInAlbum = function(songid, albumid){
-  //add the album to the playlist
-  app.xbmcController.command('Playlist.Add', [app.AudioController.playlistId,{'albumid':albumid}], function(data){
+/*app.AudioController.playSongInAlbum = function(songid, albumid){
 
-    //get playlist items
-    app.AudioController.getPlaylistItems(function(result){
 
-      //update cache
-      app.AudioController.currentPlaylist = result;
+  app.AudioController.playlistAdd('albumid', albumid, function(result){
 
-      //find the song and play it
-      var playing = false;
-      $.each(app.AudioController.currentPlaylist.items, function(i,d){
-        //matching song!
-        if(d.id == songid && playing === false){
-          app.AudioController.playPlaylistPosition(i, function(data){
-            //update playlist
-            app.AudioController.refreshPlaylist();
-            //notify
-            app.notification('Now playing "' + d.label + '"');
-          });
-          playing = true;
-        }
-      });
+    //find the song and play it
+    var playing = false;
+    $.each(app.AudioController.currentPlaylist.items, function(i,d){
+      //matching song!
+      if(d.id == songid && playing === false){
+        app.AudioController.playPlaylistPosition(i, function(data){
+          //update playlist
+          app.AudioController.playlistRefresh();
+          //notify
+          app.notification('Now playing "' + d.label + '"');
+        });
+        playing = true;
+      }
+    });
 
-    })
   });
-};
+
+};*/
 
 
 /**
@@ -97,13 +197,24 @@ app.AudioController.sendPlayerCommand = function(command, param){
 };
 
 /**
- * Play something
+ * Play something from playlist
  */
 app.AudioController.playPlaylistPosition = function(position, callback ){
   app.xbmcController.command('Player.Open', [{"playlistid": app.AudioController.playlistId,"position":position}], function(result){
     callback(result.result); // return items
   });
 };
+
+
+/**
+ * Remove something from playlist
+ */
+app.AudioController.removePlaylistPosition = function(position, callback ){
+  app.xbmcController.command('Playlist.Remove', [app.AudioController.playlistId,position], function(result){
+    callback(result.result); // return items
+  });
+};
+
 
 
 /**
@@ -125,6 +236,8 @@ app.AudioController.getPlaylistItems = function(callback){
     callback(result.result); // return items
   });
 };
+
+
 
 /**
  * Set Volume
@@ -156,7 +269,7 @@ app.AudioController.audioLibraryScan = function(){
 app.AudioController.getNowPlaying = function(callback){
 
   var fields = {
-    item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail"],
+    item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
   var ret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0};

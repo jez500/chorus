@@ -53,20 +53,23 @@
             <div class="volume-wrapper">
                 <div id="volume"></div>
             </div>
-            <div class="actions-wrapper actions-secondary">
+            <div class="actions-wrapper actions-secondary dropup">
                 <span class="player-mute player-button"><i class="icon-volume-down"></i></span>
                 <span class="player-repeat player-button"><i class="icon-repeat"></i></span>
                 <span class="player-random player-button"><i class="icon-random"></i></span>
-                <span class="player-menu player-button"><i class="icon-ellipsis-vertical"></i></span>
+                <span class="player-menu player-button dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></span>
+                <ul class="dropdown-menu">
+                    <li><a href="#settings">Settings</a></li>
+                </ul>
             </div>
         </div>
         <div class="footer-center">
             <div id="now-playing">
-                <a href="#now-playing" class="song-image">
+                <a href="#" class="song-image">
                     <img src="/theme/images/default.png" id="playing-thumb" />
                 </a>
-                <a href="#now-playing" class="song-title">Nothing Playing</a>
-                <span class="song-meta">No Artist</span>
+                <a href="#" class="playing-song-title">Nothing Playing</a>
+                <span class="playing-song-meta">No Artist</span>
             </div>
             <div class="progress-wrapper">
                 <div id="progress-bar"></div>

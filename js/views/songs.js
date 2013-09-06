@@ -23,7 +23,9 @@ app.SongView = Backbone.View.extend({
   tagName:"li",
 
   events: {
-    "dblclick .song-title": "playSong"
+    "dblclick .song-title": "playSong",
+    "click .song-play": "playSong",
+    "click .song-add": "addSong"
   },
 
   initialize:function () {
@@ -39,7 +41,16 @@ app.SongView = Backbone.View.extend({
    playSong: function(event){
      console.log(event);
      var song = this.model.attributes;
-     app.AudioController.playSongById(song.songid, song.albumid, true);
-   }
+     app.AudioController.playSongById(song.songid, 'albumid', song.albumid, true);
+   },
+
+
+    addSong: function(){
+      var song = this.model.attributes;
+      app.AudioController.playlistAdd( 'songid', song.songid, function(result){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
 
 });

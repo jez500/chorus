@@ -1,6 +1,16 @@
 <div class="track song" data-type="song" data-id="<%= songid %>" data-songid="<%= songid %>" data-path="<%= file %>">
+
     <span class="track-col song-tracknum"><%= (parseInt(track) > 0 ? track : "") %></span>
     <span class="track-col song-title"><%= label %></span>
     <span class="track-col song-artist"><a href="#artist/<%= artistid %> " class=""><%= artist %></a></span>
     <span class="track-col song-duration"><%= app.helpers.secToTime(duration) %></span>
+
+    <div class="song-actions-wrapper">
+        <div class="song-actions dropdown" data-id="<%= songid %>" data-album="<%= albumid %>">
+            <button class="song-play btn" title="Replace the playlist with this album and start playing this song"><i class="icon-play"></i></button>
+            <button class="song-add btn" title="Add this song to the playlist"><i class="icon-plus"></i></button>
+            <button class="song-menu btn"><i class="icon-ellipsis-vertical"></i></button>
+        </div>
+    </div>
+
 </div>

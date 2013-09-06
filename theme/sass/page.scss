@@ -6,7 +6,7 @@ $height-header: 50px;
 $height-footer: 70px;
 
 $width-header: 50px;
-$width-sidebar-first: 305px + $width-header;
+$width-sidebar-first: 260px + $width-header;
 $width-sidebar-second:360px;
 
 //mixins @todo move
@@ -272,7 +272,7 @@ html {
       display: block;
     }
   }
-  .song-title {
+  .playing-song-title {
     color: #fff;
     font-size: 15px;
     display: block;
@@ -360,17 +360,47 @@ body.no-sidebar {
 
 #sidebar-second {
   width: $width-sidebar-second;
-  background: $color-mist;
+  background: rgba(224, 224, 224, 0.75);
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   z-index: 5;
   .sidebar-header {
-    width: $width-sidebar-second;
+
     height: $height-header;
     background: $color-light-slate;
     overflow-y: auto;
+  }
+}
+$home-sidebar-width: $width-sidebar-second + 200;
+body.home {
+  #sidebar-second {
+    @include transition(0.3s all ease-in);
+    background: rgba(235, 236, 236, 0.84);
+    width: $home-sidebar-width;
+    .playlist div.playlist-item.playing-row {
+      //background-color: $color-mist;
+    }
+
+  }
+  #search-box {
+    @include transition(0.3s all ease-in);
+    right: $home-sidebar-width;
+    #search {
+      background: rgba(255, 255, 255, 0.5);
+      &:hover,
+      &:focus {
+        color: $color-asbestos;
+        background: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+  #header {
+    background: rgba(235, 236, 236, 0.84);
+  }
+  #page-header {
+    background: none;
   }
 }
 
@@ -403,7 +433,7 @@ body.no-sidebar {
 //Typography
 body {
   color: $color-slate;
-  font-size: 14px;
+  font-size: 13px;
   background: #FCFCFC;
 }
 a {
@@ -452,6 +482,38 @@ h4 {
 
 
 //SECTIONS
+#home {
+  #playing {
+    position: absolute;
+    top: 0px;
+    left: 50px;
+    padding: 10px 20px;
+    z-index: 50;
+    display: none;
+    h1 {
+      margin: 0;
+      padding: 15px 0 5px;
+      color: rgba(53, 53, 53, 0.3);
+      font-weight: normal;
+      font-size: 30px;
+    }
+    h2 {
+      margin: 0px 0 0px;
+      color: $color-slate;
+      font-size: 23px;
+      float: left;
+    }
+    h3 {
+      font-size: 18px;
+      color: rgba(46, 46, 46, 0.54);
+      margin: 3px 0 0 10px;
+      float: left;
+      a {
+        color: rgba(46, 46, 46, 0.54);
+      }
+    }
+  }
+}
 
 //Artists
 #sidebar-first {
@@ -497,15 +559,18 @@ h4 {
         &.active {
           background: $color-asbestos;
           color: #fff;
-          font-size: 120%;
+          font-size: 110%;
           .image {
             width: 120px;
             height: 110px;
           }
           p {
-            max-width: 160px;
+            max-width: 114px;
             overflow: hidden;
             padding-top: 5px;
+            &.artist-title {
+              max-height: 41px;
+            }
           }
           .artist-meta {
             margin: 5px 0;
@@ -570,7 +635,7 @@ h4 {
 }
 
 /* Album list */
-$album-tracks-width: 80%;
+$album-tracks-width: 84%;
 $album-meta-width: 100 - $album-tracks-width;
 
 .album-list {
@@ -581,6 +646,7 @@ $album-meta-width: 100 - $album-tracks-width;
 .album-row {
   clear: both;
   padding: 10px 5px;
+
   .album-title {
     margin: 0;
     padding: 10px;
@@ -588,7 +654,12 @@ $album-meta-width: 100 - $album-tracks-width;
     width: $album-tracks-width;
     @include box-sizing(border-box);
     background: #F8F8F8;
-
+    position: relative;
+    &:hover {
+      .album-actions-wrapper {
+        display: block;
+      }
+    }
     a {
       color: $color-asbestos;
     }
@@ -607,6 +678,20 @@ $album-meta-width: 100 - $album-tracks-width;
     float: left;
     width: $album-tracks-width;
   }
+  .album-actions-wrapper {
+    position: absolute;
+    right: 10px;
+    display: none;
+    top: 0;
+    .btn {
+      background: none;
+      margin: 0;
+      color: #bbb;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+
 }
 
 .album-page {
@@ -644,6 +729,7 @@ $album-meta-width: 100 - $album-tracks-width;
 #artist-tabs {
   background: $color-concrete;
   padding: 5px 5px 0 0;
+  position: relative;
   ul {
     border-bottom: none;
     margin-bottom: 5px;
@@ -672,6 +758,22 @@ $album-meta-width: 100 - $album-tracks-width;
     }
   }
 
+  .artist-actions {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    .btn {
+      background: $color-concrete;
+      padding: 10px 13px;
+      @include border-radius(0);
+      float: left;
+      color: #f6f6f6;
+      &:hover {
+        background: $color-asbestos;
+      }
+    }
+
+  }
 
 }
 
@@ -679,11 +781,45 @@ $album-meta-width: 100 - $album-tracks-width;
 .song-list {
   padding: 0 0px;
   li {
+    position: relative;
+    .song-actions-wrapper {
+      display: none;
+      .btn {
+        position: absolute;
+        top: 0;
+
+        background: rgba(250, 250, 250, 0.4);
+        z-index: 5;
+        color: #999;
+        margin: 0;
+        float: left;
+        padding: 6px 12px 6px;
+        margin-right: 2px;
+        @include border-radius(0);
+
+        &:hover {
+          color: #333;
+          background: rgba(255,255,255,1);
+        }
+        &.song-play {
+          left: 0;
+
+          background: #FAFAFA;
+        }
+        &.song-add {
+          right: 19px;
+        }
+        &.song-menu {
+          right: 0px;
+        }
+      }
+    }
     .track {
       border-bottom: 1px solid #F0F0F0;
       color: $color-concrete;
       height: 35px;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.84);
+      margin-right: 0px;
       .track-col {
         float: left;
         height: 35px;
@@ -699,33 +835,47 @@ $album-meta-width: 100 - $album-tracks-width;
           }
         }
         &.song-duration {
-          width: 9%;
+          width: 6%;
         }
         &.song-title {
           @include user-select(none);
-          width: 86%;
+          width: 83%;
           overflow: hidden;
           color: $color-slate;
-          font-size: 14px;
+          font-size: 13px;
         }
         &.song-artist {
-          width: 26%;
+          width: 24%;
           overflow: hidden;
           color: $color-slate;
           font-size: 12px;
           display: none;
         }
       }
+
+      &.playing-row,
+      &.active-row,
       &:hover {
         background: #FAFAFA;
+        .song-actions-wrapper {
+          display: block;
+        }
         .song-artist {
           display: block;
         }
         .song-title {
-           width: 60%;
+           width: 59%;
           cursor: pointer;
          }
       }
+      &.playing-row {
+        .song-actions-wrapper {
+          .song-play {
+            display: none;
+          }
+        }
+      }
+
       &.playing-row {
         background: $color-clouds;
         .song-tracknum {
@@ -739,6 +889,10 @@ $album-meta-width: 100 - $album-tracks-width;
       margin-bottom: 8px;
     }
   }
+}
+
+#search-songs {
+  margin-top: 25px;
 }
 
 
@@ -868,10 +1022,39 @@ $imgblock-width-large: 310px;
 
 .playlist {
   padding: 10px;
+  .playlist-item-placeholder {
+    height: 35px;
+    background: #eee;
+  }
   div.playlist-item {
     border-bottom: 1px solid $color-mist;
     background: $color-whitesmoke;
     position: relative;
+    .actions {
+      color: #ddd;
+      text-shadow: -1px -1px 0 rgba(255,255,255,0.8);
+      span {
+        padding: 5px;
+        cursor: pointer;
+        z-index: 10;
+        &.menubtn {
+          position: absolute;
+          left: 5px;
+          top: 6px;
+          &:hover {
+            color: #bbb;
+          }
+        }
+        &.removebtn {
+          position: absolute;
+          right: 5px;
+          top: 6px;
+          &:hover {
+            color: #D22431;
+          }
+        }
+      }
+    }
     .thumb {
       display: none;
       width: 80px;
@@ -882,8 +1065,8 @@ $imgblock-width-large: 310px;
     }
     .playlist-play {
       @include user-select(none);
-      margin-right: 50px;
-      padding: 5px 10px;
+      margin: 0 30px 0 0px;
+      padding: 5px 0px 5px 20px;
       height: 24px;
       overflow: hidden;
       display: block;
@@ -902,6 +1085,7 @@ $imgblock-width-large: 310px;
       }
       display: none;
     }
+
     &.playing-row {
       height: 80px;
       background: $color-clouds;
@@ -915,13 +1099,44 @@ $imgblock-width-large: 310px;
         line-height: 19px;
         max-height: 38px;
         height: auto;
+        color: #444;
         &:hover {
           background: none;
         }
       }
+      .menubtn {
+        opacity: 0;
+      }
+      .removebtn {
+        display: none;
+      }
       .playlist-meta,
       .thumb {
         display: block;
+      }
+    }
+  }
+}
+body.home {
+  .playlist {
+    div.playlist-item {
+      &.playing-row {
+        height: 120px;
+        .thumb {
+          width: 120px;
+          height: 120px;
+        }
+        .playlist-play {
+          font-size: 130%;
+          line-height: 25px;
+          max-height: 48px;
+
+        }
+        .playlist-meta {
+          a {
+            font-size: 120%;
+          }
+        }
       }
     }
   }

@@ -33,7 +33,8 @@ app.PlaylistItemView = Backbone.View.extend({
   className: 'playlist-item',
 
   events: {
-    "dblclick .playlist-play": "playPosition"
+    "dblclick .playlist-play": "playPosition",
+    "click .removebtn": "removePosition"
   },
 
   initialize:function () {
@@ -47,9 +48,17 @@ app.PlaylistItemView = Backbone.View.extend({
 
   playPosition:function(event){
     app.AudioController.playPlaylistPosition(this.model.pos, function(data){
-      console.log('playing',event);
+      //app.AudioController.playlistRefresh();
+    });
+  },
+
+  removePosition:function(event){
+    app.AudioController.removePlaylistPosition(this.model.pos, function(data){
+      app.AudioController.playlistRefresh();
     });
   }
+
+
 
 });
 

@@ -19,9 +19,6 @@ app.ArtistsView = Backbone.View.extend({
       this.artistsRandView = new app.AristsRandView({model: data, className: 'rand-list'});
       $('#main-content').html(this.artistsRandView.render().el);
 
-
-
-
       //add isotope
       app.helpers.addIsotope('ul.rand-list');
     }});
@@ -47,12 +44,7 @@ app.ArtistsView = Backbone.View.extend({
       this.artistsList.fetch({success: function(data){
         this.artistsListView = new app.AristsListView({model: data, className: 'artist-list swiper-wrapper'});
         app.helpers.setFirstSidebarContent(this.artistsListView.render().el);
-        var $container = $("#sidebar-first .sidebar-content");
-        $("img.lazy").lazyload({
-          effect : "fadeIn",
-          container: $container
-        });
-        $container.trigger('scroll');
+
       }});
 
     }

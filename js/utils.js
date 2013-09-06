@@ -100,7 +100,13 @@ $(document).ready(function(){
     $('body').addClass('sidebar').removeClass('no-sidebar');
     // add the content
     $('#sidebar-first .sidebar-content').html(content);
-
+    // trigger lazyload
+    var $container = $("#sidebar-first .sidebar-content");
+    $("img.lazy").lazyload({
+      effect : "fadeIn",
+      container: $container
+    });
+    $container.trigger('scroll');
   };
 
   /**
@@ -127,7 +133,6 @@ $(document).ready(function(){
         totals.time = totals.time + parseInt(data.models[i].attributes.songs[s].attributes.duration);
       }
     }
-    console.log('totals',totals);
 
     var meta = [];
     meta.push( totals.songs + ' Songs' );
@@ -157,6 +162,8 @@ $(document).ready(function(){
     }
     return false;
   };
+
+
 
   /*
   * @TODO! refactor/fix namespace for below functions to use app.helpers, need to check all code for usage

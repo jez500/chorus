@@ -38,6 +38,13 @@ app.ArtistListItemView = Backbone.View.extend({
 
   render:function () {
     this.$el.html(this.template(this.model.attributes));
+
+ /*   $('.album-small-item img').resizecrop({
+      width:40,
+      height:60,
+      vertical:"top"
+    });*/
+
     return this;
   }
 

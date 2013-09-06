@@ -12,7 +12,7 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   model: app.Song,
   //collection params
   arg1: app.songFields, //fields
-  arg2: {"start": 0, "end": 500}, //function(){console.log(this.models[0]); return {"start": 0, "end": 500}}, //count
+  arg2: {"start": 0, "end": 50000}, //function(){console.log(this.models[0]); return {"start": 0, "end": 500}}, //count
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //method/params
   methods: {

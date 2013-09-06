@@ -41,7 +41,39 @@ app.AlbumItemView = Backbone.View.extend({
     this.songList = new app.SongListView({"model":this.model.attributes.songs});
     $(".tracks", this.$el).html(this.songList.render().el);
     return this;
+  },
+
+
+  events: {
+    "click .album-play": "playAlbum",
+    "click .album-add": "addAlbum"
+  },
+
+  //play an album from start, replacing current playlist
+  playAlbum: function(){
+
+    // clear playlist. add artist, play first song
+    var album = this.model.attributes;
+    app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
+      app.AudioController.playPlaylistPosition(0, function(){
+        app.AudioController.playlistRefresh();
+      });
+    });
+
+  },
+
+  addAlbum: function(){
+
+    // clear playlist. add artist, play first song
+    var album = this.model.attributes;
+    app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
+      app.notification(album.album + ' added to the playlist');
+      app.AudioController.playlistRefresh();
+    });
+
   }
+
+
 
 });
 

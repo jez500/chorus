@@ -135,18 +135,16 @@ app.MemoryStore = function (successCallback, errorCallback) {
     self.albumsIndexed = false;
     self.albumsIndexed = false;
 
-
+    this.allArtists();
+    this.allAlbums();
   };
 
 
-  this.indexxaSongs = function(maxcount){
-    var self = this,
-        defaultMax = 50000; // 50,000 songs
-        model = [{attributes: {limit: (typeof maxcount != 'undefined' && !isNaN(parseInt(maxcount * 1)) ? maxcount : defaultMax)}}]; //basic model with limit
+  this.indexSongs = function(successCallback){
+    var self = this;
 
     //get all songs
-
-    this.allSongs = new app.SongXbmcCollection({"model": model});
+    this.allSongs = new app.SongXbmcCollection();
 
     // fetch all songs (very slow and locks up ui a bit)
     this.allSongs.fetch({"success": function(data){
@@ -185,6 +183,11 @@ app.MemoryStore = function (successCallback, errorCallback) {
     }
   };
 
+  /**
+   * Get all artists
+   * @param callback
+   * @returns {*}
+   */
   this.allArtists = function(callback){
     var self = this;
 
