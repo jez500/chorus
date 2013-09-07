@@ -1,9 +1,9 @@
 <div class="playlist-item song" data-id="<%= pos %>" data-songid="<%= id %>">
     <div class="actions">
-        <span class="icon-ellipsis-vertical menubtn"></span>
+        <span class="icon-play playbtn"></span>
         <span class="icon-remove removebtn"></span>
     </div>
-    <a href="#album/<%= albumid %>"><img src="/theme/images/default.png" class="thumb" /></a>
-    <span class="playlist-play"><%= label %></span>
+    <a href="#album/<%= albumid %>"><img src="<%= app.parseImage( thumbnail ) %>" class="thumb" /></a>
+    <a class="playlist-play" href="#"><%= label %></a>
     <span class="playlist-meta"></span>
 </div>

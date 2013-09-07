@@ -27,7 +27,7 @@ app.xbmcController.command = function(command, options, callback){
       }
     },
     error: function(result) {
-      app.helpers.errorHandler('xbmc song command call: ' + command, result);
+      app.helpers.errorHandler('xbmc song command call: ' + command, result, options);
     }
   });
 

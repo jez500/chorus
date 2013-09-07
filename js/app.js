@@ -108,7 +108,8 @@ app.Router = Backbone.Router.extend({
     "artist/:id/:task":     "artist",
     "artists":              "artists",
     "album/:id":            "album",
-    "albums":               "albums"
+    "albums":               "albums",
+    "search/:q":            "search"
   },
 
   initialize: function () {
@@ -137,6 +138,11 @@ app.Router = Backbone.Router.extend({
 
     });
 
+  },
+
+  search: function (q) {
+   $('#search').val(q);
+   app.shellView.search(q);
   },
 
 

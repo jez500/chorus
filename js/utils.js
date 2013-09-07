@@ -115,11 +115,17 @@ $(document).ready(function(){
    * assumes artist and artistid are properties and arrays
    */
   app.helpers.parseArtistsArray = function(item){
-    var meta = [];
-    for(i in item.artist){
-      meta.push('<a href="#artist/' + item.artistid[i] + '">' + item.artist[i] + '</a>');
+    var meta = [], str;
+    for(i in item.artist){ //each artist in item
+
+      if(item.artistid != undefined){ //artist id found
+        str = '<a href="#artist/' + item.artistid[i] + '">' + item.artist[i] + '</a>';
+      } else { //if no artist ids found
+        str = item.artist[i];
+      }
+      meta.push(str);
     }
-    return meta.join(', ');
+    return meta.join(', '); //out as a string
   };
 
 

@@ -20,26 +20,17 @@ app.AudioController.playlistRefresh = function(callback){
 
   app.AudioController.getPlaylistItems(function(result){
 
+    //create a new playlist view and render
     app.playlistView = new app.PlaylistView({model:{models:result.items}});
     $('.sidebar-items').html(app.playlistView.render().el);
 
     app.AudioController.getNowPlaying(function(data){
-      console.log('now playing',data);
-    });
 
-    //sortable
-    this.$sortable = $( "ul.playlist", this.el );
-    console.log(this.$sortable);
-    this.$sortable.sortable({
-      placeholder: "playlist-item-placeholder",
-      handle: ".menubtn",
-      items: "> li",
-      axis: "y",
-      stop: function( event, ui ) {
-        console.log('stopped', ui);
-        console.log('stopped', ui.position);
-        console.log('stopped', ui.originalPosition);
-      }
+      console.log('now playing',data);
+      //update shell to now playing info
+      app.shellView.updateState(data);
+      //rebind controls to playlist after refresh
+      app.playlistView.playlistBinds(this);
     });
 
     if(app.helpers.exists(callback)){
@@ -81,6 +72,53 @@ app.AudioController.playlistAdd = function(type, id, callback){
   });
 
 };
+
+
+
+
+/**
+ * Swap the position of an item in the playlist
+ *
+ * This moves an item from one position to another
+ * It does this by cloning pos1, remove original pos, insert pos1 clone into pos2
+ * Not to be confused with xbmc playlist.swap which is fairly useless IMO
+ *
+ * @param pos1
+ *  current playlist position
+ * @param pos2
+ *  new playlist position
+ */
+app.AudioController.playlistSwap = function(pos1, pos2, callback){
+
+  //get playlist items
+  app.AudioController.getPlaylistItems(function(result){
+    //clone for insert
+    var clone = result.items[pos1],
+      insert = {};
+    //if songid found use that as a preference
+    if(clone.id != undefined){
+      insert.songid = clone.id;
+    } else { //use filepath if no songid
+      insert.file = clone.file;
+    }
+    //remove the original
+    app.AudioController.removePlaylistPosition(pos1, function(result){
+      //insert the clone
+      app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos2,insert], function(data){
+        //get playlist items
+        app.AudioController.getPlaylistItems(function(result){
+          //update cache
+          app.AudioController.currentPlaylist = result;
+          callback(result);
+
+        })
+      });
+    });
+
+  })
+};
+
+
 
 
 /**

@@ -47,6 +47,7 @@ app.ShellView = Backbone.View.extend({
 
   events: {
     "keyup #search": "search",
+    "click #search-this": "search",
     "keypress #search": "onkeypress",
     "click #logo": "home",
     "click .player-prev": "playerPrev",
@@ -67,12 +68,16 @@ app.ShellView = Backbone.View.extend({
     var res = {ablums: [], artists: [], songs: []};
 
     if(key.length > 1){
+      //set url
+      document.location.hash = '#search/' + key;
 
+      //set searching
       this.selectMenuItem('search', 'sidebar');
 
       //empty content as we append
       var $content = $('#content'),
-          $title = $('#title');
+          $title = $('#title'),
+          notfoundartist = '<div class="noresult-box">No Artists found</div>';
 
       $content.empty().html('<div id="search-albums"></div><div id="search-songs"></div>');
       $title.html('<a href="#artists">Artists </a>Albums');
@@ -87,15 +92,22 @@ app.ShellView = Backbone.View.extend({
         });
         // update model with new collection
         data.models = artists;
-        // add the sidebar view
-        this.artistsListSearch = new app.AristsListView({model: data, className: 'artist-search-list'});
-        app.helpers.setFirstSidebarContent(this.artistsListSearch.render().el);
+        //if result
+        if(data.models.length > 0){
+          // add the sidebar view
+          this.artistsListSearch = new app.AristsListView({model: data, className: 'artist-search-list'});
+          app.helpers.setFirstSidebarContent(this.artistsListSearch.render().el);
+        } else {
+          app.helpers.setFirstSidebarContent(notfoundartist);
+        }
+
       }});
 
 
       //get albums
       var $albums = $('#search-albums'),
-          loading = '<div class="loading-box">Loading Albums</div>';
+          loading = '<div class="loading-box">Loading Albums</div>',
+          notfoundalb = '<div class="noresult-box"><h3>Albums</h3>No Albums found with "'+key+'" in the title</div>';
 
       $albums.html(loading);
 
@@ -109,24 +121,33 @@ app.ShellView = Backbone.View.extend({
         });
         // update model with new collection
         data.models = albums;
-        // add to content
-        this.albumList = new app.SmallAlbumsList({model: data, className: 'album-search-list'});
-        $albums.append(this.albumList.render().el);
+        //if result
+        if(data.models.length > 0){
+          // add to content
+          this.albumList = new app.SmallAlbumsList({model: data, className: 'album-search-list'});
+          $albums.append(this.albumList.render().el);
+        } else {
+          //no results
+          $albums.html(notfoundalb);
+        }
+
       }});
 
 
       //get songs
       var $songs = $('#search-songs'),
           indexing = false,
-          indexingCopy = '<div class="loading-box">Loading Songs - Very slow!</div>',
-          notIndexedCopy =
-            '<p class="text-copy">To search song titles we need to load the entire song collection into the browser,' +
-            'this takes a very long and some non-cached stuff might not work while while indexing' +
-            ' so no controlls work while indexing. <br /><br />' +
-            '<a id="index-songs-btn" href="#index-songs" class="btn btn-large btn-inverse">Ok, Index the songs</a></p>';
+          indexingCopy = '<div class="noresult-box">Indexing Songs, this can take a long time! Maybe browse a bit then come back later</div>',
+          notIndexedCopy  ='<div class="noresult-box">Preparing Song Search</div>';
+//            '<div class="noresult-box"><h3>Songs...</h3>' +
+//            '<p class="text-copy">To search song titles we need to load the entire song collection into the browser,' +
+//            'this takes a very long and some non-cached stuff might not work while while indexing' +
+//            ' so no controlls work while indexing. <br /><br />' +
+//            '<a id="index-songs-btn" href="#index-songs" class="btn btn-large btn-inverse">Ok, Index the songs</a></p></div>';
 
 
       $songs.html(indexingCopy);
+
 
       if(app.store.songsIndexed !== true){
 
@@ -134,6 +155,22 @@ app.ShellView = Backbone.View.extend({
         indexing = (typeof self.indexing != 'undefined' && self.indexing === true);
         // provide correct copy
         $songs.html((indexing ? indexingCopy : notIndexedCopy));
+        console.log('Start indexing!111')
+        if(self.indexing !== true){
+          //auto kick off a search in x secs
+          console.log('Start indexing!');
+          setTimeout(function(){
+
+            self.indexing = true;
+            $songs.html(indexingCopy);
+            // update and search
+            app.store.indexSongs(function(data){
+              key = $('#search').val();
+              self.searchSongs(key);
+              self.indexing = false;
+            });
+          }, 3000);
+        }
 
         // attach lookup to click
         $('#index-songs-btn').click(function(e){
@@ -221,63 +258,95 @@ app.ShellView = Backbone.View.extend({
   updateState:function(data){
     var $nowPlaying = $('#now-playing'),
         $body = $('body'),
-        $songs = $('.song'); //songs currently rendered
+        $songs = $('.song'), //songs currently rendered
+        status = (app.helpers.exists(data.player.speed) && data.player.speed == 0 ? 'paused' : data.status); //add paused as a status
+
+    //add paused to available statuses
+    data.status = status;
 
     //body classes
-    $body.addClass('playing');
+    $body.removeClass('playing')
+      .removeClass('paused')
+      .removeClass('notPlaying')
+      .addClass(status);
 
     //song row playing
     $songs.removeClass('playing-row');
-    $songs.each(function(i,d){
-      // console.log(data.item);
-      if($(d).attr('data-songid') == data.item.id){
-        $(d).addClass('playing-row');
-      }
-    });
 
+    if(status == 'playing' || status == 'paused'){
+      //Something is playing or paused
 
-    //now playing section
+      //we should have a loaded item
+      $songs.each(function(i,d){
+        // console.log(data.item);
+        if($(d).attr('data-songid') == data.item.id){
+          $(d).addClass('playing-row');
+        }
+      });
 
-    //set thumb
-    $nowPlaying.find('#playing-thumb')
-      .attr('src',app.parseImage(data.item.thumbnail))
-      .attr('title', data.item.album)
-      .parent().attr('href', '#album/' + data.item.albumid);
+      //set thumb
+      $nowPlaying.find('#playing-thumb')
+        .attr('src',app.parseImage(data.item.thumbnail))
+        .attr('title', data.item.album)
+        .parent().attr('href', '#album/' + data.item.albumid);
 
-    //set title
-    $('.playing-song-title').html(data.item.label); //now playing
-    document.title = data.item.label + ' | Chorus.'; //doc
+      //set title
+      $('.playing-song-title').html(data.item.label); //now playing
+      document.title = (status == 'playing' ? '▶ ' : '') + data.item.label + ' | Chorus.'; //doc
 
-    //set artists
-    var meta = app.helpers.parseArtistsArray(data.item),
+      //set playlist meta and playing row
+      var meta = app.helpers.parseArtistsArray(data.item),
         $playlistActive = $('.playlist .playing-row');
+      $('.playing-song-meta').html(meta);
+      $playlistActive.find('.playlist-meta').html(meta);
+      $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
 
-    $('.playing-song-meta').html(meta);
-    $playlistActive.find('.playlist-meta').html(meta);
-    $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
-
-    // if backstretch exists and changed, update
-    var $bs = $('.backstretch img'),
+      // if backstretch exists and changed, update
+      var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
         newImg = app.parseImage(data.item.fanart);
-    if($bs.length > 0 && origImg != newImg){
-      //$bs.attr('src', newImg);
-      $.backstretch(newImg);
+      if($bs.length > 0 && origImg != newImg){
+        //$bs.attr('src', newImg);
+        $.backstretch(newImg);
+      }
+
+      //set progress
+      this.$progressSlider.slider( "value",data.player.percentage );
+
+      //time
+      var $time = $('#time');
+      var cur = (parseInt(data.player.percentage) / 100) * parseInt(data.item.duration);
+      $time.find('.time-cur').html(app.helpers.secToTime(Math.floor(cur)));
+      $time.find('.time-total').html(app.helpers.secToTime(data.item.duration));
+
+    } else {
+      //not playing anything
+
+      //doc title
+      document.title = 'Chorus.';
+      //title and artist
+      $('.playing-song-title').html('Nothing Playing');
+      $('.playing-song-meta').html('');
+      //playlist row
+      $('ul.playlist div.playlist-item.playing-row').removeClass('playing-row');
+      //progress
+      this.$progressSlider.slider( "value",0);
+      //set thumb
+      $nowPlaying.find('#playing-thumb')
+        .attr('src',app.parseImage(''))
+        .attr('title', '')
+        .parent().attr('href', '#albums');
+      //time
+      var $time = $('#time');
+      $time.find('.time-cur').html('0');
+      $time.find('.time-total').html('0:00');
+
     }
 
-   //progress section
+    //Rebind every run
 
-    //set progress
-    this.$progressSlider.slider( "value",data.player.percentage );
     //set volume
     this.$volumeSlider.slider( "value",data.volume.volume );
-
-    //time
-    var $time = $('#time');
-    var cur = (parseInt(data.player.percentage) / 100) * parseInt(data.item.duration);
-    $time.find('.time-cur').html(app.helpers.secToTime(Math.floor(cur)));
-    $time.find('.time-total').html(app.helpers.secToTime(data.item.duration));
-
   },
 
   searchSongs: function(key){
