@@ -10,6 +10,8 @@ app.FileCollection = Backbone.Collection.extend({
     if (method === "read") {
 
 
+      
+
     }
   }
 

@@ -17,9 +17,9 @@ firesass = false
 
 
 # Location of the theme's resources.
-css_dir         = "css"
+css_dir         = "../dist/theme/css"
 sass_dir        = "sass"
-images_dir      = "images"
+images_dir      = "../dist/theme/images"
 extensions_dir  = "sass-extensions"
 javascripts_dir = "js"
 

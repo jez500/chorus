@@ -308,10 +308,16 @@ app.ShellView = Backbone.View.extend({
     }
 
 
-    $('.mainnav li').removeClass('active');
+
     if (menuItem) {
-      $('.' + menuItem).addClass('active');
+      // Toggle the actual menu class based on menuItem
+      var $nav = $('.mainnav', this.el),
+        $active = $nav.find('li.nav-' + menuItem);
+      $nav.find('li').removeClass('active');
+      $active.addClass('active');
     }
+
+
   },
 
 

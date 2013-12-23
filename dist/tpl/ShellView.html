@@ -1,0 +1,104 @@
+<header id="header">
+    <a id="logo" href="#"><span>Chorus.</span></a>
+    <nav class="mainnav">
+        <ul>
+            <li class="nav-artists"><a href="#artists" title="Artists"><i class="icon-user"></i></a></li>
+            <li class="nav-albums"><a href="#albums" title="Albums"><i class="icon-th-large"></i></a></li>
+            <li class="nav-thumbsup"><a href="#thumbsup" title="Thumbed Up"><i class="icon-thumbs-up"></i></a></li>
+            <li class="nav-files"><a href="#files/sources" title="Files"><i class="icon-align-justify"></i></a></li>
+
+        </ul>
+    </nav>
+</header>
+
+<div id="main">
+    <header id="page-header">
+        <div class="header-inner">
+            <h1 id="title"><a>Loading Library</a></h1>
+        </div>
+        <div id="search-box">
+            <i id="search-this" class="icon-search"></i>
+            <input id="search" />
+        </div>
+    </header>
+    <div id="content-wrapper">
+        <div id="content">
+            <p class="loading-box">Welcome to Chorus.</p>
+        </div>
+    </div>
+</div>
+
+<div id="sidebar-first">
+    <div class="sidebar-content">
+
+    </div>
+</div>
+
+<div id="sidebar-second">
+    <div class="sidebar-inner">
+        <div class="sidebar-header">
+            <ul class="playlist-primary-tabs">
+                <li class="xbmc-playlist-tab playlist-primary-tab active">Now Playing</li>
+                <li class="local-playlist-tab playlist-primary-tab">Playlists</li>
+            </ul>
+            <div class="playlist-actions-wrapper">
+                <div class="playlist-actions">
+                    <button class="playlist-menu btn dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></button>
+                    <ul class="dropdown-menu pull-right">
+                       <li><a href="#" class="save-playlist">Save XBMC Playlist</a></li>
+                       <li><a href="#" class="clear-playlist">Clear Playlist</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-items">
+
+    </div>
+    <div class="alt-sidebar-items">
+
+    </div>
+</div>
+
+<footer id="footer">
+    <div class="footer-inner">
+        <div class="footer-left actions-primary">
+            <span class="player-prev player-button"><i class="icon-backward"></i></span>
+            <span class="player-play player-button"><i class="icon-play"></i><i class="icon-pause"></i></span>
+            <span class="player-next player-button"><i class="icon-forward"></i></span>
+        </div>
+        <div class="footer-right">
+            <div class="volume-wrapper">
+                <div id="volume"></div>
+            </div>
+            <div class="actions-wrapper actions-secondary dropup">
+                <span class="player-mute player-button"><i class="icon-volume-down"></i><i class="icon-volume-up"></i></span>
+                <span class="player-repeat player-button"><i class="icon-repeat"></i></span>
+                <span class="player-random player-button"><i class="icon-random"></i></span>
+                <span class="player-menu player-button dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></span>
+                <ul class="dropdown-menu">
+                    <li><a href="#scan/audio">Audio Library Scan</a></li>
+                    <li><a href="#settings">Settings</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-center">
+            <div id="now-playing">
+                <a href="#" class="song-image">
+                    <img src="/theme/images/default.png" id="playing-thumb" />
+                </a>
+                <a href="#" class="playing-song-title">Nothing Playing</a>
+                <span class="playing-song-meta">No Artist</span>
+            </div>
+            <div class="progress-wrapper">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="time">
+                <div class="time-cur">0</div>
+                <div class="time-total">0:00</div>
+            </div>
+        </div>
+    </div>
+    <div id="notify"><div class="content">Yo, you even connected</div></div>
+</footer>
+

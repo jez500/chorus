@@ -7,7 +7,40 @@ module.exports = function(grunt) {
         separator: ';'
       },
       dist: {
-        src: ['src/**/*.js'],
+        src: [
+
+          // jQuery
+          'lib/required/jquery-1.9.1.min.js',
+
+          // underscore
+          'lib/required/underscore-min.js',
+
+          // backbone
+          'lib/required/backbone.dev.js',
+          'lib/required/backbone.rpc.min.js',
+
+          // All our enabled js
+          'lib/enabled/*.js',
+
+          // application js
+          'js/utils.js',
+          'js/app.js',
+
+          // application models
+          'js/models/*.js',
+
+          // application controllers
+          'js/controllers/*.js',
+
+          // application collections - need to be loaded in order
+          'js/collections/xbmc.js',
+          'js/collections/audio.js',
+          'js/collections/files.js',
+
+          // application views
+          'js/views/*.js'
+
+        ],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },
@@ -20,9 +53,6 @@ module.exports = function(grunt) {
           'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
         }
       }
-    },
-    qunit: {
-      files: ['test/**/*.html']
     },
     jshint: {
       files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
@@ -38,18 +68,17 @@ module.exports = function(grunt) {
     },
     watch: {
       files: ['<%= jshint.files %>'],
-      tasks: ['jshint', 'qunit']
+      tasks: ['jshint']
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('test', ['jshint', 'qunit']);
+  grunt.registerTask('test', ['jshint']);
 
-  grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
 
 };

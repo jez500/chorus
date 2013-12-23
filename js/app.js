@@ -123,7 +123,8 @@ app.Router = Backbone.Router.extend({
     "playlist/:id":         "playlist",
     "search/:q":            "search",
     "scan/:type":           "scan",
-    "thumbsup":             "thumbsup"
+    "thumbsup":             "thumbsup",
+    "files/:id":            "files"
   },
 
 
@@ -198,8 +199,6 @@ app.Router = Backbone.Router.extend({
    */
   artist: function (id, task) {
 
-    app.shellView.selectMenuItem('artist', 'sidebar');
-
     if(typeof task == "undefined"){
       task = 'view';
     }
@@ -215,6 +214,9 @@ app.Router = Backbone.Router.extend({
 
         self.$content.html(new app.ArtistView({model: data}).render().el);
         app.helpers.setTitle('<a href="#/artists">Artists</a><b></b>' + data.attributes.artist);
+
+        // set menu
+        app.shellView.selectMenuItem('artists', 'sidebar');
       }
     });
 
@@ -226,15 +228,15 @@ app.Router = Backbone.Router.extend({
    */
   artists: function(){
 
-    // menu
-    app.shellView.selectMenuItem('artist', 'sidebar');
-
     // render
     app.artistsView = new app.ArtistsView();
     $('#content').html(app.artistsView.render().el);
 
     // title
     app.helpers.setTitle('Artists', {addATag:true});
+
+    // set menu
+    app.shellView.selectMenuItem('artists', 'sidebar');
   },
 
 
@@ -243,7 +245,6 @@ app.Router = Backbone.Router.extend({
    * @param id
    */
   album: function (id) {
-    app.shellView.selectMenuItem('album', 'sidebar');
 
     // get album
     var model = {'attributes': {"albumid" : id}};
@@ -257,6 +258,9 @@ app.Router = Backbone.Router.extend({
       app.cached.albumView.render();
     }
 
+    // set menu
+    app.shellView.selectMenuItem('albums', 'sidebar');
+
   },
 
 
@@ -269,12 +273,41 @@ app.Router = Backbone.Router.extend({
     var self = this;
     app.cached.recentlyAddedAlbums = new app.AlbumRecentXbmcCollection();
     app.cached.recentlyAddedAlbums.fetch({"success": function(albums){
+
+      // render
       app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albums, className:'album-list-landing'});
       self.$content.html(app.cached.recentAlbumsView.render().el);
+
+      // set title
       app.helpers.setTitle('Recently Added', {addATag:true});
-      //add isotope
+
+      // set menu
+      app.shellView.selectMenuItem('albums', 'no-sidebar');
+
+      // add isotope (disabled)
       app.helpers.addIsotope('ul.album-list-landing');
+
     }});
+
+  },
+
+  /**
+   * Files page
+   */
+  files: function(id){
+
+
+    app.cached.fileCollection = new app.FileCollection();
+    app.cached.fileCollection.fetch({"name":id, "success": function(res){
+
+      // render page
+      app.cached.filesView = new app.FilesView({"model":res});
+      $('#content').html(app.cached.filesView.render().el);
+
+    }});
+
+    // set menu
+    app.shellView.selectMenuItem('files', 'sidebar');
 
   },
 

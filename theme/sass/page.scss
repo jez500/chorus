@@ -78,7 +78,7 @@ html {
     ul {
       li {
         text-align: center;
-        font-size: 26px;
+        font-size: 19px;
         a {
           color: $color-concrete;
           display: block;
@@ -89,7 +89,7 @@ html {
         }
         &.active {
           a {
-            color: $color-slate;
+            color: $color-asbestos;
           }
         }
       }
