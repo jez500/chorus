@@ -36,6 +36,10 @@ app.AlbumItemView = Backbone.View.extend({
 
   render:function () {
     this.$el.html(this.template(this.model.attributes));
+    // thumbs up
+    if(app.playlists.isThumbsUp('album', this.model.attributes.albumid)){
+      $('.album-actions', this.$el).addClass('thumbs-up');
+    }
 
     // songs
     this.songList = new app.SongListView({"model":this.model.attributes.songs});
@@ -46,7 +50,8 @@ app.AlbumItemView = Backbone.View.extend({
 
   events: {
     "click .album-play": "playAlbum",
-    "click .album-add": "addAlbum"
+    "click .album-add": "addAlbum",
+    "click .album-thumbsup": "thumbsUp"
   },
 
   //play an album from start, replacing current playlist
@@ -70,6 +75,18 @@ app.AlbumItemView = Backbone.View.extend({
       app.notification(album.album + ' added to the playlist');
       app.AudioController.playlistRefresh();
     });
+
+  },
+
+
+  thumbsUp: function(e){
+
+    var album = this.model.attributes,
+      albumid = this.model.attributes.albumid,
+      op = (app.playlists.isThumbsUp('album', albumid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.album-actions');
+    app.playlists.setThumbsUp(op, 'album', albumid);
+    $el.toggleClass('thumbs-up');
 
   }
 

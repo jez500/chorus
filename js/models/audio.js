@@ -1,24 +1,18 @@
-/*
- * Our models for audio
- */
 
-// Artist
+/**
+ * Artist
+ * @type {extend|*}
+ */
 app.Artist = Backbone.Model.extend({
 
-  initialize:function () {
-
-  },
-
+  initialize:function () {},
   defaults: {artistid: 1, thumbnail: '', fanart: '', artist: '', label: '', description: '', born: '', died: ''},
 
   sync: function(method, model, options) {
     if (method === "read") {
-
-      app.store.getArtist(parseInt(this.id), function (data) { 
-   //     app.store.artistAlbums(data.attributes.artistid, function(albums){
-   //       data.attributes.albums = albums;
+      app.store.getArtist(parseInt(this.id), function (data) {
+          data.attributes.thumbsup = app.playlists.isThumbsUp('artist', data.attributes.artistid);
           options.success(data.attributes);
-  //      });
       });
     }
   }
@@ -26,53 +20,73 @@ app.Artist = Backbone.Model.extend({
 });
 
 
-// Album
+/**
+ * Album
+ * @type {extend|*}
+ */
 app.Album = Backbone.Model.extend({
 
-  initialize:function () {
-
-  },
-
+  initialize:function () {},
   defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': []},
 
   sync: function(method, model, options) {
     if (method === "read") {
-/*      app.store.findBy(parseInt(this.id), function (data) {
-        options.success(data);
-      });*/
+      // options.success(data);
     }
   }
 
 });
 
 
-// Song
+/**
+ * Song
+ * @type {extend|*}
+ */
 app.Song = Backbone.Model.extend({
 
-  initialize:function () {
-
-  },
-
+  initialize:function () {},
   defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]},
 
   sync: function(method, model, options) {
     if (method === "read") {
-/*      app.store.findBy(parseInt(this.id), function (data) {
-        options.success(data);
-      });*/
+      // options.success(data);
     }
   }
 
 });
 
 
+/**
+ * playlist song
+ * @type {extend|*}
+ */
 app.PlaylistItem= Backbone.Model.extend({
 
-  initialize:function () {
-
-  },
-
+  initialize:function () {},
   defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]}
 
+});
+
+
+/**
+ * Custom playlist
+ * @type {extend|*}
+ */
+app.PlaylistCustomListItem= Backbone.Model.extend({
+
+  initialize:function () {},
+  defaults: {'name':'', 'items':[], 'id': 0}
+
+});
+
+
+/**
+ * Custom playlist song
+ * @type {extend|*}
+ */
+app.PlaylistCustomListItemSong = Backbone.Model.extend({
+
+  initialize:function () {},
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]}
 
 });

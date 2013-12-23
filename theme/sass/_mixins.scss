@@ -1,0 +1,54 @@
+
+@mixin hover-play-button {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0;
+  width: 10px;
+  padding: 15px;
+  opacity: 0;
+  background: rgba(0,0,0,0.53);
+  color: #fff;
+  font-size: 11px;
+  text-align: center;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+@mixin cross-browser($property, $value){
+  -webkit-#{$property}: $value;
+  -moz-#{$property}:$value;
+  -ms-#{$property}:$value;
+  -o-#{$property}:$value;
+  #{$property}: $value;
+}
+@mixin box-sizing($value){
+  @include cross-browser('box-sizing', $value);
+}
+@mixin border-radius($value){
+  @include cross-browser('border-radius', $value);
+}
+@mixin transition($value){
+  @include cross-browser('transition', $value);
+}
+@mixin user-select($value){
+  @include cross-browser('user-select', $value);
+}
+
+
+
+
+@mixin col-wrapper($cols: 5){
+  $gap: 15px;
+ // margin-bottom: -$gap;
+  -webkit-column-count: $cols;
+  -webkit-column-gap: $gap;
+  -webkit-column-fill: auto;
+  -moz-column-count: $cols;
+  -moz-column-gap: $gap;
+  -moz-column-fill: auto;
+  column-count: $cols;
+  column-gap: $gap;
+  column-fill: auto;
+}

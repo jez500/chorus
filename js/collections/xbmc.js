@@ -107,7 +107,8 @@ app.AlbumRecentXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    return resp.albums;
+    var a = app.helpers.shuffle(resp.albums);
+    return a;
   }
 });
 
@@ -136,7 +137,6 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    console.log(resp);
     return resp.artists;
   }
 });

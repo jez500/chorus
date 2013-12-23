@@ -4,7 +4,9 @@
         <ul>
             <li class="nav-artists"><a href="#artists" title="Artists"><span class="fui-user"></span></a></li>
             <li class="nav-albums"><a href="#albums" title="Albums"><span class="fui-checkbox-unchecked"></span></a></li>
-            <li class="nav-songs"><a href="#songs" title="Songs"><span class="fui-list"></span></a></li>
+            <li class="nav-thumbsup"><a href="#thumbsup" title="Thumbed Up"><i class="icon-thumbs-up"></i></a></li>
+            <li class="nav-songs"><a href="#files" title="Songs"><span class="fui-list"></span></a></li>
+
         </ul>
     </nav>
 </header>
@@ -12,7 +14,7 @@
 <div id="main">
     <header id="page-header">
         <div class="header-inner">
-            <h1 id="title">Loading Library</h1>
+            <h1 id="title"><a>Loading Library</a></h1>
         </div>
         <div id="search-box">
             <i id="search-this" class="icon-search"></i>
@@ -35,10 +37,25 @@
 <div id="sidebar-second">
     <div class="sidebar-inner">
         <div class="sidebar-header">
-
+            <ul class="playlist-primary-tabs">
+                <li class="xbmc-playlist-tab playlist-primary-tab active">Now Playing</li>
+                <li class="local-playlist-tab playlist-primary-tab">Playlists</li>
+            </ul>
+            <div class="playlist-actions-wrapper">
+                <div class="playlist-actions">
+                    <button class="playlist-menu btn dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></button>
+                    <ul class="dropdown-menu pull-right">
+                       <li><a href="#" class="save-playlist">Save XBMC Playlist</a></li>
+                       <li><a href="#" class="clear-playlist">Clear Playlist</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <div class="sidebar-items">
+
+    </div>
+    <div class="alt-sidebar-items">
 
     </div>
 </div>
@@ -55,11 +72,12 @@
                 <div id="volume"></div>
             </div>
             <div class="actions-wrapper actions-secondary dropup">
-                <span class="player-mute player-button"><i class="icon-volume-down"></i></span>
+                <span class="player-mute player-button"><i class="icon-volume-down"></i><i class="icon-volume-up"></i></span>
                 <span class="player-repeat player-button"><i class="icon-repeat"></i></span>
                 <span class="player-random player-button"><i class="icon-random"></i></span>
                 <span class="player-menu player-button dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></span>
                 <ul class="dropdown-menu">
+                    <li><a href="#scan/audio">Audio Library Scan</a></li>
                     <li><a href="#settings">Settings</a></li>
                 </ul>
             </div>

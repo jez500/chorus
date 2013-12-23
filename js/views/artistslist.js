@@ -17,7 +17,7 @@ app.AristsListView = Backbone.View.extend({
 
   render:function () {
     this.$el.empty();
-console.log(this.models);
+
     _.each(this.model.models, function (artist) {
       this.$el.append(new app.ArtistListItemView({model:artist}).render().el);
     }, this);
@@ -30,6 +30,10 @@ app.ArtistListItemView = Backbone.View.extend({
   tagName:"li",
 
   className: 'artist',
+
+  events:{
+    "click .play-artist": "playArtist"
+  },
 
   initialize:function () {
     this.model.on("change", this.render, this);
@@ -46,6 +50,18 @@ app.ArtistListItemView = Backbone.View.extend({
     });*/
 
     return this;
+  },
+
+  playArtist: function(e){
+    e.preventDefault();
+    // clear playlist. add artist, play first song
+    var artist = this.model.attributes;
+    app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
+      app.AudioController.playPlaylistPosition(0, function(){
+        app.AudioController.playlistRefresh();
+      });
+    });
+
   }
 
 });
@@ -74,7 +90,7 @@ app.AristsRandView = Backbone.View.extend({
 
   render:function () {
     this.$el.empty();
-    console.log(this.model);
+
     _.each(this.model.models, function (artist) {
       this.$el.append(new app.ArtistLargeItemView({model:artist}).render().el);
     }, this);

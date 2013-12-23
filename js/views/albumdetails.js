@@ -15,10 +15,14 @@ app.AlbumView = Backbone.View.extend({
           sidebarSelector = '#sidebar-first .album-row-' + alb.albumid;
 
       // populate main content
-      $('#album-list').html(self.albumsView.render().el);
+      var $al = $('#album-list').html(self.albumsView.render().el);
 
       // set title
-      $('#title').html('<a href="#artist/' + alb.artistid + '">' + alb.artist + '</a>' + alb.album);
+      app.helpers.setTitle('<a href="#artist/' + alb.artistid + '">' + alb.artist + '</a>' + alb.album);
+
+      // add actions to title
+      var $actions = $al.find('.album-actions-wrapper').clone();
+      $('#title').append($actions);
 
       //remove any existing active
       $('#sidebar-first .album-small-row').removeClass('active');

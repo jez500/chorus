@@ -32,3 +32,31 @@ app.xbmcController.command = function(command, options, callback){
   });
 
 };
+
+
+/**
+ * Generic command
+ * @param commands
+ * @param callback
+ */
+app.xbmcController.multipleCommand = function(commands, callback){
+
+  $.jsonRPC.batchRequest(commands, {
+    success: function(result) {
+      for(i in result){
+        if(typeof result[i].error != 'undefined'){
+          app.helpers.errorHandler('xbmc multiple command call: ' + i, result[i]);
+        }
+      }
+      if(callback){
+        callback(result);
+      }
+    },
+    error: function(result) {
+      app.helpers.errorHandler('xbmc multiple command call', result);
+    }
+  });
+
+};
+
+

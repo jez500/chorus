@@ -3,9 +3,11 @@
     <div class="album-info">
         <a class="" href='#album/<%= albumid %>'>
             <% if ( app.parseImage(thumbnail) ) { %>
-        <span class="image">
-            <img src="<%= app.parseImage(thumbnail) %>"/>
-        </span>
+            <span class="image" data-id="<%= albumid %>">
+                <img src="<%= app.parseImage(thumbnail) %>"/>
+                <button class="album-play btn" title="Replace the playlist with this album and start playing"><i class="icon-play"></i></button>
+            </span>
+
             <% } %>
         </a>
     </div>
@@ -13,7 +15,7 @@
     <div class="album-title"><a class="album-title-link" href='#album/<%= albumid %>'><%= album %></a>
     <div class="album-actions-wrapper">
         <div class="album-actions dropdown" data-id="<%= albumid %>">
-            <button class="album-play btn" title="Replace the playlist with this album and start playing"><i class="icon-play"></i></button>
+            <button class="album-thumbsup btn" title="Thumbs Up"><i class="icon-thumbs-up"></i></button>
             <button class="album-add btn" title="Add all songs from this album to the playlist"><i class="icon-plus"></i></button>
             <button class="album-menu btn" title="More Options"><i class="icon-ellipsis-vertical"></i></button>
         </div>

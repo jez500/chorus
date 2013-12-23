@@ -18,6 +18,7 @@ app.AudioController = {
  */
 app.AudioController.playlistRefresh = function(callback){
 
+  // xbmc playlist
   app.AudioController.getPlaylistItems(function(result){
 
     //create a new playlist view and render
@@ -26,7 +27,6 @@ app.AudioController.playlistRefresh = function(callback){
 
     app.AudioController.getNowPlaying(function(data){
 
-      console.log('now playing',data);
       //update shell to now playing info
       app.shellView.updateState(data);
       //rebind controls to playlist after refresh
@@ -74,6 +74,38 @@ app.AudioController.playlistAdd = function(type, id, callback){
 };
 
 
+/**
+ * Adds multiple artist/album/song to the playlist
+ * @param type
+ *  eg. artistid, albumid, songid
+ * @param id
+ *  value of type
+ *
+ */
+app.AudioController.playlistAddMultiple = function(type, ids, callback){
+
+  var commands = [];
+  for(n in ids){
+    param = {};
+    param[type] = ids[n];
+    commands.push({method: 'Playlist.Add', params: [app.AudioController.playlistId,param]});
+  }
+
+  //add the album to the playlist
+  app.xbmcController.multipleCommand(commands, function(data){
+
+    //get playlist items
+    app.AudioController.getPlaylistItems(function(result){
+
+      //update cache
+      app.AudioController.currentPlaylist = result;
+
+      callback(result);
+
+    })
+  });
+
+};
 
 
 /**
@@ -120,7 +152,6 @@ app.AudioController.playlistSwap = function(pos1, pos2, callback){
 
 
 
-
 /**
  * Clear then adds an artist/album/song to the playlist
  * @param type
@@ -139,6 +170,18 @@ app.AudioController.playlistClearAdd = function(type, id, callback){
 
 };
 
+
+/**
+ * Clear the playlist
+ */
+app.AudioController.playlistClear = function(callback){
+  // clear playlist
+  app.xbmcController.command('Playlist.Clear', [app.AudioController.playlistId], function(data){
+    if(callback){
+      callback(data);
+    }
+  });
+};
 
 
 /**
@@ -194,6 +237,67 @@ app.AudioController.playSongById = function(songid, type, id, clearList){
   }
 
 };
+
+
+/**
+ * Inserts a song in the playlist next and starts playing that song
+ */
+app.AudioController.insertAndPlaySong = function(id, callback){
+
+  var player = app.cached.nowPlaying.player,
+      playingPos = (typeof player.position != 'undefined' ? player.position : 0),
+      pos = playingPos + 1,
+      insert = {songid: id};
+
+  app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
+    app.AudioController.playPlaylistPosition(pos, function(){
+      if(callback){
+        callback(data);
+      }
+    });
+  });
+
+};
+
+
+
+app.AudioController.songLoadMultiple = function(songids, callback){
+
+    // vars
+    var commands = [];
+
+    // create commands
+    for(n in songids){
+      var sid = songids[n];
+      commands.push({
+        method: 'AudioLibrary.GetSongDetails',
+        params: [sid, app.songFields ]
+      });
+    }
+
+    //if songs to get
+    if(commands.length > 0){
+
+      // load all song data
+      app.xbmcController.multipleCommand(commands, function(res){
+
+        // parse each result into an array of song objects (models)
+        var songs = [], pos = 0;
+        _.each(res, function(r){
+          r.result.songdetails.position = pos;
+          songs.push(r.result.songdetails);
+          pos++;
+        });
+
+        // callback
+        callback(songs);
+      })
+    }
+
+
+};
+
+
 
 /**
  * Adds an album to the playlist and starts playing the given songid
@@ -310,7 +414,66 @@ app.AudioController.getNowPlaying = function(callback){
     item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
-  var ret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0};
+  var ret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0}, commands = [];
+
+  // first commands to run
+  commands = [
+    {method: 'Application.GetProperties', params: [["volume", "muted"]]},
+    {method: 'Player.GetActivePlayers', params: []}
+  ];
+
+  // first run
+  app.xbmcController.multipleCommand(commands, function(data){
+
+    var properties = data[0], players = data[1];
+
+    // set some values
+    ret.volume = properties.result;
+    app.AudioController.activePlayers = players.result;
+
+    if(players.result.length > 0){
+      //something is playing
+      ret.activePlayer = players.result[0].playerid;
+
+      // second run commands
+      commands = [
+        {method: 'Player.GetItem', params: [ret.activePlayer, fields.item]},
+        {method: 'Player.GetProperties', params: [ret.activePlayer, fields.player]}
+      ];
+
+      // run second lot
+      app.xbmcController.multipleCommand(commands, function(item){
+        // get data
+        ret.item = item[0].result.item;
+        ret.player = item[1].result;
+        ret.status = 'playing';
+
+        // set cache
+        app.cached.nowPlaying = ret;
+
+        // callback
+        if(callback){
+          callback(ret);
+        }
+
+      });
+
+    } else {
+
+      //nothing playing
+      app.cached.nowPlaying = ret;
+      callback(ret);
+
+    }
+
+
+  });
+
+
+
+
+
+
 
   app.xbmcController.command('Application.GetProperties', [["volume", "muted"]], function(properties){
     //get volume level
@@ -352,9 +515,9 @@ app.AudioController.getNowPlaying = function(callback){
  */
 var stateTimeout = {};
 app.AudioController.updatePlayerState = function(){
-  clearTimeout(stateTimeout);
+  //clearTimeout(stateTimeout);
   app.AudioController.getNowPlaying(function(data){
     app.shellView.updateState(data);
-    stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
+    //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
   });
 };

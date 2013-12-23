@@ -2,8 +2,11 @@
     <% if ( app.parseImage(thumbnail) ) { %>
         <span class="image">
             <img class="lazy" src="<%= app.parseImage() %>" data-original="<%= app.parseImage(thumbnail) %>" width="45" height="45"/>
+
         </span>
+        <div class="play-artist icon-play"></div>
     <% } %>
     <p class="list-item artist-title"><%= artist %></p>
     <p class="list-item artist-meta"></p>
+
 </a>

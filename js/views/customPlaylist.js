@@ -1,24 +1,58 @@
-app.SongListView = Backbone.View.extend({
+app.CustomPlaylistSongListView = Backbone.View.extend({
 
   tagName:'ul',
 
-  className:'song-list',
+  className:'playlist-song-list',
 
   initialize:function () {
 
   },
 
-  render:function () {
-    this.$el.empty();
-    _.each(this.model, function (song) {
-      this.$el.append(new app.SongView({model:song}).render().el);
-    }, this);
-    return this;
-  }
 
+  render:function () {
+
+    this.$el.empty();
+    _.each(this.model.models, function (song) {
+      this.$el.append(new app.CustomPlaylistSongView({model:song}).render().el);
+    }, this);
+
+    // sortable
+    this.playlistBinds();
+
+    return this;
+  },
+
+
+  playlistBinds:function(){
+
+    //sortable
+    $sortableCustom = this.$el;
+
+    $sortableCustom.sortable({
+      placeholder: "playlist-item-placeholder",
+      handle: ".song-title",
+      items: "> li",
+      axis: "y",
+
+      update: function( event, ui ) {
+        var list = [],
+          listId = app.helpers.arg(0) == 'thumbsup' ? 'thumbsup' : app.helpers.arg(1),
+          $container = $('ul.playlist-song-list');
+
+        $container.find('div.playlist-item').each(function(i,d){
+          list.push($(d).data('songid'));
+        });
+
+        // Update the playlist order in storage
+        app.playlists.replaceCustomPlayList(listId, list);
+
+      }
+    }).disableSelection();
+
+  }
 });
 
-app.SongView = Backbone.View.extend({
+app.CustomPlaylistSongView = Backbone.View.extend({
 
   tagName:"li",
 
@@ -30,13 +64,12 @@ app.SongView = Backbone.View.extend({
   },
 
   initialize:function () {
-    this.model.on("change", this.render, this);
-    this.model.on("destroy", this.close, this);
+
   },
 
   render:function () {
     // add if thumbs up
-    if( app.playlists.isThumbsUp(this.model.attributes.songid) ) {
+    if( app.playlists.isThumbsUp('song', this.model.attributes.songid) ) {
       this.$el.addClass('thumbs-up')
     }
     // render
@@ -49,7 +82,7 @@ app.SongView = Backbone.View.extend({
    * @param event
    */
   playSong: function(event){
-    var song = this.model.attributes;
+   var song = this.model.attributes;
     app.playlists.changePlaylistView('xbmc');
     app.AudioController.insertAndPlaySong(song.songid, function(){
       app.notification(song.label + ' added to the playlist');
@@ -70,7 +103,7 @@ app.SongView = Backbone.View.extend({
    */
   thumbsUp: function(e){
     var songid = this.model.attributes.songid,
-      op = (app.playlists.isThumbsUp(songid) ? 'remove' : 'add'),
+      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
       $el = $(e.target).closest('li');
     app.playlists.setThumbsUp(op, 'song', songid);
     $el.toggleClass('thumbs-up');

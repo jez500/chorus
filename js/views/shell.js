@@ -2,20 +2,56 @@ app.ShellView = Backbone.View.extend({
 
   initialize: function () {
 
+    /**
+     * Maybe a more "backbone" way of doing this,
+     * but basically want to bind to all page changes and trigger
+     * this.pageChange()
+     */
+    var $window = $(window), $body = $('body'), self = this;
+
+    // init first page change to setup classes, etc.
+    self.pageChange(location.hash, '#init');
+
+    $window.bind('hashchange', function() {
+      var newHash = location.hash,
+          lastHash = app.vars.lastHash,
+          back = (typeof lastHash == 'undefined' ? '#' : lastHash);
+
+      // if page change
+      if(newHash != back){
+        self.pageChange(newHash, back);
+      }
+
+      // set last hash
+      app.vars.lastHash = newHash;
+
+    });
+
+    /**
+     * Fades the header bg when at the top
+      */
+    $window.bind('scroll', function(e) {
+      if( $window.scrollTop() > 50 ){
+        $body.addClass('fixed-header');
+      } else {
+        $body.removeClass('fixed-header');
+      }
+    });
+
   },
 
   render: function () {
     this.$el.html(this.template());
-    //    $('.navbar-search', this.el).append(this.searchresultsView.render().el);
+    var self = this;
 
     //set playlist
     app.AudioController.playlistRefresh(function(result){
-      console.log('playlist',result);
+      //console.log('playlist',result);
     });
 
     //init the progress bar
     this.$progressSlider = $( "#progress-bar", this.el );
-    console.log(this.$progressSlider);
+
     this.$progressSlider.slider({
       range: "min",
       value: 0,
@@ -29,7 +65,6 @@ app.ShellView = Backbone.View.extend({
 
     //init the volume bar
     this.$volumeSlider = $( "#volume", this.el );
-    console.log(this.$volumeSlider);
     this.$volumeSlider.slider({
       range: "min",
       value: 0,
@@ -40,7 +75,14 @@ app.ShellView = Backbone.View.extend({
       }
     });
 
-    app.AudioController.updatePlayerState();
+    // Init player state cycle
+    setInterval(app.AudioController.updatePlayerState, 5000);
+
+    //custom playlists
+    app.playlists.addCustomPlayLists(function(view){
+      var $sb = $('.alt-sidebar-items', self.$el);
+      $sb.html(view.render().el);
+    });
 
     return this;
   },
@@ -52,7 +94,40 @@ app.ShellView = Backbone.View.extend({
     "click #logo": "home",
     "click .player-prev": "playerPrev",
     "click .player-next": "playerNext",
-    "click .player-play": "playerPlay"
+    "click .player-play": "playerPlay",
+    "click .player-mute": "playerMute",
+    "click .player-repeat": "playerRepeat",
+    "click .player-random": "playerRandom",
+    "click .playlist-primary-tab": "primaryTabClick",
+    "click .save-playlist": "savePlayList",
+    "click .clear-playlist": "clearPlaylist"
+  },
+
+
+  /**
+   * Generic page change bind
+   * @param event
+   */
+  pageChange: function(newHash, back){
+    var key = app.helpers.arg(0);
+    // Remove all classes starting with 'section'
+    $("body").removeClass (function (index, css) {
+      return (css.match (/\bsection\S+/g) || []).join(' ');
+    })
+      // Add the current page
+      .addClass('section-'+ key);
+  },
+
+  /**
+   * Playlist tab click
+   * @param event
+   * @param o
+   */
+  primaryTabClick:function(event){
+    $thisTab = $(event.target);
+    // toggle based on tab class
+    var view = ($thisTab.hasClass('local-playlist-tab') ? 'local' : 'xbmc');
+    app.playlists.changePlaylistView(view);
   },
 
   /**
@@ -63,7 +138,6 @@ app.ShellView = Backbone.View.extend({
   search: function (event) {
     var key = $('#search').val(),
         self = this;
-    console.log(key.length);
 
     var res = {ablums: [], artists: [], songs: []};
 
@@ -124,7 +198,7 @@ app.ShellView = Backbone.View.extend({
         //if result
         if(data.models.length > 0){
           // add to content
-          this.albumList = new app.SmallAlbumsList({model: data, className: 'album-search-list'});
+          this.albumList = new app.SmallAlbumsList({model: data, className: 'album-generic-list'});
           $albums.append(this.albumList.render().el);
         } else {
           //no results
@@ -138,15 +212,15 @@ app.ShellView = Backbone.View.extend({
       var $songs = $('#search-songs'),
           indexing = false,
           indexingCopy = '<div class="noresult-box">Indexing Songs, this can take a long time! Maybe browse a bit then come back later</div>',
-          notIndexedCopy  ='<div class="noresult-box">Preparing Song Search</div>';
-//            '<div class="noresult-box"><h3>Songs...</h3>' +
-//            '<p class="text-copy">To search song titles we need to load the entire song collection into the browser,' +
-//            'this takes a very long and some non-cached stuff might not work while while indexing' +
-//            ' so no controlls work while indexing. <br /><br />' +
-//            '<a id="index-songs-btn" href="#index-songs" class="btn btn-large btn-inverse">Ok, Index the songs</a></p></div>';
+          notIndexedCopy  =
+            '<div class="noresult-box"><h3>Songs...</h3>' +
+            '<p class="text-copy">To search song titles we need to load the entire song collection into the browser,' +
+            'this takes a very long and some non-cached stuff might not work while while indexing' +
+            ' so no controlls work while indexing. <br /><br />' +
+            '<a id="index-songs-btn" href="#index-songs" class="btn btn-large btn-inverse">Ok, Index the songs</a></p></div>';
 
 
-      $songs.html(indexingCopy);
+      $songs.html(notIndexedCopy);
 
 
       if(app.store.songsIndexed !== true){
@@ -155,12 +229,10 @@ app.ShellView = Backbone.View.extend({
         indexing = (typeof self.indexing != 'undefined' && self.indexing === true);
         // provide correct copy
         $songs.html((indexing ? indexingCopy : notIndexedCopy));
-        console.log('Start indexing!111')
-        if(self.indexing !== true){
-          //auto kick off a search in x secs
-          console.log('Start indexing!');
-          setTimeout(function(){
+        if(!indexing){
 
+          // attach lookup to click
+          $('#index-songs-btn').click(function(e){
             self.indexing = true;
             $songs.html(indexingCopy);
             // update and search
@@ -169,20 +241,9 @@ app.ShellView = Backbone.View.extend({
               self.searchSongs(key);
               self.indexing = false;
             });
-          }, 3000);
-        }
-
-        // attach lookup to click
-        $('#index-songs-btn').click(function(e){
-          self.indexing = true;
-          $songs.html(indexingCopy);
-          // update and search
-          app.store.indexSongs(function(data){
-            key = $('#search').val();
-            self.searchSongs(key);
-            self.indexing = false;
           });
-        });
+
+        }
 
       } else {
         // already indexed
@@ -190,17 +251,7 @@ app.ShellView = Backbone.View.extend({
       }
 
     }
-
-
-
-   // this.searchResults.fetch({reset: true, data: {name: key}});
-    var self = this;
-    setTimeout(function () {
-     // $('.dropdown').addClass('open');
-    });
   },
-
-
 
 
 
@@ -219,20 +270,41 @@ app.ShellView = Backbone.View.extend({
    */
   selectMenuItem: function(menuItem, sidebar) {
 
-    var $body = $('body');
+    var $body = $('body'),
+        state = (typeof sidebar != 'undefined' && sidebar == 'sidebar' ? 'open' : 'close');
 
     //sidebar - reset and add
-    $body.removeClass('sidebar').removeClass('no-sidebar').addClass(sidebar);
+    app.helpers.toggleSidebar(state);
 
     // layout changes for different pages
     if(menuItem == 'home'){
+
       //specific to home
       $body.addClass('home');
+
     } else {
+
+      // ensure backstretch is gone
       if($('.backstretch').length > 0){
         $.backstretch("destroy", false);
       }
       $body.removeClass('home');
+
+      // specifics for non home pages
+      switch (menuItem) {
+        case 'playlist':
+          // all this to open the sidebar playlist item
+          $('.local-playlist-tab').click();
+          $('ul.custom-lists .custom-playlist-item').each(function(i,d){
+            var $d = $(d), $parent = $d.parent();
+            if($d.data('id') == app.helpers.arg(1)){
+              $parent.addClass('open');
+            } else {
+              $parent.removeClass('open')
+            }
+          });
+          break;
+      }
     }
 
 
@@ -253,22 +325,65 @@ app.ShellView = Backbone.View.extend({
   playerPlay:function(){
     app.AudioController.sendPlayerCommand('Player.PlayPause', 'toggle');
   },
+  playerRepeat:function(){
+    app.AudioController.sendPlayerCommand('Player.SetRepeat', 'cycle');
+  },
+  playerRandom:function(){
+    app.AudioController.sendPlayerCommand('Player.SetShuffle', 'toggle');
+  },
+
+
+
+  //mute
+  playerMute:function(){
+    //get current vol
+    var cur = this.$volumeSlider.slider( "value"), $body = $('body');
+    if(cur > 0){
+      //store current vol then set to 0
+      this.lastVol = cur;
+      app.AudioController.setVolume(0);
+      this.$volumeSlider.slider( "value",0 );
+      $body.addClass('muted');
+    } else {
+      //if last vol
+      if(app.helpers.exists(this.lastVol) && this.lastVol > 0){
+        var lastvol = this.lastVol; //set back to last value
+      } else {
+        var lastvol = 50; //default last vol to 50%
+      }
+      //set lastvol
+      app.AudioController.setVolume(lastvol);
+      this.$volumeSlider.slider( "value",lastvol );
+      $body.removeClass('muted');
+    }
+  },
+
 
   // update the playing state
   updateState:function(data){
     var $nowPlaying = $('#now-playing'),
         $body = $('body'),
         $songs = $('.song'), //songs currently rendered
+        lastPlaying = app.helpers.varGet('lastPlaying', ''),
+        playingItemChanged = (lastPlaying != data.item.file),
         status = (app.helpers.exists(data.player.speed) && data.player.speed == 0 ? 'paused' : data.status); //add paused as a status
 
     //add paused to available statuses
     data.status = status;
 
+    // set current as last playing var
+    app.helpers.varSet('lastPlaying', data.item.file);
+
     //body classes
-    $body.removeClass('playing')
-      .removeClass('paused')
-      .removeClass('notPlaying')
-      .addClass(status);
+    $body
+      // remove all old classes and list the options in use
+      .removeClass('playing').removeClass('paused').removeClass('notPlaying')
+      .removeClass('random-on').removeClass('random-off')
+      .removeClass('repeat-off').removeClass('repeat-all').removeClass('repeat-one')
+      // add active classes
+      .addClass(status)
+      .addClass( 'random-' + (data.player.shuffled === true ? 'on' : 'off') )
+      .addClass( 'repeat-' + data.player.repeat );
 
     //song row playing
     $songs.removeClass('playing-row');
@@ -276,19 +391,47 @@ app.ShellView = Backbone.View.extend({
     if(status == 'playing' || status == 'paused'){
       //Something is playing or paused
 
-      //we should have a loaded item
+      // Items we only want to update if the playing item has changed
+      if(playingItemChanged){
+
+        //set thumb
+        $nowPlaying.find('#playing-thumb')
+          .attr('src',app.parseImage(data.item.thumbnail))
+          .attr('title', data.item.album)
+          .parent().attr('href', '#album/' + data.item.albumid);
+
+        // Backstretch
+        if(location.hash == '#' || location.hash == ''){
+          // if homepage backstretch exists and changed, update
+          var $bs = $('.backstretch img'),
+            origImg = $bs.attr('src'),
+            newImg = app.parseImage(data.item.fanart, 'fanart');
+          // if image is different
+          if($bs.length > 0 && origImg != newImg){
+            $.backstretch(newImg);
+          }
+        }
+
+      }
+
+
+      // playing row we should have a loaded item
       $songs.each(function(i,d){
-        // console.log(data.item);
-        if($(d).attr('data-songid') == data.item.id){
-          $(d).addClass('playing-row');
+        var $d = $(d);
+        // correct song id
+        if($d.attr('data-songid') == data.item.id){
+          // playlist should match playing pos
+          if($d.hasClass('playlist-item')){
+            // match pos
+            if($d.data('id') == data.player.position){
+              $d.addClass('playing-row');
+            }
+          } else {
+            //default
+            $d.addClass('playing-row');
+          }
         }
       });
-
-      //set thumb
-      $nowPlaying.find('#playing-thumb')
-        .attr('src',app.parseImage(data.item.thumbnail))
-        .attr('title', data.item.album)
-        .parent().attr('href', '#album/' + data.item.albumid);
 
       //set title
       $('.playing-song-title').html(data.item.label); //now playing
@@ -300,15 +443,6 @@ app.ShellView = Backbone.View.extend({
       $('.playing-song-meta').html(meta);
       $playlistActive.find('.playlist-meta').html(meta);
       $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
-
-      // if backstretch exists and changed, update
-      var $bs = $('.backstretch img'),
-        origImg = $bs.attr('src'),
-        newImg = app.parseImage(data.item.fanart);
-      if($bs.length > 0 && origImg != newImg){
-        //$bs.attr('src', newImg);
-        $.backstretch(newImg);
-      }
 
       //set progress
       this.$progressSlider.slider( "value",data.player.percentage );
@@ -347,12 +481,33 @@ app.ShellView = Backbone.View.extend({
 
     //set volume
     this.$volumeSlider.slider( "value",data.volume.volume );
+    //muted class
+    if(data.volume.volume == 0){
+      $('body').addClass('muted');
+    } else {
+      $('body').removeClass('muted');
+    }
+
+    // set repeat title text
+    var $t = $('.player-repeat'), t = $t.attr('title'),
+      n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
+    if(t != n){ $t.attr('title', n); }
+
+    // set random title text
+    var $t = $('.player-random'), t = $t.attr('title'),
+      n = 'Random is ' + (data.player.shuffled === true ? 'On' : 'Off');
+    if(t != n){ $t.attr('title', n); }
+
   },
 
+
+  /**
+   * Init searching songs, could be dealing with lots o data
+   * @param key
+   */
   searchSongs: function(key){
 
     var $songs = $('#search-songs');
-
 
     // bind to songs ready
     $songs.html('<p class="loading-box">Loading Songs</p>');
@@ -370,7 +525,6 @@ app.ShellView = Backbone.View.extend({
         if(songs.length > 0){
           $songs.append('<h3 class="section-title">Songs</h3>');
         }
-        console.log('songsz', data);
         // add to content
         this.songList = new app.SongListView({model: data.models, className: 'song-search-list song-list'});
         $songs.append(this.songList.render().el);
@@ -378,8 +532,31 @@ app.ShellView = Backbone.View.extend({
 
     },'songsReady');
 
+  },
 
+
+  /**
+   * Save a playlist
+   * @param e
+   */
+  savePlayList: function(e){
+    e.preventDefault();
+    // Save playlist
+    app.playlists.saveCustomPlayLists();
+    app.playlists.changePlaylistView('local');
+  },
+
+
+  //Clear a playlist
+  clearPlaylist: function(e){
+    e.preventDefault();
+    // Clear playlist
+    app.AudioController.playlistClear(function(data){
+      app.AudioController.playlistRefresh();
+    });
   }
+
+
 
 
 });

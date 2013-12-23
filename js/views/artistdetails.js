@@ -1,8 +1,10 @@
 app.ArtistView = Backbone.View.extend({
 
   events:{
-    "click .artist-play": "playArtist",
-    "click .artist-add":  "addArtist"
+    "click .artist-play":      "playArtist",
+    "click .artist-add":       "addArtist",
+    "click .artist-thumbsup":  "thumbsUp",
+    "click .artist-fanart":    "toggleFanart"
   },
 
   initialize:function () {
@@ -55,6 +57,21 @@ app.ArtistView = Backbone.View.extend({
       app.AudioController.playlistRefresh();
     });
 
+  },
+
+  thumbsUp: function(e){
+
+    var artist = this.model.attributes,
+      artistid = this.model.attributes.artistid,
+      op = (app.playlists.isThumbsUp('artist', artistid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.artist-actions');
+    app.playlists.setThumbsUp(op, 'artist', artistid);
+    $el.toggleClass('thumbs-up');
+
+  },
+
+  toggleFanart: function(e){
+    $(e.target).parent().toggleClass('full-size');
   }
 
 
