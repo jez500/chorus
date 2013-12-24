@@ -1,7 +1,7 @@
 <a class="album-small-row album-row-<%= albumid %> clearfix" href='#album/<%= albumid %>' data-id="<%= albumid %>">
     <% if ( app.parseImage(thumbnail) ) { %>
-        <span class="image">
-            <img src="<%= app.parseImage(thumbnail) %>"/>
+        <span class="image" style="background-image: url('<%= app.parseImage(thumbnail) %>')">
+
         </span>
     <% } %>
 

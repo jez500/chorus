@@ -7,6 +7,7 @@ body {
 
   // Files
   &.section-files {
+    #page-header h1 a,
     #sidebar-first {
       width: $width-sidebar-first * 1.5;
     }

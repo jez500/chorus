@@ -111,17 +111,17 @@ html {
 }
 /* line 90, ../../../theme/sass/page.scss */
 #header .mainnav ul li a {
-  color: rgba(100, 100, 100, 0.28);
+  color: #6e7374;
   display: block;
   padding: 12px 0;
 }
 /* line 94, ../../../theme/sass/page.scss */
 #header .mainnav ul li a:hover {
-  color: #6e7374;
+  color: #3b3f40;
 }
 /* line 99, ../../../theme/sass/page.scss */
 #header .mainnav ul li.active a {
-  color: #6e7374;
+  color: rgba(100, 100, 100, 0.28);
 }
 
 /* line 108, ../../../theme/sass/page.scss */
@@ -1456,12 +1456,15 @@ h4 {
   padding: 5px;
 }
 /* line 1187, ../../../theme/sass/page.scss */
-.album-list-landing li img,
-.album-generic-list li img,
-.rand-list li img {
-  min-height: 150px;
+.album-list-landing li .image,
+.album-generic-list li .image,
+.rand-list li .image {
+  min-height: 185px;
+  background-color: #eee;
+  background-size: cover;
+  background-position: 50% 50%;
 }
-/* line 1200, ../../../theme/sass/page.scss */
+/* line 1203, ../../../theme/sass/page.scss */
 .album-list-landing a,
 .album-generic-list a,
 .rand-list a {
@@ -1469,7 +1472,7 @@ h4 {
   overflow: hidden;
   height: 185px;
 }
-/* line 1206, ../../../theme/sass/page.scss */
+/* line 1209, ../../../theme/sass/page.scss */
 .album-list-landing a p,
 .album-generic-list a p,
 .rand-list a p {
@@ -1486,37 +1489,47 @@ h4 {
   line-height: 22px;
   overflow: hidden;
 }
-/* line 1220, ../../../theme/sass/page.scss */
+/* line 1223, ../../../theme/sass/page.scss */
 .album-list-landing a .image,
 .album-generic-list a .image,
 .rand-list a .image {
   display: none;
 }
-/* line 1223, ../../../theme/sass/page.scss */
+/* line 1226, ../../../theme/sass/page.scss */
 .album-list-landing a img,
 .album-generic-list a img,
 .rand-list a img {
   width: 100%;
 }
 
-/* line 1232, ../../../theme/sass/page.scss */
+/* line 1235, ../../../theme/sass/page.scss */
 .rand-list,
 .album-list-landing {
   padding-bottom: 90px;
 }
-/* line 1237, ../../../theme/sass/page.scss */
+/* line 1240, ../../../theme/sass/page.scss */
 .rand-list a .image,
 .album-list-landing a .image {
   display: block;
 }
+/* line 1244, ../../../theme/sass/page.scss */
+.rand-list li,
+.album-list-landing li {
+  height: 218px;
+}
+/* line 1246, ../../../theme/sass/page.scss */
+.rand-list li img,
+.album-list-landing li img {
+  min-height: 185px;
+}
 
-/* line 1249, ../../../theme/sass/page.scss */
+/* line 1256, ../../../theme/sass/page.scss */
 body.sidebar .rand-list,
 body.sidebar .album-list-landing {
   margin-left: 0;
 }
 
-/* line 1253, ../../../theme/sass/page.scss */
+/* line 1260, ../../../theme/sass/page.scss */
 .noresult-box {
   padding: 50px 25px;
   border: 0;
@@ -1526,12 +1539,12 @@ body.sidebar .album-list-landing {
   margin: 10px 0;
 }
 
-/* line 1262, ../../../theme/sass/page.scss */
+/* line 1269, ../../../theme/sass/page.scss */
 .album-generic-list {
   min-height: 100%;
   height: auto;
 }
-/* line 1265, ../../../theme/sass/page.scss */
+/* line 1272, ../../../theme/sass/page.scss */
 .album-generic-list li {
   width: 150px;
   height: 185px;
@@ -1540,39 +1553,39 @@ body.sidebar .album-list-landing {
   float: left;
   margin: 0 10px 10px 0;
 }
-/* line 1272, ../../../theme/sass/page.scss */
+/* line 1279, ../../../theme/sass/page.scss */
 .album-generic-list li img {
   height: 150px;
   width: auto;
 }
-/* line 1276, ../../../theme/sass/page.scss */
+/* line 1283, ../../../theme/sass/page.scss */
 .album-generic-list li .image {
   display: block;
 }
-/* line 1279, ../../../theme/sass/page.scss */
+/* line 1286, ../../../theme/sass/page.scss */
 .album-generic-list li p {
   position: absolute;
 }
 
-/* line 1285, ../../../theme/sass/page.scss */
+/* line 1292, ../../../theme/sass/page.scss */
 .section-title {
   margin: 2px;
   background: #fff;
   padding: 10px;
 }
 
-/* line 1293, ../../../theme/sass/page.scss */
+/* line 1300, ../../../theme/sass/page.scss */
 .playlist,
 .custom-lists {
   padding: 2px;
 }
-/* line 1295, ../../../theme/sass/page.scss */
+/* line 1302, ../../../theme/sass/page.scss */
 .playlist .playlist-item-placeholder,
 .custom-lists .playlist-item-placeholder {
   height: 35px;
   background: #eee;
 }
-/* line 1300, ../../../theme/sass/page.scss */
+/* line 1307, ../../../theme/sass/page.scss */
 .playlist li.list-item,
 .playlist div.playlist-item,
 .custom-lists li.list-item,
@@ -1583,7 +1596,7 @@ body.sidebar .album-list-landing {
   color: #6e7374;
   height: 40px;
 }
-/* line 1306, ../../../theme/sass/page.scss */
+/* line 1313, ../../../theme/sass/page.scss */
 .playlist li.list-item .actions,
 .playlist div.playlist-item .actions,
 .custom-lists li.list-item .actions,
@@ -1592,7 +1605,7 @@ body.sidebar .album-list-landing {
   text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.8);
   display: none;
 }
-/* line 1310, ../../../theme/sass/page.scss */
+/* line 1317, ../../../theme/sass/page.scss */
 .playlist li.list-item .actions span,
 .playlist div.playlist-item .actions span,
 .custom-lists li.list-item .actions span,
@@ -1601,7 +1614,7 @@ body.sidebar .album-list-landing {
   cursor: pointer;
   z-index: 10;
 }
-/* line 1314, ../../../theme/sass/page.scss */
+/* line 1321, ../../../theme/sass/page.scss */
 .playlist li.list-item .actions span.playbtn,
 .playlist div.playlist-item .actions span.playbtn,
 .custom-lists li.list-item .actions span.playbtn,
@@ -1625,7 +1638,7 @@ body.sidebar .album-list-landing {
 .custom-lists div.playlist-item .actions span.playbtn:hover {
   opacity: 1;
 }
-/* line 1317, ../../../theme/sass/page.scss */
+/* line 1324, ../../../theme/sass/page.scss */
 .playlist li.list-item .actions span.removebtn,
 .playlist div.playlist-item .actions span.removebtn,
 .custom-lists li.list-item .actions span.removebtn,
@@ -1635,14 +1648,14 @@ body.sidebar .album-list-landing {
   top: 6px;
   background: none;
 }
-/* line 1322, ../../../theme/sass/page.scss */
+/* line 1329, ../../../theme/sass/page.scss */
 .playlist li.list-item .actions span.removebtn:hover,
 .playlist div.playlist-item .actions span.removebtn:hover,
 .custom-lists li.list-item .actions span.removebtn:hover,
 .custom-lists div.playlist-item .actions span.removebtn:hover {
   color: #D22431;
 }
-/* line 1328, ../../../theme/sass/page.scss */
+/* line 1335, ../../../theme/sass/page.scss */
 .playlist li.list-item .repeating,
 .playlist div.playlist-item .repeating,
 .custom-lists li.list-item .repeating,
@@ -1653,7 +1666,7 @@ body.sidebar .album-list-landing {
   cursor: pointer;
   display: none;
 }
-/* line 1335, ../../../theme/sass/page.scss */
+/* line 1342, ../../../theme/sass/page.scss */
 .playlist li.list-item:hover,
 .playlist div.playlist-item:hover,
 .custom-lists li.list-item:hover,
@@ -1661,28 +1674,28 @@ body.sidebar .album-list-landing {
   background: #eee;
   color: #111;
 }
-/* line 1338, ../../../theme/sass/page.scss */
+/* line 1345, ../../../theme/sass/page.scss */
 .playlist li.list-item:hover .actions,
 .playlist div.playlist-item:hover .actions,
 .custom-lists li.list-item:hover .actions,
 .custom-lists div.playlist-item:hover .actions {
   display: block;
 }
-/* line 1341, ../../../theme/sass/page.scss */
+/* line 1348, ../../../theme/sass/page.scss */
 .playlist li.list-item:hover .thumb,
 .playlist div.playlist-item:hover .thumb,
 .custom-lists li.list-item:hover .thumb,
 .custom-lists div.playlist-item:hover .thumb {
   opacity: 1;
 }
-/* line 1345, ../../../theme/sass/page.scss */
+/* line 1352, ../../../theme/sass/page.scss */
 .playlist li.list-item:hover .playlist-play,
 .playlist div.playlist-item:hover .playlist-play,
 .custom-lists li.list-item:hover .playlist-play,
 .custom-lists div.playlist-item:hover .playlist-play {
   padding-left: 50px;
 }
-/* line 1349, ../../../theme/sass/page.scss */
+/* line 1356, ../../../theme/sass/page.scss */
 .playlist li.list-item .thumb,
 .playlist div.playlist-item .thumb,
 .custom-lists li.list-item .thumb,
@@ -1695,7 +1708,7 @@ body.sidebar .album-list-landing {
   opacity: 0;
   background: #eeeff0;
 }
-/* line 1359, ../../../theme/sass/page.scss */
+/* line 1366, ../../../theme/sass/page.scss */
 .playlist li.list-item .playlist-play,
 .playlist div.playlist-item .playlist-play,
 .custom-lists li.list-item .playlist-play,
@@ -1720,14 +1733,14 @@ body.sidebar .album-list-landing {
   line-height: 30px;
   white-space: nowrap;
 }
-/* line 1372, ../../../theme/sass/page.scss */
+/* line 1379, ../../../theme/sass/page.scss */
 .playlist li.list-item .playlist-meta,
 .playlist div.playlist-item .playlist-meta,
 .custom-lists li.list-item .playlist-meta,
 .custom-lists div.playlist-item .playlist-meta {
   display: none;
 }
-/* line 1373, ../../../theme/sass/page.scss */
+/* line 1380, ../../../theme/sass/page.scss */
 .playlist li.list-item .playlist-meta a,
 .playlist div.playlist-item .playlist-meta a,
 .custom-lists li.list-item .playlist-meta a,
@@ -1735,7 +1748,7 @@ body.sidebar .album-list-landing {
   font-size: 12px;
   color: #6e7374;
 }
-/* line 1379, ../../../theme/sass/page.scss */
+/* line 1386, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row,
 .playlist div.playlist-item.playing-row,
 .custom-lists li.list-item.playing-row,
@@ -1751,14 +1764,14 @@ body.sidebar .album-list-landing {
   padding-right: 75px;
   background-color: #eeeeee;
 }
-/* line 1386, ../../../theme/sass/page.scss */
+/* line 1393, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .actions,
 .playlist div.playlist-item.playing-row .actions,
 .custom-lists li.list-item.playing-row .actions,
 .custom-lists div.playlist-item.playing-row .actions {
   display: none;
 }
-/* line 1389, ../../../theme/sass/page.scss */
+/* line 1396, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .playlist-play,
 .playlist div.playlist-item.playing-row .playlist-play,
 .custom-lists li.list-item.playing-row .playlist-play,
@@ -1770,7 +1783,7 @@ body.sidebar .album-list-landing {
   height: auto;
   color: #444;
 }
-/* line 1396, ../../../theme/sass/page.scss */
+/* line 1403, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .playlist-play:hover,
 .playlist div.playlist-item.playing-row .playlist-play:hover,
 .custom-lists li.list-item.playing-row .playlist-play:hover,
@@ -1778,28 +1791,28 @@ body.sidebar .album-list-landing {
   background: none;
   padding-left: 35px;
 }
-/* line 1401, ../../../theme/sass/page.scss */
+/* line 1408, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .playlist-meta,
 .playlist div.playlist-item.playing-row .playlist-meta,
 .custom-lists li.list-item.playing-row .playlist-meta,
 .custom-lists div.playlist-item.playing-row .playlist-meta {
   padding-left: 35px;
 }
-/* line 1404, ../../../theme/sass/page.scss */
+/* line 1411, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .menubtn,
 .playlist div.playlist-item.playing-row .menubtn,
 .custom-lists li.list-item.playing-row .menubtn,
 .custom-lists div.playlist-item.playing-row .menubtn {
   opacity: 0;
 }
-/* line 1407, ../../../theme/sass/page.scss */
+/* line 1414, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .removebtn,
 .playlist div.playlist-item.playing-row .removebtn,
 .custom-lists li.list-item.playing-row .removebtn,
 .custom-lists div.playlist-item.playing-row .removebtn {
   display: none;
 }
-/* line 1411, ../../../theme/sass/page.scss */
+/* line 1418, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .playlist-meta,
 .playlist li.list-item.playing-row .thumb,
 .playlist div.playlist-item.playing-row .playlist-meta,
@@ -1810,7 +1823,7 @@ body.sidebar .album-list-landing {
 .custom-lists div.playlist-item.playing-row .thumb {
   display: block;
 }
-/* line 1414, ../../../theme/sass/page.scss */
+/* line 1421, ../../../theme/sass/page.scss */
 .playlist li.list-item.playing-row .thumb,
 .playlist div.playlist-item.playing-row .thumb,
 .custom-lists li.list-item.playing-row .thumb,
@@ -1822,7 +1835,7 @@ body.sidebar .album-list-landing {
   left: auto;
 }
 
-/* line 1426, ../../../theme/sass/page.scss */
+/* line 1433, ../../../theme/sass/page.scss */
 .custom-lists li.list-item .name {
   padding: 5px 10px 5px 15px;
   cursor: pointer;
@@ -1830,23 +1843,23 @@ body.sidebar .album-list-landing {
   line-height: 30px;
   display: block;
 }
-/* line 1433, ../../../theme/sass/page.scss */
+/* line 1440, ../../../theme/sass/page.scss */
 .custom-lists li.list-item a.name {
   height: 40px;
   color: #3b3f40;
 }
-/* line 1437, ../../../theme/sass/page.scss */
+/* line 1444, ../../../theme/sass/page.scss */
 .custom-lists li.list-item .meta {
   display: none;
   background: #6e7374;
   color: #eeeeee;
   padding: 15px;
 }
-/* line 1442, ../../../theme/sass/page.scss */
+/* line 1449, ../../../theme/sass/page.scss */
 .custom-lists li.list-item .meta .list-actions {
   margin: 0 -10px -10px;
 }
-/* line 1444, ../../../theme/sass/page.scss */
+/* line 1451, ../../../theme/sass/page.scss */
 .custom-lists li.list-item .meta .list-actions .cbutton {
   display: inline-block;
   padding: 6px 12px;
@@ -1855,26 +1868,26 @@ body.sidebar .album-list-landing {
   color: #FFF;
   cursor: pointer;
 }
-/* line 1451, ../../../theme/sass/page.scss */
+/* line 1458, ../../../theme/sass/page.scss */
 .custom-lists li.list-item .meta .list-actions .cbutton:hover {
   background: #3b3f40;
 }
-/* line 1457, ../../../theme/sass/page.scss */
+/* line 1464, ../../../theme/sass/page.scss */
 .custom-lists li.list-item .del {
   display: none;
 }
-/* line 1460, ../../../theme/sass/page.scss */
+/* line 1467, ../../../theme/sass/page.scss */
 .custom-lists li.list-item.open {
   height: auto;
   background: #6e7374;
 }
-/* line 1463, ../../../theme/sass/page.scss */
+/* line 1470, ../../../theme/sass/page.scss */
 .custom-lists li.list-item.open .name {
   background: rgba(235, 236, 236, 0.4);
   font-weight: bold;
   color: #fff;
 }
-/* line 1468, ../../../theme/sass/page.scss */
+/* line 1475, ../../../theme/sass/page.scss */
 .custom-lists li.list-item.open .del {
   display: block;
   position: absolute;
@@ -1888,61 +1901,36 @@ body.sidebar .album-list-landing {
   font-size: 15px;
   cursor: pointer;
 }
-/* line 1480, ../../../theme/sass/page.scss */
+/* line 1487, ../../../theme/sass/page.scss */
 .custom-lists li.list-item.open .del:hover {
   color: #eeeeee;
 }
-/* line 1484, ../../../theme/sass/page.scss */
+/* line 1491, ../../../theme/sass/page.scss */
 .custom-lists li.list-item.open .meta {
   display: block;
 }
 
-/* line 1493, ../../../theme/sass/page.scss */
-body.home .playlist div.playlist-item.playing-row {
-  height: 120px;
-}
-/* line 1495, ../../../theme/sass/page.scss */
-body.home .playlist div.playlist-item.playing-row .thumb {
-  width: 120px;
-  height: 120px;
-}
-/* line 1499, ../../../theme/sass/page.scss */
-body.home .playlist div.playlist-item.playing-row .playlist-play {
-  font-size: 130%;
-  line-height: 25px;
-  max-height: 64px;
-}
-/* line 1505, ../../../theme/sass/page.scss */
-body.home .playlist div.playlist-item.playing-row .playlist-meta {
-  font-size: 115%;
-  color: rgba(100, 100, 100, 0.28);
-}
-/* line 1508, ../../../theme/sass/page.scss */
-body.home .playlist div.playlist-item.playing-row .playlist-meta a {
-  font-size: 110%;
-}
-
-/* line 1521, ../../../theme/sass/page.scss */
+/* line 1501, ../../../theme/sass/page.scss */
 #sidebar-second .alt-sidebar-items {
   display: none;
 }
-/* line 1527, ../../../theme/sass/page.scss */
+/* line 1507, ../../../theme/sass/page.scss */
 #sidebar-second.alt-view .alt-sidebar-items {
   display: block;
 }
-/* line 1530, ../../../theme/sass/page.scss */
+/* line 1510, ../../../theme/sass/page.scss */
 #sidebar-second.alt-view .sidebar-items {
   display: none;
 }
-/* line 1537, ../../../theme/sass/page.scss */
+/* line 1517, ../../../theme/sass/page.scss */
 #sidebar-second.normal-view .sidebar-items {
   display: block;
 }
-/* line 1540, ../../../theme/sass/page.scss */
+/* line 1520, ../../../theme/sass/page.scss */
 #sidebar-second.normal-view .alt-sidebar-items {
   display: none;
 }
-/* line 1546, ../../../theme/sass/page.scss */
+/* line 1526, ../../../theme/sass/page.scss */
 #sidebar-second .alt-sidebar-items,
 #sidebar-second .sidebar-items {
   position: absolute;
@@ -1952,25 +1940,25 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
   top: 50px;
   overflow-y: auto;
 }
-/* line 1554, ../../../theme/sass/page.scss */
+/* line 1534, ../../../theme/sass/page.scss */
 #sidebar-second .sidebar-header {
   position: relative;
   overflow-y: visible;
 }
-/* line 1557, ../../../theme/sass/page.scss */
+/* line 1537, ../../../theme/sass/page.scss */
 #sidebar-second .sidebar-header .playlist-actions-wrapper {
   position: absolute;
   right: 0;
   top: 0;
 }
-/* line 1561, ../../../theme/sass/page.scss */
+/* line 1541, ../../../theme/sass/page.scss */
 #sidebar-second .sidebar-header .playlist-actions-wrapper .btn {
   background: none;
   margin: 6px 10px 0 0;
   font-size: 130%;
   padding: 8px 10px 7px;
 }
-/* line 1569, ../../../theme/sass/page.scss */
+/* line 1549, ../../../theme/sass/page.scss */
 #sidebar-second .sidebar-header .playlist-primary-tabs li {
   float: left;
   margin: 0 5px 0 0;
@@ -1979,17 +1967,17 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
   font-size: 112%;
   cursor: pointer;
 }
-/* line 1576, ../../../theme/sass/page.scss */
+/* line 1556, ../../../theme/sass/page.scss */
 #sidebar-second .sidebar-header .playlist-primary-tabs li:hover {
   background: rgba(255, 255, 255, 0.1);
 }
-/* line 1579, ../../../theme/sass/page.scss */
+/* line 1559, ../../../theme/sass/page.scss */
 #sidebar-second .sidebar-header .playlist-primary-tabs li.active {
   background: rgba(255, 255, 255, 0.92);
   color: #3b3f40;
 }
 
-/* line 1588, ../../../theme/sass/page.scss */
+/* line 1568, ../../../theme/sass/page.scss */
 .open > .dropdown-menu {
   margin-top: 1px;
   border-radius: 0;
@@ -1997,26 +1985,26 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
   box-shadow: 1px 0 12px rgba(0, 0, 0, 0.1);
   background: rgba(255, 255, 255, 0.98);
 }
-/* line 1594, ../../../theme/sass/page.scss */
+/* line 1574, ../../../theme/sass/page.scss */
 .open > .dropdown-menu li a {
   border-radius: 0;
 }
 
 /* Start: Recommended Isotope styles - Move */
 /**** Isotope Filtering ****/
-/* line 1604, ../../../theme/sass/page.scss */
+/* line 1584, ../../../theme/sass/page.scss */
 .isotope-item {
   z-index: 2;
 }
 
-/* line 1608, ../../../theme/sass/page.scss */
+/* line 1588, ../../../theme/sass/page.scss */
 .isotope-hidden.isotope-item {
   pointer-events: none;
   z-index: 1;
 }
 
 /**** Isotope CSS3 transitions ****/
-/* line 1616, ../../../theme/sass/page.scss */
+/* line 1596, ../../../theme/sass/page.scss */
 .isotope,
 .isotope .isotope-item {
   -webkit-transition-duration: 0.8s;
@@ -2026,7 +2014,7 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
   transition-duration: 0.8s;
 }
 
-/* line 1624, ../../../theme/sass/page.scss */
+/* line 1604, ../../../theme/sass/page.scss */
 .isotope {
   -webkit-transition-property: height, width;
   -moz-transition-property: height, width;
@@ -2035,7 +2023,7 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
   transition-property: height, width;
 }
 
-/* line 1632, ../../../theme/sass/page.scss */
+/* line 1612, ../../../theme/sass/page.scss */
 .isotope .isotope-item {
   -webkit-transition-property: -webkit-transform, opacity;
   -moz-transition-property: -moz-transform, opacity;
@@ -2045,7 +2033,7 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
 }
 
 /**** disabling Isotope CSS3 transitions ****/
-/* line 1644, ../../../theme/sass/page.scss */
+/* line 1624, ../../../theme/sass/page.scss */
 .isotope.no-transition,
 .isotope.no-transition .isotope-item,
 .isotope .isotope-item.no-transition {
@@ -2058,7 +2046,7 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
 
 /* End: Recommended Isotope styles */
 /* disable CSS transitions for containers with infinite scrolling*/
-/* line 1657, ../../../theme/sass/page.scss */
+/* line 1637, ../../../theme/sass/page.scss */
 .isotope.infinite-scrolling {
   -webkit-transition: none;
   -moz-transition: none;
@@ -2068,59 +2056,100 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta a {
 }
 
 /* player states */
-/* line 1669, ../../../theme/sass/page.scss */
+/* line 1649, ../../../theme/sass/page.scss */
+body.home #header {
+  bottom: auto;
+  padding-bottom: 10px;
+}
+/* line 1655, ../../../theme/sass/page.scss */
+body.home .playlist div.playlist-item.playing-row {
+  height: 120px;
+}
+/* line 1657, ../../../theme/sass/page.scss */
+body.home .playlist div.playlist-item.playing-row .thumb {
+  width: 120px;
+  height: 120px;
+}
+/* line 1661, ../../../theme/sass/page.scss */
+body.home .playlist div.playlist-item.playing-row .playlist-play {
+  font-size: 130%;
+  line-height: 25px;
+  max-height: 64px;
+}
+/* line 1667, ../../../theme/sass/page.scss */
+body.home .playlist div.playlist-item.playing-row .playlist-meta {
+  font-size: 115%;
+  color: rgba(100, 100, 100, 0.28);
+}
+/* line 1670, ../../../theme/sass/page.scss */
+body.home .playlist div.playlist-item.playing-row .playlist-meta a {
+  font-size: 110%;
+}
+/* line 1679, ../../../theme/sass/page.scss */
 body.no-sidebar #main {
   margin-left: 50px;
 }
-/* line 1673, ../../../theme/sass/page.scss */
+/* line 1683, ../../../theme/sass/page.scss */
 body .player-play .icon-pause {
   display: none;
   margin-top: 3px;
 }
-/* line 1681, ../../../theme/sass/page.scss */
+/* line 1691, ../../../theme/sass/page.scss */
 body.paused .playing-row .song-tracknum, body.playing .playing-row .song-tracknum {
   background: url(../images/row-playing.gif) 50% 50% no-repeat;
   text-indent: -999999px;
 }
-/* line 1690, ../../../theme/sass/page.scss */
+/* line 1700, ../../../theme/sass/page.scss */
 body.playing .player-play .icon-pause {
   display: block;
 }
-/* line 1693, ../../../theme/sass/page.scss */
+/* line 1703, ../../../theme/sass/page.scss */
 body.playing .player-play .icon-play {
   display: none;
 }
-/* line 1702, ../../../theme/sass/page.scss */
+/* line 1712, ../../../theme/sass/page.scss */
 body.paused .playing-row .song-tracknum {
   background: url(../images/icons/row-pause.png) 50% 50% no-repeat;
 }
-/* line 1707, ../../../theme/sass/page.scss */
+/* line 1717, ../../../theme/sass/page.scss */
 body.paused ul.playlist .playing-row {
   background-image: url(../images/icons/row-pause.png);
 }
-/* line 1718, ../../../theme/sass/page.scss */
+/* line 1728, ../../../theme/sass/page.scss */
 body.muted #footer .footer-right .actions-wrapper .icon-volume-up {
   display: block;
 }
-/* line 1721, ../../../theme/sass/page.scss */
+/* line 1731, ../../../theme/sass/page.scss */
 body.muted #footer .footer-right .actions-wrapper .icon-volume-down {
   display: none;
 }
-/* line 1729, ../../../theme/sass/page.scss */
+/* line 1739, ../../../theme/sass/page.scss */
 body.random-on #footer .footer-right .actions-wrapper .player-random {
   color: #fff;
 }
-/* line 1737, ../../../theme/sass/page.scss */
+/* line 1747, ../../../theme/sass/page.scss */
 body.repeat-all #footer .footer-right .actions-wrapper .player-repeat {
   color: #fff;
 }
-/* line 1745, ../../../theme/sass/page.scss */
+/* line 1755, ../../../theme/sass/page.scss */
 body.repeat-one #footer .footer-right .actions-wrapper .player-repeat {
   color: #ddd;
 }
-/* line 1750, ../../../theme/sass/page.scss */
+/* line 1760, ../../../theme/sass/page.scss */
 body.repeat-one div.playlist-item.playing-row .repeating {
   display: block;
+}
+/* line 1769, ../../../theme/sass/page.scss */
+body.section-files #page-header h1 a {
+  width: 330px;
+}
+/* line 1773, ../../../theme/sass/page.scss */
+body.section-files #sidebar-first {
+  width: 330px;
+}
+/* line 1776, ../../../theme/sass/page.scss */
+body.section-files #main {
+  margin-left: 380px;
 }
 
 /**
@@ -2161,79 +2190,80 @@ body.repeat-one div.playlist-item.playing-row .repeating {
   /**
    * 1382 and up
    */
-  /* line 10, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 11, ../../../theme/sass/breakpoints/_1382.scss */
+  body.section-files #page-header h1 a,
   body.section-files #sidebar-first {
     width: 495px;
   }
-  /* line 13, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 14, ../../../theme/sass/breakpoints/_1382.scss */
   body.section-files #main {
     margin-left: 545px;
   }
-  /* line 20, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 21, ../../../theme/sass/breakpoints/_1382.scss */
   body.home #sidebar-second {
     width: 660px;
   }
-  /* line 23, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 24, ../../../theme/sass/breakpoints/_1382.scss */
   body.home #content {
     margin-right: 660px;
   }
-  /* line 26, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 27, ../../../theme/sass/breakpoints/_1382.scss */
   body.home #search-box {
     right: 660px;
   }
-  /* line 31, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 32, ../../../theme/sass/breakpoints/_1382.scss */
   body #sidebar-second {
     width: 360px;
   }
-  /* line 35, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 36, ../../../theme/sass/breakpoints/_1382.scss */
   body #content {
     margin-right: 360px;
   }
-  /* line 40, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 41, ../../../theme/sass/breakpoints/_1382.scss */
   body #notify {
     width: 360px;
   }
-  /* line 42, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 43, ../../../theme/sass/breakpoints/_1382.scss */
   body #notify.hidden {
     right: -360px;
   }
-  /* line 48, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 49, ../../../theme/sass/breakpoints/_1382.scss */
   body #page-header .album-actions-wrapper {
     right: 625px;
   }
-  /* line 51, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 52, ../../../theme/sass/breakpoints/_1382.scss */
   body #page-header h1 a {
     width: 280px;
   }
-  /* line 59, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 60, ../../../theme/sass/breakpoints/_1382.scss */
   body #footer .footer-right,
   body #footer .volume-wrapper,
   body #footer .footer-right .actions-wrapper {
     width: 360px;
   }
-  /* line 62, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 63, ../../../theme/sass/breakpoints/_1382.scss */
   body #footer .footer-left {
     width: 330px;
   }
-  /* line 65, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 66, ../../../theme/sass/breakpoints/_1382.scss */
   body #footer #time {
     right: 370px;
   }
-  /* line 68, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 69, ../../../theme/sass/breakpoints/_1382.scss */
   body #footer #now-playing {
     margin-right: 430px;
     margin-left: 330px;
   }
-  /* line 72, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 73, ../../../theme/sass/breakpoints/_1382.scss */
   body #footer .progress-wrapper {
     left: 400px;
     right: 360px;
   }
-  /* line 78, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 79, ../../../theme/sass/breakpoints/_1382.scss */
   body #sidebar-first {
     width: 280px;
   }
-  /* line 89, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 90, ../../../theme/sass/breakpoints/_1382.scss */
   body #sidebar-first ul.artist-thumbs-up li a.active .play-artist,
   body #sidebar-first ul.artist-thumbs-up li a.active .image,
   body #sidebar-first ul.album-list-small li a.active .play-artist,
@@ -2245,26 +2275,26 @@ body.repeat-one div.playlist-item.playing-row .repeating {
     width: 120px;
     height: 110px;
   }
-  /* line 93, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 94, ../../../theme/sass/breakpoints/_1382.scss */
   body #sidebar-first ul.artist-thumbs-up li a.active .artist-meta,
   body #sidebar-first ul.album-list-small li a.active .artist-meta,
   body #sidebar-first ul.artist-search-list li a.active .artist-meta,
   body #sidebar-first ul.artist-list li a.active .artist-meta {
     display: block;
   }
-  /* line 102, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 103, ../../../theme/sass/breakpoints/_1382.scss */
   body #main {
     margin-left: 330px;
   }
-  /* line 106, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 107, ../../../theme/sass/breakpoints/_1382.scss */
   body #search-box {
     right: 360px;
   }
-  /* line 108, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 109, ../../../theme/sass/breakpoints/_1382.scss */
   body #search-box #search {
     width: 200px;
   }
-  /* line 113, ../../../theme/sass/breakpoints/_1382.scss */
+  /* line 114, ../../../theme/sass/breakpoints/_1382.scss */
   body .playlist, body .custom-lists {
     padding: 10px;
   }

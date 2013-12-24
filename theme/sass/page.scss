@@ -88,16 +88,16 @@ html {
         text-align: center;
         font-size: 19px;
         a {
-          color: $color-concrete;
+          color: $color-asbestos;
           display: block;
           padding: 12px 0;
           &:hover {
-            color: $color-asbestos;
+            color: $color-light-slate;
           }
         }
         &.active {
           a {
-            color: $color-asbestos;
+            color: $color-concrete;
           }
         }
       }
@@ -1184,8 +1184,11 @@ $imgblock-width-large: 310px;
     overflow: hidden;
     position: relative;
     padding: 5px;
-    img {
-      min-height: $imgblock-width-small;
+    .image {
+      min-height: $imgblock-height-small;
+      background-color: #eee;
+      background-size: cover;
+      background-position: 50% 50%;
     }
 //    &:first-child {
 //      width: 40%;
@@ -1239,6 +1242,10 @@ $imgblock-width-large: 310px;
     }
   }
   li {
+    height: $imgblock-height-small + 33;
+    img {
+      min-height: $imgblock-height-small;
+    }
     &.width2 {
      // width: 310px;
     }
@@ -1487,33 +1494,6 @@ body.sidebar {
     }
   }
 }
-body.home {
-  .playlist {
-    div.playlist-item {
-      &.playing-row {
-        height: 120px;
-        .thumb {
-          width: 120px;
-          height: 120px;
-        }
-        .playlist-play {
-          font-size: 130%;
-          line-height: 25px;
-          max-height: 64px;
-
-        }
-        .playlist-meta {
-          font-size: 115%;
-          color: $color-concrete;
-          a {
-            font-size: 110%;
-          }
-        }
-      }
-    }
-  }
-}
-
 
 #sidebar-second {
 
@@ -1665,6 +1645,36 @@ body.home {
 
 /* player states */
 body {
+  &.home {
+    #header {
+      bottom: auto;
+      padding-bottom: 10px;
+    }
+    .playlist {
+      div.playlist-item {
+        &.playing-row {
+          height: 120px;
+          .thumb {
+            width: 120px;
+            height: 120px;
+          }
+          .playlist-play {
+            font-size: 130%;
+            line-height: 25px;
+            max-height: 64px;
+
+          }
+          .playlist-meta {
+            font-size: 115%;
+            color: $color-concrete;
+            a {
+              font-size: 110%;
+            }
+          }
+        }
+      }
+    }
+  }
   &.no-sidebar {
     #main {
       margin-left: $width-header;
@@ -1750,6 +1760,21 @@ body {
       .repeating {
         display: block;
       }
+    }
+  }
+
+  // Files
+  &.section-files {
+    #page-header {
+      h1 a {
+        width: $width-sidebar-first;
+      }
+    }
+    #sidebar-first {
+      width: $width-sidebar-first;
+    }
+    #main {
+      margin-left: $width-sidebar-first+ $width-header;
     }
   }
 
