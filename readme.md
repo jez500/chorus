@@ -17,7 +17,7 @@ http://wiki.xbmc.org/index.php?title=Add-on_manager#How_to_install_from_a_ZIP_fi
 TODO: Get it in the XBMC repo
 
 ## Enabling
-XBMC > Stystem > Settings > Services > Webserver
+- XBMC > Stystem > Settings > Services > Webserver
 - tick allow access via http
 - select web interface
 - select chorus
@@ -34,6 +34,7 @@ TIP: Get your IP via XBMC > System > System Info
 
 ## Under the hood
 Chorus uses the following libraries:
+
 - jQuery 1.9
 - backbone
 - underscore
