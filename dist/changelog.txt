@@ -1,3 +1,4 @@
-Version 1.0.0:
+Version 0.1.0:
 
-- Created
+Initial release Jan 2014
+- First release of Chorus

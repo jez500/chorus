@@ -46,7 +46,7 @@ app.ShellView = Backbone.View.extend({
 
     //set playlist
     app.AudioController.playlistRefresh(function(result){
-      //console.log('playlist',result);
+
     });
 
     //init the progress bar

@@ -83,9 +83,8 @@ app.PlaylistCollection = Backbone.Collection.extend({
 
   sync: function(method, model, options) {
     if (method === "read") {
-      console.log('read');
-      app.AudioController.getPlaylistItems(function(result){
 
+      app.AudioController.getPlaylistItems(function(result){
         options.success(result.items);
       });
 
@@ -132,7 +131,6 @@ app.PlaylistCustomListSongCollection = Backbone.Collection.extend({
 
       var list = app.playlists.getCustomPlaylist(options.name);
       app.AudioController.songLoadMultiple(list.items, function(songs){
-        console.log('%c loading playlist', app.helpers.consoleStyle(1), songs);
         options.success(songs);
       });
 
@@ -242,7 +240,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     // fetch all songs (very slow and locks up ui a bit)
     this.allSongs.fetch({"success": function(data){
-      console.log('songs fetched', data);
+
       // assign to store
       self.parseAudio(data.models);
 

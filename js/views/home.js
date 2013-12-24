@@ -11,7 +11,7 @@ app.HomeView = Backbone.View.extend({
 
     showMeBtnClick:function (e) {
 
-        console.log("showme");
+
     }
 
 });

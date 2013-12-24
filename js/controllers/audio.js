@@ -400,7 +400,7 @@ app.AudioController.setVolume = function(val){
 app.AudioController.audioLibraryScan = function(){
 
   app.xbmcController.command('AudioLibrary.Scan', [], function(data){
-    console.log(data);
+
   });
 
 };

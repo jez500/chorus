@@ -2614,27 +2614,7 @@ $(document).ready(function(){
 
 
   app.helpers.addIsotope = function(selector){
-    //isotope
-    var $container = $(selector),
-        $items = $container.find('li');
-
-    // add randomish size classes
-    $items.each(function(i,data){
-      if(i == 1 || i == 8 || i == 20){
-        $(data).addClass('width2');
-      }
-    });
-
-//    $container.isotope({
-//      // options
-//      itemSelector : 'li',
-//      layoutMode : 'fitRows',
-//      masonry: {
-//        columnWidth: '.width2'
-//      }
-//    });
-
-
+    // removed
   };
 
 
@@ -3267,7 +3247,7 @@ app.Router = Backbone.Router.extend({
       // render page
       app.cached.filesView = new app.FilesView({"model":res});
       var el = app.cached.filesView.render().$el;
-      console.log(el);
+
       app.helpers.setFirstSidebarContent(el);
 
       app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
@@ -3385,7 +3365,6 @@ $(document).on("ready", function () {
 
 
   app.store.libraryCall(function(){
-    console.log('loaded stores:', app.stores);
     $('body').addClass('audio-library-ready');
     app.notification('Library loaded');
   },'songsReady');
@@ -3902,7 +3881,7 @@ app.AudioController.setVolume = function(val){
 app.AudioController.audioLibraryScan = function(){
 
   app.xbmcController.command('AudioLibrary.Scan', [], function(data){
-    console.log(data);
+
   });
 
 };
@@ -4505,7 +4484,7 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   model: app.Song,
   //collection params
   arg1: app.songFields, //fields
-  arg2: {"start": 0, "end": 50000}, //function(){console.log(this.models[0]); return {"start": 0, "end": 500}}, //count
+  arg2: {"start": 0, "end": 50000}, //count
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //method/params
   methods: {
@@ -4717,9 +4696,8 @@ app.PlaylistCollection = Backbone.Collection.extend({
 
   sync: function(method, model, options) {
     if (method === "read") {
-      console.log('read');
-      app.AudioController.getPlaylistItems(function(result){
 
+      app.AudioController.getPlaylistItems(function(result){
         options.success(result.items);
       });
 
@@ -4766,7 +4744,6 @@ app.PlaylistCustomListSongCollection = Backbone.Collection.extend({
 
       var list = app.playlists.getCustomPlaylist(options.name);
       app.AudioController.songLoadMultiple(list.items, function(songs){
-        console.log('%c loading playlist', app.helpers.consoleStyle(1), songs);
         options.success(songs);
       });
 
@@ -4876,7 +4853,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     // fetch all songs (very slow and locks up ui a bit)
     this.allSongs.fetch({"success": function(data){
-      console.log('songs fetched', data);
+
       // assign to store
       self.parseAudio(data.models);
 
@@ -5957,7 +5934,6 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
   render:function () {
 
-console.log(this.model);
     this.$el.empty();
 
     var $content = $('#content'),
@@ -5968,12 +5944,9 @@ console.log(this.model);
       $content.html(this.template(this.model));
     }
 
-    console.log('files', this.model.models.length);
     this.model.models.sort(function(a,b){
       return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
     });
-
-    console.log('files', this.model.models);
 
     _.each(this.model.models, function (file) {
 
@@ -5992,10 +5965,6 @@ console.log(this.model);
     } else {
       $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
     }
-
-
-    console.log(this.$el);
-
 
     return this;
   }
@@ -6092,7 +6061,6 @@ app.FileView = Backbone.View.extend({
 
     app.AudioController.playlistAdd( key, value, function(result){
       app.notification(file.label + ' added to the playlist');
-      console.log(file, result);
       app.AudioController.playlistRefresh();
     });
 
@@ -6112,7 +6080,7 @@ app.FileView = Backbone.View.extend({
 
     showMeBtnClick:function (e) {
 
-        console.log("showme");
+
     }
 
 });;/**
@@ -6292,7 +6260,6 @@ app.playerStateView = Backbone.View.extend({
 
         // match pos
         if($d.data('id') == data.player.position){
-          console.log($d);
           $d.addClass('playing-row');
         }
       }
@@ -6321,7 +6288,7 @@ app.playerStateView = Backbone.View.extend({
     //progress
     app.shellView.$progressSlider.slider( "value",0);
     //set thumb
-    app.shellView.$nowPlaying.find('#playing-thumb')
+    this.$nowPlaying.find('#playing-thumb')
       .attr('src',app.parseImage(''))
       .attr('title', '')
       .parent().attr('href', '#albums');
@@ -6379,7 +6346,7 @@ app.PlaylistView = Backbone.View.extend({
   render:function () {
     this.$el.empty();
     var pos = 0; //position
-    console.log(this.model.models);
+
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
       this.$el.append(new app.PlaylistItemView({model:item}).render().el);
@@ -6845,7 +6812,7 @@ app.searchView = Backbone.View.extend({
 
     //set playlist
     app.AudioController.playlistRefresh(function(result){
-      //console.log('playlist',result);
+
     });
 
     //init the progress bar

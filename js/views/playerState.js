@@ -175,7 +175,6 @@ app.playerStateView = Backbone.View.extend({
 
         // match pos
         if($d.data('id') == data.player.position){
-          console.log($d);
           $d.addClass('playing-row');
         }
       }
@@ -204,7 +203,7 @@ app.playerStateView = Backbone.View.extend({
     //progress
     app.shellView.$progressSlider.slider( "value",0);
     //set thumb
-    app.shellView.$nowPlaying.find('#playing-thumb')
+    this.$nowPlaying.find('#playing-thumb')
       .attr('src',app.parseImage(''))
       .attr('title', '')
       .parent().attr('href', '#albums');

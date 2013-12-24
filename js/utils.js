@@ -131,27 +131,7 @@ $(document).ready(function(){
 
 
   app.helpers.addIsotope = function(selector){
-    //isotope
-    var $container = $(selector),
-        $items = $container.find('li');
-
-    // add randomish size classes
-    $items.each(function(i,data){
-      if(i == 1 || i == 8 || i == 20){
-        $(data).addClass('width2');
-      }
-    });
-
-//    $container.isotope({
-//      // options
-//      itemSelector : 'li',
-//      layoutMode : 'fitRows',
-//      masonry: {
-//        columnWidth: '.width2'
-//      }
-//    });
-
-
+    // removed
   };
 
 

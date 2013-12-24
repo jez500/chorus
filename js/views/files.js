@@ -11,7 +11,6 @@ app.FilesView = Backbone.View.extend({
 
   render:function () {
 
-console.log(this.model);
     this.$el.empty();
 
     var $content = $('#content'),
@@ -22,12 +21,9 @@ console.log(this.model);
       $content.html(this.template(this.model));
     }
 
-    console.log('files', this.model.models.length);
     this.model.models.sort(function(a,b){
       return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
     });
-
-    console.log('files', this.model.models);
 
     _.each(this.model.models, function (file) {
 
@@ -46,10 +42,6 @@ console.log(this.model);
     } else {
       $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
     }
-
-
-    console.log(this.$el);
-
 
     return this;
   }
@@ -146,7 +138,6 @@ app.FileView = Backbone.View.extend({
 
     app.AudioController.playlistAdd( key, value, function(result){
       app.notification(file.label + ' added to the playlist');
-      console.log(file, result);
       app.AudioController.playlistRefresh();
     });
 

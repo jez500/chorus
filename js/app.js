@@ -314,7 +314,7 @@ app.Router = Backbone.Router.extend({
       // render page
       app.cached.filesView = new app.FilesView({"model":res});
       var el = app.cached.filesView.render().$el;
-      console.log(el);
+
       app.helpers.setFirstSidebarContent(el);
 
       app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
@@ -432,7 +432,6 @@ $(document).on("ready", function () {
 
 
   app.store.libraryCall(function(){
-    console.log('loaded stores:', app.stores);
     $('body').addClass('audio-library-ready');
     app.notification('Library loaded');
   },'songsReady');

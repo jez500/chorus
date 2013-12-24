@@ -17,7 +17,7 @@ app.PlaylistView = Backbone.View.extend({
   render:function () {
     this.$el.empty();
     var pos = 0; //position
-    console.log(this.model.models);
+
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
       this.$el.append(new app.PlaylistItemView({model:item}).render().el);
