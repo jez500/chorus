@@ -84,7 +84,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
   playSong: function(event){
    var song = this.model.attributes;
     app.playlists.changePlaylistView('xbmc');
-    app.AudioController.insertAndPlaySong(song.songid, function(){
+    app.AudioController.insertAndPlaySong('songid', song.songid, function(){
       app.notification(song.label + ' added to the playlist');
       app.AudioController.playlistRefresh();
     });

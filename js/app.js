@@ -80,6 +80,10 @@ var app = {
     "albumartistid"
   ],
 
+  fileFields: [
+    'title', 'size', 'mimetype', 'file', 'dateadded', 'thumbnail', 'artistid', 'albumid', 'uniqueid'
+  ],
+
   // filters
   albumFilters: [],
   songFilters: [],
@@ -124,7 +128,7 @@ app.Router = Backbone.Router.extend({
     "search/:q":            "search",
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
-    "files/:id":            "files"
+    "files":                "files"
   },
 
 
@@ -162,8 +166,12 @@ app.Router = Backbone.Router.extend({
 
       } else {
         // Something is playing
-        var fa = app.parseImage(data.item.fanart, 'fanart');
-        $.backstretch(fa);
+
+        // add backstretch
+        if($('.backstretch').length == 0){
+          var fa = app.parseImage(data.item.fanart, 'fanart');
+          $.backstretch(fa);
+        }
 
         // render
         app.homelView = new app.HomeView({model:data.item});
@@ -294,20 +302,26 @@ app.Router = Backbone.Router.extend({
   /**
    * Files page
    */
-  files: function(id){
+  files: function(){
 
 
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":id, "success": function(res){
+    app.cached.fileCollection.fetch({"name":'sources', "success": function(res){
+
+      // set menu
+      app.shellView.selectMenuItem('files', 'sidebar');
 
       // render page
       app.cached.filesView = new app.FilesView({"model":res});
-      $('#content').html(app.cached.filesView.render().el);
+      var el = app.cached.filesView.render().$el;
+      console.log(el);
+      app.helpers.setFirstSidebarContent(el);
+
+      app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
 
     }});
 
-    // set menu
-    app.shellView.selectMenuItem('files', 'sidebar');
+
 
   },
 

@@ -27,7 +27,7 @@ app.xbmcController.command = function(command, options, callback){
       }
     },
     error: function(result) {
-      app.helpers.errorHandler('xbmc song command call: ' + command, result, options);
+      app.helpers.errorHandler('xbmc song command call: ' + command, [result, options]);
     }
   });
 
@@ -45,7 +45,7 @@ app.xbmcController.multipleCommand = function(commands, callback){
     success: function(result) {
       for(i in result){
         if(typeof result[i].error != 'undefined'){
-          app.helpers.errorHandler('xbmc multiple command call: ' + i, result[i]);
+          app.helpers.errorHandler('xbmc multiple command call: ' + i, [result[i], commands[i]]);
         }
       }
       if(callback){
@@ -53,7 +53,7 @@ app.xbmcController.multipleCommand = function(commands, callback){
       }
     },
     error: function(result) {
-      app.helpers.errorHandler('xbmc multiple command call', result);
+      app.helpers.errorHandler('xbmc multiple command call', [result, commands]);
     }
   });
 

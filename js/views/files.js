@@ -11,45 +11,50 @@ app.FilesView = Backbone.View.extend({
 
   render:function () {
 
+console.log(this.model);
     this.$el.empty();
-    _.each(this.model.models, function (song) {
-      this.$el.append(new app.FileView({model:song}).render().el);
+
+    var $content = $('#content'),
+      $filesContainer = $('#files-container', $content),
+      $fc = $('<ul class="files-music"></ul>');
+
+    if($filesContainer.length == 0){
+      $content.html(this.template(this.model));
+    }
+
+    console.log('files', this.model.models.length);
+    this.model.models.sort(function(a,b){
+      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
+    });
+
+    console.log('files', this.model.models);
+
+    _.each(this.model.models, function (file) {
+
+      if(file.attributes.filetype == '' || file.attributes.filetype == 'directory'){
+        // is a dir
+        this.$el.append(new app.FileView({model:file}).render().el);
+      } else {
+        // is a file
+        $fc.append(new app.FileView({model:file}).render().el);
+      }
+
     }, this);
 
-    // sortable
-    this.filesBinds();
+    if($fc.html() != ''){
+      $filesContainer.html($fc);
+    } else {
+      $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
+    }
+
+
+    console.log(this.$el);
+
 
     return this;
-  },
-
-
-  filesBinds:function(){
-
-/*    //sortable
-    $sortableCustom = this.$el;
-
-    $sortableCustom.sortable({
-      placeholder: "playlist-item-placeholder",
-      handle: ".song-title",
-      items: "> li",
-      axis: "y",
-
-      update: function( event, ui ) {
-        var list = [],
-          listId = app.helpers.arg(0) == 'thumbsup' ? 'thumbsup' : app.helpers.arg(1),
-          $container = $('ul.playlist-song-list');
-
-        $container.find('div.playlist-item').each(function(i,d){
-          list.push($(d).data('songid'));
-        });
-
-        // Update the playlist order in storage
-        app.playlists.replaceCustomPlayList(listId, list);
-
-      }
-    }).disableSelection();*/
-
   }
+
+
 });
 
 app.FileView = Backbone.View.extend({
@@ -57,10 +62,10 @@ app.FileView = Backbone.View.extend({
   tagName:"li",
 
   events: {
-    //"dblclick .song-title": "playSong",
-    //"click .song-play": "playSong",
-    //"click .song-add": "addSong",
-    //"click .song-thumbsup": "thumbsUp"
+    "dblclick .file-item": "playDir",
+    "click .file-play": "playDir",
+    "click .file-type-directory": "clickDir",
+    "click .file-add": "addDir"
   },
 
   initialize:function () {
@@ -68,42 +73,84 @@ app.FileView = Backbone.View.extend({
   },
 
   render:function () {
+
     // render
     this.$el.html(this.template(this.model.attributes));
     return this;
+
+  },
+
+  clickDir:function(e){
+    e.stopPropagation();
+
+    var file = this.model.attributes,
+      dir = file.file,
+      self = this,
+      $this = $(e.target).parent();
+
+    $('#sidebar-first li').removeClass('lowest');
+    $this.addClass('loading');
+
+    app.cached.fileCollection = new app.FileCollection();
+    app.cached.fileCollection.fetch({"name":file.file, "success": function(res){
+
+      // render content and get sidebar updated content
+      var el = new app.FilesView({"model":res}).render().$el;
+
+      // dont append if already appended
+      if(self.$el.find('ul').length == 0){
+        self.$el.append(el);
+      }
+
+      // add a class to the curent open tree
+      $this.addClass('lowest').removeClass('loading');
+      $('#folder-name').html(file.label);
+
+    }});
+
+
+  },
+
+
+  playDir:function(e){
+    e.stopPropagation();
+
+    var file = this.model.attributes,
+      key = 'file',
+      value = file.file;
+
+    if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
+      key = file.type + 'id';
+      value = file.id
+    }
+
+    app.AudioController.insertAndPlaySong(key, value, function(result){
+      app.notification(file.label + ' added to the playlist');
+      app.AudioController.playlistRefresh();
+    });
+  },
+
+
+
+  addDir:function(e){
+    e.stopPropagation();
+
+    var file = this.model.attributes,
+      key = 'file',
+      value = file.file;
+
+    if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
+      key = file.type + 'id';
+      value = file.id
+    }
+
+    app.AudioController.playlistAdd( key, value, function(result){
+      app.notification(file.label + ' added to the playlist');
+      console.log(file, result);
+      app.AudioController.playlistRefresh();
+    });
+
   }
 
-
-//  /**
-//   * Inserts into next pos on playlist then plays
-//   * @param event
-//   */
-//  playSong: function(event){
-//    var song = this.model.attributes;
-//    app.playlists.changePlaylistView('xbmc');
-//    app.AudioController.insertAndPlaySong(song.songid, function(){
-//      app.notification(song.label + ' added to the playlist');
-//      app.AudioController.playlistRefresh();
-//    });
-//  },
-//
-//  addSong: function(){
-//    var song = this.model.attributes;
-//    app.AudioController.playlistAdd( 'songid', song.songid, function(result){
-//      app.notification(song.label + ' added to the playlist');
-//      app.AudioController.playlistRefresh();
-//    });
-//  },
-//
-//  /**
-//   * Toggle thumbs up status
-//   */
-//  thumbsUp: function(e){
-//    var songid = this.model.attributes.songid,
-//      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
-//      $el = $(e.target).closest('li');
-//    app.playlists.setThumbsUp(op, 'song', songid);
-//    $el.toggleClass('thumbs-up');
-//  }
 
 });

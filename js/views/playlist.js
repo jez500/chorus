@@ -17,6 +17,7 @@ app.PlaylistView = Backbone.View.extend({
   render:function () {
     this.$el.empty();
     var pos = 0; //position
+    console.log(this.model.models);
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
       this.$el.append(new app.PlaylistItemView({model:item}).render().el);
@@ -62,6 +63,10 @@ app.PlaylistItemView = Backbone.View.extend({
   },
 
   render:function () {
+    // file fallback
+    this.model.id = (typeof this.model.id != 'undefined' ? this.model.id : 'file');
+    this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
+    // render
     this.$el.html(this.template(this.model));
     return this;
   },

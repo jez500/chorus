@@ -242,12 +242,14 @@ app.AudioController.playSongById = function(songid, type, id, clearList){
 /**
  * Inserts a song in the playlist next and starts playing that song
  */
-app.AudioController.insertAndPlaySong = function(id, callback){
+app.AudioController.insertAndPlaySong = function(type, id, callback){
 
   var player = app.cached.nowPlaying.player,
       playingPos = (typeof player.position != 'undefined' ? player.position : 0),
       pos = playingPos + 1,
-      insert = {songid: id};
+      insert = {};
+
+  insert[type] = id;
 
   app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
     app.AudioController.playPlaylistPosition(pos, function(){

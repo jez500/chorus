@@ -37,6 +37,14 @@ html {
   }
 }
 
+.btn {
+  @include border-radius(0);
+  background: none;
+  &:hover {
+    background: rgba(255,255,255,0.1);
+  }
+}
+
 
 //structure
 #header {
@@ -106,14 +114,14 @@ body.fixed-header {
 }
 
 #main {
-  margin-left: $width-sidebar-first;
+  margin-left: $width-sidebar-second-small;
   margin-top: $height-header;
   padding-bottom: $height-footer;
 }
 
 #content {
   padding: 0;
-  margin-right: $width-sidebar-second;
+  margin-right: $width-sidebar-second-small;
 }
 #page-header {
   background: rgba(59, 63, 64, 0.84);
@@ -137,7 +145,7 @@ body.fixed-header {
       color: $color-asbestos;
       display: block;
       float: left;
-      width: $width-sidebar-first-region;
+      width: $width-sidebar-second-small - $width-header;
       padding-left: 20px;
       margin-right: 20px;
       margin-left: -20px;
@@ -154,7 +162,7 @@ body.fixed-header {
   }
   .album-actions-wrapper {
     position: absolute;
-    right: $width-sidebar-second + 265;
+    right: $width-sidebar-second-small + 265;
     top: 0;
     .btn {
       background: none;
@@ -176,7 +184,7 @@ body.fixed-header {
   z-index: 10;
   .footer-right,
   .footer-left {
-    width: $width-sidebar-first;
+    width: $width-sidebar-second-small;
     height: $height-footer;
     float: left;
     background: $color-light-slate;
@@ -200,13 +208,13 @@ body.fixed-header {
   }
   .footer-right {
     float: right;
-    width: $width-sidebar-second;
+    width: $width-sidebar-second-small;
     .actions-wrapper {
       position: absolute;
       right: 0px;
       top: 25px;
       text-align: right;
-      width: $width-sidebar-second;
+      width: $width-sidebar-second-small;
       .player-button {
         font-size: 2em;
         padding: 3px 0;
@@ -222,8 +230,8 @@ body.fixed-header {
   .progress-wrapper {
     background: rgba(0,0,0,0.1);
     position: absolute;
-    left: $width-sidebar-first + $height-footer;
-    right: $width-sidebar-second;
+    left: $width-sidebar-second-small + $height-footer;
+    right: $width-sidebar-second-small;
     top: 0;
     height: 20px;
     overflow: hidden;
@@ -231,12 +239,12 @@ body.fixed-header {
   .volume-wrapper {
     right: 0;
     left: auto;
-    width: $width-sidebar-second;
+    width: $width-sidebar-second-small;
   }
   #time {
     position: absolute;
     margin-top: 25px;
-    right: $width-sidebar-second + 10px;
+    right: $width-sidebar-second-small + 10px;
     top: 0;
     font-weight: bold;
     text-align: right;
@@ -254,8 +262,8 @@ body.fixed-header {
 
 #now-playing {
   font-size: 12px;
-  margin-right: $width-sidebar-second + 70;
-  margin-left: $width-sidebar-first;
+  margin-right: $width-sidebar-second-small + 70;
+  margin-left: $width-sidebar-second-small;
   padding-top: 1px;
   .song-image {
     width: $height-footer;
@@ -332,7 +340,7 @@ body.playing {
 
 
 #sidebar-first {
-  width: $width-sidebar-first - $width-header;
+  width: $width-sidebar-second-small - $width-header;
   background: #f9f9f9;
   position: fixed;
   top: $height-header;
@@ -356,7 +364,7 @@ body.no-sidebar {
 }
 
 #sidebar-second {
-  width: $width-sidebar-second;
+  width: $width-sidebar-second-small;
   background: rgba(248, 248, 248, 0.75);
   position: fixed;
   top: 0;
@@ -370,7 +378,7 @@ body.no-sidebar {
     overflow-y: auto;
   }
 }
-$home-sidebar-width: $width-sidebar-second + 300;
+$home-sidebar-width: $width-sidebar-second-small + 300;
 body.home {
   #sidebar-second {
     @include transition(0.3s all ease-in);
@@ -407,7 +415,7 @@ body.home {
 #search-box {
   position: absolute;
   top: 0;
-  right: $width-sidebar-second;
+  right: $width-sidebar-second-small;
   display: none;
   background-color: rgba(255,255,255,0.78);
   @include transition(all 0.3s linear);
@@ -429,7 +437,7 @@ body.home {
     padding: 10px 10px 10px 40px;
     font-size: 18px;
     color: $color-mist;
-    width: 200px;
+    width: 130px;
     outline: none;
     background: rgba(255, 255, 255, 0);
     color: $color-asbestos;
@@ -482,7 +490,7 @@ h4 {
   position: absolute;
   right: 0;
   bottom: $height-footer;
-  width: $width-sidebar-second;
+  width: $width-sidebar-second-small;
   padding: 10px;
   background: rgba(255,255,255,0.8);
   border-top: 2px solid $color-wet-asphalt;
@@ -490,7 +498,7 @@ h4 {
   opacity: 1;
   transition: 0.8s all ease;
   &.hidden {
-    right: -$width-sidebar-second;
+    right: -$width-sidebar-second-small;
     opacity: 0.5;
   }
 }
@@ -541,6 +549,7 @@ h4 {
     overflow-y: auto;
   }
 
+
   ul.artist-thumbs-up,
   ul.album-list-small,
   ul.artist-search-list,
@@ -587,15 +596,15 @@ h4 {
           color: #fff;
           font-size: 110%;
           .image {
-            width: 120px;
-            height: 110px;
+            width: 50px;
+            height: 50px;
           }
           .play-artist {
             font-size: 180%;
             line-height: 3.5;
             top: 4px;
-            width: 120px;
-            height:  110px;
+            width: 50px;
+            height: 50px;
           }
           p {
             max-width: 114px;
@@ -611,12 +620,65 @@ h4 {
             font-size: 12px;
             line-height: 1.4;
             color: rgba(255, 255, 255, 0.6);
-            display: block;
+            display: none;
           }
         }
       }
     }
   }
+  // files
+  ul.files-list {
+    li {
+      position: relative;
+      .file-item {
+        padding: 5px 10px;
+        border-bottom: 1px solid #ddd;
+        color: #777;
+        cursor: pointer;
+        &:hover {
+          color: #444;
+        }
+      }
+      &.loading {
+        background-image: image-url('loader.gif');
+        background-position: 98% 6px;
+        background-repeat: no-repeat;
+      }
+      &.lowest {
+        > .file-item {
+          background-color: $color-light-slate;
+          color: #fff;
+          .file-actions {
+            display: block;
+          }
+        }
+
+        ul {
+          background-color: #f1f1f1;
+        }
+      }
+      ul {
+        padding-left: 13px;
+        li {
+          border-left: 2px solid #ddd;
+        }
+
+      }
+      .file-actions {
+        position: absolute;
+        right: 5px;
+        top: 0;
+        display: none;
+        .btn {
+          height: 30px;
+          padding: 0px 7px;
+          margin: 0;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  // album
   ul.album-list-small {
     li a.active .image {
       width: 80px;
@@ -625,6 +687,56 @@ h4 {
   }
 }
 
+.files-music {
+  padding: 10px;
+  li {
+    overflow: hidden;
+    height: 40px;
+    line-height: 40px;
+    margin: 1px 0;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    .file-actions .file-play,
+    .thumb {
+      width: 38px;
+      height: 38px;
+      float: left;
+      margin-right: 15px;
+    }
+    .file-actions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      font-size: 13px;
+      display: none;
+      .file-play {
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: rgba(0,0,0,0.6);
+        padding: 0;
+        opacity: 0;
+        &:hover {
+          opacity: 1;
+        }
+      }
+      .file-add {
+        position: absolute;
+        right: 0;
+        color: $color-concrete;
+        &:hover {
+          color: $color-light-slate;
+        }
+      }
+    }
+    &:hover {
+      .file-actions {
+        display: block;
+      }
+    }
+  }
+}
 
 .artist-fanart {
   overflow: hidden;
@@ -1179,7 +1291,7 @@ body.sidebar {
 
 .playlist,
 .custom-lists {
-  padding: 10px;
+  padding: 2px;
   .playlist-item-placeholder {
     height: 35px;
     background: #eee;
@@ -1640,4 +1752,13 @@ body {
       }
     }
   }
+
+
 }
+
+
+
+
+
+// responsive last
+@import "breakpoints/responsive";

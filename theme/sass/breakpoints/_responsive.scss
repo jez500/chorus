@@ -1,0 +1,37 @@
+
+/**
+ * Include media queries
+ */
+
+// 320px
+@media only screen and (min-width: 320px){
+  @import "320";
+}
+// 480px
+@media only screen and (min-width: 480px){
+  @import "480";
+}
+// 600px
+@media only screen and (min-width: 600px){
+  @import "600";
+}
+// 768px
+@media only screen and (min-width: 768px){
+  @import "768";
+}
+// 992px
+@media only screen and (min-width: 992px){
+  @import "992";
+}
+// 1200px
+@media only screen and (min-width: 1200px){
+  @import "1200";
+}
+// 1382px
+@media only screen and (min-width: 1382px){
+  @import "1382";
+}
+// 1600px
+@media only screen and (min-width: 1599px){
+  @import "1600";
+}

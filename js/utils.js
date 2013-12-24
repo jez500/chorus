@@ -177,6 +177,20 @@ $(document).ready(function(){
 
 
   /**
+   * Get the first sidebar
+   */
+  app.helpers.getFirstSidebarContent = function(){
+
+    // ensure sidebar is visible
+    app.helpers.toggleSidebar('open');
+
+    var $sidebarFirst = $('#sidebar-first');
+    return $(".sidebar-content", $sidebarFirst);
+
+  };
+
+
+  /**
    * Toggle sidebar
    * @param state
    *  optional: if not set will toggle, else 'open' or 'close'
