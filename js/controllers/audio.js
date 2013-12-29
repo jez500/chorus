@@ -299,6 +299,19 @@ app.AudioController.songLoadMultiple = function(songids, callback){
 
 };
 
+/**
+ * Gets a download url for a file
+ * @param file
+ * @param callback
+ */
+app.AudioController.downloadFile = function(file, callback){
+  app.xbmcController.command('Files.PrepareDownload', [ file ], function(result){
+    if(callback){
+      callback(result.result.details.path);
+    }
+  });
+};
+
 
 
 /**

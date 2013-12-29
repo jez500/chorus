@@ -43,6 +43,7 @@ Chorus uses the following libraries:
 - backstretch
 - scrollTo
 - total storage
+- Font awesome
 
 ## Developers
 

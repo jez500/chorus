@@ -85,7 +85,7 @@ app.FileView = Backbone.View.extend({
 
     app.cached.fileCollection = new app.FileCollection();
     app.cached.fileCollection.fetch({"name":file.file, "success": function(res){
-
+      console.log(file);
       // render content and get sidebar updated content
       var el = new app.FilesView({"model":res}).render().$el;
 

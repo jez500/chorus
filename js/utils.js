@@ -1,20 +1,43 @@
-/*
+/**
+ *
  *  This is bunch of generic helper utils to keep basic logic out of the main app
+ *  @TODO cleanup and move stuff to better locations
+ *
  */
 
 
-/*
+/**
  * what our setTimeout is attached to
  */
 var notificationTimoutObj = {};
 
-/*
+
+/**
  * Dom ready
  */
 $(document).ready(function(){
 
   app.helpers = {};
   app.helpers.scroller = {};
+
+
+  /**
+   * A wrapper for getting the main selectors
+   * @param name
+   * @returns {*}
+   */
+  app.helpers.getSelector = function(name){
+
+    var selectors = {
+      content: '#content',
+      title: '#title',
+      dialog: '#dialog',
+      sidebar1: '#sidebar-first',
+      sidebar2: '#sidebar-second'
+    };
+
+    return selectors[name];
+  };
 
 
   /**
@@ -52,7 +75,6 @@ $(document).ready(function(){
   };
 
 
-
   /**
    * Debug styles
    * @param args
@@ -87,7 +109,6 @@ $(document).ready(function(){
   };
 
 
-
   /**
    * Variables all variables are for use in a single page load, not for persistent storage.
    *
@@ -98,6 +119,7 @@ $(document).ready(function(){
   app.helpers.varSet = function(name, val){
     app.vars[name] = val;
   };
+
 
   /**
    * Get a variable
@@ -129,7 +151,6 @@ $(document).ready(function(){
   };
 
 
-
   app.helpers.addIsotope = function(selector){
     // removed
   };
@@ -137,22 +158,24 @@ $(document).ready(function(){
 
   /**
    * Populate the first sidebar
+   * @param content
+   * @param append
    */
-  app.helpers.setFirstSidebarContent = function(content){
-    // ensure sidebar is visible
-    app.helpers.toggleSidebar('open');
-    var $sidebarFirst = $('#sidebar-first'),
-        $container = $(".sidebar-content", $sidebarFirst);
+  app.helpers.setFirstSidebarContent = function(content, append){
+    append = (typeof append != 'undefined' && append === true);
+
+
+    var $container = app.helpers.getFirstSidebarContent();
 
     // add the content
-    $container.html(content);
+    if(append){
+      $container.append(content);
+    } else {
+      $container.html(content);
+    }
 
-    // trigger lazyload
-    $("img.lazy").lazyload({
-      effect : "fadeIn",
-      container: $container
-    });
-    $container.trigger('scroll');
+    // trigger binds
+    app.helpers.firstSidebarBinds();
   };
 
 
@@ -164,8 +187,30 @@ $(document).ready(function(){
     // ensure sidebar is visible
     app.helpers.toggleSidebar('open');
 
-    var $sidebarFirst = $('#sidebar-first');
+    var $sidebarFirst = $(app.helpers.getSelector('sidebar1'));
     return $(".sidebar-content", $sidebarFirst);
+
+  };
+
+
+  /**
+   * first sidebar binds
+   */
+  app.helpers.firstSidebarBinds = function(){
+
+    var $container = app.helpers.getFirstSidebarContent();
+
+    // ensure sidebar is visible
+    app.helpers.toggleSidebar('open');
+
+    // trigger lazyload
+    $("img.lazy").lazyload({
+      effect : "fadeIn",
+      container: $container
+    });
+
+    // let others hook in
+    $container.trigger('scroll');
 
   };
 
@@ -343,6 +388,169 @@ $(document).ready(function(){
       array[j] = temp;
     }
     return array;
+  };
+
+
+
+  /**
+   * Wrapper for dialog box init
+   * @param options
+   *  http://jqueryui.com/demos/dialog/
+   */
+  app.helpers.dialogInit = function( options ){
+
+    var settings = {
+      autoOpen: false,
+      height: "auto",
+      width: 350,
+      modal: true ,
+      resizable: false
+    };
+
+    settings = jQuery.extend(settings, options);
+
+    $( app.helpers.getSelector('dialog') ).dialog( settings );
+
+  };
+
+
+  /**
+   * Open a Dialog window
+   */
+  app.helpers.dialog = function(content, options){
+
+    $dialog = $( app.helpers.getSelector('dialog') );
+
+    // init dialog if required
+    if(!$dialog.hasClass('ui-dialog-content')){
+      app.helpers.dialogInit();
+    }
+
+    $dialog.dialog( "option", "height", "auto");
+    $dialog.dialog( "option", "title", " ");
+
+    //set content and options
+    $dialog.html(content);
+    $dialog.dialog( "option", options );
+
+    //fix scrollTo issue with dialog
+    $dialog.bind( "dialogopen", function(event, ui) {
+      $('.ui-widget-overlay, .ui-dialog').css('position', 'fixed');
+      $('.dialog-menu a:last').addClass('last');
+    });
+
+    //open
+    $dialog.dialog( "open" );
+
+  };
+
+
+  /**
+   * Close the dialog
+   */
+  app.helpers.dialogClose = function(){
+    $( app.helpers.getSelector('dialog') ).dialog( "close" );
+  };
+
+
+  /**
+   * Emulates confirm() but using our dialog
+   * @param msg
+   *  string message to display
+   * @param success
+   *  function callback
+   */
+  app.helpers.confirm = function(msg, success){
+
+    var opts = {
+      title: 'Are you sure?',
+      buttons: {
+        "OK": function(){
+          success();
+          $( this ).dialog( "close" );
+        },
+        "Cancel": function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    };
+
+    app.helpers.dialog(msg, opts);
+  };
+
+
+  /**
+   * Build a dropdown menu html with some given settings
+   * @todo move to template file
+   *
+   * @param options
+   * @returns {string}
+   */
+  app.helpers.makeDropdown = function(options){
+
+    // get defaults
+    var defaults = {
+        key: 'untitled',
+        items: [],
+        pull: 'left',
+        omitwrapper: false
+      },
+      tpl = '',
+      settings = $.extend(defaults, options);
+
+    // start build output
+    if(!settings.omitwrapper){
+      tpl += '<div class="' + settings.key + '-actions list-actions">';
+    }
+    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></button>';
+    tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
+    for(i in settings.items){
+      var item = settings.items[i];
+      tpl += '<li><a href="' + item.url + '" class="' + item.class + '">' + item.title + '</a></li>';
+    }
+    tpl += '</ul>';
+    if(!settings.omitwrapper){
+      tpl += '</div>';
+    }
+
+    // return html
+    return tpl;
+  };
+
+
+  /**
+   * Dropdown menu structures
+   * @param type
+   *  song, playlistShell
+   * @returns {{}}
+   */
+  app.helpers.dropdownTemplates = function(type){
+    var opts = {};
+    switch (type){
+
+      case 'song':
+        opts = {
+          key: 'song',
+          omitwrapper: true,
+          items: [
+            {url: '#', class: 'song-download', title: 'Download song'},
+            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist'}
+          ]
+        };
+        break;
+      case 'playlistShell':
+        opts = {
+          key: 'playlist',
+          pull: 'right',
+          items: [
+            {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
+            {url: '#', class: 'clear-playlist', title: 'Clear Playlist'}
+          ]
+        };
+        break;
+
+    }
+    return opts;
   };
 
 

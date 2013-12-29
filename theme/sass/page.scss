@@ -540,6 +540,20 @@ h4 {
 
 //Artists
 #sidebar-first {
+  .sidebar-title {
+    font-size: 22px;
+    height: 50px;
+    line-height: 50px;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    background: #F0EEEC;
+    padding: 0 0 0 20px;
+    margin: 15px 0 0 0;
+    a {
+      color: #6E7374;
+    }
+  }
   .sidebar-content {
     position: absolute;
     top: 0;
@@ -573,6 +587,7 @@ h4 {
           overflow: hidden;
           float: left;
           margin-right: 10px;
+          background-size: cover;
           img {
             width: 100%;
             display: block;
@@ -970,7 +985,34 @@ $album-meta-width: 100 - $album-tracks-width;
 .playlist-song-list,
 .song-list {
   padding: 0 0px;
-  li {
+  position: relative;
+  .list-actions {
+    position: absolute;
+    z-index: 10;
+    top: -42px;
+    right: 260px;
+    .btn {
+      padding: 6px 13px;
+      margin-right: 3px;
+      display: inline-block;
+      font-size: 150%;
+      border-radius: 3px;
+      color: #CDD2D6;
+      float: right;
+      &:hover {
+        color: #fff;
+      }
+      &:focus {
+        background: none;
+      }
+      i {
+        color: #a6abaf;
+        font-size: 90%;
+        padding-right: 2px;
+      }
+    }
+  }
+  li.song-row {
     position: relative;
     .song-actions-wrapper {
       display: none;
@@ -1008,6 +1050,12 @@ $album-meta-width: 100 - $album-tracks-width;
         }
         &.song-thumbsup {
           right: 48px;
+        }
+        &.song-remove {
+          right: 80px;
+          &:hover {
+            color: #D22431;
+          }
         }
       }
     }
@@ -1145,6 +1193,18 @@ $album-meta-width: 100 - $album-tracks-width;
     &.playlist-item-placeholder {
       height: 40px;
       background-color: $color-concrete
+    }
+    ul.dropdown-menu {
+      width: auto;
+      position: absolute;
+      right: 5px;
+      top: 35px;
+      left: auto;
+      a {
+        &:hover {
+          color: $color-light-slate;
+        }
+      }
     }
   }
 }
@@ -1443,9 +1503,9 @@ body.sidebar {
     }
     .meta {
       display: none;
-      background: $color-asbestos;
-      color: $color-mist;
-      padding: 15px;
+      font-size: 80%;
+      color: #ddd;
+      padding-left: 5px;
       .list-actions {
         margin: 0 -10px -10px;
         .cbutton {
@@ -1489,7 +1549,7 @@ body.sidebar {
         }
       }
       .meta {
-        display: block;
+        display: inline;
       }
     }
   }
@@ -1577,70 +1637,94 @@ body.sidebar {
 }
 
 
-/* Start: Recommended Isotope styles - Move */
 
-/**** Isotope Filtering ****/
-
-.isotope-item {
-  z-index: 2;
+.ui-widget {
+  font-family: Arial,sans-serif;
 }
 
-.isotope-hidden.isotope-item {
-  pointer-events: none;
-  z-index: 1;
+.ui-dialog {
+  background: $color-light-slate;
+  border: 0;
+  border-bottom: 1px solid $color-slate;
+  @include border-radius(3px);
+  padding: 5px 10px;
+
+  .ui-dialog-titlebar-close,
+  .ui-dialog-titlebar {
+    background: none;
+    border: 0;
+    border-bottom: 1px solid #4C8391;
+    text-transform: uppercase;
+    font-weight: normal;
+    color: #fff;
+    padding-left: 10px;
+  }
+  .ui-dialog-titlebar-close {
+    border: 0;
+    padding: 1px;
+    // prevent hover on x
+    &:hover .ui-icon-closethick,
+    .ui-icon-closethick:hover {
+      background-image: image-url('ui-icons_888888_256x240.png');
+    }
+  }
+  .ui-dialog-titlebar,
+  .form-text,
+  .btn,
+  .ui-dialog-titlebar-close {
+    @include border-radius(0);
+  }
+  .ui-dialog-content {
+    color: #ddd;
+    padding: 12px 10px 5px;
+    ul {
+      li {
+        padding: 6px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #4a4f50;
+        &:last-child {
+          border-bottom: 0;
+        }
+        &:hover {
+          background: rgba(255,255,255,0.05);
+        }
+      }
+    }
+    .form-text {
+      padding: 7px 5px;
+      border: 0;
+      background: rgba(255,255,255,0.7);
+      margin-top: 8px;
+    }
+    .btn {
+      padding: 5px 10px;
+      background: $color-slate;
+
+    }
+    p {
+      color: #aaa;
+    }
+  }
+  .ui-dialog-buttonpane {
+    background: none;
+    border: 0;
+    padding: 10px;
+    .ui-dialog-buttonset {
+      float: none;
+    }
+    button {
+      background: $color-slate;
+      color: #fff;
+      border: 0;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
 }
 
-/**** Isotope CSS3 transitions ****/
-
-.isotope,
-.isotope .isotope-item {
-  -webkit-transition-duration: 0.8s;
-  -moz-transition-duration: 0.8s;
-  -ms-transition-duration: 0.8s;
-  -o-transition-duration: 0.8s;
-  transition-duration: 0.8s;
-}
-
-.isotope {
-  -webkit-transition-property: height, width;
-  -moz-transition-property: height, width;
-  -ms-transition-property: height, width;
-  -o-transition-property: height, width;
-  transition-property: height, width;
-}
-
-.isotope .isotope-item {
-  -webkit-transition-property: -webkit-transform, opacity;
-  -moz-transition-property:    -moz-transform, opacity;
-  -ms-transition-property:     -ms-transform, opacity;
-  -o-transition-property:      -o-transform, opacity;
-  transition-property:         transform, opacity;
-}
-
-/**** disabling Isotope CSS3 transitions ****/
-
-.isotope.no-transition,
-.isotope.no-transition .isotope-item,
-.isotope .isotope-item.no-transition {
-  -webkit-transition-duration: 0s;
-  -moz-transition-duration: 0s;
-  -ms-transition-duration: 0s;
-  -o-transition-duration: 0s;
-  transition-duration: 0s;
-}
-
-/* End: Recommended Isotope styles */
 
 
-
-/* disable CSS transitions for containers with infinite scrolling*/
-.isotope.infinite-scrolling {
-  -webkit-transition: none;
-  -moz-transition: none;
-  -ms-transition: none;
-  -o-transition: none;
-  transition: none;
-}
 
 
 /* player states */
@@ -1778,6 +1862,12 @@ body {
     }
   }
 
+  // thumbs up, hide remove as the thumbs button does that
+  &.section-thumbsup {
+    .playlist-song-list li .song-actions-wrapper .btn.song-remove {
+      display: none !important;
+    }
+  }
 
 }
 

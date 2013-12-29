@@ -184,6 +184,9 @@ app.Router = Backbone.Router.extend({
 
       // menu
       app.shellView.selectMenuItem('home', 'no-sidebar');
+
+      //show now playing
+      app.playlists.changePlaylistView('xbmc');
     });
   },
 
@@ -353,9 +356,12 @@ app.Router = Backbone.Router.extend({
 
   thumbsup: function(){
 
-    var $content = $('#content');
+    var $content = $('#content')
+      $sidebar = app.helpers.getFirstSidebarContent();
 
-    $content.html('<div id="thumbs-up-page"><div id="tu-albums"></div><div id="tu-songs"></div></div>');
+    // so we get things in the correct order, we have lots of sub wrappers for the different lists
+    $content.html('<div id="thumbs-up-page"><div id="tu-songs"></div></div>');
+    app.helpers.setFirstSidebarContent('<div id="tu-artists"></div><div id="tu-albums"></div>');
 
     // set title
     app.helpers.setTitle('<a href="#artists">Artists</a>Thumbs Up');
@@ -373,25 +379,28 @@ app.Router = Backbone.Router.extend({
 
     }});
 
-    // Album
-    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
-    app.cached.thumbsUpCollection.fetch({"name": 'album', "success": function(res){
-
-      // render
-      app.cached.thumbsupAlbums = new app.SmallAlbumsList({model: res, className: 'album-generic-list'});
-      $('#tu-albums', $content).html(app.cached.thumbsupAlbums.render().el);
-
-    }});
-
     // Artist
     app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
     app.cached.thumbsUpCollection.fetch({"name": 'artist', "success": function(res){
 
       // add the sidebar view
       app.cached.thumbsupArtists = new app.AristsListView({model: res, className: 'artist-thumbs-up'});
-      app.helpers.setFirstSidebarContent(app.cached.thumbsupArtists.render().el);
-
+      $('#tu-artists',$sidebar).html(app.cached.thumbsupArtists.render().el);
+      app.helpers.firstSidebarBinds();
     }});
+
+    // Album
+    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
+    app.cached.thumbsUpCollection.fetch({"name": 'album', "success": function(res){
+
+      // render
+      app.cached.thumbsupAlbums = new app.SmallAlbumsList({model: res});
+      $('#tu-albums',$sidebar).html(app.cached.thumbsupAlbums.render().el)
+        .prepend('<h2 class="sidebar-title"><a href="#albums">Albums</a></h2>');
+      app.helpers.firstSidebarBinds();
+    }});
+
+
 
   },
 

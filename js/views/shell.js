@@ -78,6 +78,11 @@ app.ShellView = Backbone.View.extend({
     // Init player state cycle
     setInterval(app.AudioController.updatePlayerState, 5000);
 
+    // set playlist menu
+    $('.playlist-actions-wrapper', this.$el).html(
+      app.helpers.makeDropdown( app.helpers.dropdownTemplates('playlistShell') )
+    );
+
     //custom playlists
     app.playlists.addCustomPlayLists(function(view){
       var $sb = $('.alt-sidebar-items', self.$el);
@@ -184,9 +189,10 @@ app.ShellView = Backbone.View.extend({
 
       // specifics for non home pages
       switch (menuItem) {
+
         case 'playlist':
           // all this to open the sidebar playlist item
-          $('.local-playlist-tab').click();
+          app.playlists.changePlaylistView('local');
           $('ul.custom-lists .custom-playlist-item').each(function(i,d){
             var $d = $(d), $parent = $d.parent();
             if($d.data('id') == app.helpers.arg(1)){
@@ -195,6 +201,12 @@ app.ShellView = Backbone.View.extend({
               $parent.removeClass('open')
             }
           });
+          break;
+
+        case 'thumbsup':
+          $('.custom-lists li').removeClass('open');
+          $('.thumbsup-link').addClass('open');
+          app.playlists.changePlaylistView('local');
           break;
       }
     }
@@ -274,7 +286,7 @@ app.ShellView = Backbone.View.extend({
   savePlayList: function(e){
     e.preventDefault();
     // Save playlist
-    app.playlists.saveCustomPlayLists();
+    app.playlists.saveCustomPlayListsDialog();
     app.playlists.changePlaylistView('local');
   },
 

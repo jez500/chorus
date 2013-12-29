@@ -93,46 +93,129 @@ app.playlists.changePlaylistView = function(type){
 
 
 /**
+ * Save Current xbmc playlist Dialog
+ */
+app.playlists.saveCustomPlayListsDialog = function(type, items){
+
+  // validate type & items
+  type = (typeof type == 'undefined' ? 'xbmc' : type);
+  items= (typeof items == 'undefined' ? [] : items);
+
+  // vars
+  var lists = app.playlists.getCustomPlaylist(),
+    htmlList = '';
+
+  for(i in lists){
+    htmlList += '<li data-id="' + lists[i].id + '">' + lists[i].name + '</li>';
+  }
+
+  var content = '<p>Create a new playlist<br />' +
+    '<input class="form-text" type="text" id="newlistname" /> <button class="btn" id="savenewlist">Save</button></p>' +
+    '<p>Or add to an existing list<ul id="existinglists">' + htmlList + '</ul></p>';
+
+  // Create Dialog
+  app.helpers.dialog(content, {
+    title: 'Add to a playlist'
+  });
+
+  // save new bind
+  $('#savenewlist').on('click', function(e){
+    //alert('aasasas');
+    var name = $('#newlistname').val(),
+      pl = app.playlists.saveCustomPlayLists('new', name, type, items);
+    app.helpers.dialogClose();
+    document.location = '#playlist/' + pl.id;
+  });
+  // add to existing
+  $('#existinglists li').on('click', function(e){
+    var id = $(this).data('id'),
+      pl = app.playlists.saveCustomPlayLists('existing', id, type, items);
+    app.helpers.dialogClose();
+    document.location = '#playlist/' + pl.id;
+  });
+
+};
+
+
+
+/**
  * Save Current xbmc playlist to storage
  */
-app.playlists.saveCustomPlayLists = function(){
-
-  // get a name for the new playlist
-  var name = prompt("A name for this new playlist?","my list");
-  if(name == null){ return; }
+app.playlists.saveCustomPlayLists = function(op, id, type, newItems){
 
   // vars
   var items = [],
     lists = app.playlists.getCustomPlaylist(),
-    lastId = 0;
+    lastId = 0,
+    plObj = {};
 
-  // Get lastId
-  for(i in lists){
-    var list = lists[i];
-    if(lastId < list.id){
-      lastId = list.id;
-    }
+  if(type == 'xbmc'){
+    // get result from dom
+    // @todo, get from memory?
+    $('.playlist div.playlist-item').each(function(i,d){
+      items.push($(d).data('songid'));
+    });
+  } else {
+    // load from
+    items = newItems;
   }
-  // This id is the next number up
-  var thisId = lastId + 1;
 
-  // get result from dom
-  $('.playlist div.playlist-item').each(function(i,d){
-    items.push($(d).data('songid'));
-  });
 
-  // add result
-  lists.push({
-    items: items,
-    name: name,
-    id: thisId
-  });
+  // what do we do with the result
+  switch (op){
+
+    // Add a new list
+    case 'new':
+
+      // Get lastId
+      for(i in lists){
+        var list = lists[i];
+        if(lastId < list.id){
+          lastId = list.id;
+        }
+      }
+
+      // This id is the next number up
+      var thisId = lastId + 1;
+
+      // plobj
+      plObj = {
+        items: items,
+        name: id,
+        id: thisId
+      };
+
+      // add result
+      lists.push(plObj);
+
+      break;
+
+    // Add to existing list
+    case 'existing':
+
+      // find matching id and append
+      for(i in lists){
+        if(id == lists[i].id){
+          // append to matching list
+          for(n in items){
+            lists[i].items.push(items[n]);
+          }
+          // plobj
+          plObj = lists[i];
+        }
+      }
+
+      break;
+  }
 
   //save playlist
   app.storageController.setStorage(app.playlists.storageKeyLists, lists);
 
   // update list of playlists
   app.playlists.updateCustomPlayLists();
+
+  // return saved list obj
+  return plObj;
 };
 
 
@@ -145,6 +228,7 @@ app.playlists.addCustomPlayLists = function(callback){
 
   //custom playlists
   app.cached.playlistCustomListsView = new app.PlaylistCustomListCollection();
+
   // fetch collection
   app.cached.playlistCustomListsView.fetch({"success": function(items){
     app.cached.playlistCustomListsView = new app.PlaylistCustomListsView({model: items});
@@ -211,6 +295,20 @@ app.playlists.deleteCustomPlaylist = function(id){
 };
 
 
+/**
+ * delete playlist Song
+ */
+app.playlists.deleteCustomPlaylistSong = function(listId, songId){
+
+  var list = app.playlists.getCustomPlaylist(listId),
+  newItems = list.items.filter(function (element) {
+    return (songId != element);
+  });
+
+  app.playlists.replaceCustomPlayList(listId, newItems);
+
+};
+
 
 /**
  * replace custom playlist content
@@ -259,6 +357,42 @@ app.playlists.replaceCustomPlayList = function(listId, items){
   app.storageController.setStorage(app.playlists.storageKeyLists, lists);
 
 };
+
+
+/**
+ * Html for the sub tasks of a playlist
+ *
+ */
+app.playlists.getDropdown = function(){
+
+  var items = [],
+    type = app.helpers.arg(0),
+    buttons = {
+      append: 'Add to playlist',
+      replace: 'Replace playlist'
+    };
+
+  if(type != 'thumbsup'){
+    buttons.delete = 'Delete';
+  }
+
+  for(key in buttons){
+    items.push({
+      url: '#',
+      class: type + '-' + key,
+      title: buttons[key]
+    })
+  }
+
+  return app.helpers.makeDropdown({
+    key: type,
+    items: items
+  });
+
+};
+
+
+
 
 /**
  * save a thumbs up song

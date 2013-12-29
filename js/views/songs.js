@@ -22,11 +22,16 @@ app.SongView = Backbone.View.extend({
 
   tagName:"li",
 
+  className:'song-row',
+
   events: {
     "dblclick .song-title": "playSong",
     "click .song-play": "playSong",
     "click .song-add": "addSong",
-    "click .song-thumbsup": "thumbsUp"
+    "click .song-thumbsup": "thumbsUp",
+    //menu
+    "click .song-download":  "downloadSong",
+    "click .song-custom-playlist": "addToCustomPlaylist"
   },
 
   initialize:function () {
@@ -41,6 +46,10 @@ app.SongView = Backbone.View.extend({
     }
     // render
     this.$el.html(this.template(this.model.attributes));
+
+    // set playlist menu
+    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song')  ));
+
     return this;
   },
 
@@ -74,6 +83,21 @@ app.SongView = Backbone.View.extend({
       $el = $(e.target).closest('li');
     app.playlists.setThumbsUp(op, 'song', songid);
     $el.toggleClass('thumbs-up');
+  },
+
+  downloadSong: function(e){
+    var file = this.model.attributes.file;
+
+    e.preventDefault();
+    app.AudioController.downloadFile(file, function(url){
+      window.location = url;
+    })
+  },
+
+  addToCustomPlaylist: function(e){
+    e.preventDefault();
+    var id = this.model.attributes.songid;
+    app.playlists.saveCustomPlayListsDialog('song', [id]);
   }
 
 });
