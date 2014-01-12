@@ -1,5 +1,5 @@
 @import "base";
-//@import "libs";
+@import "libs";
 
 
 //resets
@@ -45,6 +45,31 @@ html {
   }
 }
 
+input[type="text"] {
+  border-width: 1px;
+  padding: 4px 5px;
+  @include border-radius(4px);
+}
+
+.page-list {
+  padding: 10px 20px;
+  h3 {
+    margin-bottom: 5px;
+  }
+  p {
+    margin-top: 5px;
+  }
+  li {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px;
+  }
+  a {
+    color: $color-light-slate;
+    &:hover {
+      color: $color-carrot;
+    }
+  }
+}
 
 //structure
 #header {
@@ -540,6 +565,9 @@ h4 {
 
 //Artists
 #sidebar-first {
+  .noresult-box {
+    background: none;
+  }
   .sidebar-title {
     font-size: 22px;
     height: 50px;
@@ -650,6 +678,12 @@ h4 {
         border-bottom: 1px solid #ddd;
         color: #777;
         cursor: pointer;
+        img {
+          float: left;
+          width: 30px;
+          height: 30px;
+          margin: -5px 10px 0 -10px;
+        }
         &:hover {
           color: #444;
         }
@@ -665,6 +699,9 @@ h4 {
           color: #fff;
           .file-actions {
             display: block;
+            .btn {
+              color: #fff !important;
+            }
           }
         }
 
@@ -691,6 +728,16 @@ h4 {
           font-size: 12px;
         }
       }
+      .show-actions {
+        .file-actions {
+          right: 30px;
+          display: block;
+          .btn {
+            font-size: 110%;
+            color: #777;
+          }
+        }
+      }
     }
   }
   // album
@@ -702,10 +749,11 @@ h4 {
   }
 }
 
+#content .files-list,
 .files-music {
   padding: 10px;
-  li {
-    overflow: hidden;
+  li.file-row {
+   // overflow: hidden;
     height: 40px;
     line-height: 40px;
     margin: 1px 0;
@@ -735,7 +783,9 @@ h4 {
         &:hover {
           opacity: 1;
         }
+
       }
+      .song-menu,
       .file-add {
         position: absolute;
         right: 0;
@@ -743,6 +793,16 @@ h4 {
         &:hover {
           color: $color-light-slate;
         }
+      }
+      .file-add {
+        right: 20px;
+      }
+      .dropdown-menu {
+        width: auto;
+        position: absolute;
+        right: 0;
+        left: auto;
+        top: 35px;
       }
     }
     &:hover {
@@ -824,11 +884,7 @@ $album-meta-width: 100 - $album-tracks-width;
     @include box-sizing(border-box);
     background: #F8F8F8;
     position: relative;
-    &:hover {
-      .album-actions-wrapper {
-        display: block;
-      }
-    }
+
     a {
       color: $color-asbestos;
     }
@@ -848,12 +904,27 @@ $album-meta-width: 100 - $album-tracks-width;
       .album-play {
         @include border-radius(0);
         @include hover-play-button;
+        background: none;
         right: 0;
         bottom: 0;
         padding: 0;
         line-height: 4;
         width: auto;
         font-size: 180%;
+        z-index: 10;
+      }
+      .img-overlay {
+        @include hover-play-button;
+        width: auto;
+        right: 0;
+        z-index: 5;
+      }
+      &:hover {
+        .img-overlay,
+        .album-actions-wrapper {
+          display: block;
+          opacity: 1;
+        }
       }
     }
 
@@ -867,16 +938,17 @@ $album-meta-width: 100 - $album-tracks-width;
     right: 15px;
     display: none;
     top: 0;
+    z-index: 10;
     .btn {
       background: none;
       margin: 0;
-      color: #bbb;
+      color: #eee;
       padding-left: 8px;
       padding-right: 8px;
     }
     .thumbs-up {
       .icon-thumbs-up {
-        color: $color-light-slate;
+        color: $color-carrot;
       }
     }
   }
@@ -892,9 +964,14 @@ $album-meta-width: 100 - $album-tracks-width;
        float: right;
        z-index: 20;
        width: 165px;
-       .album-actions-wrapper,
        .album-title-link {
          display: none; // both shown elsewhere
+       }
+       .album-actions-wrapper {
+         display: block;
+         .thumbs-up .icon-thumbs-up {
+           color: #fff;
+         }
        }
      }
    }
@@ -1216,7 +1293,40 @@ $album-meta-width: 100 - $album-tracks-width;
   margin-top: 0px;
 }
 
-
+#search-addons {
+  .files-list {
+    clear: both;
+  }
+}
+h3.search-heading {
+  background: #eee;
+  padding: 10px;
+  height: 70px;
+  position: relative;
+  color: #B9B9B9;
+  span {
+    display: block;
+    font-size: 27px;
+    line-height: 39px;
+    color: $color-light-slate;
+  }
+  img {
+    float: left;
+    width: 70px;
+    height: 70px;
+    padding-right: 15px;
+  }
+  &:after {
+    content: "";
+    width: 0;
+    height: 0;
+    border: 8px solid rgba(0, 0, 0, 0);
+    border-top: 8px solid #EEE;
+    position: absolute;
+    bottom: -15px;
+    left: 22px;
+  }
+}
 
 
 
@@ -1317,15 +1427,41 @@ body.sidebar {
     margin-left: 0;
   }
 }
+.addon-box,
 .noresult-box {
-  padding: 50px 25px;
+  min-height: 90px;
+  padding: 10px 10px;
   border: 0;
   background: rgba(241, 241, 241, 0.41);
   font-size: 120%;
-  color: #ADA6A6;
+  color: #797272;
   margin: 10px 0;
+  display: block;
+  &.empty img {
+    opacity: 0.5;
+  }
+  img {
+    width: 70px;
+    height: 70px;
+    margin-right: 15px;
+    float: left;
+  }
+  span {
+    padding-top: 10px;
+    line-height: 25px;
+    display: block;
+  }
 }
+.addon-box {
+  cursor: pointer;
+  &:hover {
+    background: #eee;
+    color: #534c4c;
+  }
+}
+.search-heading {
 
+}
 .album-generic-list {
   min-height: 100%;
   height: auto;
@@ -1724,6 +1860,72 @@ body.sidebar {
 }
 
 
+.xbmc-page {
+  padding: 10px;
+  #result {
+    max-height: 500px;
+    background: #eee;
+    padding: 15px;
+    overflow-y: auto;
+    &.error {
+      border-color: firebrick;
+      background: #fff0eb;
+    }
+  }
+  #description {
+    padding: 10px;
+    margin: 18px 0 18px;
+    background: #eee;
+    font-size: 120%;
+    position: relative;
+    &:before {
+      content: "";
+      width: 0;
+      height: 0;
+      border: 15px solid rgba(0, 0, 0, 0);
+      border-bottom: 15px solid #EEE;
+      position: absolute;
+      top: -25px;
+      left: 69px;
+    }
+  }
+  #params {
+    overflow: hidden;
+    display: block;
+  }
+  .btn {
+    background: $color-light-slate;
+    @include border-radius(3px);
+
+  }
+  .param {
+    float: left;
+    margin-right: 10px;
+    width: 270px;
+    &.actions {
+      width: auto;
+      margin: 22px 0 30px 10px;
+    }
+    pre {
+      font-size: 11px;
+      line-height: 15px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    select,
+    input {
+      width: 96%;
+    }
+    &.required {
+      label {
+        font-weight: bold;
+      }
+      input {
+        border: 1px solid #111;
+      }
+    }
+  }
+}
 
 
 

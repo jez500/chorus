@@ -17,7 +17,7 @@ app.xbmcController = {};
  * @param options
  * @param callback
  */
-app.xbmcController.command = function(command, options, callback){
+app.xbmcController.command = function(command, options, callback, errorCallback){
 
   $.jsonRPC.request(command, {
     params: options,
@@ -28,6 +28,9 @@ app.xbmcController.command = function(command, options, callback){
     },
     error: function(result) {
       app.helpers.errorHandler('xbmc song command call: ' + command, [result, options]);
+      if(errorCallback){
+        errorCallback([result, options])
+      }
     }
   });
 
@@ -45,6 +48,7 @@ app.xbmcController.multipleCommand = function(commands, callback){
     success: function(result) {
       for(i in result){
         if(typeof result[i].error != 'undefined'){
+          console.log(result, commands[i]);
           app.helpers.errorHandler('xbmc multiple command call: ' + i, [result[i], commands[i]]);
         }
       }

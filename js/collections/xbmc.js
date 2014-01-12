@@ -16,7 +16,7 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //method/params
   methods: {
-    read:  ['AudioLibrary.GetSongs', 'arg1', 'arg2', 'arg3']
+    read:  ['AudioLibrary.GetSongs'] //, 'arg1', 'arg2', 'arg3'
   },
   //return the artists key from the result
   parse:  function(resp, xhr){

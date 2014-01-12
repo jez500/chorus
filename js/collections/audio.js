@@ -130,6 +130,7 @@ app.PlaylistCustomListSongCollection = Backbone.Collection.extend({
     if (method === "read") {
 
       var list = app.playlists.getCustomPlaylist(options.name);
+
       app.AudioController.songLoadMultiple(list.items, function(songs){
         options.success(songs);
       });
@@ -187,6 +188,20 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
 
 
 
+app.CustomSongCollection = Backbone.Collection.extend({
+
+  model: app.Song,
+
+  sync: function(method, model, options) {
+    if (method === "read") {
+
+      app.AudioController.songLoadMultiple(options.items, function(songs){
+        options.success(songs);
+      });
+    }
+  }
+
+});
 
 
 
@@ -224,6 +239,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
 
     self.songsIndexed = false;
+    self.songsIndexing = false;
     self.albumsIndexed = false;
     self.albumsIndexed = false;
 
@@ -235,28 +251,40 @@ app.MemoryStore = function (successCallback, errorCallback) {
   this.indexSongs = function(successCallback){
     var self = this;
 
-    //get all songs
-    this.allSongs = new app.SongXbmcCollection();
-
-    // fetch all songs (very slow and locks up ui a bit)
-    this.allSongs.fetch({"success": function(data){
-
-      // assign to store
-      self.parseAudio(data.models);
-
-      //cache
-      app.stores.allSongs = data;
-
-      //flag as indexed
-      self.songsIndexed = true;
-
-      self.state = {ready: true, msg: 'songs ready'};
-      $(window).trigger('songsReady');
-
-      // ready action
-      //successCallback();
+    if(self.songsIndexed === true){
       callLater(successCallback,  self)
-    }});
+
+    } else {
+
+      // if not indexing, start
+      if(self.songsIndexing !== true){
+
+        //get all songs
+        self.songsIndexing = true;
+        this.allSongs = new app.SongXbmcCollection();
+
+        // fetch all songs (very slow and locks up ui a bit)
+        this.allSongs.fetch({"success": function(data){
+
+          // assign to store
+          //self.parseAudio(data.models);
+          console.log(data);
+          //cache
+          app.stores.allSongs = data;
+
+          //flag as indexed
+          self.songsIndexed = true;
+
+          self.state = {ready: true, msg: 'songs ready'};
+          $(window).trigger('songsReady');
+
+          // ready action
+          //successCallback();
+          callLater(successCallback,  self)
+        }});
+      }
+
+    }
 
   };
 

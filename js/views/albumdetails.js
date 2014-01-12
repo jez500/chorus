@@ -21,8 +21,8 @@ app.AlbumView = Backbone.View.extend({
       app.helpers.setTitle('<a href="#artist/' + alb.artistid + '">' + alb.artist + '</a>' + alb.album);
 
       // add actions to title
-      var $actions = $al.find('.album-actions-wrapper').clone();
-      $('#title').append($actions);
+      //var $actions = $al.find('.album-actions-wrapper').clone(true, true);
+      //$('#title').append($actions);
 
       //remove any existing active
       $('#sidebar-first .album-small-row').removeClass('active');

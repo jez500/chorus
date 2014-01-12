@@ -1,4 +1,12 @@
-Version 0.1.0:
 
+Version 0.1.2:
+- Changed context options for album to be over artwork
+- Clear playlist before adding a song if nothing is playing
+- Local dump dev page
+- removed context menus not in use
+- fixed bug with thumbs up songs not showing
+
+
+Version 0.1.0:
 Initial release Jan 2014
 - First release of Chorus

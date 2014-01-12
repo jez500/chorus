@@ -55,8 +55,8 @@ app.AlbumItemView = Backbone.View.extend({
   },
 
   //play an album from start, replacing current playlist
-  playAlbum: function(){
-
+  playAlbum: function(e){
+    e.stopPropagation();
     // clear playlist. add artist, play first song
     var album = this.model.attributes;
     app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
@@ -67,8 +67,8 @@ app.AlbumItemView = Backbone.View.extend({
 
   },
 
-  addAlbum: function(){
-
+  addAlbum: function(e){
+    e.stopPropagation();
     // clear playlist. add artist, play first song
     var album = this.model.attributes;
     app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
@@ -80,7 +80,7 @@ app.AlbumItemView = Backbone.View.extend({
 
 
   thumbsUp: function(e){
-
+    e.stopPropagation();
     var album = this.model.attributes,
       albumid = this.model.attributes.albumid,
       op = (app.playlists.isThumbsUp('album', albumid) ? 'remove' : 'add'),

@@ -10,7 +10,7 @@ module.exports = function(grunt) {
         src: [
 
           // jQuery
-          'lib/required/jquery-1.9.1.min.js',
+          'lib/required/jquery-1.10.2.js',
 
           // underscore
           'lib/required/underscore-min.js',

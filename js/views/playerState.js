@@ -155,7 +155,8 @@ app.playerStateView = Backbone.View.extend({
       }
     }
 
-
+    // refresh playlist
+    app.AudioController.playlistRefresh();
   },
 
   /**
@@ -218,28 +219,40 @@ app.playerStateView = Backbone.View.extend({
    * Runs every 5 sec
    */
   playerCron:function (){
-    var data = this.model;
+    var data = this.model,
+      lastState =  app.helpers.varGet('lastState', ''),
+      noState = (typeof lastState == 'undefined' || typeof lastState.volume == 'undefined');
 
-    //set volume
-    app.shellView.$volumeSlider.slider( "value",data.volume.volume );
-    //muted class
-    if(data.volume.volume == 0){
-      $('body').addClass('muted');
-    } else {
-      $('body').removeClass('muted');
+    //set volume, only if we must
+    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active')  // is the slider currently being moved?
+      && (noState || lastState.volume.volume != data.volume.volume)){
+      app.shellView.$volumeSlider.slider( "value",data.volume.volume );
+      //muted class
+      if(data.volume.volume == 0){
+        $('body').addClass('muted');
+      } else {
+        $('body').removeClass('muted');
+      }
     }
 
     // set repeat title text
-    var $t = $('.player-repeat'), t = $t.attr('title'),
-      n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
-    if(t != n){ $t.attr('title', n); }
+    if(noState || lastState.player.repeat != data.player.repeat){
+      var $t = $('.player-repeat'), t = $t.attr('title'),
+        n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
+      if(t != n){ $t.attr('title', n); }
+    }
 
     // set random title text
-    var $t = $('.player-random'), t = $t.attr('title'),
-      n = 'Random is ' + (data.player.shuffled === true ? 'On' : 'Off');
-    if(t != n){ $t.attr('title', n); }
+    if(noState || lastState.player.shuffled != data.player.shuffled){
+      var $t = $('.player-random'), t = $t.attr('title'),
+        n = 'Random is ' + (data.player.shuffled === true ? 'On' : 'Off');
+      if(t != n){ $t.attr('title', n); }
+    }
 
-
+    // Set last state to data
+    app.helpers.varSet('lastState', data);
   }
+
+
 
 });

@@ -12,6 +12,9 @@ app.FileCollection = Backbone.Collection.extend({
       if(options.name == 'sources'){
         // Get Sources
         this.getSources(options.success);
+      } else if(options.name == 'addons'){
+        // Get addons
+        this.getAddonSources(options.success);
       } else {
         // Get Dir
         this.getDirectory(options.name, options.success);
@@ -29,6 +32,11 @@ app.FileCollection = Backbone.Collection.extend({
       callback(sources);
     })
 
+  },
+
+  //get addon sources
+  getAddonSources:function(callback){
+    app.addOns.getSources(callback);
   },
 
   getDirectory: function(dir, callback){
@@ -56,11 +64,17 @@ app.FileCollection = Backbone.Collection.extend({
         models[i].filetype = 'directory';
       }
 
+      if(typeof models[i].id == 'undefined' || models[i].id == 0){
+        models[i].id = models[i].file;
+      }
+
       if(models[i].filetype == 'directory'){
-        var f = models[i].file.split('/'),
-          foo = f.pop(),
-          name = f.pop();
-        models[i].title = name;
+//        var f = models[i].file.split('/'),
+//          foo = f.pop(),
+//          name = f.pop();
+        models[i].title = models[i].label;
+      } else {
+        models[i].type = 'file';
       }
 
       if(typeof models[i].title == 'undefined' || models[i].title == ''){
@@ -71,6 +85,8 @@ app.FileCollection = Backbone.Collection.extend({
         models[i].thumbnail = '';
       }
 
+      // let addons tinker
+      models[i] = app.addOns.invokeAll('parseFileRecord', models[i]);
     }
 
     return models;

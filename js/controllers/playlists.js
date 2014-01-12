@@ -26,10 +26,11 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   $sortable.find('div.playlist-item').each(function(i,d){
     $d = $(d);
     //if this row store the position
-    if($d.data('id') === $thisItem.data('id')){
+    if($d.data('path') === $thisItem.data('path')){
       changed = {from: $thisItem.data('id'), to: i};
     }
   });
+
   //if an item has changed position, swap its position in xbmc
   if(changed.from != undefined && changed.from !== changed.to){
     app.AudioController.playlistSwap(changed.from, changed.to, function(res){
@@ -38,7 +39,7 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   }
 };
 
-
+// doesnt seem to be in use
 app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
 
   //the item just moved
@@ -50,10 +51,11 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
   $sortable.find('div.playlist-item').each(function(i,d){
     $d = $(d);
     //if this row store the position
-    if($d.data('id') === $thisItem.data('id')){
-      changed = {from: $thisItem.data('id'), to: i};
+    if($d.data('path') === $thisItem.data('path')){
+      changed = {from: $thisItem.data('path'), to: i};
     }
   });
+  console.log(changed);
   //if an item has changed position, swap its position in xbmc
   if(changed.from != undefined && changed.from !== changed.to){
     app.AudioController.playlistSwap(changed.from, changed.to, function(res){
@@ -110,8 +112,8 @@ app.playlists.saveCustomPlayListsDialog = function(type, items){
   }
 
   var content = '<p>Create a new playlist<br />' +
-    '<input class="form-text" type="text" id="newlistname" /> <button class="btn" id="savenewlist">Save</button></p>' +
-    '<p>Or add to an existing list<ul id="existinglists">' + htmlList + '</ul></p>';
+    '<input class="form-text" type="text" id="newlistname" /> <button class="btn bind-enter" id="savenewlist">Save</button></p>' +
+    (htmlList != '' ? '<p>Or add to an existing list</p><ul id="existinglists">' + htmlList + '</ul>' : '');
 
   // Create Dialog
   app.helpers.dialog(content, {
@@ -120,12 +122,12 @@ app.playlists.saveCustomPlayListsDialog = function(type, items){
 
   // save new bind
   $('#savenewlist').on('click', function(e){
-    //alert('aasasas');
     var name = $('#newlistname').val(),
       pl = app.playlists.saveCustomPlayLists('new', name, type, items);
     app.helpers.dialogClose();
     document.location = '#playlist/' + pl.id;
   });
+
   // add to existing
   $('#existinglists li').on('click', function(e){
     var id = $(this).data('id'),
@@ -141,7 +143,7 @@ app.playlists.saveCustomPlayListsDialog = function(type, items){
 /**
  * Save Current xbmc playlist to storage
  */
-app.playlists.saveCustomPlayLists = function(op, id, type, newItems){
+app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
 
   // vars
   var items = [],
@@ -149,14 +151,23 @@ app.playlists.saveCustomPlayLists = function(op, id, type, newItems){
     lastId = 0,
     plObj = {};
 
-  if(type == 'xbmc'){
-    // get result from dom
-    // @todo, get from memory?
-    $('.playlist div.playlist-item').each(function(i,d){
-      items.push($(d).data('songid'));
+  if(source == 'xbmc'){
+
+    console.log(app.cached.xbmcPlaylist);
+    _.each(app.cached.xbmcPlaylist, function(d){
+      if(d.id == 'file'){
+        // let addons tinker
+        d = app.addOns.invokeAll('parseFileRecord', d);
+        // if there is no song id, we must cache the whole
+        // object as we can't look it up later
+        items.push(d);
+      } else {
+        items.push(d.id);
+      }
     });
+
   } else {
-    // load from
+    // load from var
     items = newItems;
   }
 
@@ -344,7 +355,7 @@ app.playlists.replaceCustomPlayList = function(listId, items){
   // Get a full list then update our specific list
   listId = parseInt(listId);
   var lists = app.playlists.getCustomPlaylist();
-  if(typeof lists[listId] != 'undefined' && items.length > 0){
+  if(items.length > 0){
     for(i in lists){
       // if matching list, update
       if(lists[i].id == listId){

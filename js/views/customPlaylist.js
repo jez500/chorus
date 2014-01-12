@@ -28,11 +28,13 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
       this.list = app.playlists.getThumbsUp('song');
     }
 
-
     this.$el.empty();
+    var i = 0;
     _.each(this.model.models, function (song) {
       song.attributes.list = this.list;
+      song.attributes.position = i;
       this.$el.append(new app.CustomPlaylistSongView({model:song}).render().el);
+      i++;
     }, this);
 
     // sortable
@@ -48,6 +50,8 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
 
   playlistBinds:function(){
 
+    var self = this;
+
     //sortable
     $sortableCustom = this.$el;
 
@@ -62,10 +66,12 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
           listId = app.helpers.arg(0) == 'thumbsup' ? 'thumbsup' : app.helpers.arg(1),
           $container = $('ul.playlist-song-list');
 
+        // recreate the list using the original list + pos to rebuild
         $container.find('div.playlist-item').each(function(i,d){
-          list.push($(d).data('songid'));
+          var item = self.list.items[$(d).data('pos')];
+          list.push(item);
         });
-
+        console.log(list, listId);
         // Update the playlist order in storage
         app.playlists.replaceCustomPlayList(listId, list);
 
@@ -83,6 +89,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     e.preventDefault();
     // add list
     var list = app.playlists.getCustomPlaylist(this.list.id);
+    console.log(list.items);
     this.addCustomListToPlaylist(list.items);
     app.notification('Playlist updated');
   },
@@ -175,7 +182,12 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
    * @param callback
    */
   addCustomListToPlaylist:function(items, callback) {
-    app.AudioController.playlistAddMultiple('songid', items, function(result){
+    for(i in items){
+      if(typeof items[i] != 'number'){
+        items[i] = items[i].file;
+      }
+    }
+    app.AudioController.playlistAddMultiple('mixed', items, function(result){
       // refresh playlist and switch to what got added
       app.AudioController.playlistRefresh();
       app.playlists.changePlaylistView('xbmc');
@@ -208,6 +220,12 @@ app.CustomPlaylistSongView = Backbone.View.extend({
   },
 
   render:function () {
+
+    if(typeof this.model.attributes.position == 'undefined'){
+      console.log('no position');
+      return this;
+    }
+
     // add if thumbs up
     if( app.playlists.isThumbsUp('song', this.model.attributes.songid) ) {
       this.$el.addClass('thumbs-up')
@@ -226,17 +244,20 @@ app.CustomPlaylistSongView = Backbone.View.extend({
    * @param event
    */
   playSong: function(event){
-   var song = this.model.attributes;
+   var song = this.model.attributes,
+     key = app.helpers.getSongKey(song);
+
     app.playlists.changePlaylistView('xbmc');
-    app.AudioController.insertAndPlaySong('songid', song.songid, function(){
+    app.AudioController.insertAndPlaySong(key.type, key.id, function(){
       app.notification(song.label + ' added to the playlist');
       app.AudioController.playlistRefresh();
     });
   },
 
   addSong: function(){
-    var song = this.model.attributes;
-    app.AudioController.playlistAdd( 'songid', song.songid, function(result){
+    var song = this.model.attributes,
+      key = app.helpers.getSongKey(song);
+    app.AudioController.playlistAdd(key.type, key.id, function(result){
       app.notification(song.label + ' added to the playlist');
       app.AudioController.playlistRefresh();
     });
@@ -274,9 +295,13 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
   addToCustomPlaylist: function(e){
     e.preventDefault();
-    console.log(this.model.attributes);
-    var id = this.model.attributes.songid;
-    app.playlists.saveCustomPlayListsDialog('song', [id]);
+
+    var song = this.model.attributes,
+      key = app.helpers.getSongKey(song),
+    // if file, gets the whole object
+      id = (key.type == 'file' ? song : song.songid);
+    console.log(id);
+    app.playlists.saveCustomPlayListsDialog(key.type, [id]);
   }
 
 });

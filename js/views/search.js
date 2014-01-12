@@ -11,7 +11,6 @@ app.searchView = Backbone.View.extend({
 
   },
 
-
   /**
    * Render based on key in the model
    * this is all a bit messy and could be refined
@@ -34,7 +33,7 @@ app.searchView = Backbone.View.extend({
         $title = $('#title'),
         notfoundartist = '<div class="noresult-box">No Artists found</div>';
 
-      $content.empty().html('<div id="search-albums"></div><div id="search-songs"></div>');
+      $content.empty().html('<div id="search-albums"></div><div id="search-songs"></div><div id="search-addons"></div>');
       $title.html('<a href="#artists">Artists </a>Albums');
 
       // get artists list (sidebar)
@@ -61,8 +60,8 @@ app.searchView = Backbone.View.extend({
 
       //get albums
       var $albums = $('#search-albums'),
-        loading = '<div class="loading-box">Loading Albums</div>',
-        notfoundalb = '<div class="noresult-box"><h3>Albums</h3>No Albums found with "'+key+'" in the title</div>';
+        loading = '<div class="noresult-box">' + self.getLogo('album') + '<span>Loading Albums</span></div>',
+        notfoundalb = '<div class="noresult-box empty">' + self.getLogo('album') + '<span>No Albums found with "'+key+'" in the title<span></div>';
 
       $albums.html(loading);
 
@@ -81,6 +80,7 @@ app.searchView = Backbone.View.extend({
           // add to content
           app.cached.SearchAlbumListSmall = new app.SmallAlbumsList({model: data, className: 'album-generic-list'});
           $albums.append(app.cached.SearchAlbumListSmall.render().el);
+          $albums.prepend('<h3 class="search-heading">' + self.getLogo('album') + 'Album search for:<span>' + key + '</span></h3>');
         } else {
           //no results
           $albums.html(notfoundalb);
@@ -89,48 +89,24 @@ app.searchView = Backbone.View.extend({
       }});
 
 
-      //get songs
-      var $songs = $('#search-songs'),
-        indexing = false,
-        indexingCopy = '<div class="noresult-box">Indexing Songs, this can take a long time! Maybe browse a bit then come back later</div>',
-        notIndexedCopy  =
-          '<div class="noresult-box"><h3>Songs...</h3>' +
-            '<p class="text-copy">To search song titles we need to load the entire song collection into the browser,' +
-            'this takes a very long and some non-cached stuff might not work while while indexing' +
-            ' so no controlls work while indexing. <br /><br />' +
-            '<a id="index-songs-btn" href="#index-songs" class="btn btn-large btn-inverse">Ok, Index the songs</a></p></div>';
+      // get addons
+      var $addons = $('#search-addons');
+      $addons.empty();
+      app.addOns.ready(function(){
+        $addons = app.addOns.invokeAll('searchAddons', $addons, key);
+      });
 
-      $songs.html(notIndexedCopy);
 
-      if(app.store.songsIndexed !== true){
-
-        // check if indexing
-        indexing = (typeof self.indexing != 'undefined' && self.indexing === true);
-        // provide correct copy
-        $songs.html((indexing ? indexingCopy : notIndexedCopy));
-        if(!indexing){
-
-          // attach lookup to click
-          $('#index-songs-btn').click(function(e){
-            self.indexing = true;
-            $songs.html(indexingCopy);
-            // update and search
-            app.store.indexSongs(function(data){
-              key = $('#search').val();
-              self.searchSongs(key);
-              self.indexing = false;
-            });
-          });
-
-        }
-
-      } else {
-        // already indexed
-        self.searchSongs(key);
-      }
+      // searrch songs
+      self.searchSongs(key);
 
     }
 
+  },
+
+  // Get a generic logo/icon
+  getLogo: function(type){
+    return '<img src="theme/images/icons/icon-' + type + '.png" />'
   },
 
 
@@ -140,32 +116,57 @@ app.searchView = Backbone.View.extend({
    */
   searchSongs: function(key){
 
-    var $songs = $('#search-songs');
+    var $songs = $('#search-songs'),
+      self = this;
+
 
     // bind to songs ready
-    $songs.html('<p class="loading-box">Loading Songs</p>');
-    app.store.libraryCall(function(){
+    $songs.html('<div class="addon-box">' + self.getLogo('song') + '<span>Loading Songs</span></div>');
+
+    app.store.indexSongs(function(){
+
       app.cached.SearchsongList = new app.SongCollection();
       app.cached.SearchsongList.fetch({success: function(data){
+
+        var songsIds = [];
+
         $songs.empty();
         // filter based on string match
         var songs = data.models.filter(function (element) {
           var label = element.attributes.label;
           return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
         });
-        // update model with new collection
-        data.models = songs;
-        if(songs.length > 0){
-          $songs.append('<h3 class="section-title">Songs</h3>');
+
+        // get array of ids for multi-load
+        _.each(songs, function(song){
+          songsIds.push(song.attributes.songid);
+        });
+
+        // Get a list of fully loaded models from id
+        if(songsIds.length > 0){
+          app.cached.SearchsongListFiltered = new app.CustomSongCollection();
+          app.cached.SearchsongListFiltered.fetch({items: songsIds, success: function(data){
+
+            // heading
+            $songs.append('<h3 class="search-heading">' + self.getLogo('song') + 'Songs search for:<span>' + key + '</span></h3>');
+
+            // add to content
+            app.cached.SearchsongList = new app.SongListView({model: data.models, className: 'song-search-list song-list'});
+            $songs.append(app.cached.SearchsongList.render().el);
+
+          }});
+        } else {
+          // no res
+          $songs.html('<div class="noresult-box empty">' + self.getLogo('song') + '<span>No Songs found</span></div>')
         }
-        // add to content
-        app.cached.SearchsongList = new app.SongListView({model: data.models, className: 'song-search-list song-list'});
-        $songs.append(app.cached.SearchsongList.render().el);
+
+
       }});
 
-    },'songsReady');
+    });
 
-  },
+
+  }
 
 
 });

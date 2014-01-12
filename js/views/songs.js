@@ -47,7 +47,7 @@ app.SongView = Backbone.View.extend({
     // render
     this.$el.html(this.template(this.model.attributes));
 
-    // set playlist menu
+    // set song menu
     $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song')  ));
 
     return this;

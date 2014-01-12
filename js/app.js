@@ -128,7 +128,8 @@ app.Router = Backbone.Router.extend({
     "search/:q":            "search",
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
-    "files":                "files"
+    "files":                "files",
+    "xbmc/:op":             "xbmc"
   },
 
 
@@ -309,18 +310,31 @@ app.Router = Backbone.Router.extend({
 
 
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":'sources', "success": function(res){
+    app.cached.fileCollection.fetch({"name":'sources', "success": function(sources){
 
-      // set menu
-      app.shellView.selectMenuItem('files', 'sidebar');
+      app.cached.fileAddonCollection = new app.FileCollection();
+      app.cached.fileAddonCollection.fetch({"name":'addons', "success": function(addons){
 
-      // render page
-      app.cached.filesView = new app.FilesView({"model":res});
-      var el = app.cached.filesView.render().$el;
+        // set menu
+        app.shellView.selectMenuItem('files', 'sidebar');
 
-      app.helpers.setFirstSidebarContent(el);
+        // render page
+        app.cached.filesView = new app.FilesView({"model":sources});
+        var el = app.cached.filesView.render().$el;
 
-      app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
+        // append addons
+        app.cached.filesAddonsView = new app.FilesView({"model":addons});
+        if(addons.length > 0){
+          el.append('<h3 class="sidebar-title">Addons</h3>');
+          el.append(app.cached.filesAddonsView.render().$el);
+        }
+
+
+        app.helpers.setFirstSidebarContent(el);
+
+        app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
+
+      }});
 
     }});
 
@@ -419,6 +433,23 @@ app.Router = Backbone.Router.extend({
       });
     }
 
+  },
+
+
+  /**
+   * Used mainly for dev and stats, see xbmc view
+   * @param op
+   */
+  xbmc: function(op){
+
+    app.cached.xbmcView = new app.XbmcView({model: op});
+    $('#content').html(app.cached.xbmcView.render().$el);
+
+    // set title
+    app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>');
+
+    // set menu
+    app.shellView.selectMenuItem('xbmc', 'no-sidebar');
   }
 
 

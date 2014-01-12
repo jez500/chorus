@@ -17,7 +17,6 @@ app.PlaylistView = Backbone.View.extend({
   render:function () {
     this.$el.empty();
     var pos = 0; //position
-
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
       this.$el.append(new app.PlaylistItemView({model:item}).render().el);
@@ -68,10 +67,17 @@ app.PlaylistItemView = Backbone.View.extend({
     this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
     // render
     this.$el.html(this.template(this.model));
+
+    // if file, add its path
+    if(this.model.id == 'file'){
+      $('.song', this.$el).data('file', this.model.file);
+    }
+
     return this;
   },
 
   playPosition:function(event){
+
     app.AudioController.playPlaylistPosition(this.model.pos, function(data){
       app.AudioController.playlistRefresh();
     });

@@ -49,15 +49,54 @@ app.FilesView = Backbone.View.extend({
 
 });
 
+
+/**
+ * Raw file list
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.FilesListView = Backbone.View.extend({
+
+  tagName:'ul',
+
+  className:'files-list',
+
+  initialize:function () {
+
+  },
+
+  render:function () {
+
+    this.$el.empty();
+
+    this.model.models.sort(function(a,b){
+      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
+    });
+
+    _.each(this.model.models, function (file) {
+      this.$el.append(new app.FileView({model:file}).render().el);
+    }, this);
+
+    return this;
+  }
+
+});
+
+
+
 app.FileView = Backbone.View.extend({
 
   tagName:"li",
+
+  className:'file-row',
 
   events: {
     "dblclick .file-item": "playDir",
     "click .file-play": "playDir",
     "click .file-type-directory": "clickDir",
-    "click .file-add": "addDir"
+    "click .file-add": "addDir",
+    //menu
+    "click .song-download":  "downloadSong",
+    "click .song-custom-playlist": "addToCustomPlaylist"
   },
 
   initialize:function () {
@@ -68,6 +107,13 @@ app.FileView = Backbone.View.extend({
 
     // render
     this.$el.html(this.template(this.model.attributes));
+
+    // set song menu
+    $('.file-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song')  ));
+
+    // post process file
+    this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, this.model.attributes);
+
     return this;
 
   },
@@ -80,17 +126,21 @@ app.FileView = Backbone.View.extend({
       self = this,
       $this = $(e.target).parent();
 
+    // let addons tinker
+    app.addOns.invokeAll('clickDir', file);
+
     $('#sidebar-first li').removeClass('lowest');
     $this.addClass('loading');
 
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":file.file, "success": function(res){
-      console.log(file);
+    app.cached.fileCollection.fetch({"name":dir, "success": function(res){
+
       // render content and get sidebar updated content
       var el = new app.FilesView({"model":res}).render().$el;
 
       // dont append if already appended
-      if(self.$el.find('ul').length == 0){
+      //console.log(self.$el);
+      if(self.$el.find('ul.files-list').length == 0){
         self.$el.append(el);
       }
 
@@ -141,7 +191,23 @@ app.FileView = Backbone.View.extend({
       app.AudioController.playlistRefresh();
     });
 
+  },
+
+  downloadSong: function(e){
+    var file = this.model.attributes.file;
+
+    e.preventDefault();
+    app.AudioController.downloadFile(file, function(url){
+      window.location = url;
+    })
+  },
+
+  addToCustomPlaylist: function(e){
+    e.preventDefault();
+    var file = this.model.attributes;
+    app.playlists.saveCustomPlayListsDialog('file', [file]);
   }
+
 
 
 });

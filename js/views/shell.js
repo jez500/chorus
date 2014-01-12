@@ -105,7 +105,8 @@ app.ShellView = Backbone.View.extend({
     "click .player-random": "playerRandom",
     "click .playlist-primary-tab": "primaryTabClick",
     "click .save-playlist": "savePlayList",
-    "click .clear-playlist": "clearPlaylist"
+    "click .clear-playlist": "clearPlaylist",
+    "click .refresh-playlist": "refreshPlaylist"
   },
 
 
@@ -290,6 +291,13 @@ app.ShellView = Backbone.View.extend({
     app.playlists.changePlaylistView('local');
   },
 
+  /**
+   * refresh playlist
+   */
+  refreshPlaylist: function(e){
+    e.preventDefault();
+    app.AudioController.playlistRefresh();
+  },
 
   //Clear a playlist
   clearPlaylist: function(e){

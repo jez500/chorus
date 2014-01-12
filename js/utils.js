@@ -157,6 +157,21 @@ $(document).ready(function(){
 
 
   /**
+   * For a given song returns the type and id to use when dealing with the player
+   * @param song
+   *  assumes songid is file
+   * @return {type, id}
+   */
+  app.helpers.getSongKey = function(song){
+    var o = {
+      type: (song.songid == 'file' || typeof song.songid == 'undefined' ? 'file' : 'songid')
+    };
+    o.id = (o.type == 'file' ? song.file : song.songid);
+    return o;
+  };
+
+
+  /**
    * Populate the first sidebar
    * @param content
    * @param append
@@ -428,6 +443,7 @@ $(document).ready(function(){
 
     $dialog.dialog( "option", "height", "auto");
     $dialog.dialog( "option", "title", " ");
+    $dialog.dialog( "option", "buttons", {});
 
     //set content and options
     $dialog.html(content);
@@ -437,6 +453,17 @@ $(document).ready(function(){
     $dialog.bind( "dialogopen", function(event, ui) {
       $('.ui-widget-overlay, .ui-dialog').css('position', 'fixed');
       $('.dialog-menu a:last').addClass('last');
+
+      // bind to enter
+      $dialog.keypress(function(e) {
+        if (e.keyCode == $.ui.keyCode.ENTER) {
+          // look for a button with class "bind-enter" first, fallback to OK btn, fallback to none.
+          var $parent = $(this).parent(),
+            $enterButton = $parent.find('.bind-enter'),
+            $btn = ($enterButton.length == 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
+          $btn.trigger("click");
+        }
+      });
     });
 
     //open
@@ -477,6 +504,38 @@ $(document).ready(function(){
 
     app.helpers.dialog(msg, opts);
   };
+
+
+  /**
+   * Emulates prompt() but using our dialog
+   * @param msg
+   *  string message to display
+   * @param success
+   *  function callback
+   */
+  app.helpers.prompt = function(msg, success){
+
+    var opts = {
+      title: 'Prompt',
+      buttons: {
+        "OK": function(){
+          var text = $('#promptText').val();
+          if(text != ''){
+            success(text);
+            $( this ).dialog( "close" );
+          }
+        },
+        "Cancel": function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    };
+
+    msg += '<div class="form-item"><input type="text" class="form-text" id="promptText" /></div>';
+
+    app.helpers.dialog(msg, opts);
+  };
+
 
 
   /**
@@ -544,7 +603,9 @@ $(document).ready(function(){
           pull: 'right',
           items: [
             {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
-            {url: '#', class: 'clear-playlist', title: 'Clear Playlist'}
+            {url: '#', class: 'clear-playlist', title: 'Clear Playlist'},
+            {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'}
+
           ]
         };
         break;

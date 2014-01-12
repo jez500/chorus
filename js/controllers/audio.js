@@ -21,6 +21,9 @@ app.AudioController.playlistRefresh = function(callback){
   // xbmc playlist
   app.AudioController.getPlaylistItems(function(result){
 
+    //cache
+    app.cached.xbmcPlaylist = result.items;
+
     //create a new playlist view and render
     app.playlistView = new app.PlaylistView({model:{models:result.items}});
     $('.sidebar-items').html(app.playlistView.render().el);
@@ -84,10 +87,15 @@ app.AudioController.playlistAdd = function(type, id, callback){
  */
 app.AudioController.playlistAddMultiple = function(type, ids, callback){
 
-  var commands = [];
+  var commands = [],  id;
   for(n in ids){
     param = {};
-    param[type] = ids[n];
+    id = ids[n];
+    // used only for songs, switches between file and id depending on var type
+    if(type == 'mixed'){
+      type = (typeof id == 'number' ? 'songid' : 'file');
+    }
+    param[type] = id;
     commands.push({method: 'Playlist.Add', params: [app.AudioController.playlistId,param]});
   }
 
@@ -121,14 +129,15 @@ app.AudioController.playlistAddMultiple = function(type, ids, callback){
  *  new playlist position
  */
 app.AudioController.playlistSwap = function(pos1, pos2, callback){
-
+  console.log(pos1, pos2);
   //get playlist items
   app.AudioController.getPlaylistItems(function(result){
     //clone for insert
     var clone = result.items[pos1],
       insert = {};
     //if songid found use that as a preference
-    if(clone.id != undefined){
+    console.log(clone);
+    if(clone.id != undefined && typeof clone.id == 'number'){
       insert.songid = clone.id;
     } else { //use filepath if no songid
       insert.file = clone.file;
@@ -251,13 +260,31 @@ app.AudioController.insertAndPlaySong = function(type, id, callback){
 
   insert[type] = id;
 
-  app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
-    app.AudioController.playPlaylistPosition(pos, function(){
-      if(callback){
-        callback(data);
-      }
+  // if nothing is playing, we will clear the playlist first
+  if(app.cached.nowPlaying.status == 'notPlaying'){
+    // clear
+    app.AudioController.playlistClear(function(){
+      // insert
+      app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
+        // play
+        app.AudioController.playPlaylistPosition(pos, function(){
+          if(callback){
+            callback(data);
+          }
+        });
+      });
+    })
+  } else {
+    // playing, insert
+    app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
+      // play
+      app.AudioController.playPlaylistPosition(pos, function(){
+        if(callback){
+          callback(data);
+        }
+      });
     });
-  });
+  }
 
 };
 
@@ -271,10 +298,28 @@ app.AudioController.songLoadMultiple = function(songids, callback){
     // create commands
     for(n in songids){
       var sid = songids[n];
-      commands.push({
-        method: 'AudioLibrary.GetSongDetails',
-        params: [sid, app.songFields ]
-      });
+      if(typeof sid == 'number'){
+        // it is a song and sid should be a songid
+        commands.push({
+          method: 'AudioLibrary.GetSongDetails',
+          params: [sid, app.songFields ]
+        });
+      } else {
+
+        // for a file add defaults
+        var defaults = {
+            position: n,
+            songid: 'file',
+            album: '',
+            artist: '',
+            duration: 0
+          },
+          item = $.extend(defaults, songids[n]);
+        item.id = songids[n].file;
+
+        songids[n] = item;
+      }
+
     }
 
     //if songs to get
@@ -284,16 +329,40 @@ app.AudioController.songLoadMultiple = function(songids, callback){
       app.xbmcController.multipleCommand(commands, function(res){
 
         // parse each result into an array of song objects (models)
-        var songs = [], pos = 0;
+        var dict = {}, payload = [];
         _.each(res, function(r){
-          r.result.songdetails.position = pos;
-          songs.push(r.result.songdetails);
-          pos++;
+          if(typeof r.result != 'undefined'){
+            dict[r.result.songdetails.songid] = r.result.songdetails;
+          }
         });
 
+        // add songs back in their correct order using a dictionary
+        for(n in songids){
+          var sid = songids[n];
+          if(typeof sid == 'number' && typeof dict[sid] != 'undefined'){
+            songids[n] = dict[sid];
+          }
+        }
+
+        // lastly, we clean up the output and ensure every item is an object
+        // we also assign final position in the list
+        var p = 0;
+        for(n in songids){
+          var item = songids[n];
+          if(typeof item == 'object'){
+            item.position = p;
+            payload.push(item);
+            p++;
+          }
+        }
+
         // callback
-        callback(songs);
-      })
+        callback(payload);
+      });
+
+    } else {
+      // all files
+      callback(songids);
     }
 
 
@@ -389,7 +458,11 @@ app.AudioController.seek = function(position, callback ){
  * Get items from playlist
  */
 app.AudioController.getPlaylistItems = function(callback){
-  app.xbmcController.command('Playlist.GetItems', [app.AudioController.playlistId, ['albumid', 'artistid', 'thumbnail', 'file']], function(result){
+  app.xbmcController.command('Playlist.GetItems',
+    [
+      app.AudioController.playlistId,
+      ['albumid', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album']
+    ], function(result){
     callback(result.result); // return items
   });
 };
