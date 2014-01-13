@@ -79,7 +79,7 @@ app.SongView = Backbone.View.extend({
    */
   thumbsUp: function(e){
     var songid = this.model.attributes.songid,
-      op = (app.playlists.isThumbsUp(songid) ? 'remove' : 'add'),
+      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
       $el = $(e.target).closest('li');
     app.playlists.setThumbsUp(op, 'song', songid);
     $el.toggleClass('thumbs-up');

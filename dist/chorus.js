@@ -12872,8 +12872,8 @@ $(document).ready(function(){
           items: [
             {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
             {url: '#', class: 'clear-playlist', title: 'Clear Playlist'},
-            {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'}
-
+            {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'},
+            {url: '#', class: 'new-custom-playlist', title: 'New Browser Playlist'}
           ]
         };
         break;
@@ -14637,7 +14637,7 @@ app.playlists.changePlaylistView = function(type){
 /**
  * Save Current xbmc playlist Dialog
  */
-app.playlists.saveCustomPlayListsDialog = function(type, items){
+app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
   // validate type & items
   type = (typeof type == 'undefined' ? 'xbmc' : type);
@@ -14649,6 +14649,11 @@ app.playlists.saveCustomPlayListsDialog = function(type, items){
 
   for(i in lists){
     htmlList += '<li data-id="' + lists[i].id + '">' + lists[i].name + '</li>';
+  }
+
+  // for when we want to force create a new list
+  if(typeof hideList != 'undefined'){
+    htmlList = '';
   }
 
   var content = '<p>Create a new playlist<br />' +
@@ -17346,6 +17351,7 @@ app.PlaylistView = Backbone.View.extend({
   },
 
   render:function () {
+    // html
     this.$el.empty();
     var pos = 0; //position
     _.each(this.model.models, function (item) {
@@ -17353,6 +17359,10 @@ app.PlaylistView = Backbone.View.extend({
       this.$el.append(new app.PlaylistItemView({model:item}).render().el);
     }, this);
 
+    // reload thumbsup
+    app.playlists.getThumbsUp();
+
+    // bind others
     $(window).bind('playlistUpdate', this.playlistBinds());
     return this;
   },
@@ -17385,7 +17395,11 @@ app.PlaylistItemView = Backbone.View.extend({
     "dblclick .playlist-play": "playPosition",
     "click .removebtn": "removePosition",
     "click .playbtn": "playPosition",
-    "click .repeating": "cycleRepeat"
+    "click .repeating": "cycleRepeat",
+    "click .playlist-song-thumbsup": "thumbsUp",
+    //menu
+    "click .song-download":  "downloadSong",
+    "click .song-custom-playlist": "addToCustomPlaylist"
   },
 
   initialize:function () {
@@ -17403,6 +17417,17 @@ app.PlaylistItemView = Backbone.View.extend({
     if(this.model.id == 'file'){
       $('.song', this.$el).data('file', this.model.file);
     }
+
+    // add if thumbs up
+    if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
+      this.$el.addClass('thumbs-up')
+    }
+
+    // set song menu
+    var songDropDown = app.helpers.dropdownTemplates('song');
+
+    songDropDown.pull = 'right';
+    $('.playlist-song-actions', this.$el).append( app.helpers.makeDropdown( songDropDown ));
 
     return this;
   },
@@ -17423,6 +17448,31 @@ app.PlaylistItemView = Backbone.View.extend({
 
   cycleRepeat:function(event){
     $('#footer').find('.player-repeat').trigger('click');
+  },
+
+  thumbsUp: function(e){
+    e.stopPropagation();
+    var songid = this.model.id,
+      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('li');
+    app.playlists.setThumbsUp(op, 'song', songid);
+    $el.toggleClass('thumbs-up');
+  },
+
+  downloadSong: function(e){
+    var file = this.model.file;
+    e.stopPropagation();
+    e.preventDefault();
+    app.AudioController.downloadFile(file, function(url){
+      window.location = url;
+    })
+  },
+
+  addToCustomPlaylist: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var id = this.model.id;
+    app.playlists.saveCustomPlayListsDialog('song', [id]);
   }
 
 
@@ -17544,9 +17594,14 @@ app.searchView = Backbone.View.extend({
       //empty content as we append
       var $content = $('#content'),
         $title = $('#title'),
-        notfoundartist = '<div class="noresult-box">No Artists found</div>';
+        notfoundartist = '<div class="noresult-box">No Artists found</div>',
+        $el = $('<div class="search-results-content"></div>');
 
-      $content.empty().html('<div id="search-albums"></div><div id="search-songs"></div><div id="search-addons"></div>');
+      $el.append('<div id="search-albums"></div>')
+        .append('<div id="search-songs"></div>')
+        .append('<div id="search-addons"></div>');
+
+      $content.empty().html($el);
       $title.html('<a href="#artists">Artists </a>Albums');
 
       // get artists list (sidebar)
@@ -17641,6 +17696,7 @@ app.searchView = Backbone.View.extend({
       app.cached.SearchsongList = new app.SongCollection();
       app.cached.SearchsongList.fetch({success: function(data){
 
+        console.log('songs loaded', data);
         var songsIds = [];
 
         $songs.empty();
@@ -17654,6 +17710,9 @@ app.searchView = Backbone.View.extend({
         _.each(songs, function(song){
           songsIds.push(song.attributes.songid);
         });
+
+        // redefine this
+        //var $songs = $('#search-songs');
 
         // Get a list of fully loaded models from id
         if(songsIds.length > 0){
@@ -17692,6 +17751,9 @@ app.searchView = Backbone.View.extend({
      * this.pageChange()
      */
     var $window = $(window), $body = $('body'), self = this;
+
+    // keyup timeout
+    app.cached.keyupTimeout = 0;
 
     // init first page change to setup classes, etc.
     self.pageChange(location.hash, '#init');
@@ -17777,20 +17839,26 @@ app.searchView = Backbone.View.extend({
   },
 
   events: {
-    "keyup #search": "search",
+    // search
+    "keyup #search": "onkeyupSearch",
     "click #search-this": "search",
-    "keypress #search": "onkeypress",
+    "keypress #search": "onkeypressSearch",
+    // misc
     "click #logo": "home",
+    // player
     "click .player-prev": "playerPrev",
     "click .player-next": "playerNext",
     "click .player-play": "playerPlay",
     "click .player-mute": "playerMute",
     "click .player-repeat": "playerRepeat",
     "click .player-random": "playerRandom",
+    // tabs
     "click .playlist-primary-tab": "primaryTabClick",
+    // menu
     "click .save-playlist": "savePlayList",
     "click .clear-playlist": "clearPlaylist",
-    "click .refresh-playlist": "refreshPlaylist"
+    "click .refresh-playlist": "refreshPlaylist",
+    "click .new-custom-playlist": "newCustomPlaylist"
   },
 
 
@@ -17822,23 +17890,38 @@ app.searchView = Backbone.View.extend({
 
   /**
    * Search artists, albums & songs
-   * requires all data to be loaded into memory
+   * @see view/search.js
    * @param event
    */
   search: function (event) {
 
-    var key = $('#search').val();
-
-    app.cached.searchView = new app.searchView({model: {'key': key}});
+    var $search = $('#search');
+    app.cached.searchView = new app.searchView({model: {'key': $search.val()}});
     app.cached.searchView.render();
 
+  },
+
+  onkeyupSearch: function (event) {
+
+    // before rendering the entire search page we should give the user a chance to type in
+    // something significant, in fact each time they press the key we should give them time
+    // to press another before render.
+
+    // the time we wait from key up, and this
+    var keyDelay = 500, self = this;
+
+    // set and clear timeout to leave a gap
+    $('#search').keyup(function () {
+      clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
+      app.cached.keyupTimeout = setTimeout(function(){
+        self.search();
+      }, keyDelay);
+    });
 
   },
 
 
-
-
-  onkeypress: function (event) {
+  onkeypressSearch: function (event) {
     if (event.keyCode === 13) { // enter key pressed
       event.preventDefault();
     }
@@ -17983,6 +18066,16 @@ app.searchView = Backbone.View.extend({
     app.AudioController.playlistRefresh();
   },
 
+
+  /**
+   * New Custom playlist
+   */
+  newCustomPlaylist: function(e){
+    e.preventDefault();
+    app.playlists.saveCustomPlayListsDialog('song', []);
+  },
+
+
   //Clear a playlist
   clearPlaylist: function(e){
     e.preventDefault();
@@ -18076,7 +18169,7 @@ app.SongView = Backbone.View.extend({
    */
   thumbsUp: function(e){
     var songid = this.model.attributes.songid,
-      op = (app.playlists.isThumbsUp(songid) ? 'remove' : 'add'),
+      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
       $el = $(e.target).closest('li');
     app.playlists.setThumbsUp(op, 'song', songid);
     $el.toggleClass('thumbs-up');

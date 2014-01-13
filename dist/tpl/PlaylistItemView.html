@@ -5,6 +5,15 @@
         <span class="icon-remove removebtn"></span>
     </div>
     <a href="#album/<%= albumid %>"><img src="<%= app.parseImage( thumbnail ) %>" class="thumb" /></a>
+
+    <% if(id > 0){ %>
+    <div class="playlist-song-actions-wrapper">
+        <div class="playlist-song-actions dropdown" data-id="<%= id %>" data-album="<%= albumid %>">
+            <button class="playlist-song-thumbsup btn" title="Thumbs Up"><i class="icon-thumbs-up"></i></button>
+        </div>
+    </div>
+    <% } %>
+
     <a class="playlist-play" href="#"><%= label %></a>
     <span class="playlist-meta"></span>
 </div>

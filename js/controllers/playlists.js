@@ -97,7 +97,7 @@ app.playlists.changePlaylistView = function(type){
 /**
  * Save Current xbmc playlist Dialog
  */
-app.playlists.saveCustomPlayListsDialog = function(type, items){
+app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
   // validate type & items
   type = (typeof type == 'undefined' ? 'xbmc' : type);
@@ -109,6 +109,11 @@ app.playlists.saveCustomPlayListsDialog = function(type, items){
 
   for(i in lists){
     htmlList += '<li data-id="' + lists[i].id + '">' + lists[i].name + '</li>';
+  }
+
+  // for when we want to force create a new list
+  if(typeof hideList != 'undefined'){
+    htmlList = '';
   }
 
   var content = '<p>Create a new playlist<br />' +

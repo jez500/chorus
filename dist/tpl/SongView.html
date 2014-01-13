@@ -1,4 +1,4 @@
-<div class="track song" data-type="song" data-id="<%= songid %>" data-songid="<%= songid %>" data-path="<%= file %>">
+<div class="track song" data-type="song" data-id="<%= songid %>" data-songid="<%= songid %>" data-path="<%= (typeof file != 'undefined' ? file : '') %>">
 
     <span class="track-col song-tracknum"><%= (parseInt(track) > 0 ? track : "") %></span>
     <span class="track-col song-title"><%= label %></span>

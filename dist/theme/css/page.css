@@ -540,6 +540,10 @@ html {
   background: rgba(255, 255, 255, 0.1);
 }
 
+.dropdown-menu li > a:hover, .dropdown-menu li > a:active, .dropdown-menu li > a:focus {
+  color: #3b3f40;
+}
+
 input[type="text"] {
   border-width: 1px;
   padding: 4px 5px;
@@ -1422,6 +1426,7 @@ h4 {
 .album-row {
   clear: both;
   padding: 10px 5px;
+  overflow-y: hidden;
 }
 .album-row .album-title {
   margin: 0;
@@ -2198,6 +2203,13 @@ body.sidebar .album-list-landing {
   position: absolute;
   opacity: 0;
   background: #eeeff0;
+  z-index: 1;
+}
+.playlist li.list-item .playlist-song-actions-wrapper,
+.playlist div.playlist-item .playlist-song-actions-wrapper,
+.custom-lists li.list-item .playlist-song-actions-wrapper,
+.custom-lists div.playlist-item .playlist-song-actions-wrapper {
+  display: none;
 }
 .playlist li.list-item .playlist-play,
 .playlist div.playlist-item .playlist-play,
@@ -2303,15 +2315,57 @@ body.sidebar .album-list-landing {
 .custom-lists div.playlist-item.playing-row .thumb {
   display: block;
 }
+.playlist li.list-item.playing-row .playlist-song-actions-wrapper,
 .playlist li.list-item.playing-row .thumb,
+.playlist div.playlist-item.playing-row .playlist-song-actions-wrapper,
 .playlist div.playlist-item.playing-row .thumb,
+.custom-lists li.list-item.playing-row .playlist-song-actions-wrapper,
 .custom-lists li.list-item.playing-row .thumb,
+.custom-lists div.playlist-item.playing-row .playlist-song-actions-wrapper,
 .custom-lists div.playlist-item.playing-row .thumb {
+  top: 0;
   width: 80px;
   height: 80px;
   opacity: 1;
   right: 0;
   left: auto;
+}
+.playlist li.list-item.playing-row .playlist-song-actions-wrapper,
+.playlist div.playlist-item.playing-row .playlist-song-actions-wrapper,
+.custom-lists li.list-item.playing-row .playlist-song-actions-wrapper,
+.custom-lists div.playlist-item.playing-row .playlist-song-actions-wrapper {
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  position: absolute;
+  display: block;
+  opacity: 0;
+  text-align: right;
+}
+.playlist li.list-item.playing-row .playlist-song-actions-wrapper:hover,
+.playlist div.playlist-item.playing-row .playlist-song-actions-wrapper:hover,
+.custom-lists li.list-item.playing-row .playlist-song-actions-wrapper:hover,
+.custom-lists div.playlist-item.playing-row .playlist-song-actions-wrapper:hover {
+  opacity: 1;
+}
+.playlist li.list-item.playing-row .playlist-song-actions-wrapper .btn:focus, .playlist li.list-item.playing-row .playlist-song-actions-wrapper .btn:hover,
+.playlist div.playlist-item.playing-row .playlist-song-actions-wrapper .btn:focus,
+.playlist div.playlist-item.playing-row .playlist-song-actions-wrapper .btn:hover,
+.custom-lists li.list-item.playing-row .playlist-song-actions-wrapper .btn:focus,
+.custom-lists li.list-item.playing-row .playlist-song-actions-wrapper .btn:hover,
+.custom-lists div.playlist-item.playing-row .playlist-song-actions-wrapper .btn:focus,
+.custom-lists div.playlist-item.playing-row .playlist-song-actions-wrapper .btn:hover {
+  background: none;
+}
+.playlist li.list-item.playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup,
+.playlist div.playlist-item.playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup,
+.custom-lists li.list-item.playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup,
+.custom-lists div.playlist-item.playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup {
+  padding: 9px 2px 10px;
+}
+.playlist li.thumbs-up .playlist-song-actions-wrapper .playlist-song-thumbsup,
+.custom-lists li.thumbs-up .playlist-song-actions-wrapper .playlist-song-thumbsup {
+  color: #e67e22;
 }
 
 .custom-lists li.list-item .name {
@@ -2607,6 +2661,7 @@ body.home #header {
 body.home .playlist div.playlist-item.playing-row {
   height: 120px;
 }
+body.home .playlist div.playlist-item.playing-row .playlist-song-actions-wrapper,
 body.home .playlist div.playlist-item.playing-row .thumb {
   width: 120px;
   height: 120px;

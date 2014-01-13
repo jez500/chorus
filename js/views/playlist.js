@@ -15,6 +15,7 @@ app.PlaylistView = Backbone.View.extend({
   },
 
   render:function () {
+    // html
     this.$el.empty();
     var pos = 0; //position
     _.each(this.model.models, function (item) {
@@ -22,6 +23,10 @@ app.PlaylistView = Backbone.View.extend({
       this.$el.append(new app.PlaylistItemView({model:item}).render().el);
     }, this);
 
+    // reload thumbsup
+    app.playlists.getThumbsUp();
+
+    // bind others
     $(window).bind('playlistUpdate', this.playlistBinds());
     return this;
   },
@@ -54,7 +59,11 @@ app.PlaylistItemView = Backbone.View.extend({
     "dblclick .playlist-play": "playPosition",
     "click .removebtn": "removePosition",
     "click .playbtn": "playPosition",
-    "click .repeating": "cycleRepeat"
+    "click .repeating": "cycleRepeat",
+    "click .playlist-song-thumbsup": "thumbsUp",
+    //menu
+    "click .song-download":  "downloadSong",
+    "click .song-custom-playlist": "addToCustomPlaylist"
   },
 
   initialize:function () {
@@ -72,6 +81,17 @@ app.PlaylistItemView = Backbone.View.extend({
     if(this.model.id == 'file'){
       $('.song', this.$el).data('file', this.model.file);
     }
+
+    // add if thumbs up
+    if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
+      this.$el.addClass('thumbs-up')
+    }
+
+    // set song menu
+    var songDropDown = app.helpers.dropdownTemplates('song');
+
+    songDropDown.pull = 'right';
+    $('.playlist-song-actions', this.$el).append( app.helpers.makeDropdown( songDropDown ));
 
     return this;
   },
@@ -92,6 +112,31 @@ app.PlaylistItemView = Backbone.View.extend({
 
   cycleRepeat:function(event){
     $('#footer').find('.player-repeat').trigger('click');
+  },
+
+  thumbsUp: function(e){
+    e.stopPropagation();
+    var songid = this.model.id,
+      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('li');
+    app.playlists.setThumbsUp(op, 'song', songid);
+    $el.toggleClass('thumbs-up');
+  },
+
+  downloadSong: function(e){
+    var file = this.model.file;
+    e.stopPropagation();
+    e.preventDefault();
+    app.AudioController.downloadFile(file, function(url){
+      window.location = url;
+    })
+  },
+
+  addToCustomPlaylist: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var id = this.model.id;
+    app.playlists.saveCustomPlayListsDialog('song', [id]);
   }
 
 

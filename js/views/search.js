@@ -31,9 +31,14 @@ app.searchView = Backbone.View.extend({
       //empty content as we append
       var $content = $('#content'),
         $title = $('#title'),
-        notfoundartist = '<div class="noresult-box">No Artists found</div>';
+        notfoundartist = '<div class="noresult-box">No Artists found</div>',
+        $el = $('<div class="search-results-content"></div>');
 
-      $content.empty().html('<div id="search-albums"></div><div id="search-songs"></div><div id="search-addons"></div>');
+      $el.append('<div id="search-albums"></div>')
+        .append('<div id="search-songs"></div>')
+        .append('<div id="search-addons"></div>');
+
+      $content.empty().html($el);
       $title.html('<a href="#artists">Artists </a>Albums');
 
       // get artists list (sidebar)
@@ -128,6 +133,7 @@ app.searchView = Backbone.View.extend({
       app.cached.SearchsongList = new app.SongCollection();
       app.cached.SearchsongList.fetch({success: function(data){
 
+        console.log('songs loaded', data);
         var songsIds = [];
 
         $songs.empty();
@@ -141,6 +147,9 @@ app.searchView = Backbone.View.extend({
         _.each(songs, function(song){
           songsIds.push(song.attributes.songid);
         });
+
+        // redefine this
+        //var $songs = $('#search-songs');
 
         // Get a list of fully loaded models from id
         if(songsIds.length > 0){

@@ -9,6 +9,9 @@ app.ShellView = Backbone.View.extend({
      */
     var $window = $(window), $body = $('body'), self = this;
 
+    // keyup timeout
+    app.cached.keyupTimeout = 0;
+
     // init first page change to setup classes, etc.
     self.pageChange(location.hash, '#init');
 
@@ -93,20 +96,26 @@ app.ShellView = Backbone.View.extend({
   },
 
   events: {
-    "keyup #search": "search",
+    // search
+    "keyup #search": "onkeyupSearch",
     "click #search-this": "search",
-    "keypress #search": "onkeypress",
+    "keypress #search": "onkeypressSearch",
+    // misc
     "click #logo": "home",
+    // player
     "click .player-prev": "playerPrev",
     "click .player-next": "playerNext",
     "click .player-play": "playerPlay",
     "click .player-mute": "playerMute",
     "click .player-repeat": "playerRepeat",
     "click .player-random": "playerRandom",
+    // tabs
     "click .playlist-primary-tab": "primaryTabClick",
+    // menu
     "click .save-playlist": "savePlayList",
     "click .clear-playlist": "clearPlaylist",
-    "click .refresh-playlist": "refreshPlaylist"
+    "click .refresh-playlist": "refreshPlaylist",
+    "click .new-custom-playlist": "newCustomPlaylist"
   },
 
 
@@ -138,23 +147,38 @@ app.ShellView = Backbone.View.extend({
 
   /**
    * Search artists, albums & songs
-   * requires all data to be loaded into memory
+   * @see view/search.js
    * @param event
    */
   search: function (event) {
 
-    var key = $('#search').val();
-
-    app.cached.searchView = new app.searchView({model: {'key': key}});
+    var $search = $('#search');
+    app.cached.searchView = new app.searchView({model: {'key': $search.val()}});
     app.cached.searchView.render();
 
+  },
+
+  onkeyupSearch: function (event) {
+
+    // before rendering the entire search page we should give the user a chance to type in
+    // something significant, in fact each time they press the key we should give them time
+    // to press another before render.
+
+    // the time we wait from key up, and this
+    var keyDelay = 500, self = this;
+
+    // set and clear timeout to leave a gap
+    $('#search').keyup(function () {
+      clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
+      app.cached.keyupTimeout = setTimeout(function(){
+        self.search();
+      }, keyDelay);
+    });
 
   },
 
 
-
-
-  onkeypress: function (event) {
+  onkeypressSearch: function (event) {
     if (event.keyCode === 13) { // enter key pressed
       event.preventDefault();
     }
@@ -298,6 +322,16 @@ app.ShellView = Backbone.View.extend({
     e.preventDefault();
     app.AudioController.playlistRefresh();
   },
+
+
+  /**
+   * New Custom playlist
+   */
+  newCustomPlaylist: function(e){
+    e.preventDefault();
+    app.playlists.saveCustomPlayListsDialog('song', []);
+  },
+
 
   //Clear a playlist
   clearPlaylist: function(e){

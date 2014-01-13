@@ -604,8 +604,8 @@ $(document).ready(function(){
           items: [
             {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
             {url: '#', class: 'clear-playlist', title: 'Clear Playlist'},
-            {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'}
-
+            {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'},
+            {url: '#', class: 'new-custom-playlist', title: 'New Browser Playlist'}
           ]
         };
         break;
