@@ -4,7 +4,7 @@
 
 
 $.jsonRPC.setup({
-  endPoint: '/jsonrpc'
+  endPoint: '/' + app.jsonRpcUrl
 });
 
 

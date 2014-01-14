@@ -8,6 +8,7 @@ var app = {
 
   jsonRpcUrl: 'jsonrpc',
 
+  version: 0, // loaded from xml later
 
   // variables (settings defaults)
   vars: {
@@ -144,6 +145,11 @@ app.Router = Backbone.Router.extend({
 
     // cache thumbs up
     app.playlists.getThumbsUp();
+
+    // get version
+    $.get('addon.xml',function(data){
+      app.version = $(data).find('addon').attr('version');
+    });
 
     this.$content = $("#content");
     this.$title = $('#title');
@@ -459,11 +465,11 @@ app.Router = Backbone.Router.extend({
 //DOM Ready
 $(document).on("ready", function () {
 
-  app.loadTemplates(app.templates,
+  app.helpers.loadTemplates(app.templates,
     function () {
       app.router = new app.Router();
       Backbone.history.start();
-    });
+  });
 
   app.store.libraryCall(function(){
     $('body').addClass('artists-ready');

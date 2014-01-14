@@ -17,9 +17,16 @@ var notificationTimoutObj = {};
  */
 $(document).ready(function(){
 
+
+  /********************************************************************************
+   * vars/definitions
+   ********************************************************************************/
+
+  /**
+   * Generic vars
+   */
   app.helpers = {};
   app.helpers.scroller = {};
-
 
   /**
    * A wrapper for getting the main selectors
@@ -40,28 +47,9 @@ $(document).ready(function(){
   };
 
 
-  /**
-   * Convert seconds to time
-   */
-  app.helpers.secToTime = function(totalSec){
-    var hours = parseInt( totalSec / 3600 ) % 24;
-    var minutes = parseInt( totalSec / 60 ) % 60;
-    var seconds = totalSec % 60;
-
-    // return a string with zeros only when we need em
-    return (hours > 0 ? hours + ":" : "") + //hours
-      (minutes > 0 ? (hours > 0 && minutes < 10 ? "0" + minutes : minutes) + ":" : (hours > 0 ? "00:" : "")) + //mins
-      (seconds  < 10 ? "0" + seconds : seconds); //seconds
-  };
-
-
- /**
-  * wrapper for if ! undefined (seem to use it a bit)
-  */
-  app.helpers.exists = function(data){
-    return (typeof data != 'undefined');
-  };
-
+  /********************************************************************************
+   * Error logging helpers
+   ********************************************************************************/
 
   /**
   * Error handler
@@ -109,6 +97,11 @@ $(document).ready(function(){
   };
 
 
+  /********************************************************************************
+   * Global helpers
+   ********************************************************************************/
+
+
   /**
    * Variables all variables are for use in a single page load, not for persistent storage.
    *
@@ -133,42 +126,103 @@ $(document).ready(function(){
 
 
   /**
-   * Apply a js scroll bar with default settings
+   * like arg() in drupal
    */
-  app.helpers.addScrollBar = function(selector, options){
+  app.helpers.arg = function(n){
 
-    //$('.nicescroll-rails').remove();
+    var hash = location.hash,
+      args = hash.substring(1).split('/');
 
-    scrollbarSettings = {
-      cursorwidth: 8,
-      cursorminheight: 37,
-      touchbehavior: false,
-      cursorcolor: '#606768'
-    };
+    // if n set return string
+    if(typeof n != 'undefined'){
+      if(typeof args[n] == 'undefined'){
+        return '';
+      }
+      return args[n];
+    }
 
-    settings = $.extend(scrollbarSettings, options);
-
-  };
-
-
-  app.helpers.addIsotope = function(selector){
-    // removed
+    // return array
+    return args;
   };
 
 
   /**
-   * For a given song returns the type and id to use when dealing with the player
-   * @param song
-   *  assumes songid is file
-   * @return {type, id}
+   * like shuffle() in php
    */
-  app.helpers.getSongKey = function(song){
-    var o = {
-      type: (song.songid == 'file' || typeof song.songid == 'undefined' ? 'file' : 'songid')
-    };
-    o.id = (o.type == 'file' ? song.file : song.songid);
-    return o;
+  app.helpers.shuffle = function(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    return array;
   };
+
+
+  /**
+   *  Alphabetical sort callback
+   */
+  app.helpers.aphabeticalSort = function(a,b){
+    var nameA=a.toLowerCase(), nameB=b.toLowerCase();
+    if (nameA < nameB){ //sort string ascending
+      return -1;
+    }
+    if (nameA > nameB){
+      return 1;
+    }
+    return 0; //default return value (no sorting)
+  };
+
+
+  /**
+   *  is a value an int
+   */
+  app.helpers.isInt = function(value){
+    if(app.helpers.exists(value)){
+      return ((parseFloat(value) == parseInt(value)) && !isNaN(value));
+    }
+    return false;
+  };
+
+
+  /**
+   * get a random int
+   * @param min
+   * @param max
+   * @returns {number|string}
+   */
+  app.helpers.getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+
+  /**
+   * Convert seconds to time
+   */
+  app.helpers.secToTime = function(totalSec){
+    var hours = parseInt( totalSec / 3600 ) % 24;
+    var minutes = parseInt( totalSec / 60 ) % 60;
+    var seconds = totalSec % 60;
+
+    // return a string with zeros only when we need em
+    return (hours > 0 ? hours + ":" : "") + //hours
+      (minutes > 0 ? (hours > 0 && minutes < 10 ? "0" + minutes : minutes) + ":" : (hours > 0 ? "00:" : "")) + //mins
+      (seconds  < 10 ? "0" + seconds : seconds); //seconds
+  };
+
+
+  /**
+   * wrapper for if ! undefined (seem to use it a bit)
+   */
+  app.helpers.exists = function(data){
+    return (typeof data != 'undefined');
+  };
+
+
+  /********************************************************************************
+   * First Sidebar
+   ********************************************************************************/
 
 
   /**
@@ -178,7 +232,6 @@ $(document).ready(function(){
    */
   app.helpers.setFirstSidebarContent = function(content, append){
     append = (typeof append != 'undefined' && append === true);
-
 
     var $container = app.helpers.getFirstSidebarContent();
 
@@ -249,6 +302,12 @@ $(document).ready(function(){
     }
   };
 
+
+  /********************************************************************************
+   * Image helpers
+   ********************************************************************************/
+
+
   /**
    * Get default image
    */
@@ -256,26 +315,36 @@ $(document).ready(function(){
 
     // @TODO move elsewhere
     var files = [
-      'wallpaper-443657.jpg',
-      'wallpaper-45040.jpg',
-      'wallpaper-765190.jpg',
-      'wallpaper-84050.jpg'
-    ],
-    random = files[app.helpers.getRandomInt(0, (files.length - 1))];
+        'wallpaper-443657.jpg',
+        'wallpaper-45040.jpg',
+        'wallpaper-765190.jpg',
+        'wallpaper-84050.jpg'
+      ],
+      random = files[app.helpers.getRandomInt(0, (files.length - 1))];
 
     // return random
     return 'theme/images/fanart_default/' + random;
 
   };
 
+
+  /********************************************************************************
+   * Song/Artist helpers
+   ********************************************************************************/
+
+
   /**
-   * get a random int
-   * @param min
-   * @param max
-   * @returns {number|string}
+   * For a given song returns the type and id to use when dealing with the player
+   * @param song
+   *  assumes songid is file
+   * @return {type, id}
    */
-  app.helpers.getRandomInt = function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  app.helpers.getSongKey = function(song){
+    var o = {
+      type: (song.songid == 'file' || typeof song.songid == 'undefined' ? 'file' : 'songid')
+    };
+    o.id = (o.type == 'file' ? song.file : song.songid);
+    return o;
   };
 
 
@@ -299,7 +368,6 @@ $(document).ready(function(){
   };
 
 
-
   app.helpers.parseArtistSummary = function(data){
     var totals = {songs:0,albums:0,time:0};
     for(i in data.models){
@@ -319,25 +387,9 @@ $(document).ready(function(){
   };
 
 
-  /* Alphabetical sort callback */
-  app.helpers.aphabeticalSort = function(a,b){
-    var nameA=a.toLowerCase(), nameB=b.toLowerCase();
-    if (nameA < nameB){ //sort string ascending
-      return -1;
-    }
-    if (nameA > nameB){
-      return 1;
-    }
-    return 0; //default return value (no sorting)
-  };
-
-  /* is a value an int */
-  app.helpers.isInt = function(value){
-    if(app.helpers.exists(value)){
-      return ((parseFloat(value) == parseInt(value)) && !isNaN(value));
-    }
-    return false;
-  };
+  /********************************************************************************
+   * Title
+   ********************************************************************************/
 
 
   /**
@@ -370,41 +422,9 @@ $(document).ready(function(){
   };
 
 
-  /**
-   * like arg() in drupal
-   */
-  app.helpers.arg = function(n){
-
-    var hash = location.hash,
-      args = hash.substring(1).split('/');
-
-    // if n set return string
-    if(typeof n != 'undefined'){
-      if(typeof args[n] == 'undefined'){
-        return '';
-      }
-      return args[n];
-    }
-
-
-    // return array
-    return args;
-  };
-
-
-  /**
-   * like shuffle() in php
-   */
-  app.helpers.shuffle = function(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
-    }
-    return array;
-  };
-
+  /********************************************************************************
+   * Dialogs
+   ********************************************************************************/
 
 
   /**
@@ -537,6 +557,10 @@ $(document).ready(function(){
   };
 
 
+  /********************************************************************************
+   * Dropdowns
+   ********************************************************************************/
+
 
   /**
    * Build a dropdown menu html with some given settings
@@ -615,15 +639,18 @@ $(document).ready(function(){
   };
 
 
+  /********************************************************************************
+   * Templates
+   ********************************************************************************/
 
 
-  /*
-  * @TODO! refactor/fix namespace for below functions to use app.helpers, need to check all code for usage
-  */
-
-
-  // load html templates (called @ dom ready)
-  app.loadTemplates = function(views, callback) {
+  /**
+   * load html templates (called @ dom ready)
+   *
+   * @param views
+   * @param callback
+   */
+  app.helpers.loadTemplates = function(views, callback) {
 
     var deferreds = [];
 
@@ -641,7 +668,15 @@ $(document).ready(function(){
   };
 
 
-  // returns a url to the image
+
+  /********************************************************************************
+   * No namespace @todo move/rename
+   ********************************************************************************/
+
+
+  /**
+   * returns a url to the image
+   */
   app.parseImage = function(rawPath, type){
     type = (typeof type == 'undefined' ? 'default' : type);
     //no image, return placeholder
@@ -654,14 +689,20 @@ $(document).ready(function(){
     return '/image/' + encodeURIComponent(rawPath);
   };
 
-  // nl2br?
+
+  /**
+   *  nl2br
+   */
   app.nl2br = function(str, is_xhtml) {
     var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
     return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
   };
 
-  // notification handler
-  app.notification = function(msg){
+
+  /**
+   * notification handler
+   */
+ app.notification = function(msg){
     var $notify = $('#notify');
     if(msg !== false && msg != ''){
 
@@ -671,11 +712,14 @@ $(document).ready(function(){
       notificationTimoutObj = setTimeout(app.notificationHide, 6000); // 8 secs?*/
     }
   };
-
   app.notificationHide = function(){
     $notify = $('#notify').addClass('hidden');
   };
 
+
+  /********************************************************************************
+   * Storage
+   ********************************************************************************/
 
 
   /**
@@ -684,9 +728,8 @@ $(document).ready(function(){
    */
   app.storage = {
 
-    /**
-     * Vars
-     */
+
+    //Vars
     nameSpace: 'chorus::',
 
     /**
@@ -717,3 +760,34 @@ $(document).ready(function(){
 
 });
 
+
+
+
+
+/********************************************************************************
+ * DEPRECATED @todo safe remove
+ ********************************************************************************/
+
+
+/**
+ * Apply a js scroll bar with default settings
+ */
+app.helpers.addScrollBar = function(selector, options){
+
+  //$('.nicescroll-rails').remove();
+
+  scrollbarSettings = {
+    cursorwidth: 8,
+    cursorminheight: 37,
+    touchbehavior: false,
+    cursorcolor: '#606768'
+  };
+
+  settings = $.extend(scrollbarSettings, options);
+
+};
+
+
+app.helpers.addIsotope = function(selector){
+  // removed
+};
