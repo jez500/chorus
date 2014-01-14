@@ -557,6 +557,29 @@ $(document).ready(function(){
   };
 
 
+  /**
+   * About Dialog
+   */
+  app.helpers.aboutDialog = function(){
+
+    var opts = {
+      title: 'About this thing',
+      buttons: {
+        "Cool!": function(){
+          $( this ).dialog( "close" );
+        }
+      }
+    };
+
+    // load template and show dialog
+    app.helpers.applyTemplate('About', app.addonData, function(msg){
+      app.helpers.dialog(msg, opts);
+    });
+
+  };
+
+
+
   /********************************************************************************
    * Dropdowns
    ********************************************************************************/
@@ -668,6 +691,45 @@ $(document).ready(function(){
   };
 
 
+  /**
+   * Load a single template on the fly
+   *
+   * @param tpl
+   * @param callback
+   *  callback returns the template object
+   */
+  app.helpers.loadTemplate = function(tpl, callback) {
+    $.get('tpl/' + tpl + '.html', function(data) {
+      app.tpl[tpl] = data;
+      if(callback){
+        callback(app.tpl[tpl]);
+      }
+    });
+  };
+
+
+  /**
+   * Apply a template to data
+   *
+   * @param tpl
+   * @param callback
+   *  callback returns the template
+   */
+  app.helpers.applyTemplate = function(tplname, data, callback) {
+
+    var html = '';
+    if(typeof app.tpl[tplname] != 'undefined'){
+      html = _.template(app.tpl[tplname],data);
+      callback(html);
+    } else {
+      app.helpers.loadTemplate(tplname, function(tpl){
+        html = _.template(tpl,data);
+        callback(html);
+      })
+    }
+
+  };
+
 
   /********************************************************************************
    * No namespace @todo move/rename
@@ -718,6 +780,35 @@ $(document).ready(function(){
 
 
   /********************************************************************************
+   * DEPRECATED @todo safe remove
+   ********************************************************************************/
+
+
+  /**
+   * Apply a js scroll bar with default settings
+   */
+  app.helpers.addScrollBar = function(selector, options){
+
+    //$('.nicescroll-rails').remove();
+
+    scrollbarSettings = {
+      cursorwidth: 8,
+      cursorminheight: 37,
+      touchbehavior: false,
+      cursorcolor: '#606768'
+    };
+
+    settings = $.extend(scrollbarSettings, options);
+
+  };
+
+
+  app.helpers.addIsotope = function(selector){
+    // removed
+  };
+
+
+  /********************************************************************************
    * Storage
    ********************************************************************************/
 
@@ -761,33 +852,31 @@ $(document).ready(function(){
 });
 
 
-
-
-
 /********************************************************************************
- * DEPRECATED @todo safe remove
+ * jQuery extends
  ********************************************************************************/
 
 
 /**
- * Apply a js scroll bar with default settings
+ * enhance jquery.attr() to return obj on empty
+ * @see http://stackoverflow.com/questions/14645806/get-all-attributes-of-an-element-using-jquery
  */
-app.helpers.addScrollBar = function(selector, options){
+(function(old) {
+  $.fn.attr = function() {
+    if(arguments.length === 0) {
+      if(this.length === 0) {
+        return null;
+      }
 
-  //$('.nicescroll-rails').remove();
+      var obj = {};
+      $.each(this[0].attributes, function() {
+        if(this.specified) {
+          obj[this.name] = this.value;
+        }
+      });
+      return obj;
+    }
 
-  scrollbarSettings = {
-    cursorwidth: 8,
-    cursorminheight: 37,
-    touchbehavior: false,
-    cursorcolor: '#606768'
+    return old.apply(this, arguments);
   };
-
-  settings = $.extend(scrollbarSettings, options);
-
-};
-
-
-app.helpers.addIsotope = function(selector){
-  // removed
-};
+})($.fn.attr);

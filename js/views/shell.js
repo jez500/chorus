@@ -115,7 +115,9 @@ app.ShellView = Backbone.View.extend({
     "click .save-playlist": "savePlayList",
     "click .clear-playlist": "clearPlaylist",
     "click .refresh-playlist": "refreshPlaylist",
-    "click .new-custom-playlist": "newCustomPlaylist"
+    "click .new-custom-playlist": "newCustomPlaylist",
+    // bottom menu
+    "click .about-dialog": "about"
   },
 
 
@@ -333,13 +335,24 @@ app.ShellView = Backbone.View.extend({
   },
 
 
-  //Clear a playlist
+  /**
+   *  Clear a playlist
+   */
   clearPlaylist: function(e){
     e.preventDefault();
     // Clear playlist
     app.AudioController.playlistClear(function(data){
       app.AudioController.playlistRefresh();
     });
+  },
+
+
+  /**
+   *  About
+   */
+  about: function(e){
+    e.preventDefault();
+    app.helpers.aboutDialog();
   }
 
 

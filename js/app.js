@@ -8,8 +8,6 @@ var app = {
 
   jsonRpcUrl: 'jsonrpc',
 
-  version: 0, // loaded from xml later
-
   // variables (settings defaults)
   vars: {
     lastHash: '#',
@@ -110,7 +108,10 @@ var app = {
     "CustomPlaylistSongView",
     "FilesView",
     "FileView"
-  ]
+  ],
+
+  tpl: {} // for templates that are lazy loaded
+
 };
 
 
@@ -148,7 +149,7 @@ app.Router = Backbone.Router.extend({
 
     // get version
     $.get('addon.xml',function(data){
-      app.version = $(data).find('addon').attr('version');
+      app.addonData = $(data).find('addon').attr();
     });
 
     this.$content = $("#content");

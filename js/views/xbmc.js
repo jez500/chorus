@@ -50,6 +50,12 @@ app.XbmcView = Backbone.View.extend({
 
 
 
+
+/********************************************************************************
+ * Local storage dump
+ ********************************************************************************/
+
+
 app.XbmcLocalDumpView = Backbone.View.extend({
 
   tagName:'div',
@@ -90,6 +96,10 @@ app.XbmcLocalDumpView = Backbone.View.extend({
 
 });
 
+
+/********************************************************************************
+ * JsonRPC tester
+ ********************************************************************************/
 
 
 app.XbmcJSONrpcView = Backbone.View.extend({

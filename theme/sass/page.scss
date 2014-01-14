@@ -1850,6 +1850,12 @@ body.sidebar {
   .ui-dialog-content {
     color: #ddd;
     padding: 12px 10px 5px;
+    a {
+      color: #f7f7f7;
+      &:focus {
+        outline: none;
+      }
+    }
     ul {
       li {
         padding: 6px 10px;
