@@ -2,8 +2,8 @@
 A nice web ui for xbmc, focused on user experience
 Currently only for music, but it might support video and photos in the future.
 
-Used by the [Doghouse Media Team](https://dhmedia.com.au) to control the shared
-office music box (an old pc running XBMC with chorus, plugged into an amp)
+Used by the [Doghouse Media Team](https://dhmedia.com.au) to control the shared office music box
+(an old pc running XBMC with chorus, plugged into an amp and a nas)
 
 ## Author
 Jeremy Graham
@@ -46,7 +46,7 @@ Mobile it is useless at the moment, but a possibility for the future.
 - Soundcloud
 
 ## Under the hood
-Chorus uses the following libraries:
+Chorus uses the following libraries, creds to all authors:
 
 - jQuery
 - backbone
@@ -57,7 +57,7 @@ Chorus uses the following libraries:
 - scrollTo
 - total storage
 - Font awesome
-- lots more, see lib/enabled
+- for all, see lib/enabled
 
 ## Developers
 
@@ -68,3 +68,23 @@ Sass and Grunt are used to compile css and js in the dist folder
 ### Contributing
 If you would like to make this project better I would appreciate any help. Send me your merge requests!
 A few things that are "nice to haves"
+
+- Backbone, this is my first project using backbone and I am sure I could be doing some things better (refactor)
+- Addons, Make it work with your favourite addon - I attempted google music but failed even using it via the ui
+- Mobile/Tablet App, I would love to reuse a lot of the code as an app, but dont know how
+- Video Support, It would be cool to both browse your video library but also play videos via the browser
+- In Browser audio playback, this was a feature of xbmcwui and I miss it a bit
+- Photo library, I wouldn't use it, but you might!
+
+## Screenshots
+Homepage (now playing)
+![alt text](screenshots/home.jpg "Homepage/Now Playing")
+
+Artists
+![alt text](screenshots/artists.jpg "Artists")
+
+Search
+![alt text](screenshots/search.jpg "Search")
+
+Albums
+![alt text](screenshots/albums.jpg "Albums")
