@@ -12,8 +12,7 @@ mail@jez500.com
 
 ## Installing
 Install webinerface.chorus.zip via the zip, basically:
-XBMC > Programs > get more > (keep pressing .. until you see "install from zip")
-http://wiki.xbmc.org/index.php?title=Add-on_manager#How_to_install_from_a_ZIP_file
+XBMC > Settings > AddOns > Install from zip
 TODO: Get it in the XBMC repo
 
 ## Enabling
@@ -32,10 +31,18 @@ eg.
 - http://192.168.0.10/
 TIP: Get your IP via XBMC > System > System Info
 
+## Performance
+If you have a large library (20000+ songs), some things get a bit sluggish, especially
+if either client or server are low power (eg. not a pc).
+
+## Target Device
+This is really tailored for a fairly large screen, it downsizes nicely to about 1200px wide.
+Mobile it is useless at the moment, but a possibility for the future.
+
 ## Under the hood
 Chorus uses the following libraries:
 
-- jQuery 1.9
+- jQuery
 - backbone
 - underscore
 - bootstrap
@@ -52,6 +59,3 @@ Sass and Grunt are used to compile css and js in the dist folder
 
 ### Contributing
 If you would like to make this project better then go for it, contributors are welcome!
-
-
-
