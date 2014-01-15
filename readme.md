@@ -77,14 +77,15 @@ A few things that are "nice to haves"
 - Photo library, I wouldn't use it, but you might!
 
 ## Screenshots
-Homepage (now playing)
+
+### Homepage (now playing)
 ![alt text](../raw/master/screenshots/home.jpg "Homepage/Now Playing")
 
-Artists
+### Artists
 ![alt text](../raw/master/screenshots/artist.jpg "Artists")
 
-Search
+### Search
 ![alt text](../raw/master/screenshots/search.jpg "Search")
 
-Albums
+### Albums
 ![alt text](../raw/master/screenshots/album.jpg "Albums")
