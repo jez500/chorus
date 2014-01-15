@@ -81,10 +81,10 @@ Homepage (now playing)
 ![alt text](../raw/master/screenshots/home.jpg "Homepage/Now Playing")
 
 Artists
-![alt text](../raw/master/screenshots/artists.jpg "Artists")
+![alt text](../raw/master/screenshots/artist.jpg "Artists")
 
 Search
 ![alt text](../raw/master/screenshots/search.jpg "Search")
 
 Albums
-![alt text](../raw/master/screenshots/albums.jpg "Albums")
+![alt text](../raw/master/screenshots/album.jpg "Albums")
