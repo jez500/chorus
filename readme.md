@@ -78,13 +78,13 @@ A few things that are "nice to haves"
 
 ## Screenshots
 Homepage (now playing)
-![alt text](/screenshots/home.jpg "Homepage/Now Playing")
+![alt text](../raw/master/screenshots/home.jpg "Homepage/Now Playing")
 
 Artists
-![alt text](/screenshots/artists.jpg "Artists")
+![alt text](../raw/master/screenshots/artists.jpg "Artists")
 
 Search
-![alt text](/screenshots/search.jpg "Search")
+![alt text](../raw/master/screenshots/search.jpg "Search")
 
 Albums
-![alt text](/screenshots/albums.jpg "Albums")
+![alt text](../raw/master/screenshots/albums.jpg "Albums")
