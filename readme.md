@@ -1,6 +1,9 @@
 # Chorus
 A nice web ui for xbmc, focused on user experience
-Currently only for music, but it might support video and photos in the future
+Currently only for music, but it might support video and photos in the future.
+
+Used by the [Doghouse Media Team](https://dhmedia.com.au) to control the shared
+office music box (an old pc running XBMC with chorus, plugged into an amp)
 
 ## Author
 Jeremy Graham
@@ -39,6 +42,9 @@ if either client or server are low power (eg. not a pc).
 This is really tailored for a fairly large screen, it downsizes nicely to about 1200px wide.
 Mobile it is useless at the moment, but a possibility for the future.
 
+## Supported xbmc addons
+- Soundcloud
+
 ## Under the hood
 Chorus uses the following libraries:
 
@@ -51,11 +57,14 @@ Chorus uses the following libraries:
 - scrollTo
 - total storage
 - Font awesome
+- lots more, see lib/enabled
 
 ## Developers
+
 
 ### Compiling
 Sass and Grunt are used to compile css and js in the dist folder
 
 ### Contributing
-If you would like to make this project better then go for it, contributors are welcome!
+If you would like to make this project better I would appreciate any help. Send me your merge requests!
+A few things that are "nice to haves"
