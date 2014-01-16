@@ -915,6 +915,7 @@ $album-meta-width: 100 - $album-tracks-width;
         width: auto;
         font-size: 180%;
         z-index: 10;
+        width: 100%;
       }
       .img-overlay {
         @include hover-play-button;

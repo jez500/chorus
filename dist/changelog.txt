@@ -1,4 +1,8 @@
 Version 0.1.3:
+- fixed play button style bug on album
+
+
+Version 0.1.3:
 - Code cleanup / refactor
 - About dialog
 - template loading on the fly

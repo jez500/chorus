@@ -198,7 +198,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
       }
       param.type = (typeof param.type == 'undefined' ? '' : param.type);
 
-
+      // set the text
       var text = (typeof param.description == 'undefined' ? '' : param.description + "\n\r") +
         (param.type != '' ? JSON.stringify(param.type, null, 2) : '');
 
@@ -215,7 +215,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
         }
         $el.addClass('select');
       } else {
-        // standard input
+        // standard input fallback
         $el = $('<input>', {
           type: 'text',
           value: '',
@@ -224,6 +224,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
       }
       $el.addClass('paramEl');
 
+      // build and append
       $div
         .append($('<label>' + param.name + (param.required ? '*' : '') + (this.isEncoded('t', param, $el) ? ' (JSON Encoded)' : '' ) +  '</label> '))
         .append($el)
