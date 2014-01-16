@@ -12835,6 +12835,10 @@ $(document).ready(function(){
       buttons: {
         "Cool!": function(){
           $( this ).dialog( "close" );
+        },
+        "ChangeLog": function(){
+          document.location = '#xbmc/changelog';
+          $( this ).dialog( "close" );
         }
       }
     };
@@ -18485,15 +18489,19 @@ app.XbmcChorusChangeLog = Backbone.View.extend({
 
   tagName:'div',
 
-  className:'xbmc-page',
+  className:'xbmc-page changelog',
 
   render:function () {
 
     var self = this;
-    this.$el.empty();
+    this.$el.html('Loading ChangeLog');
 
+    // get changelog file content
     $.get('changelog.txt', function(data){
+      // render
       self.$el.html(app.nl2br(data));
+      // set title
+      app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>Chorus ChangeLog');
     });
 
     return this;
@@ -18526,6 +18534,9 @@ app.XbmcJSONrpcView = Backbone.View.extend({
 
 
   render:function () {
+
+    // set title
+    app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>jsonRPC');
 
     this.$el.empty();
 
