@@ -20,7 +20,7 @@ app.XbmcView = Backbone.View.extend({
     var pages = {
         'jsonrpc': 'An interface to deal directly with the xbmc jsonrpc',
         'storage': 'Local Storage Data Dump',
-        'home': 'This page'
+        'changelog': 'Updates to Chorus'
       };
 
     switch(this.model){
@@ -31,6 +31,10 @@ app.XbmcView = Backbone.View.extend({
       // Local storage dump
       case 'storage':
         this.$el = new app.XbmcLocalDumpView().render().$el;
+        return this; // exit here
+      // Local storage dump
+      case 'changelog':
+        this.$el = new app.XbmcChorusChangeLog().render().$el;
         return this; // exit here
     }
 
@@ -98,6 +102,36 @@ app.XbmcLocalDumpView = Backbone.View.extend({
 
 
 /********************************************************************************
+ * Change log
+ ********************************************************************************/
+
+
+app.XbmcChorusChangeLog = Backbone.View.extend({
+
+  tagName:'div',
+
+  className:'xbmc-page changelog',
+
+  render:function () {
+
+    var self = this;
+    this.$el.html('Loading ChangeLog');
+
+    // get changelog file content
+    $.get('changelog.txt', function(data){
+      // render
+      self.$el.html(app.nl2br(data));
+      // set title
+      app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>Chorus ChangeLog');
+    });
+
+    return this;
+  }
+
+});
+
+
+/********************************************************************************
  * JsonRPC tester
  ********************************************************************************/
 
@@ -121,6 +155,9 @@ app.XbmcJSONrpcView = Backbone.View.extend({
 
 
   render:function () {
+
+    // set title
+    app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>jsonRPC');
 
     this.$el.empty();
 

@@ -567,6 +567,10 @@ $(document).ready(function(){
       buttons: {
         "Cool!": function(){
           $( this ).dialog( "close" );
+        },
+        "ChangeLog": function(){
+          document.location = '#xbmc/changelog';
+          $( this ).dialog( "close" );
         }
       }
     };

@@ -6,7 +6,7 @@
 
 
 $.jsonRPC.setup({
-  endPoint: '/' + app.jsonRpcUrl
+  endPoint: app.jsonRpcUrl
 });
 
 

@@ -6,7 +6,7 @@ var app = {
 
   cached: {}, //for caching views and collections
 
-  jsonRpcUrl: 'jsonrpc',
+  jsonRpcUrl: '/jsonrpc',
 
   // variables (settings defaults)
   vars: {

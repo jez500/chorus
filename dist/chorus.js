@@ -13155,7 +13155,7 @@ $(document).ready(function(){
 
   cached: {}, //for caching views and collections
 
-  jsonRpcUrl: 'jsonrpc',
+  jsonRpcUrl: '/jsonrpc',
 
   // variables (settings defaults)
   vars: {
@@ -15270,7 +15270,7 @@ app.storageController.setStorage = function(key, value, callback){
 
 
 $.jsonRPC.setup({
-  endPoint: '/' + app.jsonRpcUrl
+  endPoint: app.jsonRpcUrl
 });
 
 
@@ -18395,7 +18395,7 @@ app.XbmcView = Backbone.View.extend({
     var pages = {
         'jsonrpc': 'An interface to deal directly with the xbmc jsonrpc',
         'storage': 'Local Storage Data Dump',
-        'home': 'This page'
+        'changelog': 'Updates to Chorus'
       };
 
     switch(this.model){
@@ -18406,6 +18406,10 @@ app.XbmcView = Backbone.View.extend({
       // Local storage dump
       case 'storage':
         this.$el = new app.XbmcLocalDumpView().render().$el;
+        return this; // exit here
+      // Local storage dump
+      case 'changelog':
+        this.$el = new app.XbmcChorusChangeLog().render().$el;
         return this; // exit here
     }
 
@@ -18465,6 +18469,32 @@ app.XbmcLocalDumpView = Backbone.View.extend({
     });
 
 
+
+    return this;
+  }
+
+});
+
+
+/********************************************************************************
+ * Change log
+ ********************************************************************************/
+
+
+app.XbmcChorusChangeLog = Backbone.View.extend({
+
+  tagName:'div',
+
+  className:'xbmc-page',
+
+  render:function () {
+
+    var self = this;
+    this.$el.empty();
+
+    $.get('changelog.txt', function(data){
+      self.$el.html(app.nl2br(data));
+    });
 
     return this;
   }
@@ -18573,7 +18603,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
       }
       param.type = (typeof param.type == 'undefined' ? '' : param.type);
 
-
+      // set the text
       var text = (typeof param.description == 'undefined' ? '' : param.description + "\n\r") +
         (param.type != '' ? JSON.stringify(param.type, null, 2) : '');
 
@@ -18590,7 +18620,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
         }
         $el.addClass('select');
       } else {
-        // standard input
+        // standard input fallback
         $el = $('<input>', {
           type: 'text',
           value: '',
@@ -18599,6 +18629,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
       }
       $el.addClass('paramEl');
 
+      // build and append
       $div
         .append($('<label>' + param.name + (param.required ? '*' : '') + (this.isEncoded('t', param, $el) ? ' (JSON Encoded)' : '' ) +  '</label> '))
         .append($el)
