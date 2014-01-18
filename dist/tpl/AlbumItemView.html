@@ -1,30 +1,9 @@
 <div class="album-row album-row-<%= albumid %> clearfix">
 
-    <ul class="album-info">
-        <!--<a class="">-->
-            <!--<% if ( app.parseImage(thumbnail) ) { %>-->
-            <!--<span class="image" data-id="<%= albumid %>">-->
-                <!--<img src="<%= app.parseImage(thumbnail) %>"/>-->
-                <!--<div class="img-overlay">&nbsp;</div>-->
-                <!--<button class="album-play btn" title="Replace the playlist with this album and start playing"><i class="icon-play"></i></button>-->
+    <ul class="album-info"></ul>
 
-                <!--<div class="album-actions-wrapper">-->
-                    <!--<div class="album-actions dropdown" data-id="<%= albumid %>">-->
-                        <!--<button class="album-thumbsup btn" title="Thumbs Up"><i class="icon-thumbs-up"></i></button>-->
-                        <!--<button class="album-add btn" title="Add all songs from this album to the playlist"><i class="icon-plus"></i></button>-->
-                    <!--</div>-->
-                <!--</div>-->
+    <div class="album-title"><a class="album-title-link" href='#album/<%= albumid %>'><%= album %></a></div>
 
-            <!--</span>-->
+    <div class="tracks"></div>
 
-            <!--<% } %>-->
-        <!--</a>-->
-    </ul>
-
-    <div class="album-title"><a class="album-title-link" href='#album/<%= albumid %>'><%= album %></a>
-
-    </div>
-    <div class="tracks">
-        Tracks
-    </div>
 </div>

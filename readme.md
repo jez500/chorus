@@ -81,11 +81,15 @@ A few things that are "nice to haves"
 ### Homepage (now playing)
 ![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/home.jpg "Homepage/Now Playing")
 
-### Artists
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist.jpg "Artists")
-
 ### Search
 ![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/search.jpg "Search")
 
+### Artists
+![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist.jpg "Artists")
+
+![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist.jpg "Artists Landing")
+
 ### Albums
 ![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/album.jpg "Albums")
+
+![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/album1.jpg "Albums landing")

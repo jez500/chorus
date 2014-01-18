@@ -267,8 +267,8 @@ app.MemoryStore = function (successCallback, errorCallback) {
         this.allSongs.fetch({"success": function(data){
 
           // assign to store
-          //self.parseAudio(data.models);
-          console.log(data);
+          // debug console.log(data);
+
           //cache
           app.stores.allSongs = data;
 
@@ -279,7 +279,6 @@ app.MemoryStore = function (successCallback, errorCallback) {
           $(window).trigger('songsReady');
 
           // ready action
-          //successCallback();
           callLater(successCallback,  self)
         }});
       }

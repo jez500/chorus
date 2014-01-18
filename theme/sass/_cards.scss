@@ -1,6 +1,48 @@
 
 @mixin card($size: 'small') {
 
+
+  // size changes
+  @if $size == 'large' {
+    // large
+    width: $card-large-width;
+    height: $card-large-height;
+    .image {
+      min-width: initial;
+      height: $card-large-image-height;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .details {
+      //position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+    }
+    .actions-wrapper .play {
+      bottom: 8px;
+    }
+    p.item-sub-sub-title {
+      display: block;
+    }
+  } @else {
+    // small
+    min-width: $card-small-width;
+    height: $card-small-height;
+    .image {
+      min-width: $card-small-width;
+      height: $card-small-image-height;
+    }
+  }
+
+
+}
+
+
+
+@mixin card-base {
+
   white-space: nowrap;
   display: inline-block;
   margin: 5px;
@@ -15,8 +57,10 @@
 
   .image {
     display: block;
+    background-color: #ddd;
     background-size: cover;
     width: 100%;
+    box-shadow: inset 0 0 16px 5px rgba(0, 0, 0, 0.07);
   }
 
   .details {
@@ -37,6 +81,7 @@
         color: $color-light-slate;
       }
     }
+    &.item-sub-sub-title,
     &.item-sub-title {
       font-size: 13px;
       line-height: 16px;
@@ -46,6 +91,13 @@
       a {
         color: #AAA;
       }
+    }
+    &.item-sub-sub-title {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dotted #eee;
+      font-style: italic;
+      display: none;
     }
 
     // fadeout
@@ -74,9 +126,11 @@
     right: 0;
     height: $card-small-height;
     opacity: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.5);
     width: auto !important;
     min-width: $card-small-width;
+    cursor: pointer;
+    @include transition(0.2s all linear);
     &:hover {
       opacity: 1;
     }
@@ -95,45 +149,9 @@
     }
     .play {
       position: absolute;
-      top: 38px;
-      left: 0;
-      right: 0;
-      bottom: 20px;
-      width: 100%;
-      padding: 0;
+      left: 10px;
+      bottom: 10px;
       font-size: 200%;
-    }
-  }
-
-
-  // size changes
-  @if $size == 'large' {
-    // large
-    width: $card-large-width;
-    height: $card-large-height;
-    .image {
-      min-width: initial;
-      height: $card-large-image-height;
-      background-size: cover;
-      background-repeat: no-repeat;
-    }
-    .details {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #fff;
-    }
-    .actions-wrapper .play {
-      bottom: 50px;
-    }
-  } @else {
-    // small
-    min-width: $card-small-width;
-    height: $card-small-height;
-    .image {
-      min-width: $card-small-width;
-      height: $card-small-image-height;
     }
   }
 
@@ -143,13 +161,13 @@
       color: $color-carrot;
     }
   }
+
 }
-
-
 
 
 // Output as a helper css class
 .card {
+  @include card-base;
   @include card('small');
   &.card-large {
     @include card('large');

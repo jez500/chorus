@@ -86,10 +86,10 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
 
 
 
-/*
- * Get Album collection
+/**
+ * Get Recently Added Album collection
  */
-app.AlbumRecentXbmcCollection = Backbone.Collection.extend({
+app.AlbumRecentlyAddedXbmcCollection = Backbone.Collection.extend({
   //rpc deets
   url: app.jsonRpcUrl,
   rpc: new Backbone.Rpc({
@@ -107,6 +107,41 @@ app.AlbumRecentXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    // mark as recently added in the model
+    $.each(resp.albums, function(i,d){
+      resp.albums[i].recent = 'added';
+    });
+    var a = app.helpers.shuffle(resp.albums);
+    return a;
+  }
+});
+
+
+/**
+ * Get Recently Played Album collection
+ */
+app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc album call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.Album,
+  //collection params
+  arg1: app.albumFields, //properties
+  arg2: {"start": 0, "end": 200}, //count
+  //method/params
+  methods: {
+    read:  ['AudioLibrary.GetRecentlyPlayedAlbums', 'arg1', 'arg2']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    // mark as recently played in the model
+    $.each(resp.albums, function(i,d){
+      resp.albums[i].recent = 'played';
+    });
     var a = app.helpers.shuffle(resp.albums);
     return a;
   }
@@ -114,7 +149,7 @@ app.AlbumRecentXbmcCollection = Backbone.Collection.extend({
 
 
 
-/*
+/**
  * Get Artist collection
  */
 app.ArtistXbmcCollection = Backbone.Collection.extend({

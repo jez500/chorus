@@ -1,3 +1,9 @@
+Version 0.1.6:
+- Recreated landing pages for artist and albums, implemented freewall
+- Context options added for new views
+- Lots of styles, optimisations and bug fixes.
+
+
 Version 0.1.5:
 - fixed play button style bug on album
 - fixed jsonRPC path so it now works via /addons/webinterface.chorus

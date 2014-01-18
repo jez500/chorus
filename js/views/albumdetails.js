@@ -80,9 +80,6 @@ app.AlbumArtistView = Backbone.View.extend({
         //set active row
         $('.album-row-' + self.model.attributes.albumid).addClass('active');
 
-        //scrollbars
-        app.helpers.addScrollBar('.other-albums');
-
       }});
 
     }});

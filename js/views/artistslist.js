@@ -108,6 +108,13 @@ app.ArtistLargeItemView = Backbone.View.extend({
     this.model.on("destroy", this.close, this);
   },
 
+  events: {
+    "click .artist-play": "playArtist",
+    "click .artist-add": "addArtist",
+    "click .artist-thumbsup": "thumbsUp",
+    "click .actions-wrapper": "viewArtist"
+  },
+
   render:function () {
     var model = this.model.attributes;
 
@@ -128,6 +135,50 @@ app.ArtistLargeItemView = Backbone.View.extend({
 
 
     return this;
+  },
+
+  playArtist: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // clear playlist. add artist, play first song
+    var artist = this.model.attributes;
+    app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
+      app.AudioController.playPlaylistPosition(0, function(){
+        app.notification('Now playing ' + artist.artist);
+        app.AudioController.playlistRefresh();
+      });
+    });
+
+  },
+
+  addArtist: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // clear playlist. add artist, play first song
+    var artist = this.model.attributes;
+    app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
+      app.notification(artist.artist + ' added to the playlist');
+      app.AudioController.playlistRefresh();
+    });
+
+  },
+
+  thumbsUp: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var artist = this.model.attributes,
+      artistid = artist.artistid,
+      op = (app.playlists.isThumbsUp('artist', artistid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.card');
+    app.playlists.setThumbsUp(op, 'artist', artistid);
+    $el.toggleClass('thumbs-up');
+
+  },
+
+
+  viewArtist: function(e){
+    e.stopPropagation();
+    window.location = '#artist/' + this.model.attributes.artistid;
   }
 
 });

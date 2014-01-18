@@ -99,7 +99,8 @@ app.AlbumItemSmallView = Backbone.View.extend({
   events: {
     "click .album-play": "playAlbum",
     "click .album-add": "addAlbum",
-    "click .album-thumbsup": "thumbsUp"
+    "click .album-thumbsup": "thumbsUp",
+    "click .actions-wrapper": "viewAlbum"
   },
 
   initialize:function () {
@@ -114,9 +115,8 @@ app.AlbumItemSmallView = Backbone.View.extend({
     model.title = ( typeof model.label != "undefined" ? model.label : model.album );
     model.url = '#album/' + model.albumid;
     model.img = app.parseImage(model.thumbnail);
-    // parse artist details a bit
-    model.displayartistid = (typeof model.artistid[0] != 'undefined' ? model.artistid[0] : '');
-    model.displayartisturl = (model.displayartistid != '' ? '#artist/' + model.displayartistid : '#artists');
+    model.recenttext = (typeof model.recent != 'undefined' ? 'Recently ' + model.recent : '');
+    model.artisturl = (model.artistid != '' ? '#artist/' + model.artistid : '#artists');
 
     // apply template
     this.$el.html(this.template(model));
@@ -128,7 +128,9 @@ app.AlbumItemSmallView = Backbone.View.extend({
     if(app.playlists.isThumbsUp('album', model.albumid)){
       this.$el.addClass('thumbs-up');
     }
-
+    if(typeof model.recent != 'undefined'){
+      this.$el.addClass('recent');
+    }
     return this;
   },
 
@@ -138,6 +140,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
    */
   playAlbum: function(e){
     e.stopPropagation();
+    e.preventDefault();
     // clear playlist. add artist, play first song
     var album = this.model.attributes;
     app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
@@ -153,6 +156,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
    */
   addAlbum: function(e){
     e.stopPropagation();
+    e.preventDefault();
     // clear playlist. add artist, play first song
     var album = this.model.attributes;
     app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
@@ -167,13 +171,24 @@ app.AlbumItemSmallView = Backbone.View.extend({
    */
   thumbsUp: function(e){
     e.stopPropagation();
+    e.preventDefault();
     var album = this.model.attributes,
-      albumid = this.model.attributes.albumid,
+      albumid = album.albumid,
       op = (app.playlists.isThumbsUp('album', albumid) ? 'remove' : 'add'),
       $el = $(e.target).closest('.card');
     app.playlists.setThumbsUp(op, 'album', albumid);
     $el.toggleClass('thumbs-up');
 
+  },
+
+  /**
+   * go to album page
+   */
+  viewAlbum: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var albumid = this.model.attributes.albumid;
+    window.location = '#album/' + albumid;
   }
 
 });

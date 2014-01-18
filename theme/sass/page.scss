@@ -22,6 +22,28 @@ html {
   width: 70%;
   margin: 80px auto 0 auto;
   text-align: center;
+  position: relative;
+  @include transition(1.5s all linear);
+  animation: rotateanim 6s infinite linear;
+  -webkit-animation: rotateanim 6s infinite linear;
+}
+@keyframes rotateanim {
+  0% { background: #f1f1f1; }
+  25% { background: #eee; }
+  75% { background: #fff; }
+  100% { background: #eee; }
+}
+@-webkit-keyframes rotateanim {
+  0% { background: #f1f1f1; }
+  25% { background: #ddd; }
+  75% { background: #fff; }
+  100% { background: #eee; }
+}
+#files-container {
+  .loading-box {
+    animation: none;
+    -webkit-animation: none;
+  }
 }
 
 .jspContainer:focus {
@@ -81,7 +103,7 @@ input[type="text"] {
   top: 0;
   bottom: $height-footer;
   width: $width-header;
-  background: $color-mist;
+  background: #FDFDFD;
   z-index: 5;
 
   //logo
@@ -181,7 +203,7 @@ body.fixed-header {
       overflow: hidden;
       position: relative;
       white-space: nowrap;
-      background: #f0eeec;
+      background: #F6F5F3;
       &:hover {
         //color: $color-slate;
       }
@@ -393,7 +415,7 @@ body.no-sidebar {
 
 #sidebar-second {
   width: $width-sidebar-second-small;
-  background: rgba(248, 248, 248, 0.75);
+  background: #f8f8f8;
   position: fixed;
   top: 0;
   right: 0;
@@ -593,10 +615,12 @@ h4 {
     bottom: 0;
     overflow-y: auto;
   }
-
+  .mini-artist-fanart {
+    height: 170px;
+    background-size: cover;
+  }
 
   ul.artist-thumbs-up,
-  ul.album-list-small,
   ul.artist-search-list,
   ul.artist-list {
     padding: 5px 0;
@@ -744,10 +768,48 @@ h4 {
     }
   }
   // album
+  $mini-img-width: 80px;
   ul.album-list-small {
-    li a.active .image {
-      width: 80px;
-      height: 80px;
+    li.card {
+      height: $mini-img-width;
+      margin-right: 0;
+      &:hover {
+        background: #eee;
+      }
+      a {
+        padding: 0;
+      }
+      .actions-wrapper,
+      .image {
+        float: left;
+        width: $mini-img-width !important;
+        height: $mini-img-width;
+        min-width: $mini-img-width;
+      }
+      .actions-wrapper {
+        .play {
+          bottom: 8px;
+          left: 11px;
+          font-size: 130%;
+        }
+      }
+      .details {
+        float: left;
+        padding-right: 0;
+        width: 180px;
+        p {
+           // padding-right: 15px;
+          &:after {
+            right: -9999999px;
+          }
+        }
+        .item-title {
+          height: auto;
+          max-height: 51px;
+          white-space: normal;
+          margin-bottom: 5px;
+        }
+      }
     }
   }
 }
@@ -818,7 +880,7 @@ h4 {
 
 .artist-fanart {
   overflow: hidden;
-  height: 300px;
+  height: 342px;
   margin-top: -#{$height-header + 5};
   cursor: pointer;
   img {
@@ -862,6 +924,81 @@ h4 {
     margin: 5px 10px 10px 15px;
     img {
       width: 100%;
+    }
+  }
+}
+
+
+#artist-tabs {
+  background: $color-concrete;
+  padding: 0 0 0;
+  position: relative;
+  ul {
+    border-bottom: none;
+    margin-bottom: 5px;
+  }
+  a {
+    color: #f6f6f6;
+    border-radius: 0;
+    border: none;
+    font-size: 110%;
+    padding: 11px 20px;
+
+    opacity: 0.9;
+    &:hover {
+      background: $color-asbestos;
+      opacity: 1;
+    }
+  }
+  li {
+    margin: 0;
+    &.active {
+      a {
+        color: $color-slate;
+        font-weight: bold;
+        opacity: 1;
+        background: #fff !important;
+        &:hover {
+          background: #fff;
+          border-bottom-color: #fff;
+        }
+      }
+    }
+  }
+
+  .artist-actions {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    .btn {
+      background: none;
+      padding: 10px 13px;
+      @include border-radius(0);
+      float: left;
+      color: #f6f6f6;
+      &:focus,
+      &:hover {
+        background: transparent;
+        color: $color-light-slate;
+      }
+    }
+    &.thumbs-up {
+      .icon-thumbs-up {
+        color: $color-carrot;
+      }
+    }
+  }
+}
+.has-fanart {
+  #artist-tabs {
+    background: none;
+    margin-top: -42px;
+    z-index: 10;
+    ul {
+      margin-left: 15px;
+      a {
+        background: $color-asbestos;
+      }
     }
   }
 }
@@ -973,62 +1110,6 @@ $album-margin-right: $album-meta-width + 10;
       font-weight: normal;
       color: #eee;
       background: rgba(0,0,0,0.3);
-    }
-  }
-
-}
-
-#artist-tabs {
-  background: $color-concrete;
-  padding: 0 0 0;
-  position: relative;
-  ul {
-    border-bottom: none;
-    margin-bottom: 5px;
-  }
-  a {
-    color: #f6f6f6;
-    border-radius: 0;
-    border: none;
-    font-size: 110%;
-    padding: 11px 20px;
-    &:hover {
-      background: $color-asbestos;
-      //border-color: $color-asbestos;
-    }
-  }
-  li {
-    margin: 0;
-    &.active {
-      a {
-        color: $color-slate;
-        font-weight: bold;
-        &:hover {
-          background: #fff;
-          border-bottom-color: #fff;
-        }
-      }
-    }
-  }
-
-  .artist-actions {
-    position: absolute;
-    right: 5px;
-    top: 0px;
-    .btn {
-      background: none;
-      padding: 10px 13px;
-      @include border-radius(0);
-      float: left;
-      color: #f6f6f6;
-      &:hover {
-        background: $color-asbestos;
-      }
-    }
-    &.thumbs-up {
-      .icon-thumbs-up {
-        color: $color-light-slate;
-      }
     }
   }
 
@@ -1327,10 +1408,11 @@ h3.search-heading {
 
 // albums list
 .album-list-landing {
-  li {
+  li.has-thumb { // only items with thumbs get enlarged
     // set a few as large @todo move to js
     &:nth-child(8),
     &:nth-child(18),
+    &:nth-child(25),
     &:first-child {
       @include card('large');
     }
@@ -1340,12 +1422,18 @@ h3.search-heading {
 // artists list
 $height-offset: 90;
 .rand-list {
-  margin-right: 5px;
+  margin-right: 2px;
   li.card.card-large {
     height: $card-large-image-height - $height-offset;
     .image {
       background-repeat: cover;
       height: $card-small-image-height + 35;
+    }
+    .details {
+      position: absolute;
+    }
+    .actions-wrapper .play {
+      bottom: 25px;
     }
     &:nth-child(4n+4),{
       //height: $card-large-image-height - $height-offset;
@@ -1357,8 +1445,9 @@ $height-offset: 90;
 // search result card (no freewall)
 .album-generic-list {
   li {
-    @include card('small');
+    //@include card('small');
     width: $card-small-width;
+    height: $card-small-width + 50;
     margin: 5px 15px 10px 15px;
   }
 }
@@ -1858,6 +1947,11 @@ body.sidebar {
   #params {
     overflow: hidden;
     display: block;
+  }
+  #method-name {
+    font-size: 115%;
+    padding-left: 15px;
+    color: #999;
   }
   .btn {
     background: $color-light-slate;

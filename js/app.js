@@ -287,26 +287,61 @@ app.Router = Backbone.Router.extend({
 
   /**
    * Albums page
+   *
+   * @TODO abstract elsewhere
    */
   albums: function(){
 
     app.shellView.selectMenuItem('album', 'no-sidebar');
     var self = this;
-    app.cached.recentlyAddedAlbums = new app.AlbumRecentXbmcCollection();
-    app.cached.recentlyAddedAlbums.fetch({"success": function(albums){
 
-      // render
-      app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albums, className:'album-list-landing'});
-      self.$content.html(app.cached.recentAlbumsView.render().el);
+    $('#content').html('<div class="loading-box">Loading Albums</div>');
 
-      // set title
-      app.helpers.setTitle('Recently Added', {addATag:true});
+    // first get recently added
+    app.cached.recentlyAddedAlbums = new app.AlbumRecentlyAddedXbmcCollection();
+    app.cached.recentlyAddedAlbums.fetch({"success": function(albumsAdded){
 
-      // set menu
-      app.shellView.selectMenuItem('albums', 'no-sidebar');
+      // then get recently played
+      app.cached.recentlyPlayedAlbums = new app.AlbumRecentlyPlayedXbmcCollection();
+      app.cached.recentlyPlayedAlbums.fetch({"success": function(albumsPlayed){
 
-      // add isotope (disabled)
-      app.helpers.addIsotope('ul.album-list-landing');
+        // mush them together
+        var allAlbums = albumsPlayed.models,
+          used = {};
+        // prevent dupes
+        _.each(allAlbums, function(r){
+          used[r.attributes.albumid] = true;
+        });
+        // add played
+        _.each(albumsAdded.models, function(r){
+          if(!used[r.attributes.albumid]){
+            allAlbums.push(r);
+          }
+        });
+
+        // randomise
+        allAlbums = app.helpers.shuffle(allAlbums);
+
+        // add back to models
+        albumsAdded.models = allAlbums;
+        albumsAdded.length = allAlbums.length;
+
+        // render
+        app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albumsAdded, className:'album-list-landing'});
+        self.$content.html(app.cached.recentAlbumsView.render().el);
+
+        // set title
+        app.helpers.setTitle('Recent', {addATag:true});
+
+        // set menu
+        app.shellView.selectMenuItem('albums', 'no-sidebar');
+
+        // add isotope (disabled)
+        app.helpers.addFreewall('ul.album-list-landing');
+
+      }});
+
+
 
     }});
 

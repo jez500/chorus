@@ -13075,7 +13075,7 @@ $(document).ready(function(){
   };
 
 
-  app.helpers.addIsotope = function(selector){
+  app.helpers.addFreewall = function(selector){
     // removed
   };
 
@@ -13443,7 +13443,7 @@ app.Router = Backbone.Router.extend({
 
     app.shellView.selectMenuItem('album', 'no-sidebar');
     var self = this;
-    app.cached.recentlyAddedAlbums = new app.AlbumRecentXbmcCollection();
+    app.cached.recentlyAddedAlbums = new app.AlbumRecentlyAddedXbmcCollection();
     app.cached.recentlyAddedAlbums.fetch({"success": function(albums){
 
       // render
@@ -13457,7 +13457,7 @@ app.Router = Backbone.Router.extend({
       app.shellView.selectMenuItem('albums', 'no-sidebar');
 
       // add isotope (disabled)
-      app.helpers.addIsotope('ul.album-list-landing');
+      app.helpers.addFreewall('ul.album-list-landing');
 
     }});
 
@@ -15424,7 +15424,7 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
 /*
  * Get Album collection
  */
-app.AlbumRecentXbmcCollection = Backbone.Collection.extend({
+app.AlbumRecentlyAddedXbmcCollection = Backbone.Collection.extend({
   //rpc deets
   url: app.jsonRpcUrl,
   rpc: new Backbone.Rpc({
@@ -16558,7 +16558,7 @@ app.ArtistSummaryView = Backbone.View.extend({
       $('#main-content').html(this.artistsRandView.render().el);
 
       //add isotope
-      app.helpers.addIsotope('ul.rand-list');
+      app.helpers.addFreewall('ul.rand-list');
     }});
 
 

@@ -13,10 +13,17 @@
     </div>
 
     <div class="details">
-        <p class="item-title" title="<%= title %>"><a class="image-wrapper" href="<%= url %>"><span><%= title %></span></a></p>
-        <p class="item-sub-title"><span>
-            <a class="image-wrapper" href="<%= displayartisturl %>"><%= ( typeof displayartist != "undefined" ? displayartist : '' ) %></a>
-        </span></p>
+        <p class="item-title" title="<%= title %> <%= (recenttext != '' ? '(' + recenttext + ')' : '') %>">
+            <a class="image-wrapper" href="<%= url %>"><span><%= title %></span></a>
+        </p>
+        <p class="item-sub-title">
+            <a href="<%= artisturl %>"><span><%= ( typeof artist != "undefined" ? artist : '' ) %></span></a>
+        </p>
+        <% if(typeof recent != 'undefined') { %>
+            <p class="item-sub-sub-title">
+                <%= recenttext %>
+            </p>
+        <% } %>
     </div>
 
 </div>

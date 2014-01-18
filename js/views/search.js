@@ -124,7 +124,6 @@ app.searchView = Backbone.View.extend({
     var $songs = $('#search-songs'),
       self = this;
 
-
     // bind to songs ready
     $songs.html('<div class="addon-box">' + self.getLogo('song') + '<span>Loading Songs</span></div>');
 
@@ -133,10 +132,9 @@ app.searchView = Backbone.View.extend({
       app.cached.SearchsongList = new app.SongCollection();
       app.cached.SearchsongList.fetch({success: function(data){
 
-        console.log('songs loaded', data);
         var songsIds = [];
-
         $songs.empty();
+
         // filter based on string match
         var songs = data.models.filter(function (element) {
           var label = element.attributes.label;
@@ -147,9 +145,6 @@ app.searchView = Backbone.View.extend({
         _.each(songs, function(song){
           songsIds.push(song.attributes.songid);
         });
-
-        // redefine this
-        //var $songs = $('#search-songs');
 
         // Get a list of fully loaded models from id
         if(songsIds.length > 0){

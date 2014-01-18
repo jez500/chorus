@@ -165,7 +165,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
       '<h3>JSONrpc tester</h3>' +
         '<p class="alert alert-warning">Use this to test out commands on the api, be careful - you could break something</p>' +
         '<div id="execute">' +
-        '<strong>Method:</strong> <select id="method"><option>Loading...</option></select> ' +
+        '<strong>Method:</strong> <select id="method"><option>Loading...</option></select> <span id="method-name"></span>' +
         '<div id="description">Loading</div>' +
         '<span id="params"></span>' +
       '</div><h3>Result</h3><pre id="result"></pre>';
@@ -223,6 +223,8 @@ app.XbmcJSONrpcView = Backbone.View.extend({
     this.$params.empty();
 
     $('#description', this.$el).html(methodObj.description);
+    $('#method-name', this.$el).html(method);
+
 
     for(p in methodObj.params){
       var param = methodObj.params[p],

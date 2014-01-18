@@ -2,12 +2,11 @@
 
 
     <a href="#artist/<%= artistid %>" class="artist-header">
-        <% if( fanart != '' ){ thumbnail = fanart; } %>
-        <% if( thumbnail != '' ){ %>
-            <div class="mini-artist-fanart">
-                <img src="<%= app.parseImage(thumbnail) %>" />
-            </div>
-        <% } %>
+        <% if( fanart != '' ){ thumbnail = fanart; }
+           var img = app.parseImage(thumbnail, 'fanart');
+        %>
+        <div class="mini-artist-fanart" style="background-image: url('<%= img %>')">
+        </div>
     </a>
 
 

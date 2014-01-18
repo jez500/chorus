@@ -336,6 +336,27 @@ $(document).ready(function(){
   };
 
 
+  /**
+   * Freewall Layout
+   * @param selector
+   */
+  app.helpers.addFreewall = function(selector){
+    var wall = new freewall(selector);
+    wall.reset({
+      selector: 'li',
+      animate: true,
+      cellW: 170,
+      cellH: '230',
+      onResize: function() {
+        wall.fitWidth();
+      }
+    });
+    wall.fitWidth();
+  };
+
+
+
+
   /********************************************************************************
    * Song/Artist helpers
    ********************************************************************************/
@@ -813,23 +834,6 @@ $(document).ready(function(){
 
     settings = $.extend(scrollbarSettings, options);
 
-  };
-
-
-  app.helpers.addIsotope = function(selector){
-    var wall = new freewall(selector);
-    wall.reset({
-      selector: 'li',
-      animate: true,
-      cellW: 170,
-      cellH: '230',
-      onResize: function() {
-        wall.fitWidth();
-      }
-    });
-    wall.fitWidth();
-
-    console.log(wall);
   };
 
 
