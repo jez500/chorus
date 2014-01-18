@@ -79,8 +79,6 @@ app.AristsRandView = Backbone.View.extend({
 
   initialize:function () {
 
-
-
     var self = this;
     this.model.on("reset", this.render, this);
     this.model.on("add", function (artist) {
@@ -103,6 +101,7 @@ app.AristsRandView = Backbone.View.extend({
 app.ArtistLargeItemView = Backbone.View.extend({
 
   tagName:"li",
+  className:'artist-item-large card card-large',
 
   initialize:function () {
     this.model.on("change", this.render, this);
@@ -110,7 +109,24 @@ app.ArtistLargeItemView = Backbone.View.extend({
   },
 
   render:function () {
-    this.$el.html(this.template(this.model.attributes));
+    var model = this.model.attributes;
+
+    // enrich the model
+    model.title = ( typeof model.label != "undefined" ? model.label : model.artist );
+    model.url = '#album/' + model.artistid;
+    model.img = (model.fanart != '' ? model.fanart : model.thumbnail);
+
+    this.$el.html(this.template(model));
+
+    // classes
+    if(!app.helpers.isDefaultImage(model.img)){
+      this.$el.addClass('has-thumb');
+    }
+    if(app.playlists.isThumbsUp('artist', model.artistid)){
+      this.$el.addClass('thumbs-up');
+    }
+
+
     return this;
   }
 

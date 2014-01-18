@@ -1,9 +1,10 @@
 <a class="artist-row-large artist-row-large-<%= artistid %>" href='#artist/<%= artistid %>' data-id="<%= artistid %>">
-    <%
-    var thumb = (fanart != '' ? fanart : thumbnail);
-    if ( thumb ) { %>
-        <span class="image" style="background-image: url('<%= app.parseImage(thumb) %>')">
-        </span>
-    <% } %>
-    <p class="list-item"><%= artist %></p>
+
+
+    <span class="image" style="background-image: url('<%= app.parseImage(img) %>')" title="<%= artist %>"></span>
+
+    <div class="details">
+       <p class="item-title" title="<%= artist %>"><span><%= artist %></span></p>
+    </div>
+
 </a>

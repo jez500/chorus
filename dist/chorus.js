@@ -13254,7 +13254,7 @@ $(document).ready(function(){
     "SongView",
     "AristsRandView",
     "ArtistLargeItemView",
-    "SmallAlbumItemView",
+    "AlbumItemSmallView",
     "AlbumArtistView",
     "PlaylistItemView",
     "PlaylistCustomListItemView",
@@ -16382,7 +16382,7 @@ app.SmallAlbumsList = Backbone.View.extend({
   initialize:function () {
 
 /*    this.model.on("add", function (album) {
-      this.$el.append(new app.SmallAlbumItemView({model:album}).render().el);
+      this.$el.append(new app.AlbumItemSmallView({model:album}).render().el);
     });*/
   },
 
@@ -16390,7 +16390,7 @@ app.SmallAlbumsList = Backbone.View.extend({
 
     this.$el.empty();
     _.each(this.model.models, function (album) {
-      this.$el.append(new app.SmallAlbumItemView({model:album}).render().el);
+      this.$el.append(new app.AlbumItemSmallView({model:album}).render().el);
     }, this);
     return this;
 

@@ -1,0 +1,158 @@
+
+@mixin card($size: 'small') {
+
+  white-space: nowrap;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 2px;
+  //box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  background: #FFF;
+  overflow: hidden;
+  vertical-align: top;
+  position: relative;
+  font-weight: 300;
+  cursor: default;
+
+  .image {
+    display: block;
+    background-size: cover;
+    width: 100%;
+  }
+
+  .details {
+    padding: 8px;
+  }
+  p {
+    color: $color-light-slate;
+    margin: 0;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+
+    &.item-title {
+      font-size: 15px;
+      line-height: 17px;
+      max-height: 38px;
+      a {
+        color: $color-light-slate;
+      }
+    }
+    &.item-sub-title {
+      font-size: 13px;
+      line-height: 16px;
+      height: 16px;
+      color: #AAA;
+      margin: 1px 0;
+      a {
+        color: #AAA;
+      }
+    }
+
+    // fadeout
+    &:after {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 30px;
+      content: "";
+      background-image: -webkit-gradient(linear,left top,right top,color-stop(0%,rgba(255, 255, 255, 0)),color-stop(100%,#FFF));
+      background-image: -webkit-linear-gradient(left,rgba(255, 255, 255, 0),#FFF);
+      background-image: -moz-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1));
+      background-image: -ms-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1));
+      background-image: -o-linear-gradient(left,rgba(255,255,255,0),rgba(255,255,255,1));
+      background: linear-gradient(to right,rgba(255, 255, 255, 0),#FFF);
+    }
+  }
+
+  // hover actions
+  .actions-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $card-small-height;
+    opacity: 0;
+    background: rgba(0,0,0,0.7);
+    width: auto !important;
+    min-width: $card-small-width;
+    &:hover {
+      opacity: 1;
+    }
+    .actions {
+      margin-right: 7px;
+      float: right;
+    }
+    button {
+      color: rgba(255,255,255,0.5);
+      padding: 10px 10px 6px 6px;
+      &:focus,
+      &:hover {
+        color: #fff;
+        background: none;
+      }
+    }
+    .play {
+      position: absolute;
+      top: 38px;
+      left: 0;
+      right: 0;
+      bottom: 20px;
+      width: 100%;
+      padding: 0;
+      font-size: 200%;
+    }
+  }
+
+
+  // size changes
+  @if $size == 'large' {
+    // large
+    width: $card-large-width;
+    height: $card-large-height;
+    .image {
+      min-width: initial;
+      height: $card-large-image-height;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .details {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+    }
+    .actions-wrapper .play {
+      bottom: 50px;
+    }
+  } @else {
+    // small
+    min-width: $card-small-width;
+    height: $card-small-height;
+    .image {
+      min-width: $card-small-width;
+      height: $card-small-image-height;
+    }
+  }
+
+  // generic top level
+  &.thumbs-up {
+    button.thumbs-up {
+      color: $color-carrot;
+    }
+  }
+}
+
+
+
+
+// Output as a helper css class
+.card {
+  @include card('small');
+  &.card-large {
+    @include card('large');
+  }
+}
+

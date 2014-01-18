@@ -101,7 +101,7 @@ var app = {
     "SongView",
     "AristsRandView",
     "ArtistLargeItemView",
-    "SmallAlbumItemView",
+    "AlbumItemSmallView",
     "AlbumArtistView",
     "PlaylistItemView",
     "PlaylistCustomListItemView",
@@ -250,6 +250,8 @@ app.Router = Backbone.Router.extend({
     // render
     app.artistsView = new app.ArtistsView();
     $('#content').html(app.artistsView.render().el);
+
+
 
     // title
     app.helpers.setTitle('Artists', {addATag:true});

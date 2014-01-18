@@ -1,6 +1,6 @@
 @import "base";
 @import "libs";
-
+@import "cards";
 
 //resets
 div, header, footer, a {
@@ -867,8 +867,9 @@ h4 {
 }
 
 /* Album list */
-$album-tracks-width: 84%;
-$album-meta-width: 100 - $album-tracks-width;
+$album-tracks-width: auto;
+$album-meta-width: 170px;
+$album-margin-right: $album-meta-width + 10;
 
 .album-list {
   padding: 0 5px;
@@ -883,11 +884,11 @@ $album-meta-width: 100 - $album-tracks-width;
     margin: 0;
     padding: 10px;
     font-size: 18px;
-    width: $album-tracks-width;
+    width: auto;
     @include box-sizing(border-box);
     background: #F8F8F8;
     position: relative;
-
+    margin-right: $album-margin-right;
     a {
       color: $color-asbestos;
     }
@@ -897,65 +898,36 @@ $album-meta-width: 100 - $album-tracks-width;
     width: $album-meta-width;
     padding-bottom: 10px;
     color: $color-asbestos;
-
-    img {
-      width: 100%;
-    }
-    .image {
-      position: relative;
+    .image,
+    .card {
       display: block;
-      .album-play {
-        @include border-radius(0);
-        @include hover-play-button;
-        background: none;
-        right: 0;
-        bottom: 0;
-        padding: 0;
-        line-height: 4;
-        width: auto;
-        font-size: 180%;
-        z-index: 10;
-        width: 100%;
-      }
-      .img-overlay {
-        @include hover-play-button;
-        width: auto;
-        right: 0;
-        z-index: 5;
-      }
-      &:hover {
-        .img-overlay,
-        .album-actions-wrapper {
-          display: block;
-          opacity: 1;
-        }
-      }
+      width: $album-meta-width;
+      margin: 0;
+      padding: 0;
     }
-
+    .details {
+      display: none;
+    }
   }
   .tracks {
-    float: left;
-    width: $album-tracks-width;
+    float: none;
+    width: auto;
+    margin-right: $album-margin-right;
   }
-  .album-actions-wrapper {
-    position: absolute;
-    right: 15px;
-    display: none;
-    top: 0;
-    z-index: 10;
-    .btn {
-      background: none;
-      margin: 0;
-      color: #eee;
-      padding-left: 8px;
-      padding-right: 8px;
-    }
-    .thumbs-up {
-      .icon-thumbs-up {
-        color: $color-carrot;
-      }
-    }
-  }
+//  .album-actions-wrapper {
+//    position: absolute;
+//    right: 15px;
+//    display: none;
+//    top: 0;
+//    z-index: 10;
+//    .btn {
+//      background: none;
+//      margin: 0;
+//      color: #eee;
+//      padding-left: 8px;
+//      padding-right: 8px;
+//    }
+//  }
 
 }
 
@@ -1295,6 +1267,7 @@ $album-meta-width: 100 - $album-tracks-width;
 
 #search-songs {
   margin-top: 0px;
+  clear: both;
 }
 
 #search-addons {
@@ -1334,97 +1307,69 @@ h3.search-heading {
 
 
 
-/* landing page (isotope) **/
-$imgblock-width-small: 150px;
-$imgblock-height-small: 185px;
-$imgblock-width-large: 310px;
-
+/* landing page (freewall) **/
 #main-content {
   position: relative;
 }
-
 .album-list-landing,
 .album-generic-list,
 .rand-list {
   @include box-sizing(border-box);
   padding: 10px 10px 10px;
-  overflow: hidden;
-  li {
-    @include box-sizing(border-box);
-    float: left;
-    margin: 0;
-    width: 20%;
-    height: $imgblock-height-small;
-    overflow: hidden;
-    position: relative;
-    padding: 5px;
-    .image {
-      min-height: $imgblock-height-small;
-      background-color: #eee;
-      background-size: cover;
-      background-position: 50% 50%;
-    }
-//    &:first-child {
-//      width: 40%;
-//      height: $imgblock-width-large - 10;
-//      a,
-//      img {
-//        min-height: $imgblock-width-large - 10;
-//      }
-//    }
-  }
-
-  a {
-    display: block;
-    overflow: hidden;
-
-
-    height: $imgblock-height-small;
-    p {
-      position: absolute;
-      left: 0;
-      right: 0;
-      background: rgba(255,255,255, 0.84);
-      bottom: 3px;
-      padding: 5px 15px;
-      font-size: 115%;
-      color: #666;
-      margin: 0px;
-      height: 20px;
-      line-height: 22px;
-      overflow: hidden;
-    }
-    .image {
-      display: none;
-    }
-    img {
-      width: 100%;
-    }
-    .fanart {
-
-    }
+  margin: 3px 0 5px 5px;
+  &:after {
+    content: "";
+    clear: both;
+    height: 10px;
+    width: 100%;
   }
 }
-.rand-list,
+
+// albums list
 .album-list-landing {
-  padding-bottom: 90px;
-  //$offset: $width-sidebar-first - $width-header;
-  //margin-left: -$offset;
-  a {
-    .image {
-      display: block;
-    }
-  }
   li {
-    height: $imgblock-height-small + 33;
-    img {
-      min-height: $imgblock-height-small;
-    }
-    &.width2 {
-     // width: 310px;
+    // set a few as large @todo move to js
+    &:nth-child(8),
+    &:nth-child(18),
+    &:first-child {
+      @include card('large');
     }
   }
 }
+
+// artists list
+$height-offset: 90;
+.rand-list {
+  margin-right: 5px;
+  li.card.card-large {
+    height: $card-large-image-height - $height-offset;
+    .image {
+      background-repeat: cover;
+      height: $card-small-image-height + 35;
+    }
+    &:nth-child(4n+4),{
+      //height: $card-large-image-height - $height-offset;
+      width: $card-small-width + 100;
+    }
+  }
+}
+
+// search result card (no freewall)
+.album-generic-list {
+  li {
+    @include card('small');
+    width: $card-small-width;
+    margin: 5px 15px 10px 15px;
+  }
+}
+
+.album-small-row {
+  position: relative;
+}
+
+
+
+
 body.sidebar {
   .rand-list,
   .album-list-landing {
@@ -1463,31 +1408,8 @@ body.sidebar {
     color: #534c4c;
   }
 }
-.search-heading {
 
-}
-.album-generic-list {
-  min-height: 100%;
-  height: auto;
-  li {
-    width: $imgblock-width-small;
-    height: $imgblock-height-small;
-    overflow: hidden;
-    position: relative;
-    float: left;
-    margin: 0 10px 10px 0;
-    img {
-      height: $imgblock-width-small;
-      width: auto;
-    }
-    .image {
-      display: block;
-    }
-    p {
-      position: absolute;
-    }
-  }
-}
+
 
 .section-title {
   margin: 2px;
@@ -2013,6 +1935,15 @@ body {
   &.no-sidebar {
     #main {
       margin-left: $width-header;
+    }
+  }
+  &.section-artists,
+  &.section-albums {
+    background: #DFDFDF;
+    #content {
+      background: #DFDFDF;
+      padding-top: 5px;
+      padding-left: 5px;
     }
   }
   .player-play .icon-pause {

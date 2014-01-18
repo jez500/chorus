@@ -328,6 +328,14 @@ $(document).ready(function(){
   };
 
 
+  /**
+   * Is default image
+   */
+  app.helpers.isDefaultImage = function(img){
+    return (app.helpers.varGet('defaultImage') == img);
+  };
+
+
   /********************************************************************************
    * Song/Artist helpers
    ********************************************************************************/
@@ -756,6 +764,7 @@ $(document).ready(function(){
   };
 
 
+
   /**
    *  nl2br
    */
@@ -808,7 +817,19 @@ $(document).ready(function(){
 
 
   app.helpers.addIsotope = function(selector){
-    // removed
+    var wall = new freewall(selector);
+    wall.reset({
+      selector: 'li',
+      animate: true,
+      cellW: 170,
+      cellH: '230',
+      onResize: function() {
+        wall.fitWidth();
+      }
+    });
+    wall.fitWidth();
+
+    console.log(wall);
   };
 
 
