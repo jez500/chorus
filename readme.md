@@ -87,7 +87,7 @@ A few things that are "nice to haves"
 ### Artists
 ![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist.jpg "Artists")
 
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist.jpg "Artists Landing")
+![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist1.jpg "Artists Landing")
 
 ### Albums
 ![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/album.jpg "Albums")
