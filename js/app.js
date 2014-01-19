@@ -6,6 +6,10 @@ var app = {
 
   cached: {}, //for caching views and collections
 
+  counts: {503: 0}, // count defaults
+
+  state: 'notconnected',
+
   jsonRpcUrl: '/jsonrpc',
 
   // variables (settings defaults)
@@ -248,10 +252,10 @@ app.Router = Backbone.Router.extend({
   artists: function(){
 
     // render
+    var $el = $('<div class="landing-page"></div>');
     app.artistsView = new app.ArtistsView();
-    $('#content').html(app.artistsView.render().el);
-
-
+    $el.html(app.artistsView.render().el);
+    $('#content').html($el);
 
     // title
     app.helpers.setTitle('Artists', {addATag:true});
@@ -307,7 +311,9 @@ app.Router = Backbone.Router.extend({
 
         // mush them together
         var allAlbums = albumsPlayed.models,
-          used = {};
+          used = {},
+          $el = $('<div class="landing-page"></div>');
+
         // prevent dupes
         _.each(allAlbums, function(r){
           used[r.attributes.albumid] = true;
@@ -328,7 +334,8 @@ app.Router = Backbone.Router.extend({
 
         // render
         app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albumsAdded, className:'album-list-landing'});
-        self.$content.html(app.cached.recentAlbumsView.render().el);
+        $el.html(app.cached.recentAlbumsView.render().el);
+        self.$content.html($el);
 
         // set title
         app.helpers.setTitle('Recent', {addATag:true});

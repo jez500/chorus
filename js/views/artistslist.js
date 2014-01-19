@@ -41,13 +41,10 @@ app.ArtistListItemView = Backbone.View.extend({
   },
 
   render:function () {
-    this.$el.html(this.template(this.model.attributes));
 
- /*   $('.album-small-item img').resizecrop({
-      width:40,
-      height:60,
-      vertical:"top"
-    });*/
+    var model = this.model.attributes;
+    model.subtext = ( typeof model.genre != 'undefined' ? model.genre.join(', ') : '' );
+    this.$el.html(this.template(model));
 
     return this;
   },

@@ -7,6 +7,6 @@
         <div class="play-artist icon-play"></div>
     <% } %>
     <p class="list-item artist-title"><%= artist %></p>
-    <p class="list-item artist-meta"></p>
+    <p class="list-item artist-meta"><%= ( typeof subtext != 'undefined' ? subtext : '' )%></p>
 
 </a>

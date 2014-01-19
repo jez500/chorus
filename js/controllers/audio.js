@@ -498,6 +498,27 @@ app.AudioController.audioLibraryScan = function(){
 
 app.AudioController.getNowPlaying = function(callback){
 
+  // this is a rather hefty that gets called every 5 sec so we throttle with error counts
+  // only execute when 0
+
+  // reset count to 0 if at throttle
+  var throttle = 4;
+  if(app.counts[503] > throttle){
+    app.counts[503] = 0;
+  }
+
+  if(app.counts[503] != 0){
+    // up the count and set the state
+    app.counts[503]++;
+    app.state = 'notconnected';
+    return;
+  } else {
+    // up the count so gets checked on success
+    app.counts[503] = 1;
+  }
+
+
+  // fields to get
   var fields = {
     item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
@@ -510,18 +531,27 @@ app.AudioController.getNowPlaying = function(callback){
     {method: 'Player.GetActivePlayers', params: []}
   ];
 
+
+
   // first run
   app.xbmcController.multipleCommand(commands, function(data){
 
     var properties = data[0], players = data[1];
 
+    // success set count to 0
+    app.counts[503] = 0;
+
     // set some values
     ret.volume = properties.result;
     app.AudioController.activePlayers = players.result;
 
+    app.state = 'connected';
+
     if(players.result.length > 0){
       //something is playing
       ret.activePlayer = players.result[0].playerid;
+
+      app.state = 'playing';
 
       // second run commands
       commands = [
@@ -599,11 +629,17 @@ app.AudioController.getNowPlaying = function(callback){
 };
 
 /**
- * Kick off a refresh of playing state
+ * Kick off a refresh of playing state, using set interval
  */
 var stateTimeout = {};
 app.AudioController.updatePlayerState = function(){
   //clearTimeout(stateTimeout);
+  var $b = $('body'), nc = 'notconnected'; //set if connected or not
+  if(app.state == nc){
+    $b.addClass(nc);
+  } else {
+    $b.removeClass(nc);
+  }
   app.AudioController.getNowPlaying(function(data){
     app.shellView.updateState(data);
     //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);

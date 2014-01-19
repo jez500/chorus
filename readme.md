@@ -9,6 +9,10 @@ Used by the [Doghouse Media Team](https://dhmedia.com.au) to control the shared 
 Jeremy Graham
 mail@jez500.com
 
+## Web
+- https://github.com/jez500/chorus
+- http://forum.xbmc.org/showthread.php?tid=183451
+
 ## Requirements
 - XBMC v12 or 13
 - A modern web browser, this has been developed and tested in Chrome
@@ -45,8 +49,11 @@ Mobile it is useless at the moment, but a possibility for the future.
 ## Supported xbmc addons
 - Soundcloud
 
+## Issues, Bugs and Suggestions
+Post them here https://github.com/jez500/chorus/issues - mention what version you are using
+
 ## Under the hood
-Chorus uses the following libraries, creds to all authors:
+Chorus uses the following open source libraries, creds to all authors:
 
 - jQuery
 - backbone

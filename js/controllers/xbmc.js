@@ -49,8 +49,9 @@ app.xbmcController.multipleCommand = function(commands, callback){
     success: function(result) {
       for(i in result){
         if(typeof result[i].error != 'undefined'){
-          console.log(result, commands[i]);
-          app.helpers.errorHandler('xbmc multiple command call: ' + i, [result[i], commands[i]]);
+          // suppress errors unless required
+          //console.log(result, commands[i]);
+          //app.helpers.errorHandler('xbmc multiple command call: ' + i, [result[i], commands[i]]);
         }
       }
       if(callback){
@@ -58,7 +59,8 @@ app.xbmcController.multipleCommand = function(commands, callback){
       }
     },
     error: function(result) {
-      app.helpers.errorHandler('xbmc multiple command call', [result, commands]);
+      // suppress errors unless required
+      //app.helpers.errorHandler('xbmc multiple command call', [result, commands]);
     }
   });
 

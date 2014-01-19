@@ -59,7 +59,12 @@ $(document).ready(function(){
    * error object
   */
   app.helpers.errorHandler = function(type, error){
-    console.log('%c Bam! Error occurred (' + type + ')', app.helpers.consoleStyle(4), error);
+    if(typeof error[0] != 'undefined' && error[0].error == "Internal server error"){
+      // no connection
+    } else {
+      // standard item
+      console.log('%c Bam! Error occurred (' + type + ')', app.helpers.consoleStyle(4), error);
+    }
   };
 
 

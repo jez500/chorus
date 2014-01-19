@@ -27,6 +27,7 @@ app.playerStateView = Backbone.View.extend({
     // enrich
     data.playingItemChanged = (lastPlaying != data.item.file);
     data.status = (app.helpers.exists(data.player.speed) && data.player.speed == 0 ? 'paused' : data.status);
+    app.state = data.status;
 
     // resave model
     this.model = data;

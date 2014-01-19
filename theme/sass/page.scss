@@ -14,30 +14,27 @@ ul, li {
 html {
   overflow-y: scroll;
 }
+// loading
 .loading-box {
   font-size: 30px;
   color: $color-asbestos;
-  background: $color-whitesmoke;
-  padding: 20px 10px;
+  background: #FAFAFA image-url('loading-box-bg.jpg') 0 bottom repeat-x;
+  padding: 40px 10px 40px 10px;
   width: 70%;
   margin: 80px auto 0 auto;
   text-align: center;
   position: relative;
-  @include transition(1.5s all linear);
-  animation: rotateanim 6s infinite linear;
-  -webkit-animation: rotateanim 6s infinite linear;
+  //@include transition(1.5s all linear);
+  animation: rotateanim 16s infinite linear;
+  -webkit-animation: rotateanim 16s infinite linear;
 }
 @keyframes rotateanim {
-  0% { background: #f1f1f1; }
-  25% { background: #eee; }
-  75% { background: #fff; }
-  100% { background: #eee; }
+  0% { background-position: 0% bottom; }
+  100% { background-position: 100% bottom;  }
 }
 @-webkit-keyframes rotateanim {
-  0% { background: #f1f1f1; }
-  25% { background: #ddd; }
-  75% { background: #fff; }
-  100% { background: #eee; }
+  0% { background-position: 0 bottom; }
+  100% { background-position: 100% bottom;  }
 }
 #files-container {
   .loading-box {
@@ -118,6 +115,7 @@ input[type="text"] {
     font-size: 20px;
     background: $color-light-slate;
     text-decoration: none;
+    @include transition(0.3s all linear);
     span {
       -ms-transform:rotate(270deg); /* IE 9 */
       -moz-transform:rotate(270deg); /* moz */
@@ -631,7 +629,7 @@ h4 {
         margin-bottom: 0px;
         margin-left: 3px;
         color: $color-asbestos;
-        padding: 4px 5px 4px 5px;
+        padding: 4px 3px 4px 0px;
         position: relative;
         .artist-meta {
           display: none;
@@ -665,6 +663,7 @@ h4 {
           background: $color-asbestos;
           color: #fff;
           font-size: 110%;
+          padding-left: 5px;
           .image {
             width: 50px;
             height: 50px;
@@ -768,46 +767,43 @@ h4 {
     }
   }
   // album
-  $mini-img-width: 80px;
+
   ul.album-list-small {
     li.card {
-      height: $mini-img-width;
-      margin-right: 0;
-      &:hover {
-        background: #eee;
-      }
+      @include card('mini');
+    }
+  }
+  ul.artist-thumbs-up {
+    li {
       a {
-        padding: 0;
-      }
-      .actions-wrapper,
-      .image {
-        float: left;
-        width: $mini-img-width !important;
-        height: $mini-img-width;
-        min-width: $mini-img-width;
-      }
-      .actions-wrapper {
-        .play {
-          bottom: 8px;
-          left: 11px;
-          font-size: 130%;
+        padding: 1px;
+        background: #fff;
+        margin: 5px 0px 5px 0;
+        .play-artist,
+        .image {
+          width: $mini-img-width;
+          height: $mini-img-width;
+          padding: 0px;
+          margin: 0 10px 0 0;
+          top: 0;
+          left: 0;
         }
-      }
-      .details {
-        float: left;
-        padding-right: 0;
-        width: 180px;
+        .play-artist {
+          padding: 24px 0;
+        }
         p {
-           // padding-right: 15px;
-          &:after {
-            right: -9999999px;
+          &.artist-title {
+            padding-top: 5px;
+            font-size: 15px;
+            line-height: 17px;
+            max-height: 38px;
+            color: $color-light-slate;
+            margin-bottom: 3px;
           }
-        }
-        .item-title {
-          height: auto;
-          max-height: 51px;
-          white-space: normal;
-          margin-bottom: 5px;
+          &.artist-meta {
+            color: #AAA;
+            display: block;
+          }
         }
       }
     }
@@ -997,7 +993,11 @@ h4 {
     ul {
       margin-left: 15px;
       a {
-        background: $color-asbestos;
+        background: rgba(255, 255, 255, 0.65);
+        color: #646464;
+        &:hover {
+          background: rgba(255, 255, 255, 0.9);
+        }
       }
     }
   }
@@ -1404,6 +1404,12 @@ h3.search-heading {
     height: 10px;
     width: 100%;
   }
+}
+
+// landing pages
+.landing-page {
+  padding-top: 5px;
+  padding-left: 5px;
 }
 
 // albums list
@@ -1995,6 +2001,11 @@ body.sidebar {
 
 /* player states */
 body {
+  &.notconnected {
+    #header #logo {
+      background: #642519;
+    }
+  }
   &.home {
     #header {
       bottom: auto;
@@ -2036,8 +2047,6 @@ body {
     background: #DFDFDF;
     #content {
       background: #DFDFDF;
-      padding-top: 5px;
-      padding-left: 5px;
     }
   }
   .player-play .icon-pause {
