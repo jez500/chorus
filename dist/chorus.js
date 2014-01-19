@@ -13468,7 +13468,12 @@ $(document).ready(function(){
    * error object
   */
   app.helpers.errorHandler = function(type, error){
-    console.log('%c Bam! Error occurred (' + type + ')', app.helpers.consoleStyle(4), error);
+    if(typeof error[0] != 'undefined' && error[0].error == "Internal server error"){
+      // no connection
+    } else {
+      // standard item
+      console.log('%c Bam! Error occurred (' + type + ')', app.helpers.consoleStyle(4), error);
+    }
   };
 
 
@@ -14325,6 +14330,10 @@ $(document).ready(function(){
 
   cached: {}, //for caching views and collections
 
+  counts: {503: 0}, // count defaults
+
+  state: 'notconnected',
+
   jsonRpcUrl: '/jsonrpc',
 
   // variables (settings defaults)
@@ -14567,10 +14576,10 @@ app.Router = Backbone.Router.extend({
   artists: function(){
 
     // render
+    var $el = $('<div class="landing-page"></div>');
     app.artistsView = new app.ArtistsView();
-    $('#content').html(app.artistsView.render().el);
-
-
+    $el.html(app.artistsView.render().el);
+    $('#content').html($el);
 
     // title
     app.helpers.setTitle('Artists', {addATag:true});
@@ -14626,7 +14635,9 @@ app.Router = Backbone.Router.extend({
 
         // mush them together
         var allAlbums = albumsPlayed.models,
-          used = {};
+          used = {},
+          $el = $('<div class="landing-page"></div>');
+
         // prevent dupes
         _.each(allAlbums, function(r){
           used[r.attributes.albumid] = true;
@@ -14647,7 +14658,8 @@ app.Router = Backbone.Router.extend({
 
         // render
         app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albumsAdded, className:'album-list-landing'});
-        self.$content.html(app.cached.recentAlbumsView.render().el);
+        $el.html(app.cached.recentAlbumsView.render().el);
+        self.$content.html($el);
 
         // set title
         app.helpers.setTitle('Recent', {addATag:true});
@@ -15804,6 +15816,27 @@ app.AudioController.audioLibraryScan = function(){
 
 app.AudioController.getNowPlaying = function(callback){
 
+  // this is a rather hefty that gets called every 5 sec so we throttle with error counts
+  // only execute when 0
+
+  // reset count to 0 if at throttle
+  var throttle = 4;
+  if(app.counts[503] > throttle){
+    app.counts[503] = 0;
+  }
+
+  if(app.counts[503] != 0){
+    // up the count and set the state
+    app.counts[503]++;
+    app.state = 'notconnected';
+    return;
+  } else {
+    // up the count so gets checked on success
+    app.counts[503] = 1;
+  }
+
+
+  // fields to get
   var fields = {
     item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
@@ -15816,18 +15849,27 @@ app.AudioController.getNowPlaying = function(callback){
     {method: 'Player.GetActivePlayers', params: []}
   ];
 
+
+
   // first run
   app.xbmcController.multipleCommand(commands, function(data){
 
     var properties = data[0], players = data[1];
 
+    // success set count to 0
+    app.counts[503] = 0;
+
     // set some values
     ret.volume = properties.result;
     app.AudioController.activePlayers = players.result;
 
+    app.state = 'connected';
+
     if(players.result.length > 0){
       //something is playing
       ret.activePlayer = players.result[0].playerid;
+
+      app.state = 'playing';
 
       // second run commands
       commands = [
@@ -15905,11 +15947,17 @@ app.AudioController.getNowPlaying = function(callback){
 };
 
 /**
- * Kick off a refresh of playing state
+ * Kick off a refresh of playing state, using set interval
  */
 var stateTimeout = {};
 app.AudioController.updatePlayerState = function(){
   //clearTimeout(stateTimeout);
+  var $b = $('body'), nc = 'notconnected'; //set if connected or not
+  if(app.state == nc){
+    $b.addClass(nc);
+  } else {
+    $b.removeClass(nc);
+  }
   app.AudioController.getNowPlaying(function(data){
     app.shellView.updateState(data);
     //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
@@ -16520,8 +16568,9 @@ app.xbmcController.multipleCommand = function(commands, callback){
     success: function(result) {
       for(i in result){
         if(typeof result[i].error != 'undefined'){
-          console.log(result, commands[i]);
-          app.helpers.errorHandler('xbmc multiple command call: ' + i, [result[i], commands[i]]);
+          // suppress errors unless required
+          //console.log(result, commands[i]);
+          //app.helpers.errorHandler('xbmc multiple command call: ' + i, [result[i], commands[i]]);
         }
       }
       if(callback){
@@ -16529,7 +16578,8 @@ app.xbmcController.multipleCommand = function(commands, callback){
       }
     },
     error: function(result) {
-      app.helpers.errorHandler('xbmc multiple command call', [result, commands]);
+      // suppress errors unless required
+      //app.helpers.errorHandler('xbmc multiple command call', [result, commands]);
     }
   });
 
@@ -17921,13 +17971,10 @@ app.ArtistListItemView = Backbone.View.extend({
   },
 
   render:function () {
-    this.$el.html(this.template(this.model.attributes));
 
- /*   $('.album-small-item img').resizecrop({
-      width:40,
-      height:60,
-      vertical:"top"
-    });*/
+    var model = this.model.attributes;
+    model.subtext = ( typeof model.genre != 'undefined' ? model.genre.join(', ') : '' );
+    this.$el.html(this.template(model));
 
     return this;
   },
@@ -18634,6 +18681,7 @@ app.playerStateView = Backbone.View.extend({
     // enrich
     data.playingItemChanged = (lastPlaying != data.item.file);
     data.status = (app.helpers.exists(data.player.speed) && data.player.speed == 0 ? 'paused' : data.status);
+    app.state = data.status;
 
     // resave model
     this.model = data;
