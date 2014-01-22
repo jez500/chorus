@@ -230,7 +230,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
     allArtists: []
   };
 
- /*
+ /**
   * Force sync songs with xbmc
   */
   this.syncAudio = function(successCallback){
@@ -245,6 +245,8 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     this.allArtists();
     this.allAlbums();
+    this.indexSongs();
+
   };
 
 
@@ -252,8 +254,8 @@ app.MemoryStore = function (successCallback, errorCallback) {
     var self = this;
 
     if(self.songsIndexed === true){
-      callLater(successCallback,  self)
-
+      // return collection
+      callLater(successCallback,  self);
     } else {
 
       // if not indexing, start
@@ -370,8 +372,8 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     }});
 
-
   };
+
 
   /**
    * Load multiple artists by ids array
@@ -392,6 +394,52 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
   };
 
+  /**
+   * Get a song by type/delta
+   *
+   * @param type
+   *  id, file, title, contains (using contains is: "title like %delta%")
+   * @param delta
+   *  songid, filename
+   * @param callback
+   *  a single shell song model
+   */
+  this.getSongBy = function(type, delta, callback){
+
+   var songs = app.stores.allSongs.models;
+   var song = null;
+
+    // Loop over each until song found
+    $.each(songs, function(i,d){
+
+      // already have a song
+      if(song != null){
+        return;
+      }
+
+      // model get attributes for this row
+      var model = d.attributes;
+
+      // switch on type
+      if(type == 'id' && model.id == delta){  // ID
+          song = model;
+      } else if(type == 'file' && model.file == delta){  // FILE
+          song = model;
+      } else if(type == 'title' && model.label == delta){  // TITLE
+          song = model;
+      }else if(type == 'title'){  // TITLE CONTAINS
+        if(model.label.toLowerCase().indexOf(delta.toLowerCase()) > -1){
+          song = model;
+        }
+      }
+
+    });
+
+    // return song
+    callLater(callback, song);
+    return song;
+
+  };
 
 
   /**

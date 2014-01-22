@@ -1,3 +1,7 @@
+/**
+ * Page View of custom playlist / thumbsup
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.CustomPlaylistSongListView = Backbone.View.extend({
 
   tagName:'ul',
@@ -7,9 +11,11 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
   events: {
     "click .playlist-append": "appendPlaylist",
     "click .playlist-replace": "replacePlaylist",
+    "click .playlist-browser-replace": "browserReplacePlaylist",
     "click .playlist-delete": "deleteCustomListPlaylist",
     "click .thumbsup-append": "appendThumbsup",
-    "click .thumbsup-replace": "replaceThumbsup"
+    "click .thumbsup-replace": "replaceThumbsup",
+    "click .thumbsup-browser-replace": "browserReplaceThumbsup"
   },
 
   initialize:function () {
@@ -108,6 +114,26 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
 
 
   /**
+   * Replace Browser  playlist with a custom playlist
+   * @param e
+   */
+  browserReplacePlaylist: function(e){
+    e.preventDefault();
+    var listId = this.list.id;
+    app.playlists.playlistGetItems('local', listId, function(collection){
+      app.audioStreaming.setPlaylistItems(collection);
+      app.audioStreaming.renderPlaylistItems(collection);
+      app.audioStreaming.loadSong(collection.models[0], function(){
+        app.audioStreaming.playPosition(0);
+      });
+
+    });
+
+
+  },
+
+
+  /**
    * Delete playlist
    * @param e
    */
@@ -198,6 +224,46 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
   }
 });
 
+
+/**
+ * Sidebar view of playlist (browser player list)
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.CustomPlaylistSongSmallListView = Backbone.View.extend({
+  tagName:'ul',
+  className:'browser-playlist-song-list',
+
+  render:function () {
+
+    this.$el.empty();
+    var i = 0;
+    _.each(this.model.models, function (song) {
+      // tweak model to suit xbmc item format
+      var s = song.attributes;
+      s.pos = i;
+      s.items = [];
+      s.list = 'local';
+      if(!s.id){
+        s.id = s.songid;
+      }
+      // append model
+      song.attributes = s;
+      this.$el.append(new app.PlaylistItemView({model:s, className:'playlist-item browser-player'}).render().$el);
+      i++;
+    }, this);
+
+    return this;
+  }
+
+});
+
+
+
+
+/**
+ * Custom Song Item view
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.CustomPlaylistSongView = Backbone.View.extend({
 
   tagName:"li",
@@ -205,8 +271,8 @@ app.CustomPlaylistSongView = Backbone.View.extend({
   className:'song-row',
 
   events: {
-    "dblclick .song-title": "playSong",
-    "click .song-play":     "playSong",
+    "dblclick .song-title": "loadSong",
+    "click .song-play":     "loadSong",
     "click .song-add":      "addSong",
     "click .song-thumbsup": "thumbsUp",
     "click .song-remove":   "removeSong",

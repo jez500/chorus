@@ -11,15 +11,19 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Song,
   //collection params
-  arg1: app.songFields, //fields
-  arg2: {"start": 0, "end": 50000}, //count
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
+  arg1: ["file"], //fields, keep this to an absolute minimum as adding fields makes it go real slow
+  arg2: {"start": 0, "end": 50000}, //limit @todo move to settings
+  arg3: {"sort": {"method": "dateadded", "order": "descending"}}, // doesn't appear to work? maybe lost in sorting elsewhere
   //method/params
   methods: {
-    read:  ['AudioLibrary.GetSongs'] //, 'arg1', 'arg2', 'arg3'
+    read:  ['AudioLibrary.GetSongs', 'arg1', 'arg2', 'arg3']
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    // set the id as the songid
+    $.each(resp.songs, function(i,d){
+      resp.songs[i].id = d.songid;
+    });
     return resp.songs;
   }
 });
@@ -73,7 +77,7 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.albumFields, //properties
   arg2: {"start": 0, "end": 15000}, //count
-  arg3: {"sort": {"method": "album"}},
+  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //method/params
   methods: {
     read:  ['AudioLibrary.GetAlbums', 'arg1', 'arg2', 'arg3']

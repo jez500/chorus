@@ -18325,8 +18325,8 @@ app.CustomPlaylistSongView = Backbone.View.extend({
   className:'song-row',
 
   events: {
-    "dblclick .song-title": "playSong",
-    "click .song-play":     "playSong",
+    "dblclick .song-title": "loadSong",
+    "click .song-play":     "loadSong",
     "click .song-add":      "addSong",
     "click .song-thumbsup": "thumbsUp",
     "click .song-remove":   "removeSong",
@@ -19699,8 +19699,8 @@ app.SongView = Backbone.View.extend({
   className:'song-row',
 
   events: {
-    "dblclick .song-title": "playSong",
-    "click .song-play": "playSong",
+    "dblclick .song-title": "loadSong",
+    "click .song-play": "loadSong",
     "click .song-add": "addSong",
     "click .song-thumbsup": "thumbsUp",
     //menu

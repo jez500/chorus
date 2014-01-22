@@ -1,0 +1,198 @@
+
+// Most styles are shared between the browser footer and the xbmc footer
+
+// Positioning
+#footer,
+#browser-player-footer {
+  background: $color-slate;
+  height: $height-footer;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  .footer-right,
+  .footer-left {
+    width: $width-sidebar-second-small;
+    height: $height-footer;
+    float: left;
+    background: $color-light-slate;
+    .player-button {
+      width: 33.33%;
+      @include box-sizing(border-box);
+      padding: 19px 0;
+      font-size: 1.8em;
+      float: left;
+      text-align: center;
+      color: #979EA0;
+      cursor: pointer;
+      &:hover {
+        color: $color-mist;
+      }
+      &.player-play {
+        font-size: 2em;
+        padding: 17px 0;
+      }
+    }
+  }
+  .footer-right {
+    float: right;
+    width: $width-sidebar-second-small;
+    .actions-wrapper {
+      position: absolute;
+      right: 0px;
+      top: 25px;
+      text-align: right;
+      width: $width-sidebar-second-small;
+      .player-button {
+        font-size: 2em;
+        padding: 3px 0;
+        width: 25%;
+        float: left;
+        .icon-volume-up {
+          display: none;
+        }
+      }
+    }
+  }
+  .volume-wrapper,
+  .progress-wrapper {
+    background: rgba(0,0,0,0.1);
+    position: absolute;
+    left: $width-sidebar-second-small + $height-footer;
+    right: $width-sidebar-second-small;
+    top: 0;
+    height: 20px;
+    overflow: hidden;
+  }
+  .volume-wrapper {
+    right: 0;
+    left: auto;
+    width: $width-sidebar-second-small;
+  }
+  #time,
+  #browser-time {
+    position: absolute;
+    margin-top: 25px;
+    right: $width-sidebar-second-small + 10px;
+    top: 0;
+    font-weight: bold;
+    text-align: right;
+    .time-cur {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      height: 20px;
+    }
+    .time-total {
+      font-size: 12px;
+    }
+  }
+}
+
+// Now Playing
+#now-playing,
+#browser-now-playing {
+  font-size: 12px;
+  margin-right: $width-sidebar-second-small + 70;
+  margin-left: $width-sidebar-second-small;
+  padding-top: 1px;
+  .song-image {
+    width: $height-footer;
+    height: $height-footer;
+    margin-right: 10px;
+    overflow: hidden;
+    float: left;
+    margin-top: -1px;
+    img {
+      height: $height-footer;
+      display: block;
+    }
+  }
+  .playing-song-title,
+  .browser-playing-song-title {
+    color: #fff;
+    font-size: 15px;
+    display: block;
+    margin-top: 25px;
+    height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .song-artist {
+    color: #ddd;
+  }
+}
+
+// Volume bar
+#volume,
+#progress-bar,
+#browser-volume,
+#browser-progress-bar {
+  &.ui-slider {
+    @include border-radius(0);
+    height: 20px;
+    border: none;
+    background: none;
+    .ui-slider-range {
+      @include border-radius(0);
+      @include transition(0.3s all linear);
+      background: rgba(208, 210, 213, 0.21);
+
+    }
+    .ui-slider-handle {
+      @include border-radius(0);
+      @include transition(0.3s all linear);
+      top: 0;
+      margin-left: -0.4em;
+      background: rgba(208, 210, 213, 0.5);
+      width: 0.8em;
+      border: 0;
+      cursor: pointer;
+      display: none;
+    }
+    &:hover {
+      .ui-slider-handle {
+        display: block;
+        background: $color-orange;
+      }
+    }
+  }
+
+}
+
+
+// hide broswer footer by default
+#browser-player-footer {
+  display: none;
+  background: #7F8486;
+  .icon-pause {
+    display: none;
+  }
+  .footer-left,
+  .footer-right {
+    background: #6C6F6F;
+  }
+  #browser-volume .ui-slider-range,
+  #browser-progress-bar.ui-slider .ui-slider-range {
+    background: rgba(237, 238, 240, 0.78);
+  }
+}
+
+body {
+  // local body
+  &.player-view-local {
+    #header {
+      #logo {
+        background: $color-carrot;
+      }
+    }
+    #sidebar-second {
+      .sidebar-header {
+        background: #6C6F6F;
+      }
+    }
+
+
+  }
+}

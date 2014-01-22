@@ -54,7 +54,8 @@ body {
     }
   }
 
-  #footer {
+  #footer,
+  #browser-player-footer {
     .footer-right,
     .volume-wrapper,
     .footer-right .actions-wrapper {
@@ -63,10 +64,12 @@ body {
     .footer-left {
       width: $width-sidebar-first;
     }
-    #time {
+    #time,
+    #browser-time {
       right: $width-sidebar-second + 10px;
     }
-    #now-playing {
+    #now-playing,
+    #browser-now-playing {
       margin-right: $width-sidebar-second + 70;
       margin-left: $width-sidebar-first;
     }

@@ -175,8 +175,8 @@ app.playerStateView = Backbone.View.extend({
         $d.addClass('playing-row');
       } else if($d.hasClass('playlist-item')){
 
-        // match pos
-        if($d.data('id') == data.player.position){
+        // match pos in xbmc list
+        if($d.data('id') == data.player.position && !$d.parent().hasClass('browser-player')){
           $d.addClass('playing-row');
         }
       }

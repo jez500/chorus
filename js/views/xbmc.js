@@ -330,6 +330,8 @@ app.XbmcJSONrpcView = Backbone.View.extend({
   },
 
   isEncoded:function(text, param, $el){
+    console.log(param);
+    if(param.type.type == 'integer'){ return false; }
     return (!$el.hasClass('select') && text != '' && (typeof param.type == 'object' || param.type == 'array'));
   }
 });

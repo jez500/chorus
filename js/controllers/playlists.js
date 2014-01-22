@@ -11,8 +11,125 @@ app.playlists = {
 
 
 
+/**
+ * The Super collection getter
+ *
+ * Get the contents of all major song collection types, eg. single song, artist, thumbs up list or the xbmc playlist.
+ * Basically a wrapper for all song list types
+ *
+ * @param type
+ *  type of playlist: xbmc, song, album, artist, local, thumbsup, items
+ * @param delta
+ *  depends on type type: 0, songid, albumid, artistid, playlistId, [song, album, artist], [array of songids]
+ * @param callback
+ *
+ * @return {song collection}
+ *  A fully loaded backbone collection of songs
+ *
+ */
+app.playlists.playlistGetItems = function(type, delta, callback){
+
+  var items = [],
+    plCollection = {};
+
+  switch (type){
+    case 'xbmc': // current xbmc playlist
+      plCollection = new app.PlaylistCollection();
+      plCollection.fetch({"success": function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'song':
+      plCollection = new app.CustomSongCollection();
+      plCollection.fetch({items: [delta], success: function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'album':
+      plCollection = new app.SongFilteredXbmcCollection({"filter": {albumid: delta}});
+      plCollection.fetch({"success": function(data){
+        res = app.playlists.addFileFieldToSongCollection(data);
+        callback(res);
+      }});
+      break;
+
+    case 'artist':
+      plCollection = new app.SongFilteredXbmcCollection({"filter": {artistid: delta}});
+      plCollection.fetch({"success": function(data){
+        res = app.playlists.addFileFieldToSongCollection(data);
+        callback(res);
+      }});
+      break;
+
+    case 'local': // local playlist id = delta
+      plCollection = new app.PlaylistCustomListSongCollection();
+      plCollection.fetch({"name":delta, "success": function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'thumbsup': // thumbs up songs
+      plCollection = new app.ThumbsUpCollection();
+      plCollection.fetch({"name":delta, "success": function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'items': // return a collection based in an array of songids
+      plCollection = new app.CustomSongCollection();
+      plCollection.fetch({items: delta, success: function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+  }
+
+  // callback
+  if(callback){
+    callback(items);
+  } else {
+    // will be empty on an xbmc call, so you MUST use the callback
+    return items;
+  }
+
+};
 
 
+
+/**
+ * Need to ensure each item has a file field so we lookup.
+ *
+ * This is a bug with Xbmc Frodo where "file" field is not returned with "getSongDetails"
+ * We kinda need the songs indexed for search so this just adds about 20% to that time/bandwidth
+ * and as we need the songs on call, we cache all songs on page load.
+ *
+ * Ref:
+ * http://trac.xbmc.org/ticket/14508
+ * http://forum.xbmc.org/showthread.php?tid=111945
+ *
+ * @param collection
+ * @returns {*}
+ */
+app.playlists.addFileFieldToSongCollection = function(collection){
+
+  $.each(collection.models, function(i,d){
+    // get song from dictionary
+    var song = app.store.getSongBy('id', d.attributes.songid);
+    // add the file field
+    d.attributes.file = song.file;
+    // save
+    collection.models[i] = d;
+  });
+
+  // return parsed collection
+  return collection;
+};
 
 
 app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
@@ -38,6 +155,7 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     })
   }
 };
+
 
 // doesnt seem to be in use
 app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
@@ -65,8 +183,6 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
 };
 
 
-
-
 /**
  * Change to playlist tab
  * @param type
@@ -75,20 +191,18 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
 app.playlists.changePlaylistView = function(type){
 
   var $sb = $('#sidebar-second'),
-      $at = $('.' + type + "-playlist-tab");
+      $at = $(".playlist-primary-tab[data-pane='" + type + "']");
 
   // active
   $(".playlist-primary-tab").removeClass("active");
   $at.addClass('active');
 
-  // toggle content with classes
-  switch(type){
-    case 'xbmc':
-      $sb.removeClass('alt-view').addClass('normal-view');
-      break;
-    case 'local':
-      $sb.addClass('alt-view').removeClass('normal-view');
-      break;
+  $('.sidebar-pane', $sb).hide();
+  $('#playlist-' + type, $sb).show();
+
+  // toggle between players
+  if(type == 'local' || type == 'xbmc'){
+    app.audioStreaming.setPlayer(type);
   }
 
 };
@@ -142,7 +256,6 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
   });
 
 };
-
 
 
 /**
@@ -333,7 +446,7 @@ app.playlists.updateCustomPlayLists = function(){
 
   //custom playlists
   app.playlists.addCustomPlayLists(function(view){
-    $('.alt-sidebar-items').html(view.render().el);
+    $('#playlist-lists').html(view.render().el);
   });
 
 };
@@ -377,6 +490,7 @@ app.playlists.replaceCustomPlayList = function(listId, items){
 
 /**
  * Html for the sub tasks of a playlist
+ * @todo use other funtion that does this
  *
  */
 app.playlists.getDropdown = function(){
@@ -385,7 +499,8 @@ app.playlists.getDropdown = function(){
     type = app.helpers.arg(0),
     buttons = {
       append: 'Add to playlist',
-      replace: 'Replace playlist'
+      replace: 'Replace playlist',
+      'browser-replace': 'Play in browser'
     };
 
   if(type != 'thumbsup'){

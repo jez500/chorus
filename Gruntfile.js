@@ -22,6 +22,9 @@ module.exports = function(grunt) {
           // All our enabled js
           'lib/enabled/*.js',
 
+          // Add Sound manager
+
+
           // application js
           'js/utils.js',
           'js/app.js',

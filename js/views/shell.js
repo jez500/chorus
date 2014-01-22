@@ -88,9 +88,14 @@ app.ShellView = Backbone.View.extend({
 
     //custom playlists
     app.playlists.addCustomPlayLists(function(view){
-      var $sb = $('.alt-sidebar-items', self.$el);
+      var $sb = $('#playlist-lists', self.$el);
       $sb.html(view.render().el);
     });
+
+
+    // browser player
+    app.audioStreaming.init(this.$el);
+
 
     return this;
   },
@@ -117,7 +122,15 @@ app.ShellView = Backbone.View.extend({
     "click .refresh-playlist": "refreshPlaylist",
     "click .new-custom-playlist": "newCustomPlaylist",
     // bottom menu
-    "click .about-dialog": "about"
+    "click .about-dialog": "about",
+
+    // browser player ///////////
+    "click .browser-view-xbmc": "viewXbmc",
+    "click .browser-view-local": "viewLocal",
+    "click .browser-player-play": "localTogglePlay",
+    "click .browser-player-prev": "localPrev",
+    "click .browser-player-next": "localNext"
+
   },
 
 
@@ -143,7 +156,7 @@ app.ShellView = Backbone.View.extend({
   primaryTabClick:function(event){
     $thisTab = $(event.target);
     // toggle based on tab class
-    var view = ($thisTab.hasClass('local-playlist-tab') ? 'local' : 'xbmc');
+    var view = $thisTab.data('pane');
     app.playlists.changePlaylistView(view);
   },
 
@@ -219,7 +232,7 @@ app.ShellView = Backbone.View.extend({
 
         case 'playlist':
           // all this to open the sidebar playlist item
-          app.playlists.changePlaylistView('local');
+          //app.playlists.changePlaylistView('local');
           $('ul.custom-lists .custom-playlist-item').each(function(i,d){
             var $d = $(d), $parent = $d.parent();
             if($d.data('id') == app.helpers.arg(1)){
@@ -233,7 +246,7 @@ app.ShellView = Backbone.View.extend({
         case 'thumbsup':
           $('.custom-lists li').removeClass('open');
           $('.thumbsup-link').addClass('open');
-          app.playlists.changePlaylistView('local');
+          //app.playlists.changePlaylistView('local');
           break;
       }
     }
@@ -353,7 +366,57 @@ app.ShellView = Backbone.View.extend({
   about: function(e){
     e.preventDefault();
     app.helpers.aboutDialog();
+  },
+
+
+  /*************************************
+   * Local Browser Streaming below
+   * @TODO Move
+   ************************************/
+
+
+  /**
+   *  Change to xbmc view (default)
+   */
+  viewXbmc: function(e){
+    e.preventDefault();
+    app.audioStreaming.setPlayer('xbmc');
+  },
+
+  /**
+   *  Change to local view
+   */
+  viewLocal: function(e){
+    e.preventDefault();
+    app.audioStreaming.setPlayer('local');
+  },
+
+
+  /**
+   *  Play / Pause in browser
+   */
+  localTogglePlay: function(e){
+    e.preventDefault();
+    app.audioStreaming.togglePlay();
+  },
+
+  /**
+   *  Prev song in browser
+   */
+  localPrev: function(e){
+    e.preventDefault();
+    app.audioStreaming.prev();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localNext: function(e){
+    e.preventDefault();
+    app.audioStreaming.next();
   }
+
+
 
 
 

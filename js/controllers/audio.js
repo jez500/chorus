@@ -26,7 +26,7 @@ app.AudioController.playlistRefresh = function(callback){
 
     //create a new playlist view and render
     app.playlistView = new app.PlaylistView({model:{models:result.items}});
-    $('.sidebar-items').html(app.playlistView.render().el);
+    $('#playlist-xbmc').html(app.playlistView.render().el);
 
     app.AudioController.getNowPlaying(function(data){
 
@@ -563,6 +563,7 @@ app.AudioController.getNowPlaying = function(callback){
       app.xbmcController.multipleCommand(commands, function(item){
         // get data
         ret.item = item[0].result.item;
+        ret.item.list = 'xbmc';
         ret.player = item[1].result;
         ret.status = 'playing';
 

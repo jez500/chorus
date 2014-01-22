@@ -35,23 +35,27 @@
 </div>
 
 <div id="sidebar-second">
+
     <div class="sidebar-inner">
+
         <div class="sidebar-header">
             <ul class="playlist-primary-tabs">
-                <li class="xbmc-playlist-tab playlist-primary-tab active">Now Playing</li>
-                <li class="local-playlist-tab playlist-primary-tab">Playlists</li>
+                <li class="playlist-primary-tab xbmc-tab active" data-pane="xbmc"><i class="icon-rss"></i> Shared</li>
+                <li class="playlist-primary-tab local-tab" data-pane="local"><i class="icon-headphones"></i> Local</li>
+                <li class="playlist-primary-tab lists-tab" data-pane="lists"><i class="icon-file"></i> Lists</li>
             </ul>
-            <div class="playlist-actions-wrapper">
-            </div>
+            <div class="playlist-actions-wrapper"></div>
         </div>
-    </div>
-    <div class="sidebar-items">
+
+
+        <div class="sidebar-pane" id="playlist-xbmc"></div>
+        <div class="sidebar-pane" id="playlist-local"></div>
+        <div class="sidebar-pane" id="playlist-lists"></div>
 
     </div>
-    <div class="alt-sidebar-items">
 
-    </div>
 </div>
+
 
 <footer id="footer">
     <div class="footer-inner">
@@ -73,6 +77,7 @@
                     <li><a href="#" class="about-dialog">About Chorus</a></li>
                     <li><a href="#xbmc/home">The Lab</a></li>
                     <li><a href="#scan/audio">Audio Library Scan</a></li>
+                    <li><a href="#home" class="browser-view-local">Local Browser Player</a></li>
                 </ul>
             </div>
         </div>
@@ -93,8 +98,55 @@
             </div>
         </div>
     </div>
-    <div id="notify"><div class="content">Yo, you even connected</div></div>
+
 </footer>
+
+
+<footer id="browser-player-footer">
+    <div class="footer-inner">
+        <div class="footer-left actions-primary">
+            <span class="browser-player-prev player-button"><i class="icon-backward"></i></span>
+            <span class="browser-player-play player-button"><i class="icon-play"></i><i class="icon-pause"></i></span>
+            <span class="browser-player-next player-button"><i class="icon-forward"></i></span>
+        </div>
+        <div class="footer-right">
+            <div class="volume-wrapper">
+                <div id="browser-volume"></div>
+            </div>
+            <div class="actions-wrapper actions-secondary dropup">
+                <span class="browser-player-mute player-button"><i class="icon-volume-down"></i><i class="icon-volume-up"></i></span>
+                <span class="browser-player-repeat player-button"><i class="icon-repeat"></i></span>
+                <span class="browser-player-random player-button"><i class="icon-random"></i></span>
+                <span class="browser-player-menu player-button dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" class="about-dialog">About Chorus</a></li>
+                    <li><a href="#home" class="browser-view-xbmc">XBMC Player</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-center">
+            <div id="browser-now-playing">
+                <a href="#" class="song-image">
+                    <img src="/theme/images/default.png" id="browser-playing-thumb" />
+                </a>
+                <a href="#" class="browser-playing-song-title">Nothing Playing</a>
+                <span class="browser-playing-song-meta">No Artist</span>
+            </div>
+            <div class="progress-wrapper">
+                <div id="browser-progress-bar"></div>
+            </div>
+            <div id="browser-time">
+                <div class="time-cur">0</div>
+                <div class="time-total">0:00</div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<div id="notify-wrapper">
+    <div id="notify"><div class="content">Still loading...</div></div>
+</div>
 
 <div id="offscreen" style="display:none">
     <div id="dialog"></div>

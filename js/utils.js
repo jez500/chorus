@@ -678,7 +678,8 @@ $(document).ready(function(){
           omitwrapper: true,
           items: [
             {url: '#', class: 'song-download', title: 'Download song'},
-            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist'}
+            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist'},
+            {url: '#', class: 'song-browser-play', title: 'Play in browser'}
           ]
         };
         break;
@@ -808,13 +809,13 @@ $(document).ready(function(){
     if(msg !== false && msg != ''){
 
       $notify.find('.content').html(msg);
-      $notify.removeClass('hidden');
+      $notify.removeClass('hidden').parent().removeClass('hidden');
       clearTimeout(notificationTimoutObj);
       notificationTimoutObj = setTimeout(app.notificationHide, 6000); // 8 secs?*/
     }
   };
   app.notificationHide = function(){
-    $notify = $('#notify').addClass('hidden');
+    $notify = $('#notify').addClass('hidden').parent().addClass('hidden');
   };
 
 

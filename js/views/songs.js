@@ -25,13 +25,14 @@ app.SongView = Backbone.View.extend({
   className:'song-row',
 
   events: {
-    "dblclick .song-title": "playSong",
-    "click .song-play": "playSong",
+    "dblclick .song-title": "loadSong",
+    "click .song-play": "loadSong",
     "click .song-add": "addSong",
     "click .song-thumbsup": "thumbsUp",
     //menu
     "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .song-custom-playlist": "addToCustomPlaylist",
+    "click .song-browser-play": "playInBrowser"
   },
 
   initialize:function () {
@@ -92,6 +93,17 @@ app.SongView = Backbone.View.extend({
     app.AudioController.downloadFile(file, function(url){
       window.location = url;
     })
+  },
+
+  playInBrowser: function(e){
+
+    var file = this.model.attributes;
+    e.preventDefault();
+
+    app.audioStreaming.loadSong(file, function(){
+      console.log('boo');
+    })
+
   },
 
   addToCustomPlaylist: function(e){

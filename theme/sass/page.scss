@@ -1,6 +1,8 @@
 @import "base";
 @import "libs";
 @import "cards";
+@import "player";
+
 
 //resets
 div, header, footer, a {
@@ -222,155 +224,6 @@ body.fixed-header {
   }
 }
 
-#footer {
-  background: $color-slate;
-  height: $height-footer;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-  .footer-right,
-  .footer-left {
-    width: $width-sidebar-second-small;
-    height: $height-footer;
-    float: left;
-    background: $color-light-slate;
-    .player-button {
-      width: 33.33%;
-      @include box-sizing(border-box);
-      padding: 19px 0;
-      font-size: 1.8em;
-      float: left;
-      text-align: center;
-      color: #979EA0;
-      cursor: pointer;
-      &:hover {
-        color: $color-mist;
-      }
-      &.player-play {
-        font-size: 2em;
-        padding: 17px 0;
-      }
-    }
-  }
-  .footer-right {
-    float: right;
-    width: $width-sidebar-second-small;
-    .actions-wrapper {
-      position: absolute;
-      right: 0px;
-      top: 25px;
-      text-align: right;
-      width: $width-sidebar-second-small;
-      .player-button {
-        font-size: 2em;
-        padding: 3px 0;
-        width: 25%;
-        float: left;
-        .icon-volume-up {
-          display: none;
-        }
-      }
-    }
-  }
-  .volume-wrapper,
-  .progress-wrapper {
-    background: rgba(0,0,0,0.1);
-    position: absolute;
-    left: $width-sidebar-second-small + $height-footer;
-    right: $width-sidebar-second-small;
-    top: 0;
-    height: 20px;
-    overflow: hidden;
-  }
-  .volume-wrapper {
-    right: 0;
-    left: auto;
-    width: $width-sidebar-second-small;
-  }
-  #time {
-    position: absolute;
-    margin-top: 25px;
-    right: $width-sidebar-second-small + 10px;
-    top: 0;
-    font-weight: bold;
-    text-align: right;
-    .time-cur {
-      display: block;
-      color: #fff;
-      font-size: 15px;
-      height: 20px;
-    }
-    .time-total {
-      font-size: 12px;
-    }
-  }
-}
-
-#now-playing {
-  font-size: 12px;
-  margin-right: $width-sidebar-second-small + 70;
-  margin-left: $width-sidebar-second-small;
-  padding-top: 1px;
-  .song-image {
-    width: $height-footer;
-    height: $height-footer;
-    margin-right: 10px;
-    overflow: hidden;
-    float: left;
-    margin-top: -1px;
-    img {
-      height: $height-footer;
-      display: block;
-    }
-  }
-  .playing-song-title {
-    color: #fff;
-    font-size: 15px;
-    display: block;
-    margin-top: 25px;
-    height: 20px;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .song-artist {
-    color: #ddd;
-  }
-}
-#volume,
-#progress-bar {
-  &.ui-slider {
-    @include border-radius(0);
-    height: 20px;
-    border: none;
-    background: none;
-    .ui-slider-range {
-      @include border-radius(0);
-      @include transition(0.3s all linear);
-      background: rgba(208, 210, 213, 0.21);
-
-    }
-    .ui-slider-handle {
-      @include border-radius(0);
-      @include transition(0.3s all linear);
-      top: 0;
-      margin-left: -0.4em;
-      background: rgba(208, 210, 213, 0.5);
-      width: 0.8em;
-      border: 0;
-      cursor: pointer;
-      display: none;
-    }
-    &:hover {
-      .ui-slider-handle {
-        display: block;
-        background: $color-orange;
-      }
-    }
-  }
-
-}
 
 body.playing {
   #header #logo {
@@ -551,6 +404,26 @@ h4 {
   }
 }
 
+
+#notify-wrapper {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  width: $width-sidebar-second;
+  z-index: 9;
+  // @TODO this crops tall notifications and needs fixing
+  height: $height-footer;
+  transition: 1s all ease;
+  &.hidden {
+    width: 0;
+    opacity: 0.8;
+    overflow-x: hidden;
+    #notify {
+      bottom: 20px;
+    }
+  }
+}
 
 //SECTIONS
 #home {
@@ -1514,7 +1387,8 @@ body.sidebar {
 
 
 .playlist,
-.custom-lists {
+.custom-lists,
+.browser-playlist-song-list {
   padding: 2px;
   .playlist-item-placeholder {
     height: 35px;
@@ -1605,7 +1479,8 @@ body.sidebar {
       }
       display: none;
     }
-    &.playing-row {
+    &.playing-row,
+    &.browser-playing-row {
       @include transition(all 0.3s linear);
       height: 80px;
       background: $color-clouds;
@@ -1749,32 +1624,34 @@ body.sidebar {
 #sidebar-second {
 
   //default
-  .alt-sidebar-items {
+  .sidebar-pane {
     display: none;
   }
-
-  // custom lists
-  &.alt-view {
-    .alt-sidebar-items {
-      display: block;
-    }
-    .sidebar-items {
-      display: none;
-    }
+  #playlist-xbmc {
+    display: block;
   }
 
-  // xbmc playlist
-  &.normal-view {
-    .sidebar-items {
-      display: block;
-    }
-    .alt-sidebar-items {
-      display: none;
-    }
-  }
+//  // custom lists
+//  &.alt-view {
+//    .alt-sidebar-items {
+//      display: block;
+//    }
+//    .sidebar-items {
+//      display: none;
+//    }
+//  }
+//
+//  // xbmc playlist
+//  &.normal-view {
+//    .sidebar-items {
+//      display: block;
+//    }
+//    .alt-sidebar-items {
+//      display: none;
+//    }
+//  }
 
-  .alt-sidebar-items,
-  .sidebar-items {
+  .sidebar-pane {
     position: absolute;
     bottom: $height-footer;
     left: 0;
@@ -1799,11 +1676,16 @@ body.sidebar {
     .playlist-primary-tabs {
       li {
         float: left;
-        margin: 0 5px 0 0;
-        padding: 15px 15px;
+        margin: 0 0px 0 0;
+        padding: 15px 22px 15px 19px;
         color: $color-whitesmoke;
         font-size: 112%;
         cursor: pointer;
+        i {
+          font-size: 84%;
+          margin-right: 5px;
+          opacity: 0.6;
+        }
         &:hover {
           background: rgba(255,255,255,0.1);
         }
@@ -2153,6 +2035,24 @@ body {
       display: none !important;
     }
   }
+
+  // browser player
+  &.player-view-local {
+
+    #footer {
+      display: none;
+    }
+
+    #browser-player-footer {
+      display: block;
+    }
+
+    #logo {
+      background: $color-carrot;
+    }
+
+  }
+
 
 }
 

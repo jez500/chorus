@@ -98,9 +98,16 @@ app.PlaylistItemView = Backbone.View.extend({
 
   playPosition:function(event){
 
-    app.AudioController.playPlaylistPosition(this.model.pos, function(data){
-      app.AudioController.playlistRefresh();
-    });
+    if(this.model.list == 'local'){
+      // LOCAL BROWSER PLAY
+      app.audioStreaming.playPosition(this.model.pos);
+    } else {
+      // XBMC PLAYER
+      app.AudioController.playPlaylistPosition(this.model.pos, function(data){
+        app.AudioController.playlistRefresh();
+      });
+    }
+
   },
 
   removePosition:function(event){
@@ -216,6 +223,7 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
   },
 
   render:function () {
+    console.log(this.model);
     this.$el.html(this.template(this.model.attributes));
     return this;
   }
