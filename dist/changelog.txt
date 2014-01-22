@@ -1,3 +1,8 @@
+Version 0.1.8:
+- Increased max album count to 15000
+- Increased max artist count to 10000
+
+
 Version 0.1.7:
 - Heaps of fixes/updates to v0.1.6 landing pages
 - Minor ui style updates
