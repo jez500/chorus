@@ -16660,7 +16660,7 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
   model: app.Album,
   //collection params
   arg1: app.albumFields, //properties
-  arg2: {"start": 0, "end": 5000}, //count
+  arg2: {"start": 0, "end": 15000}, //count
   arg3: {"sort": {"method": "album"}},
   //method/params
   methods: {
@@ -16752,7 +16752,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: true, //albumartistsonly
   arg2: app.artistFields, //properties
-  arg3: {"start": 0, "end": 5000}, //count
+  arg3: {"start": 0, "end": 10000}, //count
   arg4: {"sort": {"method": "artist"}},
   //method/params
   methods: {
