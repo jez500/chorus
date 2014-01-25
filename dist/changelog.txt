@@ -4,6 +4,14 @@ Version 0.1.8:
 
 
 Version 0.1.7:
+- Major update
+- Integrated browser streaming, you can now play songs directly in your browser
+- Many ui updates to accommodate the new functionality
+- Logo gets some colour when playing via xbmc / browser
+- lots more
+
+
+Version 0.1.7:
 - Heaps of fixes/updates to v0.1.6 landing pages
 - Minor ui style updates
 - logo gets angry when not connected

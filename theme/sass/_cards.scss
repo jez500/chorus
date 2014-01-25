@@ -60,7 +60,7 @@
       .actions {
         margin-top: 24px;
         .btn {
-          float: right;
+          float: left;
           width: 24px;
           padding-top: 8px;
           color: #ddd;
@@ -82,7 +82,11 @@
       }
 
     }
-
+    &.thumbs-up {
+      .album-actions .album-thumbsup {
+        color: $color-carrot;
+      }
+    }
     .details {
       p {
         position: relative;

@@ -158,6 +158,9 @@ app.ShellView = Backbone.View.extend({
    */
   primaryTabClick:function(event){
     $thisTab = $(event.target);
+    if(!$thisTab.hasClass('playlist-primary-tab')){
+      $thisTab = $thisTab.closest('li.playlist-primary-tab')
+    }
     // toggle based on tab class
     var view = $thisTab.data('pane');
     app.playlists.changePlaylistView(view);

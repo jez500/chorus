@@ -13407,7 +13407,11 @@
 (function(c,h){var e,d;if("localStorage"in window)try{d="undefined"===typeof window.localStorage?h:window.localStorage,e="undefined"==typeof d||"undefined"==typeof window.JSON?!1:!0}catch(j){e=!1}c.totalStorage=function(b,a){return c.totalStorage.impl.init(b,a)};c.totalStorage.setItem=function(b,a){return c.totalStorage.impl.setItem(b,a)};c.totalStorage.getItem=function(b){return c.totalStorage.impl.getItem(b)};c.totalStorage.getAll=function(){return c.totalStorage.impl.getAll()};c.totalStorage.deleteItem=
   function(b){return c.totalStorage.impl.deleteItem(b)};c.totalStorage.impl={init:function(b,a){return"undefined"!=typeof a?this.setItem(b,a):this.getItem(b)},setItem:function(b,a){if(!e)try{return c.cookie(b,a),a}catch(g){console.log("Local Storage not supported by this browser. Install the cookie plugin on your site to take advantage of the same functionality. You can get it at https://github.com/carhartl/jquery-cookie")}var f=JSON.stringify(a);d.setItem(b,f);return this.parseResult(f)},getItem:function(b){if(!e)try{return this.parseResult(c.cookie(b))}catch(a){return null}b=
   d.getItem(b);return this.parseResult(b)},deleteItem:function(b){if(!e)try{return c.cookie(b,null),!0}catch(a){return!1}d.removeItem(b);return!0},getAll:function(){var b=[];if(e)for(var a in d)a.length&&b.push({key:a,value:this.parseResult(d.getItem(a))});else try{var g=document.cookie.split(";");for(a=0;a<g.length;a++){var f=g[a].split("=")[0];b.push({key:f,value:this.parseResult(c.cookie(f))})}}catch(h){return null}return b},parseResult:function(b){var a;try{a=JSON.parse(b),"undefined"==typeof a&&
-  (a=b),"true"==a&&(a=!0),"false"==a&&(a=!1),parseFloat(a)==a&&"object"!=typeof a&&(a=parseFloat(a))}catch(c){a=b}return a}}})(jQuery);;/**
+  (a=b),"true"==a&&(a=!0),"false"==a&&(a=!1),parseFloat(a)==a&&"object"!=typeof a&&(a=parseFloat(a))}catch(c){a=b}return a}}})(jQuery);;/*	SWFObject v2.0 <http://code.google.com/p/swfobject/>
+	Copyright (c) 2007 Geoff Stearns, Michael Williams, and Bobby van der Sluis
+	This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+*/
+var swfobject=function(){var Z="undefined",P="object",B="Shockwave Flash",h="ShockwaveFlash.ShockwaveFlash",W="application/x-shockwave-flash",K="SWFObjectExprInst",G=window,g=document,N=navigator,f=[],H=[],Q=null,L=null,T=null,S=false,C=false;var a=function(){var l=typeof g.getElementById!=Z&&typeof g.getElementsByTagName!=Z&&typeof g.createElement!=Z&&typeof g.appendChild!=Z&&typeof g.replaceChild!=Z&&typeof g.removeChild!=Z&&typeof g.cloneNode!=Z,t=[0,0,0],n=null;if(typeof N.plugins!=Z&&typeof N.plugins[B]==P){n=N.plugins[B].description;if(n){n=n.replace(/^.*\s+(\S+\s+\S+$)/,"$1");t[0]=parseInt(n.replace(/^(.*)\..*$/,"$1"),10);t[1]=parseInt(n.replace(/^.*\.(.*)\s.*$/,"$1"),10);t[2]=/r/.test(n)?parseInt(n.replace(/^.*r(.*)$/,"$1"),10):0}}else{if(typeof G.ActiveXObject!=Z){var o=null,s=false;try{o=new ActiveXObject(h+".7")}catch(k){try{o=new ActiveXObject(h+".6");t=[6,0,21];o.AllowScriptAccess="always"}catch(k){if(t[0]==6){s=true}}if(!s){try{o=new ActiveXObject(h)}catch(k){}}}if(!s&&o){try{n=o.GetVariable("$version");if(n){n=n.split(" ")[1].split(",");t=[parseInt(n[0],10),parseInt(n[1],10),parseInt(n[2],10)]}}catch(k){}}}}var v=N.userAgent.toLowerCase(),j=N.platform.toLowerCase(),r=/webkit/.test(v)?parseFloat(v.replace(/^.*webkit\/(\d+(\.\d+)?).*$/,"$1")):false,i=false,q=j?/win/.test(j):/win/.test(v),m=j?/mac/.test(j):/mac/.test(v);/*@cc_on i=true;@if(@_win32)q=true;@elif(@_mac)m=true;@end@*/return{w3cdom:l,pv:t,webkit:r,ie:i,win:q,mac:m}}();var e=function(){if(!a.w3cdom){return }J(I);if(a.ie&&a.win){try{g.write("<script id=__ie_ondomload defer=true src=//:><\/script>");var i=c("__ie_ondomload");if(i){i.onreadystatechange=function(){if(this.readyState=="complete"){this.parentNode.removeChild(this);V()}}}}catch(j){}}if(a.webkit&&typeof g.readyState!=Z){Q=setInterval(function(){if(/loaded|complete/.test(g.readyState)){V()}},10)}if(typeof g.addEventListener!=Z){g.addEventListener("DOMContentLoaded",V,null)}M(V)}();function V(){if(S){return }if(a.ie&&a.win){var m=Y("span");try{var l=g.getElementsByTagName("body")[0].appendChild(m);l.parentNode.removeChild(l)}catch(n){return }}S=true;if(Q){clearInterval(Q);Q=null}var j=f.length;for(var k=0;k<j;k++){f[k]()}}function J(i){if(S){i()}else{f[f.length]=i}}function M(j){if(typeof G.addEventListener!=Z){G.addEventListener("load",j,false)}else{if(typeof g.addEventListener!=Z){g.addEventListener("load",j,false)}else{if(typeof G.attachEvent!=Z){G.attachEvent("onload",j)}else{if(typeof G.onload=="function"){var i=G.onload;G.onload=function(){i();j()}}else{G.onload=j}}}}}function I(){var l=H.length;for(var j=0;j<l;j++){var m=H[j].id;if(a.pv[0]>0){var k=c(m);if(k){H[j].width=k.getAttribute("width")?k.getAttribute("width"):"0";H[j].height=k.getAttribute("height")?k.getAttribute("height"):"0";if(O(H[j].swfVersion)){if(a.webkit&&a.webkit<312){U(k)}X(m,true)}else{if(H[j].expressInstall&&!C&&O("6.0.65")&&(a.win||a.mac)){D(H[j])}else{d(k)}}}}else{X(m,true)}}}function U(m){var k=m.getElementsByTagName(P)[0];if(k){var p=Y("embed"),r=k.attributes;if(r){var o=r.length;for(var n=0;n<o;n++){if(r[n].nodeName.toLowerCase()=="data"){p.setAttribute("src",r[n].nodeValue)}else{p.setAttribute(r[n].nodeName,r[n].nodeValue)}}}var q=k.childNodes;if(q){var s=q.length;for(var l=0;l<s;l++){if(q[l].nodeType==1&&q[l].nodeName.toLowerCase()=="param"){p.setAttribute(q[l].getAttribute("name"),q[l].getAttribute("value"))}}}m.parentNode.replaceChild(p,m)}}function F(i){if(a.ie&&a.win&&O("8.0.0")){G.attachEvent("onunload",function(){var k=c(i);if(k){for(var j in k){if(typeof k[j]=="function"){k[j]=function(){}}}k.parentNode.removeChild(k)}})}}function D(j){C=true;var o=c(j.id);if(o){if(j.altContentId){var l=c(j.altContentId);if(l){L=l;T=j.altContentId}}else{L=b(o)}if(!(/%$/.test(j.width))&&parseInt(j.width,10)<310){j.width="310"}if(!(/%$/.test(j.height))&&parseInt(j.height,10)<137){j.height="137"}g.title=g.title.slice(0,47)+" - Flash Player Installation";var n=a.ie&&a.win?"ActiveX":"PlugIn",k=g.title,m="MMredirectURL="+G.location+"&MMplayerType="+n+"&MMdoctitle="+k,p=j.id;if(a.ie&&a.win&&o.readyState!=4){var i=Y("div");p+="SWFObjectNew";i.setAttribute("id",p);o.parentNode.insertBefore(i,o);o.style.display="none";G.attachEvent("onload",function(){o.parentNode.removeChild(o)})}R({data:j.expressInstall,id:K,width:j.width,height:j.height},{flashvars:m},p)}}function d(j){if(a.ie&&a.win&&j.readyState!=4){var i=Y("div");j.parentNode.insertBefore(i,j);i.parentNode.replaceChild(b(j),i);j.style.display="none";G.attachEvent("onload",function(){j.parentNode.removeChild(j)})}else{j.parentNode.replaceChild(b(j),j)}}function b(n){var m=Y("div");if(a.win&&a.ie){m.innerHTML=n.innerHTML}else{var k=n.getElementsByTagName(P)[0];if(k){var o=k.childNodes;if(o){var j=o.length;for(var l=0;l<j;l++){if(!(o[l].nodeType==1&&o[l].nodeName.toLowerCase()=="param")&&!(o[l].nodeType==8)){m.appendChild(o[l].cloneNode(true))}}}}}return m}function R(AE,AC,q){var p,t=c(q);if(typeof AE.id==Z){AE.id=q}if(a.ie&&a.win){var AD="";for(var z in AE){if(AE[z]!=Object.prototype[z]){if(z=="data"){AC.movie=AE[z]}else{if(z.toLowerCase()=="styleclass"){AD+=' class="'+AE[z]+'"'}else{if(z!="classid"){AD+=" "+z+'="'+AE[z]+'"'}}}}}var AB="";for(var y in AC){if(AC[y]!=Object.prototype[y]){AB+='<param name="'+y+'" value="'+AC[y]+'" />'}}t.outerHTML='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'+AD+">"+AB+"</object>";F(AE.id);p=c(AE.id)}else{if(a.webkit&&a.webkit<312){var AA=Y("embed");AA.setAttribute("type",W);for(var x in AE){if(AE[x]!=Object.prototype[x]){if(x=="data"){AA.setAttribute("src",AE[x])}else{if(x.toLowerCase()=="styleclass"){AA.setAttribute("class",AE[x])}else{if(x!="classid"){AA.setAttribute(x,AE[x])}}}}}for(var w in AC){if(AC[w]!=Object.prototype[w]){if(w!="movie"){AA.setAttribute(w,AC[w])}}}t.parentNode.replaceChild(AA,t);p=AA}else{var s=Y(P);s.setAttribute("type",W);for(var v in AE){if(AE[v]!=Object.prototype[v]){if(v.toLowerCase()=="styleclass"){s.setAttribute("class",AE[v])}else{if(v!="classid"){s.setAttribute(v,AE[v])}}}}for(var u in AC){if(AC[u]!=Object.prototype[u]&&u!="movie"){E(s,u,AC[u])}}t.parentNode.replaceChild(s,t);p=s}}return p}function E(k,i,j){var l=Y("param");l.setAttribute("name",i);l.setAttribute("value",j);k.appendChild(l)}function c(i){return g.getElementById(i)}function Y(i){return g.createElement(i)}function O(k){var j=a.pv,i=k.split(".");i[0]=parseInt(i[0],10);i[1]=parseInt(i[1],10);i[2]=parseInt(i[2],10);return(j[0]>i[0]||(j[0]==i[0]&&j[1]>i[1])||(j[0]==i[0]&&j[1]==i[1]&&j[2]>=i[2]))?true:false}function A(m,j){if(a.ie&&a.mac){return }var l=g.getElementsByTagName("head")[0],k=Y("style");k.setAttribute("type","text/css");k.setAttribute("media","screen");if(!(a.ie&&a.win)&&typeof g.createTextNode!=Z){k.appendChild(g.createTextNode(m+" {"+j+"}"))}l.appendChild(k);if(a.ie&&a.win&&typeof g.styleSheets!=Z&&g.styleSheets.length>0){var i=g.styleSheets[g.styleSheets.length-1];if(typeof i.addRule==P){i.addRule(m,j)}}}function X(k,i){var j=i?"visible":"hidden";if(S){c(k).style.visibility=j}else{A("#"+k,"visibility:"+j)}}return{registerObject:function(l,i,k){if(!a.w3cdom||!l||!i){return }var j={};j.id=l;j.swfVersion=i;j.expressInstall=k?k:false;H[H.length]=j;X(l,false)},getObjectById:function(l){var i=null;if(a.w3cdom&&S){var j=c(l);if(j){var k=j.getElementsByTagName(P)[0];if(!k||(k&&typeof j.SetVariable!=Z)){i=j}else{if(typeof k.SetVariable!=Z){i=k}}}}return i},embedSWF:function(n,u,r,t,j,m,k,p,s){if(!a.w3cdom||!n||!u||!r||!t||!j){return }r+="";t+="";if(O(j)){X(u,false);var q=(typeof s==P)?s:{};q.data=n;q.width=r;q.height=t;var o=(typeof p==P)?p:{};if(typeof k==P){for(var l in k){if(k[l]!=Object.prototype[l]){if(typeof o.flashvars!=Z){o.flashvars+="&"+l+"="+k[l]}else{o.flashvars=l+"="+k[l]}}}}J(function(){R(q,o,u);if(q.id==u){X(u,true)}})}else{if(m&&!C&&O("6.0.65")&&(a.win||a.mac)){X(u,false);J(function(){var i={};i.id=i.altContentId=u;i.width=r;i.height=t;i.expressInstall=m;D(i)})}}},getFlashPlayerVersion:function(){return{major:a.pv[0],minor:a.pv[1],release:a.pv[2]}},hasFlashPlayerVersion:O,createSWF:function(k,j,i){if(a.w3cdom&&S){return R(k,j,i)}else{return undefined}},createCSS:function(j,i){if(a.w3cdom){A(j,i)}},addDomLoadEvent:J,addLoadEvent:M,getQueryParamValue:function(m){var l=g.location.search||g.location.hash;if(m==null){return l}if(l){var k=l.substring(1).split("&");for(var j=0;j<k.length;j++){if(k[j].substring(0,k[j].indexOf("="))==m){return k[j].substring((k[j].indexOf("=")+1))}}}return""},expressInstallCallback:function(){if(C&&L){var i=c(K);if(i){i.parentNode.replaceChild(L,i);if(T){X(T,true);if(a.ie&&a.win){L.style.display="block"}}L=null;T=null;C=false}}}}}();;/**
  *
  *  This is bunch of generic helper utils to keep basic logic out of the main app
  *  @TODO cleanup and move stuff to better locations
@@ -14026,6 +14030,41 @@ $(document).ready(function(){
   };
 
 
+  /**
+   * Menu Dialog, creates a dialog that is populated with a menu structure
+   */
+  app.helpers.menuDialog = function(menu){
+
+    // vars
+    var $content = $('<ul class="dialog-menu dialog-menu-' + menu.key + '"></ul>'),
+      $liTpl = $('<li class="item"></li>'),
+      $li = {};
+
+    // menu items
+    $.each(menu.items, function(i,d){
+      // build li
+      $li = $liTpl.clone();
+      $li.html(d.title).addClass(d.class);
+      // bind
+      $li.on('click', function(e){
+        app.helpers.dialogClose();
+        if(d.callback){
+          d.callback();
+        }
+      });
+
+      // append
+      $content.append($li);
+    });
+
+    // init dialog
+    app.helpers.dialog($content, {
+      title: menu.title
+    });
+
+  };
+
+
 
   /********************************************************************************
    * Dropdowns
@@ -14075,9 +14114,11 @@ $(document).ready(function(){
    * Dropdown menu structures
    * @param type
    *  song, playlistShell
+   *  @param model
+   *   data from a model eg song.attributes
    * @returns {{}}
    */
-  app.helpers.menuTemplates = function(type){
+  app.helpers.menuTemplates = function(type, model){
     var opts = {};
     switch (type){
 
@@ -14087,10 +14128,52 @@ $(document).ready(function(){
           omitwrapper: true,
           items: [
             {url: '#', class: 'song-download', title: 'Download song'},
-            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist'}
+            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist'},
+            {url: '#', class: 'song-browser-play', title: 'Play in browser'}
           ]
         };
         break;
+
+      // also contains callbacks
+      case 'album':
+        opts = {
+          title: (model.label != '' ? model.label : model.album),
+          key: 'album',
+          omitwrapper: true,
+          items: [
+            {url: '#', class: 'album-add-xbmc', title: 'Add to XBMC', callback: function(){
+              app.playlists.playlistAddItems('xbmc', 'album', model.albumid);
+            }},
+            {url: '#', class: 'album-add-local', title: 'Play in browser', callback: function(){
+              app.playlists.playlistAddItems('local', 'album', model.albumid);
+            }},
+            {url: '#', class: 'album-add-lists', title: 'Save to lists', callback: function(){
+              app.playlists.playlistAddItems('lists', 'album', model.albumid)
+            }}
+          ]
+        };
+        break;
+
+      // also contains callbacks
+      case 'artist':
+        opts = {
+          title: model.label,
+          key: 'artist',
+          omitwrapper: true,
+          items: [
+            {url: '#', class: 'artist-add-xbmc', title: 'Add to XBMC', callback: function(){
+              app.playlists.playlistAddItems('xbmc', 'artist', model.artistid);
+            }},
+            {url: '#', class: 'artist-add-local', title: 'Play in browser', callback: function(){
+              app.playlists.playlistAddItems('local', 'artist', model.artistid);
+            }},
+            {url: '#', class: 'artist-add-lists', title: 'Save to lists', callback: function(){
+              app.playlists.playlistAddItems('lists', 'artist', model.artistid)
+            }}
+          ]
+        };
+        break;
+
       case 'playlistShell':
         opts = {
           key: 'playlist',
@@ -14217,13 +14300,13 @@ $(document).ready(function(){
     if(msg !== false && msg != ''){
 
       $notify.find('.content').html(msg);
-      $notify.removeClass('hidden');
+      $notify.removeClass('hidden').parent().removeClass('hidden');
       clearTimeout(notificationTimoutObj);
       notificationTimoutObj = setTimeout(app.notificationHide, 6000); // 8 secs?*/
     }
   };
   app.notificationHide = function(){
-    $notify = $('#notify').addClass('hidden');
+    $notify = $('#notify').addClass('hidden').parent().addClass('hidden');
   };
 
 
@@ -14917,7 +15000,7 @@ app.Song = Backbone.Model.extend({
 app.PlaylistItem= Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: ''}
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: '', list: 'xbmc'}
 
 });
 
@@ -14961,6 +15044,24 @@ app.File = Backbone.Model.extend({
   }
 
 });
+;
+
+///**
+// * Album
+// * @type {extend|*}
+// */
+//app.File = Backbone.Model.extend({
+//
+//  initialize:function () {},
+//  defaults: {'filetype': '', 'size': '', 'mimetype': '', 'file': '', 'lastmodified': '', id: 0},
+//
+//  sync: function(method, model, options) {
+//    if (method === "read") {
+//      // options.success(data);
+//    }
+//  }
+//
+//});
 ;/**
  * Framework for including functionality for addons
  * eg. soundcloud
@@ -15344,7 +15445,7 @@ app.AudioController.playlistRefresh = function(callback){
 
     //create a new playlist view and render
     app.playlistView = new app.PlaylistView({model:{models:result.items}});
-    $('.sidebar-items').html(app.playlistView.render().el);
+    $('#playlist-xbmc').html(app.playlistView.render().el);
 
     app.AudioController.getNowPlaying(function(data){
 
@@ -15881,6 +15982,7 @@ app.AudioController.getNowPlaying = function(callback){
       app.xbmcController.multipleCommand(commands, function(item){
         // get data
         ret.item = item[0].result.item;
+        ret.item.list = 'xbmc';
         ret.player = item[1].result;
         ret.status = 'playing';
 
@@ -15963,6 +16065,579 @@ app.AudioController.updatePlayerState = function(){
     //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
   });
 };;/**
+ * Handles local audio streaming in the browser
+ * @type {{}}
+ */
+app.audioStreaming = {
+
+  // init vars
+  localPlay: false,
+  nowplaying: { 'init': 1 },
+  lastPos: 0,
+  defaultVol: 60,
+  progressEl: '#browser-progress-bar',
+  volumeEl: '#browser-volume',
+  playlistEl: '#playlist-local',
+
+  // local storage
+  lastListKey: 'lastBrowserList',
+
+  // body class names
+  classLocal: 'player-view-local',
+  classXbmc: 'player-view-xbmc',
+  classLocalPlaying: 'browser-playing',
+  classLocalPaused: 'browser-paused',
+
+  /**
+   * Load libs, etc.
+   */
+  init: function($context){
+
+    //sound manager
+    soundManager.url = '/lib/soundmanager/swf/';
+    soundManager.preferFlash = true;
+    soundManager.flashVersion = 9; // optional: shiny features (default = 8)
+    soundManager.useFlashBlock = false;
+    soundManager.onready(function() {
+      // Ready to use; soundManager.createSound() etc. can now be called.
+    });
+
+    app.audioStreaming.$body = $('body');
+    app.audioStreaming.$window = $(window);
+
+    // create a local browser playlist object that will contain local player information
+    // most importantly is the current playlist
+    // @TODO see if exists in local storage
+    app.audioStreaming.playList = {
+      items: [],
+      playingPosition: 0,
+      id: 0,
+      repeat: 'off',
+      random: 'off',
+      mute: false
+    };
+
+
+    // Get last browser playlist collection, if any
+    var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
+    console.log(lastList);
+    if(lastList != undefined && lastList.length > 0){
+      // when songs are ready, render them
+      app.store.libraryCall(function(){
+        // get collection based on songids
+        app.playlists.playlistGetItems('items', lastList, function(collection){
+          app.audioStreaming.playList.items = collection;
+          console.log(collection);
+          // render it too
+          app.audioStreaming.renderPlaylistItems();
+          // add as loaded song
+          if(collection.models != undefined && collection.models[0] != undefined){
+            // load the first song
+            var song = collection.models[0];
+            app.audioStreaming.loadSong(song);
+            // update playing song details around the page
+            app.audioStreaming.updatePlayingState(song.attributes);
+          }
+
+        });
+      }, 'songsReady');
+    }
+  },
+
+
+  /**
+   * Toggle what player we are using
+   *
+   * @param player
+   */
+  setPlayer: function(player){
+
+    if(player == undefined || player == ''){ //toggle
+      app.audioStreaming.$body.toggleClass(app.audioStreaming.classXbmc).toggleClass(app.audioStreaming.classLocal);
+    } else {
+      if(player == 'xbmc'){
+        app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
+      }
+      if(player == 'local'){
+        app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
+        // if empty, render
+        if($('ul.browser-playlist-song-list').length == 0){
+          app.audioStreaming.renderPlaylistItems();
+        }
+      }
+    }
+
+  },
+
+
+  /**
+   * Plays a position in the current playlist
+   * @param pos
+   */
+    playPosition: function(pos){
+
+    // remove currently playing class
+    $('li.browser-player div.playlist-item').removeClass('browser-playing-row');
+
+    if(app.audioStreaming.playList.items.models.length > 0){
+        var model = app.audioStreaming.playList.items.models[parseInt(pos)].attributes;
+        app.audioStreaming.playList.playingPosition = pos;
+        console.log(model);
+        app.audioStreaming.loadSong({attributes: model}, function(){
+          // play
+          app.audioStreaming.play();
+          // notify
+          app.notification('Playing ' + model.label + ' in the browser');
+
+        });
+      }
+
+    },
+
+
+  /**
+   * Set a collection of songs to be the current playlist
+   * @param collection
+   */
+  setPlaylistItems: function(collection){
+
+    // update in current playlist state
+    app.audioStreaming.playList.items = collection;
+
+    // save ids to local storage
+    var ids = [];
+    $.each(collection.models, function(i,d){
+      if(typeof d.attributes.songid != 'undefined'){
+        ids.push(d.attributes.songid);
+      }
+    });
+    console.log('ids', ids);
+    app.storageController.setStorage(app.audioStreaming.lastListKey, ids);
+  },
+
+
+  /**
+   * (re)Render browser playlist to screen
+   * @param collection
+   */
+  renderPlaylistItems: function(){
+
+    // Get Song collection
+    var collection = app.audioStreaming.playList.items;
+
+    // items view
+    var browserPlaylistItems = new app.CustomPlaylistSongSmallListView({model: collection}).render();
+    $(app.audioStreaming.playlistEl).html(browserPlaylistItems.$el);
+
+  },
+
+
+  /**
+   * Load a song into the browser player (like putting a cd single in the cd player)
+   *
+   * @param songModel
+   *  the song model, must contain a file property
+   * @param callback
+   */
+  loadSong: function(songModel, callback){
+
+    // Stop anything currently playing
+    app.audioStreaming.stop();
+
+    // clone sound manager
+    var sm = soundManager;
+
+    // song
+    var song = songModel.attributes;
+
+    // Get download url
+    app.AudioController.downloadFile(song.file, function(url){
+
+      //kick of soundmanager
+      app.audioStreaming.localPlay = sm.createSound({
+
+        // Options
+        id:'browser-' + song.songid,
+        url: url,
+        autoPlay: false,
+        autoLoad: true,
+        stream: true,
+
+        // Callbacks
+        onerror: function(status) {
+          app.helpers.errorHandler('SoundManager failed to load: ' + status.type, status);
+        },
+        onplay: function(){
+          // toggle classes
+          $('body').addClass('browser-playing').removeClass('browser-paused');
+          app.audioStreaming.updatePlayingState(song);
+        },
+        onstop: function(){
+          // remove classes
+          $('body').removeClass('browser-playing').removeClass('browser-paused');
+        },
+        onpause:  function(){
+          // toggle classes
+          $('body').removeClass('browser-playing').addClass('browser-paused');
+        },
+        onresume:function(){
+          // toggle classes
+          $('body').addClass('browser-playing').removeClass('browser-paused');
+        },
+
+        // What happens at then end of a track
+        onfinish: function(){
+
+          // vars
+          var browserPlaylist = app.audioStreaming.playList,
+            items = browserPlaylist.items.models,
+            playingPosition = parseInt(browserPlaylist.playingPosition);
+
+          // repeat one song
+          if(browserPlaylist.repeat == 'one'){
+            app.audioStreaming.playPosition(playingPosition);
+          } else if(browserPlaylist.random == 'on') {
+            // random
+            var rand = app.helpers.getRandomInt(0, (items.length - 1));
+            app.audioStreaming.playPosition(rand);
+          } else if(browserPlaylist.repeat == 'all'){
+            // play all again
+            if(items.length == (playingPosition + 1) ){ //if last song
+              app.audioStreaming.playPosition(0);  //back to the start
+            }
+          } else {
+            // Normal playback, next track if exists in playlist
+            if(items.length > playingPosition){
+              // play it
+              app.audioStreaming.playPosition((playingPosition + 1));
+            }
+          }
+        },
+
+        // update player state
+        whileplaying: function() {
+
+          var pos = parseInt(this.position) / 1000,
+            dur = parseInt(this.duration) / 1000,
+            per = Math.round((pos / dur) * 100),
+            $time = $('#browser-time'),
+            $nowPlaying = $('#browser-now-playing');
+
+          app.audioStreaming.nowplaying.player = {
+            position : pos,
+            duration : dur,
+            percentage: per
+          };
+
+          // time
+          $('.time-cur', $time).html(app.helpers.secToTime(Math.floor(pos)));
+          $('.time-total', $time).html(app.helpers.secToTime(Math.floor(dur)));
+
+          //update 100 times per song
+          if(per != app.audioStreaming.lastPos){
+
+            // slider
+            $(app.audioStreaming.progressEl).slider('value', per );
+
+            // update playing song details around the page
+            app.audioStreaming.updatePlayingState(song);
+
+          }
+          app.audioStreaming.lastPos = per;
+
+        }
+
+      }); // end sound manager
+
+
+      // init slider if required
+      if(!$(app.audioStreaming.progressEl).hasClass('ui-slider')){
+        // set a default (lower vol)
+        app.audioStreaming.localPlay.setVolume(app.audioStreaming.defaultVol);
+        // define sliders
+        app.audioStreaming.progressInit();
+        app.audioStreaming.volumeInit();
+      }
+
+      if(callback){
+        callback();
+      }
+
+    }); // end download
+
+
+  }, // end play song
+
+
+  updatePlayingState: function(song){
+    // image
+    $('#browser-playing-thumb').attr('src', app.parseImage(song.thumbnail));
+    // title
+    $('.browser-playing-song-title').html(song.label);
+    $('.browser-playing-song-meta').html(song.artist[0]);
+
+    // add playing class to correct item in playlist
+    var $playingEl = $('li.browser-player .playlist-pos-' + app.audioStreaming.playList.playingPosition);
+    if(!$playingEl.hasClass('browser-playing-row')){
+      $playingEl.addClass('browser-playing-row')
+    }
+
+    // playing song (@todo flickers fix)
+    //$('.song').removeClass('playing-row');
+    //$('.song[data-id=' + song.songid + ']').addClass('playing-row');
+  },
+
+
+  /**
+   * Adds body classes depending on rand/repeat state
+   *
+   * @param playlist
+   */
+  bodyRandRepeat: function(){
+    var playlist = app.audioStreaming.playList;
+    // exit if not init yet
+
+    if(playlist.repeat == undefined){
+      return;
+    }
+    // set repeat/rand state
+    var $body = $('body');
+    if(typeof app.audioStreaming.playList != 'undefined'){
+      $body.removeClass('bp-repeat-one').removeClass('bp-repeat-all').removeClass('bp-repeat-off');
+      $body.addClass('bp-repeat-' + playlist.repeat);
+
+      $body.removeClass('bp-random-on').removeClass('bp-random-off');
+      $body.addClass('bp-random-' + playlist.random);
+
+      $body.removeClass('bp-mute');
+      if(playlist.mute){
+        $body.addClass('bp-mute');
+      }
+
+    }
+  },
+
+
+  // Progress Bar
+  progressInit: function($context){
+
+    $(app.audioStreaming.progressEl).slider({
+      range: "min",
+      step: 1,
+      value: 0,
+      min: 0,
+      max: 100,
+      stop: function( event, ui ) {
+        var params = {
+          'playerid': 0,
+          'value': ui.value
+        };
+        // get the percentage then divide by duration
+        var newpos = (ui.value / 100) * app.audioStreaming.localPlay.duration;
+        newpos = Math.round(newpos);
+
+        // THIS SHOULD WORK?!?!? but it does not :(
+        // @TODO Investigate
+        app.audioStreaming.localPlay.setPosition(newpos);
+      }
+    });
+  },
+
+
+  // volume Bar
+  volumeInit: function($context){
+
+    $(app.audioStreaming.volumeEl).slider({
+      range: "min",
+      step: 5,
+      value: app.audioStreaming.defaultVol,
+      min: 0,
+      max: 100,
+      stop: function( event, ui ) {
+        app.audioStreaming.localPlay.setVolume(ui.value);
+      }
+    });
+    console.log('vol', $('#browser-volume'));
+  },
+
+
+  // is playing
+  isPlaying: function(){
+    return $('body').hasClass('browser-playing');
+  },
+
+
+  // Controls
+  togglePlay: function(){
+    if(app.audioStreaming.localPlay != false){
+      // if playing, pause, else play
+      if(app.audioStreaming.isPlaying()){
+        app.audioStreaming.pause();
+      } else {
+        app.audioStreaming.play();
+      }
+    }
+  },
+
+
+  /**
+   * a wrapper for playing the current song via sound manaher
+   */
+  play: function(){
+    if(app.audioStreaming.localPlay != false){
+      //play existing with local player
+      app.audioStreaming.localPlay.play();
+      // switch to local view
+      app.audioStreaming.setPlayer('local');
+    }
+  },
+
+
+  stop: function(){
+    if(app.audioStreaming.localPlay != false){
+      app.audioStreaming.localPlay.stop(); //play existing
+    }
+  },
+
+
+  pause: function(){
+    if(app.audioStreaming.localPlay != false){
+      app.audioStreaming.localPlay.pause(); //pause existing
+    }
+  },
+
+
+  prev: function(){
+    if(app.audioStreaming.localPlay != false){
+      var pl = app.audioStreaming.playList;
+      // at 0 play again
+      if(pl.playingPosition == 0){
+        app.audioStreaming.playPosition(0);
+      } else {
+        app.audioStreaming.playPosition((pl.playingPosition - 1));
+      }
+    }
+  },
+
+
+  next: function(){
+    if(app.audioStreaming.localPlay != false){
+      var pl = app.audioStreaming.playList;
+
+      // at end 0 is next
+      if(pl.playingPosition == (pl.items.models.length - 1)){
+        app.audioStreaming.playPosition(0);
+      } else {
+        app.audioStreaming.playPosition((pl.playingPosition + 1));
+      }
+    }
+  },
+
+
+  mute: function(){
+    if(app.audioStreaming.localPlay != false){
+
+      // vars
+      var mute = app.audioStreaming.playList.mute,
+        vol =  $(app.audioStreaming.volumeEl).slider('value');
+
+      // toggle
+      if(mute){
+        // is currently muted, changing to not
+        var lastVol = app.helpers.varGet('localMuteLastVol', app.audioStreaming.defaultVol);
+        app.audioStreaming.localPlay.setVolume(lastVol);
+        $(app.audioStreaming.volumeEl).slider('value',lastVol);
+      } else {
+        // not muted, but will be
+        app.helpers.varSet('localMuteLastVol',  (vol > 5 ? vol : app.audioStreaming.defaultVol));
+        app.audioStreaming.localPlay.setVolume(0);
+        $(app.audioStreaming.volumeEl).slider('value',0);
+      }
+      app.audioStreaming.playList.mute = (!mute);
+      app.audioStreaming.bodyRandRepeat();
+    }
+  },
+
+
+  repeat: function(){
+    if(app.audioStreaming.localPlay != false){
+      var pl = app.audioStreaming.playList, newVal;
+      // toggle between 3 different states
+      switch(pl.repeat){
+        case 'off':
+          newVal = 'all';
+          break;
+        case 'all':
+          newVal = 'one';
+          break;
+        case 'one':
+          newVal = 'off';
+          break;
+      }
+      app.audioStreaming.playList.repeat = newVal;
+
+      // set body classes
+      app.audioStreaming.bodyRandRepeat();
+    }
+  },
+
+
+  random: function(){
+    if(app.audioStreaming.localPlay != false){
+      // set the opposite
+      var pl = app.audioStreaming.playList;
+      app.audioStreaming.playList.random = (pl.random == 'off' ? 'on' : 'off');
+
+      // set body classes
+      app.audioStreaming.bodyRandRepeat();
+    }
+  },
+
+
+  /**
+   * delete browser playlist Song
+   */
+  deleteBrowserPlaylistSong: function(pos){
+
+    var list = app.audioStreaming.playList.items,
+      newItems = list.models.filter(function (element) {
+        return (element.attributes.pos != pos);
+      });
+
+    list.models = newItems;
+    list.length = newItems.length;
+
+    app.audioStreaming.setPlaylistItems(list);
+
+  },
+
+  /**
+   * Apply a reorder of the playlist
+   *
+   * @param newList
+   *  array of positions as ints
+   */
+  sortableChangePlaylistPosition: function(newList){
+
+    // reorder collection
+    var list = [], collection = app.audioStreaming.playList.items;
+    $.each(newList, function(i,d){
+      list.push(collection.models[d]);
+    });
+
+    // rebuild collection
+    collection.models = list;
+    collection.length = list.length;
+
+    // save
+    app.audioStreaming.setPlaylistItems(collection);
+    app.audioStreaming.renderPlaylistItems();
+  }
+
+
+
+
+};;/**
  * The app.playlists object is a collection of methods and properties specifically for
  * custom playlist functionality and helpers
  *
@@ -15975,8 +16650,192 @@ app.playlists = {
 
 
 
+/**
+ * The Super collection getter
+ *
+ * Get the contents of all major song collection types, eg. single song, artist, thumbs up list or the xbmc playlist.
+ * Basically a wrapper for all song list types
+ *
+ * @param type
+ *  type of playlist: xbmc, song, album, artist, list, thumbsup, items
+ * @param delta
+ *  depends on type type: 0, songid, albumid, artistid, customPlaylistId, [song, album, artist], [array of songids]
+ * @param callback
+ *
+ * @return {song collection}
+ *  A fully loaded backbone collection of songs
+ *
+ */
+app.playlists.playlistGetItems = function(type, delta, callback){
+
+  var items = [],
+    plCollection = {};
+
+  switch (type){
+    case 'xbmc': // current xbmc playlist
+      plCollection = new app.PlaylistCollection();
+      plCollection.fetch({"success": function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'song':
+      plCollection = new app.CustomSongCollection();
+      plCollection.fetch({items: [delta], success: function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'album':
+      plCollection = new app.SongFilteredXbmcCollection({"filter": {albumid: delta}});
+      plCollection.fetch({"success": function(data){
+        res = app.playlists.addFileFieldToSongCollection(data);
+        callback(res);
+      }});
+      break;
+
+    case 'artist':
+      plCollection = new app.SongFilteredXbmcCollection({"filter": {artistid: delta}});
+      plCollection.fetch({"success": function(data){
+        res = app.playlists.addFileFieldToSongCollection(data);
+        callback(res);
+      }});
+      break;
+
+    case 'list': // local playlist id = delta
+      plCollection = new app.PlaylistCustomListSongCollection();
+      plCollection.fetch({"name":delta, "success": function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'thumbsup': // thumbs up songs
+      plCollection = new app.ThumbsUpCollection();
+      plCollection.fetch({"name":delta, "success": function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+
+    case 'items': // return a collection based in an array of songids
+      plCollection = new app.CustomSongCollection();
+      plCollection.fetch({items: delta, success: function(res){
+        res = app.playlists.addFileFieldToSongCollection(res);
+        callback(res);
+      }});
+      break;
+  }
+
+  // callback
+  if(callback){
+    callback(items);
+  } else {
+    // will be empty on an xbmc call, so you MUST use the callback
+    return items;
+  }
+
+};
 
 
+/**
+ * A global wrapper for adding items to a playlist
+ *
+ * @param playlist
+ *  playlist to add the type[delta] to. Options: xbmc, local, lists
+ * @param type
+ *  @see plalistGetItems
+ * @param delta
+ *  @see plalistGetItems
+ * @param callback
+ *  @see plalistGetItems
+ */
+app.playlists.playlistAddItems = function(playlist, type, delta, callback){
+
+  app.playlists.playlistGetItems(type, delta, function(collection){
+
+    var items = [];
+    $.each(collection.models, function(i,d){
+      if(d.attributes.songid){
+        // is it a file
+        if(d.attributes.songid == 'file'){
+          items.push(d.attributes.file);
+        } else {
+          // or songid
+          items.push(d.attributes.songid);
+        }
+      }
+    });
+
+    callback = (typeof callback != 'undefined' ? callback : function(){});
+
+    switch(playlist){
+
+      // Add to xbmc playlist
+      case 'xbmc':
+        app.AudioController.playlistAddMultiple('mixed', items, function(){
+          app.AudioController.playlistRefresh();
+          app.playlists.changePlaylistView('xbmc');
+          callback();
+        });
+        break;
+
+      // Add to Local browser playlist - and play
+      case 'local':
+          // @todo abstract this
+          app.audioStreaming.setPlaylistItems(collection);
+          app.audioStreaming.renderPlaylistItems(collection);
+          app.audioStreaming.loadSong(collection.models[0], function(){
+            app.playlists.changePlaylistView('local');
+            // play song
+            app.audioStreaming.playPosition(0);
+            callback();
+          });
+        break;
+
+      // Add to Custom Lists
+      case 'lists':
+        app.playlists.changePlaylistView('lists');
+        app.playlists.saveCustomPlayListsDialog('local', items);
+        break;
+    }
+
+  });
+
+};
+
+
+
+/**
+ * Need to ensure each item has a file field so we lookup.
+ *
+ * This is a bug with Xbmc Frodo where "file" field is not returned with "getSongDetails"
+ * We kinda need the songs indexed for search so this just adds about 20% to that time/bandwidth
+ * and as we need the songs on call, we cache all songs on page load.
+ *
+ * Ref:
+ * http://trac.xbmc.org/ticket/14508
+ * http://forum.xbmc.org/showthread.php?tid=111945
+ *
+ * @param collection
+ * @returns {*}
+ */
+app.playlists.addFileFieldToSongCollection = function(collection){
+
+  $.each(collection.models, function(i,d){
+    // get song from dictionary
+    var song = app.store.getSongBy('id', d.attributes.songid);
+    // add the file field
+    d.attributes.file = song.file;
+    // save
+    collection.models[i] = d;
+  });
+
+  // return parsed collection
+  return collection;
+};
 
 
 app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
@@ -16002,6 +16861,7 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     })
   }
 };
+
 
 // doesnt seem to be in use
 app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
@@ -16029,8 +16889,6 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
 };
 
 
-
-
 /**
  * Change to playlist tab
  * @param type
@@ -16039,20 +16897,18 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
 app.playlists.changePlaylistView = function(type){
 
   var $sb = $('#sidebar-second'),
-      $at = $('.' + type + "-playlist-tab");
+      $at = $(".playlist-primary-tab[data-pane='" + type + "']");
 
   // active
   $(".playlist-primary-tab").removeClass("active");
   $at.addClass('active');
 
-  // toggle content with classes
-  switch(type){
-    case 'xbmc':
-      $sb.removeClass('alt-view').addClass('normal-view');
-      break;
-    case 'local':
-      $sb.addClass('alt-view').removeClass('normal-view');
-      break;
+  $('.sidebar-pane', $sb).hide();
+  $('#playlist-' + type, $sb).show();
+
+  // toggle between players
+  if(type == 'local' || type == 'xbmc'){
+    app.audioStreaming.setPlayer(type);
   }
 
 };
@@ -16060,6 +16916,13 @@ app.playlists.changePlaylistView = function(type){
 
 /**
  * Save Current xbmc playlist Dialog
+ *
+ * @param type
+ *  Source list type: xbmc or local
+ * @param items
+ *  No used on xbmc, on local it is an array of songids
+ * @param hideList
+ *  set to true if you only want the add new option
  */
 app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
@@ -16108,9 +16971,18 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 };
 
 
-
 /**
- * Save Current xbmc playlist to storage
+ * Save Current xbmc playlist to storage playlist
+ * called by dialog
+ *
+ * @param op
+ *  new, existing
+ * @param id
+ *  new name / existing id
+ * @param source
+ *  xbmc, local
+ * @param newItems
+ *  an array of songids
  */
 app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
 
@@ -16297,7 +17169,7 @@ app.playlists.updateCustomPlayLists = function(){
 
   //custom playlists
   app.playlists.addCustomPlayLists(function(view){
-    $('.alt-sidebar-items').html(view.render().el);
+    $('#playlist-lists').html(view.render().el);
   });
 
 };
@@ -16341,6 +17213,7 @@ app.playlists.replaceCustomPlayList = function(listId, items){
 
 /**
  * Html for the sub tasks of a playlist
+ * @todo use other funtion that does this
  *
  */
 app.playlists.getDropdown = function(){
@@ -16349,7 +17222,8 @@ app.playlists.getDropdown = function(){
     type = app.helpers.arg(0),
     buttons = {
       append: 'Add to playlist',
-      replace: 'Replace playlist'
+      replace: 'Replace playlist',
+      'browser-replace': 'Play in browser'
     };
 
   if(type != 'thumbsup'){
@@ -16599,15 +17473,19 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Song,
   //collection params
-  arg1: app.songFields, //fields
-  arg2: {"start": 0, "end": 50000}, //count
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
+  arg1: ["file"], //fields, keep this to an absolute minimum as adding fields makes it go real slow
+  arg2: {"start": 0, "end": 50000}, //limit @todo move to settings
+  arg3: {"sort": {"method": "dateadded", "order": "descending"}}, // doesn't appear to work? maybe lost in sorting elsewhere
   //method/params
   methods: {
-    read:  ['AudioLibrary.GetSongs'] //, 'arg1', 'arg2', 'arg3'
+    read:  ['AudioLibrary.GetSongs', 'arg1', 'arg2', 'arg3']
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    // set the id as the songid
+    $.each(resp.songs, function(i,d){
+      resp.songs[i].id = d.songid;
+    });
     return resp.songs;
   }
 });
@@ -16661,7 +17539,11 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.albumFields, //properties
   arg2: {"start": 0, "end": 15000}, //count
+<<<<<<< HEAD
   arg3: {"sort": {"method": "album"}},
+=======
+  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
+>>>>>>> minor tweaks, test build
   //method/params
   methods: {
     read:  ['AudioLibrary.GetAlbums', 'arg1', 'arg2', 'arg3']
@@ -16994,7 +17876,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
     allArtists: []
   };
 
- /*
+ /**
   * Force sync songs with xbmc
   */
   this.syncAudio = function(successCallback){
@@ -17009,6 +17891,8 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     this.allArtists();
     this.allAlbums();
+    this.indexSongs();
+
   };
 
 
@@ -17016,8 +17900,8 @@ app.MemoryStore = function (successCallback, errorCallback) {
     var self = this;
 
     if(self.songsIndexed === true){
-      callLater(successCallback,  self)
-
+      // return collection
+      callLater(successCallback,  self);
     } else {
 
       // if not indexing, start
@@ -17134,8 +18018,8 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     }});
 
-
   };
+
 
   /**
    * Load multiple artists by ids array
@@ -17156,6 +18040,52 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
   };
 
+  /**
+   * Get a song by type/delta
+   *
+   * @param type
+   *  id, file, title, contains (using contains is: "title like %delta%")
+   * @param delta
+   *  songid, filename
+   * @param callback
+   *  a single shell song model
+   */
+  this.getSongBy = function(type, delta, callback){
+
+   var songs = app.stores.allSongs.models;
+   var song = null;
+
+    // Loop over each until song found
+    $.each(songs, function(i,d){
+
+      // already have a song
+      if(song != null){
+        return;
+      }
+
+      // model get attributes for this row
+      var model = d.attributes;
+
+      // switch on type
+      if(type == 'id' && model.id == delta){  // ID
+          song = model;
+      } else if(type == 'file' && model.file == delta){  // FILE
+          song = model;
+      } else if(type == 'title' && model.label == delta){  // TITLE
+          song = model;
+      }else if(type == 'title'){  // TITLE CONTAINS
+        if(model.label.toLowerCase().indexOf(delta.toLowerCase()) > -1){
+          song = model;
+        }
+      }
+
+    });
+
+    // return song
+    callLater(callback, song);
+    return song;
+
+  };
 
 
   /**
@@ -17660,7 +18590,8 @@ app.AlbumItemSmallView = Backbone.View.extend({
     "click .album-play": "playAlbum",
     "click .album-add": "addAlbum",
     "click .album-thumbsup": "thumbsUp",
-    "click .actions-wrapper": "viewAlbum"
+    "click .actions-wrapper": "viewAlbum",
+    "click .album-menu": "menu"
   },
 
   initialize:function () {
@@ -17691,7 +18622,27 @@ app.AlbumItemSmallView = Backbone.View.extend({
     if(typeof model.recent != 'undefined'){
       this.$el.addClass('recent');
     }
+
+    // add context menu
+   // var albumDropDown = app.helpers.menuTemplates('album');
+    //$('.album-actions', this.$el).append( app.helpers.makeDropdown( albumDropDown ));
+
+
     return this;
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('album', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
   },
 
 
@@ -17758,7 +18709,8 @@ app.AlbumItemSmallView = Backbone.View.extend({
     "click .artist-play":      "playArtist",
     "click .artist-add":       "addArtist",
     "click .artist-thumbsup":  "thumbsUp",
-    "click .artist-fanart":    "toggleFanart"
+    "click .artist-fanart":    "toggleFanart",
+    "click .artist-menu":    "menu"
   },
 
   initialize:function () {
@@ -17788,6 +18740,20 @@ app.AlbumItemSmallView = Backbone.View.extend({
       $('#sidebar-first .sidebar-content').scrollTo($actRow);
     }
     return this;
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('artist', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
   },
 
   playArtist: function(){
@@ -18025,22 +18991,27 @@ app.AristsRandView = Backbone.View.extend({
   }
 });
 
+
 app.ArtistLargeItemView = Backbone.View.extend({
 
   tagName:"li",
   className:'artist-item-large card card-large',
+
 
   initialize:function () {
     this.model.on("change", this.render, this);
     this.model.on("destroy", this.close, this);
   },
 
+
   events: {
     "click .artist-play": "playArtist",
     "click .artist-add": "addArtist",
     "click .artist-thumbsup": "thumbsUp",
-    "click .actions-wrapper": "viewArtist"
+    "click .actions-wrapper": "viewArtist",
+    "click .artist-menu": "menu"
   },
+
 
   render:function () {
     var model = this.model.attributes;
@@ -18060,9 +19031,23 @@ app.ArtistLargeItemView = Backbone.View.extend({
       this.$el.addClass('thumbs-up');
     }
 
-
     return this;
   },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('artist', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
+  },
+
 
   playArtist: function(e){
     e.stopPropagation();
@@ -18078,6 +19063,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
 
   },
 
+
   addArtist: function(e){
     e.stopPropagation();
     e.preventDefault();
@@ -18089,6 +19075,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
     });
 
   },
+
 
   thumbsUp: function(e){
     e.stopPropagation();
@@ -18118,7 +19105,11 @@ app.ArtistLargeItemView = Backbone.View.extend({
         return this;
     }
 
-});;app.CustomPlaylistSongListView = Backbone.View.extend({
+});;/**
+ * Page View of custom playlist / thumbsup
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.CustomPlaylistSongListView = Backbone.View.extend({
 
   tagName:'ul',
 
@@ -18127,9 +19118,11 @@ app.ArtistLargeItemView = Backbone.View.extend({
   events: {
     "click .playlist-append": "appendPlaylist",
     "click .playlist-replace": "replacePlaylist",
+    "click .playlist-browser-replace": "browserReplacePlaylist",
     "click .playlist-delete": "deleteCustomListPlaylist",
     "click .thumbsup-append": "appendThumbsup",
-    "click .thumbsup-replace": "replaceThumbsup"
+    "click .thumbsup-replace": "replaceThumbsup",
+    "click .thumbsup-browser-replace": "browserReplaceThumbsup"
   },
 
   initialize:function () {
@@ -18228,6 +19221,16 @@ app.ArtistLargeItemView = Backbone.View.extend({
 
 
   /**
+   * Replace Browser  playlist with a custom playlist
+   * @param e
+   */
+  browserReplacePlaylist: function(e){
+    e.preventDefault();
+    app.playlists.playlistAddItems('local', 'list', this.list.id);
+  },
+
+
+  /**
    * Delete playlist
    * @param e
    */
@@ -18318,6 +19321,70 @@ app.ArtistLargeItemView = Backbone.View.extend({
   }
 });
 
+
+/**
+ * Sidebar view of playlist (browser player list)
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.CustomPlaylistSongSmallListView = Backbone.View.extend({
+  tagName:'ul',
+  className:'browser-playlist-song-list',
+
+  render:function () {
+
+    this.$el.empty();
+    var i = 0;
+    _.each(this.model.models, function (song) {
+      // tweak model to suit xbmc item format
+      var s = song.attributes;
+      s.pos = i;
+      s.items = [];
+      s.list = 'local';
+      if(!s.id){
+        s.id = s.songid;
+      }
+      // append model
+      song.attributes = s;
+      this.$el.append(new app.PlaylistItemView({model:s, className:'playlist-item browser-player'}).render().$el);
+      i++;
+    }, this);
+
+    this.playlistBinds();
+
+    return this;
+  },
+
+  playlistBinds:function(){
+
+    //sortable
+    var $sortable = this.$el, self = this;
+    $sortable.sortable({
+      placeholder: "playlist-item-placeholder",
+      handle: ".playlist-play",
+      items: "> li",
+      axis: "y",
+      update: function( event, ui ) {
+        var newList = [];
+        self.$el.find('div.playlist-item').each(function(i,d){
+          // recreate the list using old list and new position
+          newList.push($(d).data('id'));
+        });
+
+        app.audioStreaming.sortableChangePlaylistPosition(newList);
+      }
+    }).disableSelection();
+
+  }
+
+});
+
+
+
+
+/**
+ * Custom Song Item view
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.CustomPlaylistSongView = Backbone.View.extend({
 
   tagName:"li",
@@ -18829,8 +19896,8 @@ app.playerStateView = Backbone.View.extend({
         $d.addClass('playing-row');
       } else if($d.hasClass('playlist-item')){
 
-        // match pos
-        if($d.data('id') == data.player.position){
+        // match pos in xbmc list
+        if($d.data('id') == data.player.position && !$d.parent().hasClass('browser-player')){
           $d.addClass('playing-row');
         }
       }
@@ -19010,16 +20077,33 @@ app.PlaylistItemView = Backbone.View.extend({
 
   playPosition:function(event){
 
-    app.AudioController.playPlaylistPosition(this.model.pos, function(data){
-      app.AudioController.playlistRefresh();
-    });
+    if(this.model.list == 'local'){
+      // LOCAL BROWSER PLAY
+      app.audioStreaming.playPosition(this.model.pos);
+    } else {
+      // XBMC PLAYER
+      app.AudioController.playPlaylistPosition(this.model.pos, function(data){
+        app.AudioController.playlistRefresh();
+      });
+    }
+
   },
 
   removePosition:function(event){
-    var self = this;
-    app.AudioController.removePlaylistPosition(this.model.pos, function(data){
-      app.AudioController.playlistRefresh();
-    });
+
+    if(this.model.list == 'local'){
+      // LOCAL BROWSER REMOVE
+      app.audioStreaming.deleteBrowserPlaylistSong(this.model.pos);
+      app.audioStreaming.renderPlaylistItems();
+    } else {
+      // XBMC PLAYER
+      var self = this;
+      app.AudioController.removePlaylistPosition(this.model.pos, function(data){
+        app.AudioController.playlistRefresh();
+      });
+    }
+
+
   },
 
   cycleRepeat:function(event){
@@ -19128,6 +20212,7 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
   },
 
   render:function () {
+    console.log(this.model);
     this.$el.html(this.template(this.model.attributes));
     return this;
   }
@@ -19402,9 +20487,14 @@ app.searchView = Backbone.View.extend({
 
     //custom playlists
     app.playlists.addCustomPlayLists(function(view){
-      var $sb = $('.alt-sidebar-items', self.$el);
+      var $sb = $('#playlist-lists', self.$el);
       $sb.html(view.render().el);
     });
+
+
+    // browser player
+    app.audioStreaming.init(this.$el);
+
 
     return this;
   },
@@ -19431,7 +20521,18 @@ app.searchView = Backbone.View.extend({
     "click .refresh-playlist": "refreshPlaylist",
     "click .new-custom-playlist": "newCustomPlaylist",
     // bottom menu
-    "click .about-dialog": "about"
+    "click .about-dialog": "about",
+
+    // browser player ///////////
+    "click .browser-view-xbmc": "viewXbmc",
+    "click .browser-view-local": "viewLocal",
+    "click .browser-player-play": "localTogglePlay",
+    "click .browser-player-prev": "localPrev",
+    "click .browser-player-next": "localNext",
+    "click .browser-player-repeat": "localRepeat",
+    "click .browser-player-random": "localRandom",
+    "click .browser-player-mute": "localMute"
+
   },
 
 
@@ -19456,8 +20557,11 @@ app.searchView = Backbone.View.extend({
    */
   primaryTabClick:function(event){
     $thisTab = $(event.target);
+    if(!$thisTab.hasClass('playlist-primary-tab')){
+      $thisTab = $thisTab.closest('li.playlist-primary-tab')
+    }
     // toggle based on tab class
-    var view = ($thisTab.hasClass('local-playlist-tab') ? 'local' : 'xbmc');
+    var view = $thisTab.data('pane');
     app.playlists.changePlaylistView(view);
   },
 
@@ -19533,7 +20637,7 @@ app.searchView = Backbone.View.extend({
 
         case 'playlist':
           // all this to open the sidebar playlist item
-          app.playlists.changePlaylistView('local');
+          //app.playlists.changePlaylistView('local');
           $('ul.custom-lists .custom-playlist-item').each(function(i,d){
             var $d = $(d), $parent = $d.parent();
             if($d.data('id') == app.helpers.arg(1)){
@@ -19547,7 +20651,7 @@ app.searchView = Backbone.View.extend({
         case 'thumbsup':
           $('.custom-lists li').removeClass('open');
           $('.thumbsup-link').addClass('open');
-          app.playlists.changePlaylistView('local');
+          //app.playlists.changePlaylistView('local');
           break;
       }
     }
@@ -19667,8 +20771,79 @@ app.searchView = Backbone.View.extend({
   about: function(e){
     e.preventDefault();
     app.helpers.aboutDialog();
-  }
+  },
 
+
+  /*************************************
+   * Local Browser Streaming below
+   * @TODO Move
+   ************************************/
+
+
+  /**
+   *  Change to xbmc view (default)
+   */
+  viewXbmc: function(e){
+    e.preventDefault();
+    app.audioStreaming.setPlayer('xbmc');
+  },
+
+  /**
+   *  Change to local view
+   */
+  viewLocal: function(e){
+    e.preventDefault();
+    app.audioStreaming.setPlayer('local');
+  },
+
+
+  /**
+   *  Play / Pause in browser
+   */
+  localTogglePlay: function(e){
+    e.preventDefault();
+    app.audioStreaming.togglePlay();
+  },
+
+  /**
+   *  Prev song in browser
+   */
+  localPrev: function(e){
+    e.preventDefault();
+    app.audioStreaming.prev();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localNext: function(e){
+    e.preventDefault();
+    app.audioStreaming.next();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localRepeat: function(e){
+    e.preventDefault();
+    app.audioStreaming.repeat();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localRandom: function(e){
+    e.preventDefault();
+    app.audioStreaming.random();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localMute: function(e){
+    e.preventDefault();
+    app.audioStreaming.mute();
+  }
 
 
 
@@ -19705,7 +20880,8 @@ app.SongView = Backbone.View.extend({
     "click .song-thumbsup": "thumbsUp",
     //menu
     "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .song-custom-playlist": "addToCustomPlaylist",
+    "click .song-browser-play": "playInBrowser"
   },
 
   initialize:function () {
@@ -19766,6 +20942,17 @@ app.SongView = Backbone.View.extend({
     app.AudioController.downloadFile(file, function(url){
       window.location = url;
     })
+  },
+
+  playInBrowser: function(e){
+
+    var file = this.model.attributes;
+    e.preventDefault();
+
+    app.audioStreaming.loadSong(file, function(){
+      console.log('boo');
+    })
+
   },
 
   addToCustomPlaylist: function(e){
@@ -20106,6 +21293,8 @@ app.XbmcJSONrpcView = Backbone.View.extend({
   },
 
   isEncoded:function(text, param, $el){
+    console.log(param);
+    if(param.type.type == 'integer'){ return false; }
     return (!$el.hasClass('select') && text != '' && (typeof param.type == 'object' || param.type == 'array'));
   }
 });
