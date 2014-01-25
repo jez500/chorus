@@ -8,6 +8,7 @@ app.audioStreaming = {
   localPlay: false,
   nowplaying: { 'init': 1 },
   lastPos: 0,
+  defaultVol: 60,
   progressEl: '#browser-progress-bar',
   volumeEl: '#browser-volume',
   playlistEl: '#playlist-local',
@@ -46,7 +47,8 @@ app.audioStreaming = {
       playingPosition: 0,
       id: 0,
       repeat: 'off',
-      random: 'off'
+      random: 'off',
+      mute: false
     };
 
 
@@ -92,7 +94,10 @@ app.audioStreaming = {
       }
       if(player == 'local'){
         app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
-        app.audioStreaming.renderPlaylistItems();
+        // if empty, render
+        if($('ul.browser-playlist-song-list').length == 0){
+          app.audioStreaming.renderPlaylistItems();
+        }
       }
     }
 
@@ -199,6 +204,7 @@ app.audioStreaming = {
         onplay: function(){
           // toggle classes
           $('body').addClass('browser-playing').removeClass('browser-paused');
+          app.audioStreaming.updatePlayingState(song);
         },
         onstop: function(){
           // remove classes
@@ -257,13 +263,6 @@ app.audioStreaming = {
             percentage: per
           };
 
-          // init slider if required
-          if(!$(app.audioStreaming.progressEl).hasClass('ui-slider')){
-            // define sliders
-            app.audioStreaming.progressInit();
-            app.audioStreaming.volumeInit();
-          }
-
           // time
           $('.time-cur', $time).html(app.helpers.secToTime(Math.floor(pos)));
           $('.time-total', $time).html(app.helpers.secToTime(Math.floor(dur)));
@@ -284,8 +283,15 @@ app.audioStreaming = {
 
       }); // end sound manager
 
-      console.log(app.audioStreaming.localPlay);
-      //app.audioStreaming.localPlay.play();
+
+      // init slider if required
+      if(!$(app.audioStreaming.progressEl).hasClass('ui-slider')){
+        // set a default (lower vol)
+        app.audioStreaming.localPlay.setVolume(app.audioStreaming.defaultVol);
+        // define sliders
+        app.audioStreaming.progressInit();
+        app.audioStreaming.volumeInit();
+      }
 
       if(callback){
         callback();
@@ -316,6 +322,36 @@ app.audioStreaming = {
   },
 
 
+  /**
+   * Adds body classes depending on rand/repeat state
+   *
+   * @param playlist
+   */
+  bodyRandRepeat: function(){
+    var playlist = app.audioStreaming.playList;
+    // exit if not init yet
+
+    if(playlist.repeat == undefined){
+      return;
+    }
+    // set repeat/rand state
+    var $body = $('body');
+    if(typeof app.audioStreaming.playList != 'undefined'){
+      $body.removeClass('bp-repeat-one').removeClass('bp-repeat-all').removeClass('bp-repeat-off');
+      $body.addClass('bp-repeat-' + playlist.repeat);
+
+      $body.removeClass('bp-random-on').removeClass('bp-random-off');
+      $body.addClass('bp-random-' + playlist.random);
+
+      $body.removeClass('bp-mute');
+      if(playlist.mute){
+        $body.addClass('bp-mute');
+      }
+
+    }
+  },
+
+
   // Progress Bar
   progressInit: function($context){
 
@@ -334,10 +370,13 @@ app.audioStreaming = {
         var newpos = (ui.value / 100) * app.audioStreaming.localPlay.duration;
         newpos = Math.round(newpos);
 
+        // THIS SHOULD WORK?!?!? but it does not :(
+        // @TODO Investigate
         app.audioStreaming.localPlay.setPosition(newpos);
       }
     });
   },
+
 
   // volume Bar
   volumeInit: function($context){
@@ -345,7 +384,7 @@ app.audioStreaming = {
     $(app.audioStreaming.volumeEl).slider({
       range: "min",
       step: 5,
-      value: 100,
+      value: app.audioStreaming.defaultVol,
       min: 0,
       max: 100,
       stop: function( event, ui ) {
@@ -355,10 +394,12 @@ app.audioStreaming = {
     console.log('vol', $('#browser-volume'));
   },
 
+
   // is playing
   isPlaying: function(){
     return $('body').hasClass('browser-playing');
   },
+
 
   // Controls
   togglePlay: function(){
@@ -385,17 +426,20 @@ app.audioStreaming = {
     }
   },
 
+
   stop: function(){
     if(app.audioStreaming.localPlay != false){
       app.audioStreaming.localPlay.stop(); //play existing
     }
   },
 
+
   pause: function(){
     if(app.audioStreaming.localPlay != false){
       app.audioStreaming.localPlay.pause(); //pause existing
     }
   },
+
 
   prev: function(){
     if(app.audioStreaming.localPlay != false){
@@ -409,6 +453,7 @@ app.audioStreaming = {
     }
   },
 
+
   next: function(){
     if(app.audioStreaming.localPlay != false){
       var pl = app.audioStreaming.playList;
@@ -420,44 +465,108 @@ app.audioStreaming = {
         app.audioStreaming.playPosition((pl.playingPosition + 1));
       }
     }
+  },
+
+
+  mute: function(){
+    if(app.audioStreaming.localPlay != false){
+
+      // vars
+      var mute = app.audioStreaming.playList.mute,
+        vol =  $(app.audioStreaming.volumeEl).slider('value');
+
+      // toggle
+      if(mute){
+        // is currently muted, changing to not
+        var lastVol = app.helpers.varGet('localMuteLastVol', app.audioStreaming.defaultVol);
+        app.audioStreaming.localPlay.setVolume(lastVol);
+        $(app.audioStreaming.volumeEl).slider('value',lastVol);
+      } else {
+        // not muted, but will be
+        app.helpers.varSet('localMuteLastVol',  (vol > 5 ? vol : app.audioStreaming.defaultVol));
+        app.audioStreaming.localPlay.setVolume(0);
+        $(app.audioStreaming.volumeEl).slider('value',0);
+      }
+      app.audioStreaming.playList.mute = (!mute);
+      app.audioStreaming.bodyRandRepeat();
+    }
+  },
+
+
+  repeat: function(){
+    if(app.audioStreaming.localPlay != false){
+      var pl = app.audioStreaming.playList, newVal;
+      // toggle between 3 different states
+      switch(pl.repeat){
+        case 'off':
+          newVal = 'all';
+          break;
+        case 'all':
+          newVal = 'one';
+          break;
+        case 'one':
+          newVal = 'off';
+          break;
+      }
+      app.audioStreaming.playList.repeat = newVal;
+
+      // set body classes
+      app.audioStreaming.bodyRandRepeat();
+    }
+  },
+
+
+  random: function(){
+    if(app.audioStreaming.localPlay != false){
+      // set the opposite
+      var pl = app.audioStreaming.playList;
+      app.audioStreaming.playList.random = (pl.random == 'off' ? 'on' : 'off');
+
+      // set body classes
+      app.audioStreaming.bodyRandRepeat();
+    }
+  },
+
+
+  /**
+   * delete browser playlist Song
+   */
+  deleteBrowserPlaylistSong: function(pos){
+
+    var list = app.audioStreaming.playList.items,
+      newItems = list.models.filter(function (element) {
+        return (element.attributes.pos != pos);
+      });
+
+    list.models = newItems;
+    list.length = newItems.length;
+
+    app.audioStreaming.setPlaylistItems(list);
+
+  },
+
+  /**
+   * Apply a reorder of the playlist
+   *
+   * @param newList
+   *  array of positions as ints
+   */
+  sortableChangePlaylistPosition: function(newList){
+
+    // reorder collection
+    var list = [], collection = app.audioStreaming.playList.items;
+    $.each(newList, function(i,d){
+      list.push(collection.models[d]);
+    });
+
+    // rebuild collection
+    collection.models = list;
+    collection.length = list.length;
+
+    // save
+    app.audioStreaming.setPlaylistItems(collection);
+    app.audioStreaming.renderPlaylistItems();
   }
-
-
-
-
-//  /**
-//   * Adds a playlist id to the local browser playlist
-//   * Then starts playing at a given position
-//   *
-//   * @param delta
-//   *  playlist id
-//   * @param position
-//   *  position to play 0 = first
-//   */
-//  playInBrowser: function(type, delta, position){
-//
-//    app.playlists.playlistGetItems(type, delta, function(collection){
-//
-//      var items = [],
-//        position = (typeof position != 'undefined' ? position : 0);
-//
-//      // parse from a collection into an array of data objects
-//      _.each(collection.models, function(model){
-//        items.push(model.attributes);
-//      });
-//
-//      // Set the playlist
-//      app.audioStreaming.playList.items = items;
-//      app.audioStreaming.playList.id = type + ':' + delta;
-//
-//      // playing info
-//      app.audioStreaming.playList.playingPosition = position;
-//      app.audioStreaming.playList.playingItem = items[position];
-//
-//
-//    });
-//
-//  },
 
 
 

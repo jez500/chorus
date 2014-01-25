@@ -65,9 +65,19 @@ html {
     background: rgba(255,255,255,0.1);
   }
 }
+
+// dropdown tweaks
 .dropdown-menu li > a:hover, .dropdown-menu li > a:active, .dropdown-menu li > a:focus {
-  color: $color-light-slate;
+  color: $color-dark-xbmc;
 }
+.footer-inner .open.dropup > .dropdown-menu {
+  margin-bottom: 45px;
+  bottom: 22px;
+  top: auto;
+  right: 0px;
+  left: auto;
+}
+
 
 input[type="text"] {
   border-width: 1px;
@@ -88,7 +98,7 @@ input[type="text"] {
     margin-bottom: 5px;
   }
   a {
-    color: $color-light-slate;
+    color: $color-dark-xbmc;
     &:hover {
       color: $color-carrot;
     }
@@ -115,9 +125,10 @@ input[type="text"] {
     color: #fff;
     display: block;
     font-size: 20px;
-    background: $color-light-slate;
+    background: $color-dark-xbmc;
     text-decoration: none;
     @include transition(0.3s all linear);
+    border-bottom: 5px solid $color-dark-xbmc;
     span {
       -ms-transform:rotate(270deg); /* IE 9 */
       -moz-transform:rotate(270deg); /* moz */
@@ -142,7 +153,7 @@ input[type="text"] {
           display: block;
           padding: 12px 0;
           &:hover {
-            color: $color-light-slate;
+            color: $color-dark-xbmc;
           }
         }
         &.active {
@@ -205,7 +216,7 @@ body.fixed-header {
       white-space: nowrap;
       background: #F6F5F3;
       &:hover {
-        //color: $color-slate;
+        //color: $color-darkest-xbmc;
       }
     }
 
@@ -224,20 +235,6 @@ body.fixed-header {
   }
 }
 
-
-body.playing {
-  #header #logo {
-  //  color: $color-orange;
-  }
-  #progress-bar {
-    &.ui-slider {
-      .ui-slider-range {
-        background: rgba(208, 210, 213, 0.5);
-      }
-    }
-  }
-
-}
 
 
 #sidebar-first {
@@ -275,7 +272,7 @@ body.no-sidebar {
   .sidebar-header {
 
     height: $height-header;
-    background: $color-light-slate;
+    background: $color-dark-xbmc;
     overflow-y: auto;
   }
 }
@@ -356,7 +353,7 @@ body.home {
 
 //Typography
 body {
-  color: $color-slate;
+  color: $color-darkest-xbmc;
   font-size: 13px;
   background: #FCFCFC;
 }
@@ -384,7 +381,7 @@ h4 {
   line-height: 23px;
 }
 .btn.btn-inverse {
-  background-color: $color-slate;
+  background-color: $color-darkest-xbmc;
 }
 //notify
 #notify {
@@ -395,7 +392,7 @@ h4 {
   padding: 10px;
   background: rgba(255,255,255,0.8);
   border-top: 2px solid $color-wet-asphalt;
-  color: $color-slate;
+  color: $color-darkest-xbmc;
   opacity: 1;
   transition: 0.8s all ease;
   &.hidden {
@@ -443,7 +440,7 @@ h4 {
     }
     h2 {
       margin: 0px 0 0px;
-      color: $color-slate;
+      color: $color-darkest-xbmc;
       font-size: 23px;
       float: left;
     }
@@ -530,7 +527,7 @@ h4 {
         }
         &:hover {
           background: #DDD;
-          color: $color-slate;
+          color: $color-darkest-xbmc;
         }
         &.active {
           background: $color-asbestos;
@@ -594,7 +591,7 @@ h4 {
       }
       &.lowest {
         > .file-item {
-          background-color: $color-light-slate;
+          background-color: $color-dark-xbmc;
           color: #fff;
           .file-actions {
             display: block;
@@ -670,7 +667,7 @@ h4 {
             font-size: 15px;
             line-height: 17px;
             max-height: 38px;
-            color: $color-light-slate;
+            color: $color-dark-xbmc;
             margin-bottom: 3px;
           }
           &.artist-meta {
@@ -725,7 +722,7 @@ h4 {
         right: 0;
         color: $color-concrete;
         &:hover {
-          color: $color-light-slate;
+          color: $color-dark-xbmc;
         }
       }
       .file-add {
@@ -823,7 +820,7 @@ h4 {
     margin: 0;
     &.active {
       a {
-        color: $color-slate;
+        color: $color-darkest-xbmc;
         font-weight: bold;
         opacity: 1;
         background: #fff !important;
@@ -848,7 +845,7 @@ h4 {
       &:focus,
       &:hover {
         background: transparent;
-        color: $color-light-slate;
+        color: $color-dark-xbmc;
       }
     }
     &.thumbs-up {
@@ -1082,7 +1079,7 @@ $album-margin-right: $album-meta-width + 10;
 
     &.thumbs-up {
       .song-actions-wrapper .btn.song-thumbsup {
-        color: $color-light-slate;
+        color: $color-dark-xbmc;
       }
       .visible-song-actions-wrapper i.icon-thumbs-up {
         display: inline-block;
@@ -1107,7 +1104,7 @@ $album-margin-right: $album-meta-width + 10;
         a {
           color: $color-concrete;
           &:hover {
-            color: $color-light-slate;
+            color: $color-dark-xbmc;
           }
         }
         &.song-tracknum {
@@ -1133,13 +1130,13 @@ $album-margin-right: $album-meta-width + 10;
           @include user-select(none);
           width: 83%;
           overflow: hidden;
-          color: $color-slate;
+          color: $color-darkest-xbmc;
           font-size: 13px;
         }
         &.song-artist {
           width: 24%;
           overflow: hidden;
-          color: $color-slate;
+          color: $color-darkest-xbmc;
           font-size: 12px;
           display: none;
         }
@@ -1209,7 +1206,7 @@ $album-margin-right: $album-meta-width + 10;
       left: auto;
       a {
         &:hover {
-          color: $color-light-slate;
+          color: $color-dark-xbmc;
         }
       }
     }
@@ -1239,7 +1236,7 @@ h3.search-heading {
     display: block;
     font-size: 27px;
     line-height: 39px;
-    color: $color-light-slate;
+    color: $color-dark-xbmc;
   }
   img {
     float: left;
@@ -1461,7 +1458,7 @@ body.sidebar {
     }
     .playlist-play {
       @include transition(none);
-      color: $color-light-slate;
+      color: $color-dark-xbmc;
       @include user-select(none);
       margin: 0 30px 0 0px;
       padding: 5px 10px 5px 15px;
@@ -1547,6 +1544,9 @@ body.sidebar {
         }
       }
     }
+    &.browser-playing-row {
+      background: $color-mist url(../images/icons/row-pause.png) 0 0 no-repeat;
+    }
   }
   li.thumbs-up {
     .playlist-song-actions-wrapper .playlist-song-thumbsup {
@@ -1565,7 +1565,7 @@ body.sidebar {
     }
     a.name {
       height: 40px;
-      color: $color-light-slate;
+      color: $color-dark-xbmc;
     }
     .meta {
       display: none;
@@ -1582,7 +1582,7 @@ body.sidebar {
           color: #FFF;
           cursor: pointer;
           &:hover {
-            background: $color-light-slate;
+            background: $color-dark-xbmc;
           }
         }
       }
@@ -1691,7 +1691,7 @@ body.sidebar {
         }
         &.active {
           background: rgba(255, 255, 255, 0.92);
-          color: $color-light-slate;
+          color: $color-dark-xbmc;
         }
       }
     }
@@ -1716,12 +1716,14 @@ body.sidebar {
 }
 
 .ui-dialog {
-  background: $color-light-slate;
+  background: $color-dark-xbmc;
   border: 0;
-  border-bottom: 1px solid $color-slate;
+  border-bottom: 1px solid $color-darkest-xbmc;
   @include border-radius(3px);
   padding: 5px 10px;
-
+  button:focus {
+    outline: none;
+  }
   .ui-dialog-titlebar-close,
   .ui-dialog-titlebar {
     background: none;
@@ -1736,10 +1738,13 @@ body.sidebar {
     border: 0;
     padding: 1px;
     // prevent hover on x
+
     &:hover .ui-icon-closethick,
+    &:focus .ui-icon-closethick,
     .ui-icon-closethick:hover {
       background-image: image-url('ui-icons_888888_256x240.png');
     }
+
   }
   .ui-dialog-titlebar,
   .form-text,
@@ -1777,7 +1782,7 @@ body.sidebar {
     }
     .btn {
       padding: 5px 10px;
-      background: $color-slate;
+      background: $color-darkest-xbmc;
 
     }
     p {
@@ -1792,7 +1797,7 @@ body.sidebar {
       float: none;
     }
     button {
-      background: $color-slate;
+      background: $color-darkest-xbmc;
       color: #fff;
       border: 0;
       &:focus {
@@ -1842,7 +1847,7 @@ body.sidebar {
     color: #999;
   }
   .btn {
-    background: $color-light-slate;
+    background: $color-dark-xbmc;
     @include border-radius(3px);
 
   }
@@ -1972,6 +1977,22 @@ body {
   }
   &.notPlaying {
 
+  }
+  &.browser-playing {
+    // sidebar playing row
+    .browser-playlist-song-list div.playlist-item.browser-playing-row {
+      background-image: url(../images/row-playing.gif);
+    }
+    // footer play/pause
+    #browser-player-footer .footer-left {
+      .icon-play {
+        display: none;
+      }
+      .icon-pause {
+        display: inline;
+      }
+
+    }
   }
 
   &.muted {

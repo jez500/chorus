@@ -18,9 +18,9 @@ app.playlists = {
  * Basically a wrapper for all song list types
  *
  * @param type
- *  type of playlist: xbmc, song, album, artist, local, thumbsup, items
+ *  type of playlist: xbmc, song, album, artist, list, thumbsup, items
  * @param delta
- *  depends on type type: 0, songid, albumid, artistid, playlistId, [song, album, artist], [array of songids]
+ *  depends on type type: 0, songid, albumid, artistid, customPlaylistId, [song, album, artist], [array of songids]
  * @param callback
  *
  * @return {song collection}
@@ -65,7 +65,7 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       }});
       break;
 
-    case 'local': // local playlist id = delta
+    case 'list': // local playlist id = delta
       plCollection = new app.PlaylistCustomListSongCollection();
       plCollection.fetch({"name":delta, "success": function(res){
         res = app.playlists.addFileFieldToSongCollection(res);
@@ -97,6 +97,73 @@ app.playlists.playlistGetItems = function(type, delta, callback){
     // will be empty on an xbmc call, so you MUST use the callback
     return items;
   }
+
+};
+
+
+/**
+ * A global wrapper for adding items to a playlist
+ *
+ * @param playlist
+ *  playlist to add the type[delta] to. Options: xbmc, local, lists
+ * @param type
+ *  @see plalistGetItems
+ * @param delta
+ *  @see plalistGetItems
+ * @param callback
+ *  @see plalistGetItems
+ */
+app.playlists.playlistAddItems = function(playlist, type, delta, callback){
+
+  app.playlists.playlistGetItems(type, delta, function(collection){
+
+    var items = [];
+    $.each(collection.models, function(i,d){
+      if(d.attributes.songid){
+        // is it a file
+        if(d.attributes.songid == 'file'){
+          items.push(d.attributes.file);
+        } else {
+          // or songid
+          items.push(d.attributes.songid);
+        }
+      }
+    });
+
+    callback = (typeof callback != 'undefined' ? callback : function(){});
+
+    switch(playlist){
+
+      // Add to xbmc playlist
+      case 'xbmc':
+        app.AudioController.playlistAddMultiple('mixed', items, function(){
+          app.AudioController.playlistRefresh();
+          app.playlists.changePlaylistView('xbmc');
+          callback();
+        });
+        break;
+
+      // Add to Local browser playlist - and play
+      case 'local':
+          // @todo abstract this
+          app.audioStreaming.setPlaylistItems(collection);
+          app.audioStreaming.renderPlaylistItems(collection);
+          app.audioStreaming.loadSong(collection.models[0], function(){
+            app.playlists.changePlaylistView('local');
+            // play song
+            app.audioStreaming.playPosition(0);
+            callback();
+          });
+        break;
+
+      // Add to Custom Lists
+      case 'lists':
+        app.playlists.changePlaylistView('lists');
+        app.playlists.saveCustomPlayListsDialog('local', items);
+        break;
+    }
+
+  });
 
 };
 
@@ -210,6 +277,13 @@ app.playlists.changePlaylistView = function(type){
 
 /**
  * Save Current xbmc playlist Dialog
+ *
+ * @param type
+ *  Source list type: xbmc or local
+ * @param items
+ *  No used on xbmc, on local it is an array of songids
+ * @param hideList
+ *  set to true if you only want the add new option
  */
 app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
@@ -259,7 +333,17 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
 
 /**
- * Save Current xbmc playlist to storage
+ * Save Current xbmc playlist to storage playlist
+ * called by dialog
+ *
+ * @param op
+ *  new, existing
+ * @param id
+ *  new name / existing id
+ * @param source
+ *  xbmc, local
+ * @param newItems
+ *  an array of songids
  */
 app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
 

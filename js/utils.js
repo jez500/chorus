@@ -617,6 +617,41 @@ $(document).ready(function(){
   };
 
 
+  /**
+   * Menu Dialog, creates a dialog that is populated with a menu structure
+   */
+  app.helpers.menuDialog = function(menu){
+
+    // vars
+    var $content = $('<ul class="dialog-menu dialog-menu-' + menu.key + '"></ul>'),
+      $liTpl = $('<li class="item"></li>'),
+      $li = {};
+
+    // menu items
+    $.each(menu.items, function(i,d){
+      // build li
+      $li = $liTpl.clone();
+      $li.html(d.title).addClass(d.class);
+      // bind
+      $li.on('click', function(e){
+        app.helpers.dialogClose();
+        if(d.callback){
+          d.callback();
+        }
+      });
+
+      // append
+      $content.append($li);
+    });
+
+    // init dialog
+    app.helpers.dialog($content, {
+      title: menu.title
+    });
+
+  };
+
+
 
   /********************************************************************************
    * Dropdowns
@@ -666,9 +701,11 @@ $(document).ready(function(){
    * Dropdown menu structures
    * @param type
    *  song, playlistShell
+   *  @param model
+   *   data from a model eg song.attributes
    * @returns {{}}
    */
-  app.helpers.dropdownTemplates = function(type){
+  app.helpers.menuTemplates = function(type, model){
     var opts = {};
     switch (type){
 
@@ -683,6 +720,47 @@ $(document).ready(function(){
           ]
         };
         break;
+
+      // also contains callbacks
+      case 'album':
+        opts = {
+          title: (model.label != '' ? model.label : model.album),
+          key: 'album',
+          omitwrapper: true,
+          items: [
+            {url: '#', class: 'album-add-xbmc', title: 'Add to XBMC', callback: function(){
+              app.playlists.playlistAddItems('xbmc', 'album', model.albumid);
+            }},
+            {url: '#', class: 'album-add-local', title: 'Play in browser', callback: function(){
+              app.playlists.playlistAddItems('local', 'album', model.albumid);
+            }},
+            {url: '#', class: 'album-add-lists', title: 'Save to lists', callback: function(){
+              app.playlists.playlistAddItems('lists', 'album', model.albumid)
+            }}
+          ]
+        };
+        break;
+
+      // also contains callbacks
+      case 'artist':
+        opts = {
+          title: model.label,
+          key: 'artist',
+          omitwrapper: true,
+          items: [
+            {url: '#', class: 'artist-add-xbmc', title: 'Add to XBMC', callback: function(){
+              app.playlists.playlistAddItems('xbmc', 'artist', model.artistid);
+            }},
+            {url: '#', class: 'artist-add-local', title: 'Play in browser', callback: function(){
+              app.playlists.playlistAddItems('local', 'artist', model.artistid);
+            }},
+            {url: '#', class: 'artist-add-lists', title: 'Save to lists', callback: function(){
+              app.playlists.playlistAddItems('lists', 'artist', model.artistid)
+            }}
+          ]
+        };
+        break;
+
       case 'playlistShell':
         opts = {
           key: 'playlist',

@@ -88,7 +88,7 @@ app.PlaylistItemView = Backbone.View.extend({
     }
 
     // set song menu
-    var songDropDown = app.helpers.dropdownTemplates('song');
+    var songDropDown = app.helpers.menuTemplates('song');
 
     songDropDown.pull = 'right';
     $('.playlist-song-actions', this.$el).append( app.helpers.makeDropdown( songDropDown ));
@@ -111,10 +111,20 @@ app.PlaylistItemView = Backbone.View.extend({
   },
 
   removePosition:function(event){
-    var self = this;
-    app.AudioController.removePlaylistPosition(this.model.pos, function(data){
-      app.AudioController.playlistRefresh();
-    });
+
+    if(this.model.list == 'local'){
+      // LOCAL BROWSER REMOVE
+      app.audioStreaming.deleteBrowserPlaylistSong(this.model.pos);
+      app.audioStreaming.renderPlaylistItems();
+    } else {
+      // XBMC PLAYER
+      var self = this;
+      app.AudioController.removePlaylistPosition(this.model.pos, function(data){
+        app.AudioController.playlistRefresh();
+      });
+    }
+
+
   },
 
   cycleRepeat:function(event){

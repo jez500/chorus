@@ -119,17 +119,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
    */
   browserReplacePlaylist: function(e){
     e.preventDefault();
-    var listId = this.list.id;
-    app.playlists.playlistGetItems('local', listId, function(collection){
-      app.audioStreaming.setPlaylistItems(collection);
-      app.audioStreaming.renderPlaylistItems(collection);
-      app.audioStreaming.loadSong(collection.models[0], function(){
-        app.audioStreaming.playPosition(0);
-      });
-
-    });
-
-
+    app.playlists.playlistAddItems('local', 'list', this.list.id);
   },
 
 
@@ -252,7 +242,31 @@ app.CustomPlaylistSongSmallListView = Backbone.View.extend({
       i++;
     }, this);
 
+    this.playlistBinds();
+
     return this;
+  },
+
+  playlistBinds:function(){
+
+    //sortable
+    var $sortable = this.$el, self = this;
+    $sortable.sortable({
+      placeholder: "playlist-item-placeholder",
+      handle: ".playlist-play",
+      items: "> li",
+      axis: "y",
+      update: function( event, ui ) {
+        var newList = [];
+        self.$el.find('div.playlist-item').each(function(i,d){
+          // recreate the list using old list and new position
+          newList.push($(d).data('id'));
+        });
+
+        app.audioStreaming.sortableChangePlaylistPosition(newList);
+      }
+    }).disableSelection();
+
   }
 
 });
@@ -300,7 +314,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
 
     // set playlist menu
-    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song' ) ));
+    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song' ) ));
 
     return this;
   },

@@ -100,7 +100,8 @@ app.AlbumItemSmallView = Backbone.View.extend({
     "click .album-play": "playAlbum",
     "click .album-add": "addAlbum",
     "click .album-thumbsup": "thumbsUp",
-    "click .actions-wrapper": "viewAlbum"
+    "click .actions-wrapper": "viewAlbum",
+    "click .album-menu": "menu"
   },
 
   initialize:function () {
@@ -131,7 +132,27 @@ app.AlbumItemSmallView = Backbone.View.extend({
     if(typeof model.recent != 'undefined'){
       this.$el.addClass('recent');
     }
+
+    // add context menu
+   // var albumDropDown = app.helpers.menuTemplates('album');
+    //$('.album-actions', this.$el).append( app.helpers.makeDropdown( albumDropDown ));
+
+
     return this;
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('album', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
   },
 
 

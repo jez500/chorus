@@ -4,7 +4,8 @@ app.ArtistView = Backbone.View.extend({
     "click .artist-play":      "playArtist",
     "click .artist-add":       "addArtist",
     "click .artist-thumbsup":  "thumbsUp",
-    "click .artist-fanart":    "toggleFanart"
+    "click .artist-fanart":    "toggleFanart",
+    "click .artist-menu":    "menu"
   },
 
   initialize:function () {
@@ -34,6 +35,20 @@ app.ArtistView = Backbone.View.extend({
       $('#sidebar-first .sidebar-content').scrollTo($actRow);
     }
     return this;
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('artist', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
   },
 
   playArtist: function(){

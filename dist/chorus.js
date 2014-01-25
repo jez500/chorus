@@ -14077,7 +14077,7 @@ $(document).ready(function(){
    *  song, playlistShell
    * @returns {{}}
    */
-  app.helpers.dropdownTemplates = function(type){
+  app.helpers.menuTemplates = function(type){
     var opts = {};
     switch (type){
 
@@ -18354,7 +18354,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
 
     // set playlist menu
-    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song' ) ));
+    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song' ) ));
 
     return this;
   },
@@ -18535,7 +18535,7 @@ app.FileView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
 
     // set song menu
-    $('.file-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song')  ));
+    $('.file-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song')  ));
 
     // post process file
     this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, this.model.attributes);
@@ -19000,7 +19000,7 @@ app.PlaylistItemView = Backbone.View.extend({
     }
 
     // set song menu
-    var songDropDown = app.helpers.dropdownTemplates('song');
+    var songDropDown = app.helpers.menuTemplates('song');
 
     songDropDown.pull = 'right';
     $('.playlist-song-actions', this.$el).append( app.helpers.makeDropdown( songDropDown ));
@@ -19397,7 +19397,7 @@ app.searchView = Backbone.View.extend({
 
     // set playlist menu
     $('.playlist-actions-wrapper', this.$el).html(
-      app.helpers.makeDropdown( app.helpers.dropdownTemplates('playlistShell') )
+      app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
     );
 
     //custom playlists
@@ -19722,7 +19722,7 @@ app.SongView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
 
     // set song menu
-    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song')  ));
+    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song')  ));
 
     return this;
   },

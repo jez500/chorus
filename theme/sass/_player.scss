@@ -154,7 +154,7 @@
     &:hover {
       .ui-slider-handle {
         display: block;
-        background: $color-orange;
+        background: $playing-xbmc;
       }
     }
   }
@@ -165,34 +165,91 @@
 // hide broswer footer by default
 #browser-player-footer {
   display: none;
-  background: #7F8486;
+  background: $color-darkest-local;
   .icon-pause {
     display: none;
   }
   .footer-left,
   .footer-right {
-    background: #6C6F6F;
+    background: $color-dark-local;
   }
   #browser-volume .ui-slider-range,
   #browser-progress-bar.ui-slider .ui-slider-range {
     background: rgba(237, 238, 240, 0.78);
   }
+  #browser-progress-bar.ui-slider:hover .ui-slider-handle {
+    background: $playing-local;
+  }
 }
 
 body {
+  // xbmc playing
+  &.playing {
+    #sidebar-second .sidebar-header .playlist-primary-tabs li.xbmc-tab i {
+      color: $playing-xbmc;
+    }
+    #header #logo {
+      border-bottom-color: $playing-xbmc;
+    }
+    #progress-bar {
+      &.ui-slider {
+        .ui-slider-range {
+          background: rgba(228, 229, 230, 0.79);
+        }
+      }
+    }
+  }
   // local body
   &.player-view-local {
     #header {
       #logo {
-        background: $color-carrot;
+        background:  $color-darkest-local;
+        border-bottom-color: $color-darkest-local;
       }
     }
     #sidebar-second {
       .sidebar-header {
-        background: #6C6F6F;
+        background: $color-dark-local;
       }
     }
-
-
   }
+  // browser playing
+  &.browser-playing {
+    #sidebar-second .sidebar-header .playlist-primary-tabs li.local-tab i {
+      color: $playing-local;
+    }
+    #header #logo {
+      border-bottom-color: $playing-local;
+    }
+  }
+
+  // rand / repeat
+  &.bp-random-on {
+    #browser-player-footer .footer-right .browser-player-random {
+      color: #EDEFF0;
+    }
+  }
+  &.bp-repeat-all {
+    #browser-player-footer .footer-right .browser-player-repeat {
+      color: #EDEFF0;
+    }
+  }
+  &.bp-repeat-one {
+    #browser-player-footer .footer-right .browser-player-repeat {
+      color: #DBDBDB;
+    }
+  }
+  &.bp-mute {
+    #browser-player-footer .footer-right .actions-wrapper .browser-player-mute {
+      .icon-volume-down {
+        display: none;
+      }
+      .icon-volume-up {
+        display: inline;
+        color: #eee;
+      }
+    }
+  }
+
+
 }

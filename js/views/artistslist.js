@@ -95,22 +95,27 @@ app.AristsRandView = Backbone.View.extend({
   }
 });
 
+
 app.ArtistLargeItemView = Backbone.View.extend({
 
   tagName:"li",
   className:'artist-item-large card card-large',
+
 
   initialize:function () {
     this.model.on("change", this.render, this);
     this.model.on("destroy", this.close, this);
   },
 
+
   events: {
     "click .artist-play": "playArtist",
     "click .artist-add": "addArtist",
     "click .artist-thumbsup": "thumbsUp",
-    "click .actions-wrapper": "viewArtist"
+    "click .actions-wrapper": "viewArtist",
+    "click .artist-menu": "menu"
   },
+
 
   render:function () {
     var model = this.model.attributes;
@@ -130,9 +135,23 @@ app.ArtistLargeItemView = Backbone.View.extend({
       this.$el.addClass('thumbs-up');
     }
 
-
     return this;
   },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('artist', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
+  },
+
 
   playArtist: function(e){
     e.stopPropagation();
@@ -148,6 +167,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
 
   },
 
+
   addArtist: function(e){
     e.stopPropagation();
     e.preventDefault();
@@ -159,6 +179,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
     });
 
   },
+
 
   thumbsUp: function(e){
     e.stopPropagation();

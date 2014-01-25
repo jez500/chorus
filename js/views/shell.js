@@ -83,7 +83,7 @@ app.ShellView = Backbone.View.extend({
 
     // set playlist menu
     $('.playlist-actions-wrapper', this.$el).html(
-      app.helpers.makeDropdown( app.helpers.dropdownTemplates('playlistShell') )
+      app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
     );
 
     //custom playlists
@@ -129,7 +129,10 @@ app.ShellView = Backbone.View.extend({
     "click .browser-view-local": "viewLocal",
     "click .browser-player-play": "localTogglePlay",
     "click .browser-player-prev": "localPrev",
-    "click .browser-player-next": "localNext"
+    "click .browser-player-next": "localNext",
+    "click .browser-player-repeat": "localRepeat",
+    "click .browser-player-random": "localRandom",
+    "click .browser-player-mute": "localMute"
 
   },
 
@@ -414,10 +417,31 @@ app.ShellView = Backbone.View.extend({
   localNext: function(e){
     e.preventDefault();
     app.audioStreaming.next();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localRepeat: function(e){
+    e.preventDefault();
+    app.audioStreaming.repeat();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localRandom: function(e){
+    e.preventDefault();
+    app.audioStreaming.random();
+  },
+
+  /**
+   *  Next song in browser
+   */
+  localMute: function(e){
+    e.preventDefault();
+    app.audioStreaming.mute();
   }
-
-
-
 
 
 

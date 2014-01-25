@@ -80,6 +80,7 @@
           opacity: 1;
         }
       }
+
     }
 
     .details {
@@ -218,6 +219,14 @@
       bottom: 10px;
       font-size: 200%;
     }
+    .dropdown-menu {
+      bottom: auto;
+      top: 31px;
+      right: 4px;
+      left: auto;
+
+    }
+
   }
 
   // generic top level

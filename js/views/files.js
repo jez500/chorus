@@ -109,7 +109,7 @@ app.FileView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
 
     // set song menu
-    $('.file-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.dropdownTemplates('song')  ));
+    $('.file-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song')  ));
 
     // post process file
     this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, this.model.attributes);
