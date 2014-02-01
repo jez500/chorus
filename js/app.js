@@ -71,7 +71,7 @@ var app = {
     //"musicbrainzalbumid",
     //"musicbrainzalbumartistid",
     "playcount",
-    //"fanart",
+    "fanart",
     "thumbnail",
     "file",
     "albumid",
@@ -162,40 +162,37 @@ app.Router = Backbone.Router.extend({
    */
   home: function () { //Not in use atm
 
-    var self = this;
-    app.AudioController.getNowPlaying(function(data){
+    var backstretchImage = '';
 
-      if(data.status == 'notPlaying'){
+    // empty content
+    this.$content.html('');
 
-        // get a default fanart
-        var fa = app.parseImage('', 'fanart');
-        $.backstretch(fa);
-        self.$content.html('');
+    // title
+    app.helpers.setTitle('');
 
+    // menu
+    app.shellView.selectMenuItem('home', 'no-sidebar');
+
+    // get now playing
+    app.AudioController.getNowPlayingSong(function(data){
+
+      if(app.audioStreaming.getPlayer() == 'local'){
+        // get the local playing item
+        var browserPlaying = app.audioStreaming.getNowPlayingSong();
+        backstretchImage = (browserPlaying.fanart == undefined ? '' : browserPlaying.fanart);
       } else {
-        // Something is playing
-
-        // add backstretch
-        if($('.backstretch').length == 0){
-          var fa = app.parseImage(data.item.fanart, 'fanart');
-          $.backstretch(fa);
-        }
-
-        // render
-        app.homelView = new app.HomeView({model:data.item});
-        app.homelView.render();
-        self.$content.html(app.homelView.el);
+        // xbmc playing image
+        backstretchImage = (data.item.fanart == undefined ? '' : data.item.fanart);
       }
 
-      // title
-      app.helpers.setTitle('');
+      // Add Backstretch if image
+      if($('.backstretch').length == 0){
+        var fa = app.parseImage(backstretchImage, 'fanart');
+        $.backstretch(fa);
+      }
 
-      // menu
-      app.shellView.selectMenuItem('home', 'no-sidebar');
-
-      //show now playing
-      app.playlists.changePlaylistView('xbmc');
     });
+
   },
 
 
@@ -327,6 +324,8 @@ app.Router = Backbone.Router.extend({
         // add back to models
         albumsAdded.models = allAlbums;
         albumsAdded.length = allAlbums.length;
+        // cache for later
+        app.cached.recentlAlbums = albumsAdded;
 
         // render
         app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albumsAdded, className:'album-list-landing'});

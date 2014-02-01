@@ -28,7 +28,7 @@ app.AudioController.playlistRefresh = function(callback){
     app.playlistView = new app.PlaylistView({model:{models:result.items}});
     $('#playlist-xbmc').html(app.playlistView.render().el);
 
-    app.AudioController.getNowPlaying(function(data){
+    app.AudioController.getNowPlayingSong(function(data){
 
       //update shell to now playing info
       app.shellView.updateState(data);
@@ -461,11 +461,12 @@ app.AudioController.audioLibraryScan = function(){
 };
 
 
+
 /**
  * Get now playing
  */
 
-app.AudioController.getNowPlaying = function(callback){
+app.AudioController.getNowPlayingSong = function(callback){
 
   // this is a rather hefty that gets called every 5 sec so we throttle with error counts
   // only execute when 0
@@ -627,7 +628,7 @@ app.AudioController.updatePlayerState = function(){
   } else {
     $b.removeClass(nc);
   }
-  app.AudioController.getNowPlaying(function(data){
+  app.AudioController.getNowPlayingSong(function(data){
     app.shellView.updateState(data);
     //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
   });

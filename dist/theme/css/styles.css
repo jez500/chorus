@@ -2537,27 +2537,31 @@ body.home .playlist div.playlist-item.playing-row .playlist-meta {
 body.home .playlist div.playlist-item.playing-row .playlist-meta a {
   font-size: 110%;
 }
-/* line 317, ../../../theme/sass/components/_pages.scss */
+/* line 313, ../../../theme/sass/components/_pages.scss */
+body.home #page-header {
+  background-color: transparent !important;
+}
+/* line 320, ../../../theme/sass/components/_pages.scss */
 body.section-artists, body.section-albums {
   background: #DFDFDF;
 }
-/* line 319, ../../../theme/sass/components/_pages.scss */
+/* line 322, ../../../theme/sass/components/_pages.scss */
 body.section-artists #content, body.section-albums #content {
   background: #DFDFDF;
 }
-/* line 327, ../../../theme/sass/components/_pages.scss */
+/* line 330, ../../../theme/sass/components/_pages.scss */
 body.section-files #page-header h1 a {
   width: 330px;
 }
-/* line 331, ../../../theme/sass/components/_pages.scss */
+/* line 334, ../../../theme/sass/components/_pages.scss */
 body.section-files #sidebar-first {
   width: 330px;
 }
-/* line 334, ../../../theme/sass/components/_pages.scss */
+/* line 337, ../../../theme/sass/components/_pages.scss */
 body.section-files #main {
   margin-left: 380px;
 }
-/* line 341, ../../../theme/sass/components/_pages.scss */
+/* line 344, ../../../theme/sass/components/_pages.scss */
 body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-remove {
   display: none !important;
 }

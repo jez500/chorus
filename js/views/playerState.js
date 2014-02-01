@@ -145,7 +145,7 @@ app.playerStateView = Backbone.View.extend({
 
     // Backstretch
     // @TODO move to home view as bind
-    if(location.hash == '#' || location.hash == ''){
+    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == 'xbmc'){
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
@@ -188,9 +188,9 @@ app.playerStateView = Backbone.View.extend({
    * Set document title
    */
   setTitle:function () {
-    var data = this.model;
+    var data = this.model, title = data.item.label;
     if(app.audioStreaming.getPlayer() == 'xbmc'){
-      document.title = (data.status == 'playing' ? '▶ ' : '') + data.item.label + ' | Chorus.'; //doc
+      document.title = (data.status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
   },
 

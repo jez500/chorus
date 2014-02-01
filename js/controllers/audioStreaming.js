@@ -137,20 +137,26 @@ app.audioStreaming = {
    * @param player
    */
   setPlayer: function(player){
+    var song;
 
-    if(player == undefined || player == ''){ //toggle
-      app.audioStreaming.$body.toggleClass(app.audioStreaming.classXbmc).toggleClass(app.audioStreaming.classLocal);
-    } else {
-      if(player == 'xbmc'){
-        app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
+    // Switch to XBMC Player
+    if(player == 'xbmc'){
+      app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
+      // Homepage Backstretch for xbmc (if applicable)
+      song = app.cached.nowPlaying.item;
+      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'xbmc');
+    }
+
+    // Switch to Local Player
+    if(player == 'local'){
+      app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
+      // if empty, render
+      if($('ul.browser-playlist-song-list').length == 0){
+        app.audioStreaming.renderPlaylistItems();
       }
-      if(player == 'local'){
-        app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
-        // if empty, render
-        if($('ul.browser-playlist-song-list').length == 0){
-          app.audioStreaming.renderPlaylistItems();
-        }
-      }
+      // Homepage Backstretch for local (if applicable)
+      song = app.audioStreaming.getNowPlayingSong();
+      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
     }
 
   },
@@ -170,6 +176,20 @@ app.audioStreaming = {
 
 
   /**
+   * Get currently playing song
+   * @returns {*}
+   */
+  getNowPlayingSong: function(){
+    if(app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] != undefined){
+      var model = app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition];
+      return model.attributes;
+    } else {
+      return {};
+    }
+  },
+
+
+  /**
    * Plays a position in the current playlist
    * @param pos
    */
@@ -181,7 +201,6 @@ app.audioStreaming = {
     if(app.audioStreaming.playList.items.models.length > 0){
         var model = app.audioStreaming.playList.items.models[parseInt(pos)].attributes;
         app.audioStreaming.playList.playingPosition = pos;
-        console.log(model);
         app.audioStreaming.loadSong({attributes: model}, function(){
           // play
           app.audioStreaming.play();
@@ -445,7 +464,11 @@ app.audioStreaming = {
       $playingEl.addClass('browser-playing-row')
     }
 
+    // Set title and play icon
     app.audioStreaming.setTitle('playing', song.label);
+
+    // Homepage Backstretch
+    app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
 
     // playing song (@todo flickers fix)
     //$('.song').removeClass('playing-row');
@@ -488,7 +511,7 @@ app.audioStreaming = {
    */
   setTitle:function (status, title) {
     if(app.audioStreaming.getPlayer() == 'local'){
-      document.title = (status == 'playing' ? '▶ ' : '') + title + ' | Chorus.'; //doc
+      document.title = (status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
   },
 

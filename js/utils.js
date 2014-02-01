@@ -435,6 +435,35 @@ $(document).ready(function(){
 
 
   /********************************************************************************
+   * Backstretch
+   ********************************************************************************/
+
+
+  /**
+   * Add / update backstretch if required
+   *
+   * @param fanart
+   *  The image to use
+   * @param player
+   * local or xbmc
+   */
+  app.helpers.applyBackstretch = function(fanart, player){
+    // Ensure on homepage and using the correct player
+    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == player){
+      // if homepage backstretch exists and changed, update
+      var $bs = $('.backstretch img'),
+        origImg = $bs.attr('src'),
+        newImg = app.parseImage(fanart, 'fanart');
+      // if image is different
+      if($bs.length > 0 && origImg != newImg){
+        $.backstretch(newImg);
+      }
+    }
+  };
+
+
+
+ /********************************************************************************
    * Title
    ********************************************************************************/
 
