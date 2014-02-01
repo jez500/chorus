@@ -3,8 +3,8 @@
 .browser-playlist-song-list {
   padding: 2px;
   .playlist-item-placeholder {
-    height: 35px;
-    background: #eee;
+    height: 50px;
+    background: #aaa;
   }
   li.list-item,
   div.playlist-item {
@@ -101,9 +101,11 @@
       height: 30px;
       overflow: hidden;
       display: block;
-      cursor: pointer;
       line-height: 30px;
       white-space: nowrap;
+      cursor: ns-resize;
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
     }
     .playlist-meta {
       a {
@@ -130,6 +132,7 @@
         max-height: 50px;
         height: auto;
         color: #444;
+        cursor: pointer;
         &:hover {
           background: none;
           padding-left: 35px;

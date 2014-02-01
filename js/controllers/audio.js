@@ -129,14 +129,13 @@ app.AudioController.playlistAddMultiple = function(type, ids, callback){
  *  new playlist position
  */
 app.AudioController.playlistSwap = function(pos1, pos2, callback){
-  console.log(pos1, pos2);
+
   //get playlist items
   app.AudioController.getPlaylistItems(function(result){
     //clone for insert
     var clone = result.items[pos1],
       insert = {};
     //if songid found use that as a preference
-    console.log(clone);
     if(clone.id != undefined && typeof clone.id == 'number'){
       insert.songid = clone.id;
     } else { //use filepath if no songid
