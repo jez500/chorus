@@ -1,3 +1,18 @@
+Version 0.2.1:
+- Significant refactor of js and css
+- Lots of playlist updates and refinements
+- Improved song search
+- Contextual menus now available on songs, artists, albums and files adding playlist tasks and a place for future functionality
+- Better indications that something is playing (title, logo, tab icon)
+
+
+Version 0.2.0:
+- Implemented browser audio streaming from XBMC library
+- Updated template to suit streaming
+- Loads of style refinements, added some colour. Orange = XBMC, Blue = Local
+- Added throttling of requests to XBMC if a lost connection is detected
+
+
 Version 0.1.8:
 - Increased max album count to 15000
 - Increased max artist count to 10000

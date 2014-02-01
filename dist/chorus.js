@@ -15593,14 +15593,13 @@ app.AudioController.playlistAddMultiple = function(type, ids, callback){
  *  new playlist position
  */
 app.AudioController.playlistSwap = function(pos1, pos2, callback){
-  console.log(pos1, pos2);
+
   //get playlist items
   app.AudioController.getPlaylistItems(function(result){
     //clone for insert
     var clone = result.items[pos1],
       insert = {};
     //if songid found use that as a preference
-    console.log(clone);
     if(clone.id != undefined && typeof clone.id == 'number'){
       insert.songid = clone.id;
     } else { //use filepath if no songid
@@ -20341,6 +20340,8 @@ app.PlaylistItemView = Backbone.View.extend({
     this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
     this.model.artistLink = this.buildArtistLink(this.model);
 
+    console.log(this.model);
+
     // render
     this.$el.html(this.template(this.model));
 
@@ -20414,15 +20415,17 @@ app.PlaylistItemView = Backbone.View.extend({
    * @param model
    */
   buildArtistLink: function(model){
-
+    // build artist names
     model.albumArtistString = (typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
     model.artistString = (typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
+    // add title
+    var title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
     // if no artist or album artist, return null
     if(model.artistString == '' && model.albumArtistString == ''){
       return '';
     }
     // return link
-    return '<a href="#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString) + '">' +
+    return '<a title="'+ title +'" href="#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString) + '">' +
       (model.artistString != '' ? model.artistString : model.albumArtistString) + '</a>';
   }
 
