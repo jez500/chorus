@@ -40,8 +40,8 @@
 
         <div class="sidebar-header">
             <ul class="playlist-primary-tabs">
-                <li class="playlist-primary-tab xbmc-tab active" data-pane="xbmc" title="Switch to XBMC (shared) player"><i class="icon-rss"></i> XBMC</li>
-                <li class="playlist-primary-tab local-tab" data-pane="local" title="Switch to playback in your browser"><i class="icon-headphones"></i> Local</li>
+                <li class="playlist-primary-tab xbmc-tab active" data-pane="xbmc" title="Switch to XBMC (shared) player"><i class="icon-rss"></i><i class="icon-play"></i> XBMC</li>
+                <li class="playlist-primary-tab local-tab" data-pane="local" title="Switch to playback in your browser"><i class="icon-headphones"></i><i class="icon-play"></i> Local</li>
                 <li class="playlist-primary-tab lists-tab" data-pane="lists" title="View saved playlists"><i class="icon-file"></i> Lists</li>
             </ul>
             <div class="playlist-actions-wrapper"></div>
@@ -51,6 +51,11 @@
         <div class="sidebar-pane" id="playlist-xbmc"></div>
         <div class="sidebar-pane" id="playlist-local"></div>
         <div class="sidebar-pane" id="playlist-lists"></div>
+
+
+        <div id="notify-wrapper">
+            <div id="notify"><div class="content">Still loading...</div></div>
+        </div>
 
     </div>
 
@@ -143,10 +148,6 @@
     </div>
 </footer>
 
-
-<div id="notify-wrapper">
-    <div id="notify"><div class="content">Still loading...</div></div>
-</div>
 
 <div id="offscreen" style="display:none">
     <div id="dialog"></div>

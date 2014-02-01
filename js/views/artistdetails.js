@@ -5,7 +5,7 @@ app.ArtistView = Backbone.View.extend({
     "click .artist-add":       "addArtist",
     "click .artist-thumbsup":  "thumbsUp",
     "click .artist-fanart":    "toggleFanart",
-    "click .artist-menu":    "menu"
+    "click .artist-menu":       "menu"
   },
 
   initialize:function () {
@@ -55,24 +55,35 @@ app.ArtistView = Backbone.View.extend({
 
     // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
-      app.AudioController.playPlaylistPosition(0, function(){
-        app.AudioController.playlistRefresh();
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'replace', 'artist', artist.artistid);
+    } else {
+      // Replace and play XBMC
+      app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
+        app.AudioController.playPlaylistPosition(0, function(){
+          app.AudioController.playlistRefresh();
+        });
       });
-    });
-
+    }
   },
+
 
   addArtist: function(){
-
     // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
-      app.notification(artist.artist + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
-
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'append', 'artist', artist.artistid);
+    } else {
+      // Replace and play XBMC
+      app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
+        app.notification(artist.artist + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
   },
+
 
   thumbsUp: function(e){
 

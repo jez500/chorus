@@ -104,10 +104,10 @@ app.playerStateView = Backbone.View.extend({
     this.setTitle();
 
     var data = this.model,
-    // time stuff
+      // time stuff
       $time = $('#time'),
       cur = (parseInt(data.player.percentage) / 100) * parseInt(data.item.duration),
-    // playlist stuff
+      // playlist stuff
       meta = app.helpers.parseArtistsArray(data.item),
       $playlistActive = $('.playlist .playing-row');
 
@@ -189,7 +189,9 @@ app.playerStateView = Backbone.View.extend({
    */
   setTitle:function () {
     var data = this.model;
-    document.title = (status == 'playing' ? '▶ ' : '') + data.item.label + ' | Chorus.'; //doc
+    if(app.audioStreaming.getPlayer() == 'xbmc'){
+      document.title = (data.status == 'playing' ? '▶ ' : '') + data.item.label + ' | Chorus.'; //doc
+    }
   },
 
 

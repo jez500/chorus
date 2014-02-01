@@ -54,6 +54,9 @@ app.AlbumArtistView = Backbone.View.extend({
   className:'album-artist-item',
 
   initialize:function () {
+
+    console.log(this.model.attributes);
+
     this.artistModel = new app.Artist({"id": this.model.attributes.artistid, "fields":app.artistFields});
     this.artistAlbums = {};
   },
@@ -65,10 +68,6 @@ app.AlbumArtistView = Backbone.View.extend({
 
       //base template
       self.$el.html(self.template(artist.attributes));
-
-
-      // set the sidebar title
-      //$('#title a').html('Artists').attr('href', '#artists');
 
       //get the artists albums
       self.albumList = new app.AlbumCollection();

@@ -583,16 +583,15 @@ app.MemoryStore = function (successCallback, errorCallback) {
     return ret;
   };
 
-
-
-
   //  call it on construct
   this.syncAudio(successCallback);
 
+
+
   /*
-   * Force sync songs with xbmc
+   * Force sync songs with xbmc DEPRECATED
    */
-  this.parseAudio = function(songs){
+  /* this.parseAudio = function(songs){
 
 
     //loop over each song
@@ -634,7 +633,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     });
 
-  };
+  };*/
 
 
   // Used to simulate async calls. This is done to provide a consistent

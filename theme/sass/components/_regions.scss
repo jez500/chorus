@@ -1,0 +1,587 @@
+
+// Header (vertical on left of page)
+#header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: $height-footer;
+  width: $width-header;
+  background: #FDFDFD;
+  z-index: 5;
+
+  //logo
+  #logo {
+    width: $width-header;
+    height: $height-logo;
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #fff;
+    display: block;
+    font-size: 20px;
+    background: $color-dark-xbmc;
+    text-decoration: none;
+    @include transition(0.3s all linear);
+    border-bottom: 5px solid $color-dark-xbmc;
+    span {
+      -ms-transform:rotate(270deg); /* IE 9 */
+      -moz-transform:rotate(270deg); /* moz */
+      -webkit-transform:rotate(270deg); /* Safari and Chrome */
+      transform:rotate(270deg);
+      margin-top: 48px;
+      padding-top: 0px;
+      display: block;
+      font-family: helmet, helvetica, arial, san-serif;
+    }
+  }
+
+  .mainnav {
+    margin-top: $height-logo + 10;
+    width: $width-header;
+    ul {
+      li {
+        text-align: center;
+        font-size: 19px;
+        a {
+          color: $color-asbestos;
+          display: block;
+          padding: 12px 0;
+          &:hover {
+            color: $color-dark-xbmc;
+          }
+        }
+        &.active {
+          a {
+            color: $color-concrete;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Fixed Header
+body.fixed-header {
+  #page-header {
+    background:  rgba(59, 63, 64, 0.97);
+  }
+  #search-box {
+    background-color: rgba(255,255,255,0.8);
+  }
+}
+
+// main
+#main {
+  margin-left: $width-sidebar-second-small;
+  margin-top: $height-header;
+  padding-bottom: $height-footer;
+}
+
+#main-content {
+  position: relative;
+}
+
+// main > content
+#content {
+  padding: 0;
+  margin-right: $width-sidebar-second-small;
+}
+
+// top of page
+#page-header {
+  background: rgba(59, 63, 64, 0.84);
+  color: $color-mist;
+  height: $height-header;
+  position: fixed;
+  left: $width-header;
+  top: 0;
+  right: 0;
+  z-index: 20;
+  @include transition(all 0.3s linear);
+
+  h1 {
+    font-weight: normal;
+    margin: 0px;
+    color: $color-mist;
+    font-size: 22px;
+    line-height: $height-header;
+    padding-left: 20px;
+    a {
+      color: $color-asbestos;
+      display: block;
+      float: left;
+      width: $width-sidebar-second-small - $width-header;
+      padding-left: 20px;
+      margin-right: 20px;
+      margin-left: -20px;
+      height: $height-header;
+      overflow: hidden;
+      position: relative;
+      white-space: nowrap;
+      background: #F6F5F3;
+      &:hover {
+        //color: $color-darkest-xbmc;
+      }
+    }
+
+  }
+  .album-actions-wrapper {
+    position: absolute;
+    right: $width-sidebar-second-small + 265;
+    top: 0;
+    .btn {
+      background: none;
+      opacity: 0.8;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// First Sidebar (artists)
+#sidebar-first {
+  width: $width-sidebar-second-small - $width-header;
+  background: #f9f9f9;
+  position: fixed;
+  top: $height-header;
+  left: $width-header;
+  bottom: $height-footer;
+  z-index: 0;
+  .artist-list {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+  .noresult-box {
+    background: none;
+  }
+  .sidebar-title {
+    font-size: 22px;
+    height: 50px;
+    line-height: 50px;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    background: #F6F5F3;
+    padding: 0 0 0 20px;
+    margin: 15px 0 0 0;
+    a {
+      color: #6E7374;
+    }
+  }
+  .sidebar-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+  }
+  .mini-artist-fanart {
+    height: 170px;
+    background-size: cover;
+  }
+
+  ul.artist-thumbs-up,
+  ul.artist-search-list,
+  ul.artist-list {
+    padding: 5px 0;
+    li {
+      a {
+        display: block;
+        overflow: hidden;
+        margin-bottom: 0px;
+        margin-left: 3px;
+        color: $color-asbestos;
+        padding: 4px 3px 4px 5px;
+        position: relative;
+        .artist-meta {
+          display: none;
+        }
+        .image {
+          width: 29px;
+          height: 29px;
+          overflow: hidden;
+          float: left;
+          margin-right: 10px;
+          background-size: cover;
+          img {
+            width: 100%;
+            display: block;
+          }
+        }
+        .play-artist {
+          @include hover-play-button;
+          top: 4px;
+          left: 5px;
+          width: 29px;
+          height: 29px;
+          z-index: 5;
+          padding: 10px;
+        }
+        &:hover {
+          background: #DDD;
+          color: $color-darkest-xbmc;
+        }
+        &.active {
+          background: $color-asbestos;
+          color: #fff;
+          font-size: 110%;
+          padding-left: 5px;
+          .image {
+            width: 50px;
+            height: 50px;
+          }
+          .play-artist {
+            font-size: 180%;
+            line-height: 3.5;
+            top: 3px;
+            width: 50px;
+            height: 50px;
+          }
+          p {
+            max-width: 114px;
+            overflow: hidden;
+            padding-top: 5px;
+            &.artist-title {
+              max-height: 41px;
+            }
+          }
+          .artist-meta {
+            margin: 5px 0;
+            padding: 0;
+            font-size: 12px;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.6);
+            display: none;
+          }
+        }
+      }
+    }
+  }
+  // files
+  ul.files-list {
+    li {
+      position: relative;
+      .file-item {
+        padding: 5px 10px;
+        border-bottom: 1px solid #ddd;
+        color: #777;
+        cursor: pointer;
+        img {
+          float: left;
+          width: 30px;
+          height: 30px;
+          margin: -5px 10px 0 -10px;
+        }
+        &:hover {
+          color: #444;
+        }
+      }
+      &.loading {
+        background-image: image-url('loader.gif');
+        background-position: 98% 6px;
+        background-repeat: no-repeat;
+      }
+      &.lowest {
+        > .file-item {
+          background-color: $color-dark-xbmc;
+          color: #fff;
+          .file-actions {
+            display: block;
+            .btn {
+              color: #fff !important;
+            }
+          }
+        }
+
+        ul {
+          background-color: #f1f1f1;
+        }
+      }
+      ul {
+        padding-left: 13px;
+        li {
+          border-left: 2px solid #ddd;
+        }
+
+      }
+      .file-actions {
+        position: absolute;
+        right: 5px;
+        top: 0;
+        display: none;
+        .btn {
+          height: 30px;
+          padding: 0px 7px;
+          margin: 0;
+          font-size: 12px;
+        }
+      }
+      .show-actions {
+        .file-actions {
+          right: 30px;
+          display: block;
+          .btn {
+            font-size: 110%;
+            color: #777;
+          }
+        }
+      }
+    }
+  }
+  // album
+
+  ul.album-list-small {
+    li.card {
+      @include card('mini');
+    }
+  }
+  ul.artist-thumbs-up {
+    li {
+      a {
+        padding: 1px;
+        background: #fff;
+        margin: 5px 0px 5px 0;
+        .play-artist,
+        .image {
+          width: $mini-img-width;
+          height: $mini-img-width;
+          padding: 0px;
+          margin: 0 10px 0 0;
+          top: 0;
+          left: 0;
+        }
+        .play-artist {
+          padding: 24px 0;
+        }
+        p {
+          &.artist-title {
+            padding-top: 5px;
+            font-size: 15px;
+            line-height: 17px;
+            max-height: 38px;
+            color: $color-dark-xbmc;
+            margin-bottom: 3px;
+          }
+          &.artist-meta {
+            color: #AAA;
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Second sidebar (playlists)
+#sidebar-second {
+  width: $width-sidebar-second-small;
+  background: #f8f8f8;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  .sidebar-header {
+
+    height: $height-header;
+    background: $color-dark-xbmc;
+    overflow-y: auto;
+  }
+
+  //default
+  .sidebar-pane {
+    display: none;
+  }
+
+  #playlist-xbmc {
+    display: block;
+  }
+
+  .sidebar-pane {
+    position: absolute;
+    bottom: $height-footer;
+    left: 0;
+    right: 0;
+    top: $height-header;
+    overflow-y: auto;
+  }
+  .sidebar-header {
+    position: relative;
+    overflow-y: visible;
+    .playlist-actions-wrapper {
+      position: absolute;
+      right: 0;
+      top: 0;
+      .btn {
+        background: none;
+        margin: 6px 10px 0 0;
+        font-size: 130%;
+        padding: 8px 10px 7px;
+      }
+    }
+    .playlist-primary-tabs {
+      li {
+        float: left;
+        margin: 0 0px 0 0;
+        padding: 15px 22px 15px 19px;
+        color: $color-whitesmoke;
+        font-size: 112%;
+        cursor: pointer;
+        i {
+          font-size: 84%;
+          margin-right: 5px;
+          opacity: 0.6;
+          &.icon-play {
+            display: none;
+          }
+        }
+        &:hover {
+          background: rgba(255,255,255,0.1);
+        }
+        &.active {
+          background: rgba(255, 255, 255, 0.92);
+          color: $color-dark-xbmc;
+        }
+      }
+    }
+  }
+}
+
+// Second sidebar - Homepage
+$home-sidebar-width: $width-sidebar-second-small + 300;
+body.home {
+  #sidebar-second {
+    @include transition(0.3s all ease-in);
+    background: rgba(255,255,255,0.75);
+    width: $home-sidebar-width;
+    .playlist div.playlist-item.playing-row {
+      //background-color: $color-mist;
+    }
+    .playing-row {
+      height: 120px;
+      padding-right: 132px;
+    }
+  }
+  #search-box {
+    @include transition(0.3s all ease-in);
+    right: $home-sidebar-width;
+    #search {
+      background: rgba(255, 255, 255, 0.5);
+      &:hover,
+      &:focus {
+        color: $color-asbestos;
+        background: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+  #header {
+    background: rgba(235, 236, 236, 0.84);
+  }
+  #page-header {
+    background: none;
+  }
+}
+
+// Search box
+#search-box {
+  position: absolute;
+  top: 0;
+  right: $width-sidebar-second-small;
+  display: none;
+  background-color: rgba(255,255,255,0.78);
+  @include transition(all 0.3s linear);
+  .icon-search {
+    display: inline-block;
+    padding: 0;
+    font-size: 20px;
+    opacity: 0.3;
+    margin-top: 5px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: #222;
+  }
+  #search {
+    border: none;
+    height: $height-header - 20px;
+    padding: 10px 10px 10px 40px;
+    font-size: 18px;
+    color: $color-mist;
+    width: 130px;
+    outline: none;
+    background: rgba(255, 255, 255, 0);
+    color: $color-asbestos;
+    &:hover,
+    &:focus {
+      color: $color-asbestos;
+      background: rgba(255, 255, 255, 0.47);
+    }
+  }
+}
+
+// show search when library ready
+.artists-ready #search-box {
+  display: block;
+}
+
+
+//notify
+#notify {
+  position: absolute;
+  right: 0;
+  bottom: $height-footer;
+  width: $width-sidebar-second-small;
+  padding: 10px;
+  background: rgba(255,255,255,0.8);
+  border-top: 2px solid $color-wet-asphalt;
+  color: $color-darkest-xbmc;
+  opacity: 1;
+  transition: 0.8s all ease;
+  &.hidden {
+    right: -$width-sidebar-second-small;
+    opacity: 0.5;
+  }
+}
+
+#notify-wrapper {
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  width: $width-sidebar-second;
+  z-index: 90;
+  // @TODO this crops tall notifications and needs fixing
+  height: $height-footer;
+  transition: 1s all ease;
+  &.hidden {
+    width: 0;
+    opacity: 0.8;
+    overflow-x: hidden;
+    #notify {
+      bottom: 20px;
+    }
+  }
+}
+
+// body overrides
+body {
+  &.no-sidebar {
+    #main {
+      margin-left: $width-header;
+    }
+    #sidebar-first {
+      display: none;
+    }
+  }
+  &.sidebar {
+    .rand-list,
+    .album-list-landing {
+      margin-left: 0;
+    }
+  }
+}

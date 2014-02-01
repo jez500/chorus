@@ -10,6 +10,23 @@ app.playlists = {
 };
 
 
+/**
+ * Playlist Binds
+ */
+$(window).on('shellReady', function(){
+  // cache thumbs up
+  app.playlists.getThumbsUp();
+  // set playlist menu
+  $('.playlist-actions-wrapper', this.$el).html(
+    app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
+  );
+  //add custom playlists to dom
+  app.playlists.addCustomPlayLists(function(view){
+    var $sb = $('#playlist-lists', self.$el);
+    $sb.html(view.render().el);
+  });
+});
+
 
 /**
  * The Super collection getter
@@ -106,6 +123,8 @@ app.playlists.playlistGetItems = function(type, delta, callback){
  *
  * @param playlist
  *  playlist to add the type[delta] to. Options: xbmc, local, lists
+ * @param op
+ *  append, replace (replace will play), new (for custom lists)
  * @param type
  *  @see plalistGetItems
  * @param delta
@@ -113,9 +132,14 @@ app.playlists.playlistGetItems = function(type, delta, callback){
  * @param callback
  *  @see plalistGetItems
  */
-app.playlists.playlistAddItems = function(playlist, type, delta, callback){
+app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
 
   app.playlists.playlistGetItems(type, delta, function(collection){
+
+    // gate
+    if(collection.length == 0){
+      return;
+    }
 
     var items = [];
     $.each(collection.models, function(i,d){
@@ -134,32 +158,55 @@ app.playlists.playlistAddItems = function(playlist, type, delta, callback){
 
     switch(playlist){
 
-      // Add to xbmc playlist
+      // Append / Replace xbmc playlist @TODO abstract elsewhere
       case 'xbmc':
-        app.AudioController.playlistAddMultiple('mixed', items, function(){
-          app.AudioController.playlistRefresh();
-          app.playlists.changePlaylistView('xbmc');
-          callback();
-        });
-        break;
 
-      // Add to Local browser playlist - and play
-      case 'local':
-          // @todo abstract this
-          app.audioStreaming.setPlaylistItems(collection);
-          app.audioStreaming.renderPlaylistItems(collection);
-          app.audioStreaming.loadSong(collection.models[0], function(){
-            app.playlists.changePlaylistView('local');
-            // play song
-            app.audioStreaming.playPosition(0);
+        if(op == 'append'){
+          // Add items
+          app.AudioController.playlistAddMultiple('mixed', items, function(){
+            app.AudioController.playlistRefresh();
+            app.playlists.changePlaylistView('xbmc');
             callback();
           });
+        } else {
+          // Clear first then add items
+          app.AudioController.playlistClear(function(){
+            // Add items
+            app.AudioController.playlistAddMultiple('mixed', items, function(){
+              app.AudioController.playlistRefresh();
+              app.playlists.changePlaylistView('xbmc');
+              app.AudioController.playPlaylistPosition(i, function(data){
+                //update playlist
+                app.AudioController.playlistRefresh();
+                //callback
+                callback();
+              });
+            });
+          })
+        }
+
+        break;
+
+      // Append / Replace Local browser playlist
+      case 'local':
+
+        if(op == 'append'){
+          console.log('append', collection);
+          app.audioStreaming.appendPlaylistItems(collection, callback);
+        } else {
+          // replace and play
+          console.log('replace', collection);
+          app.audioStreaming.replacePlaylistItems(collection, callback)
+        }
+
         break;
 
       // Add to Custom Lists
       case 'lists':
+
         app.playlists.changePlaylistView('lists');
         app.playlists.saveCustomPlayListsDialog('local', items);
+
         break;
     }
 

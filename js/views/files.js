@@ -94,9 +94,7 @@ app.FileView = Backbone.View.extend({
     "click .file-play": "playDir",
     "click .file-type-directory": "clickDir",
     "click .file-add": "addDir",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .song-menu":  "menu"
   },
 
   initialize:function () {
@@ -104,19 +102,22 @@ app.FileView = Backbone.View.extend({
   },
 
   render:function () {
-
     // render
     this.$el.html(this.template(this.model.attributes));
-
-    // set song menu
-    $('.file-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song')  ));
-
     // post process file
     this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, this.model.attributes);
-
     return this;
-
   },
+
+
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(e){
+    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model.attributes) )
+  },
+
 
   clickDir:function(e){
     e.stopPropagation();

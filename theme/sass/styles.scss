@@ -1,0 +1,41 @@
+// Variables (eg dimensions, colours)
+@import "base";
+
+// Mixins
+@import "mixins";
+
+// css for libraries
+@import "components/libs";
+
+// chorus resets
+@import "components/nomalize";
+
+// generic elements (eg. buttons, boxes)
+@import "components/widgets";
+
+// card view (eg. artist/album landing)
+@import "components/cards";
+
+// generic elements (eg. buttons, boxes)
+@import "components/regions";
+
+// player styles
+@import "components/player";
+
+// page specific styles
+@import "components/pages";
+
+// page specific styles
+@import "components/artists";
+
+// page specific styles
+@import "components/albums";
+
+// page specific styles
+@import "components/songs";
+
+// page specific styles
+@import "components/playlists";
+
+// responsive styles
+@import "breakpoints/responsive";

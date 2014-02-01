@@ -10,7 +10,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10;
+  z-index: 50;
   .footer-right,
   .footer-left {
     width: $width-sidebar-second-small;
@@ -177,16 +177,56 @@
   #browser-progress-bar.ui-slider .ui-slider-range {
     background: rgba(237, 238, 240, 0.78);
   }
+
+  #browser-volume.ui-slider:hover .ui-slider-handle,
   #browser-progress-bar.ui-slider:hover .ui-slider-handle {
     background: $playing-local;
   }
 }
 
 body {
-  // xbmc playing
+  // not connected! using a few importants to force this state
+  &.notconnected {
+    #header #logo {
+      background: #7a1f11;
+      border-bottom-color: #511e14 !important;
+    }
+    .track.playing-row {
+      background-image: url(../images/icons/row-pause.png) !important;
+    }
+  }
+  // xbmc player
+  .player-play .icon-pause {
+    display: none;
+    margin-top: 3px;
+  }
+  &.paused,
   &.playing {
+    .playing-row {
+      //background: $color-clouds;
+      .song-tracknum {
+        //eq level display playing
+        background: url(../images/row-playing.gif) 50% 50% no-repeat;
+        text-indent: -999999px;
+      }
+    }
+  }
+  // xbmc is playing
+  &.playing {
+    .player-play {
+      .icon-pause {
+        display: block;
+      }
+      .icon-play {
+        display: none;
+      }
+    }
     #sidebar-second .sidebar-header .playlist-primary-tabs li.xbmc-tab i {
       color: $playing-xbmc;
+      display: none;
+      &.icon-play {
+        display: inline;
+      }
     }
     #header #logo {
       border-bottom-color: $playing-xbmc;
@@ -199,8 +239,81 @@ body {
       }
     }
   }
+  // xbmc pause
+  &.paused {
+    //eq level display paused (quiet)
+    .playing-row {
+      .song-tracknum {
+        background: url(../images/icons/row-pause.png) 50% 50% no-repeat;
+      }
+    }
+    ul.playlist {
+      .playing-row {
+        background-image: url(../images/icons/row-pause.png);
+      }
+    }
+  }
+  // nothing playing
+  &.notPlaying {
+
+  }
+
+  &.browser-playing {
+
+  }
+
+  &.muted {
+    #footer .footer-right .actions-wrapper {
+      .icon-volume-up {
+        display: block;
+      }
+      .icon-volume-down {
+        display: none;
+      }
+    }
+  }
+
+  &.random-on {
+    #footer .footer-right .actions-wrapper {
+      .player-random {
+        color: #fff;
+      }
+    }
+  }
+
+  &.repeat-all {
+    #footer .footer-right .actions-wrapper {
+      .player-repeat {
+        color: #fff;
+      }
+    }
+  }
+
+  &.repeat-one {
+    #footer .footer-right .actions-wrapper {
+      .player-repeat {
+        color: #ddd;
+      }
+    }
+    div.playlist-item.playing-row {
+      .repeating {
+        display: block;
+      }
+    }
+  }
+
+
   // local body
   &.player-view-local {
+    #footer {
+      display: none;
+    }
+    #browser-player-footer {
+      display: block;
+    }
+    #logo {
+      background: $color-carrot;
+    }
     #header {
       #logo {
         background:  $color-darkest-local;
@@ -212,18 +325,42 @@ body {
         background: $color-dark-local;
       }
     }
+    #page-header {
+      background: rgba(72, 78, 80, 0.84);
+    }
+    &.fixed-header #page-header {
+      background: rgba(72, 78, 80, 0.97);
+    }
   }
+
   // browser playing
   &.browser-playing {
+    // sidebar playing row
+    .browser-playlist-song-list div.playlist-item.browser-playing-row {
+      background-image: url(../images/row-playing.gif);
+    }
+    // footer play/pause
+    #browser-player-footer .footer-left {
+      .icon-play {
+        display: none;
+      }
+      .icon-pause {
+        display: inline;
+      }
+    }
     #sidebar-second .sidebar-header .playlist-primary-tabs li.local-tab i {
       color: $playing-local;
+      display: none;
+      &.icon-play {
+        display: inline;
+      }
     }
     #header #logo {
       border-bottom-color: $playing-local;
     }
   }
 
-  // rand / repeat
+  // browser rand / repeat
   &.bp-random-on {
     #browser-player-footer .footer-right .browser-player-random {
       color: #EDEFF0;

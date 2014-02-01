@@ -81,22 +81,6 @@ app.ShellView = Backbone.View.extend({
     // Init player state cycle
     setInterval(app.AudioController.updatePlayerState, 5000);
 
-    // set playlist menu
-    $('.playlist-actions-wrapper', this.$el).html(
-      app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
-    );
-
-    //custom playlists
-    app.playlists.addCustomPlayLists(function(view){
-      var $sb = $('#playlist-lists', self.$el);
-      $sb.html(view.render().el);
-    });
-
-
-    // browser player
-    app.audioStreaming.init(this.$el);
-
-
     return this;
   },
 

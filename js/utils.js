@@ -13,6 +13,19 @@ var notificationTimoutObj = {};
 
 
 /**
+ * Generic Helper Utils Binds
+ */
+$(window).on('shellReady', function(){
+  // Get our dialog ready for use
+  app.helpers.dialogInit();
+  // get version
+  $.get('addon.xml',function(data){
+    app.addonData = $(data).find('addon').attr();
+  });
+});
+
+
+/**
  * Dom ready
  */
 $(document).ready(function(){
@@ -488,7 +501,7 @@ $(document).ready(function(){
    */
   app.helpers.dialog = function(content, options){
 
-    $dialog = $( app.helpers.getSelector('dialog') );
+    var $dialog = $( app.helpers.getSelector('dialog') );
 
     // init dialog if required
     if(!$dialog.hasClass('ui-dialog-content')){
@@ -706,17 +719,25 @@ $(document).ready(function(){
    * @returns {{}}
    */
   app.helpers.menuTemplates = function(type, model){
+
     var opts = {};
     switch (type){
-
       case 'song':
         opts = {
+          title: (model.album != '' ? model.album : model.label),
           key: 'song',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'song-download', title: 'Download song'},
-            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist'},
-            {url: '#', class: 'song-browser-play', title: 'Play in browser'}
+            {url: '#', class: 'song-download', title: 'Download song', callback: function(){
+              app.AudioController.downloadFile(model.file, function(url){ window.location = url; })
+            }},
+            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist', callback: function(){
+              //@TODO do an id lookup if no songid
+              if(model.songid){ app.playlists.playlistAddItems('lists', 'new', 'song', model.songid); }
+            }},
+            {url: '#', class: 'song-browser-play', title: 'Play in browser', callback: function(){
+              if(model.songid){ app.playlists.playlistAddItems('local', 'replace', 'song', model.songid); }
+            }}
           ]
         };
         break;
@@ -724,18 +745,18 @@ $(document).ready(function(){
       // also contains callbacks
       case 'album':
         opts = {
-          title: (model.label != '' ? model.label : model.album),
+          title: (model.album != '' ? model.album : model.label),
           key: 'album',
           omitwrapper: true,
           items: [
             {url: '#', class: 'album-add-xbmc', title: 'Add to XBMC', callback: function(){
-              app.playlists.playlistAddItems('xbmc', 'album', model.albumid);
+              app.playlists.playlistAddItems('xbmc', 'append', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-local', title: 'Play in browser', callback: function(){
-              app.playlists.playlistAddItems('local', 'album', model.albumid);
+              app.playlists.playlistAddItems('local', 'replace', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'album', model.albumid)
+              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid)
             }}
           ]
         };
@@ -749,13 +770,13 @@ $(document).ready(function(){
           omitwrapper: true,
           items: [
             {url: '#', class: 'artist-add-xbmc', title: 'Add to XBMC', callback: function(){
-              app.playlists.playlistAddItems('xbmc', 'artist', model.artistid);
+              app.playlists.playlistAddItems('xbmc', 'append', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-local', title: 'Play in browser', callback: function(){
-              app.playlists.playlistAddItems('local', 'artist', model.artistid);
+              app.playlists.playlistAddItems('local', 'replace', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'artist', model.artistid)
+              app.playlists.playlistAddItems('lists', 'new', 'artist', model.artistid)
             }}
           ]
         };

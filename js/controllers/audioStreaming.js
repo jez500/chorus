@@ -1,4 +1,45 @@
 /**
+ * Binds
+ * =====================================================================
+ */
+
+/**
+ * On Shell ready
+ * Browser player binds and load last playlist from local storage
+ */
+$(window).on('shellReady', function(){
+  // browser player setup
+  app.audioStreaming.init();
+});
+
+
+/**
+ * On Playback start
+ * Browser player has started (or resumed playback)
+ */
+$(window).on('browserPlayerStart', function(song){
+  app.audioStreaming.playbackInProgress = true;
+  app.audioStreaming.setTitle('playing', song.label);
+});
+
+
+/**
+ * On Playback stop
+ * Browser player has stopped (or paused)
+ */
+$(window).on('browserPlayerStop', function(song){
+  app.audioStreaming.playbackInProgress = false;
+  app.audioStreaming.setTitle('stop', song.label);
+});
+
+
+
+/**
+ * audioStreaming object
+ * =====================================================================
+ */
+
+/**
  * Handles local audio streaming in the browser
  * @type {{}}
  */
@@ -12,6 +53,7 @@ app.audioStreaming = {
   progressEl: '#browser-progress-bar',
   volumeEl: '#browser-volume',
   playlistEl: '#playlist-local',
+  playbackInProgress: false,
 
   // local storage
   lastListKey: 'lastBrowserList',
@@ -27,55 +69,65 @@ app.audioStreaming = {
    */
   init: function($context){
 
-    //sound manager
-    soundManager.url = '/lib/soundmanager/swf/';
-    soundManager.preferFlash = true;
-    soundManager.flashVersion = 9; // optional: shiny features (default = 8)
-    soundManager.useFlashBlock = false;
-    soundManager.onready(function() {
-      // Ready to use; soundManager.createSound() etc. can now be called.
-    });
-
     app.audioStreaming.$body = $('body');
     app.audioStreaming.$window = $(window);
 
-    // create a local browser playlist object that will contain local player information
-    // most importantly is the current playlist
-    // @TODO see if exists in local storage
-    app.audioStreaming.playList = {
-      items: [],
-      playingPosition: 0,
-      id: 0,
-      repeat: 'off',
-      random: 'off',
-      mute: false
-    };
+    soundManager.setup({
 
+      url: 'lib/soundmanager/swf/',
+      flashVersion: 9,
+      preferFlash: true, // prefer 100% HTML5 mode, where both supported
+      useHTML5Audio: true,
+      useFlashBlock: false,
 
-    // Get last browser playlist collection, if any
-    var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
-    console.log(lastList);
-    if(lastList != undefined && lastList.length > 0){
-      // when songs are ready, render them
-      app.store.libraryCall(function(){
-        // get collection based on songids
-        app.playlists.playlistGetItems('items', lastList, function(collection){
-          app.audioStreaming.playList.items = collection;
-          console.log(collection);
-          // render it too
-          app.audioStreaming.renderPlaylistItems();
-          // add as loaded song
-          if(collection.models != undefined && collection.models[0] != undefined){
-            // load the first song
-            var song = collection.models[0];
-            app.audioStreaming.loadSong(song);
-            // update playing song details around the page
-            app.audioStreaming.updatePlayingState(song.attributes);
-          }
+      // Sound manager ready!
+      onready: function(){
+        $(window).trigger('soundManagerReady');
 
-        });
-      }, 'songsReady');
-    }
+        // create a local browser playlist object that will contain local player information
+        // most importantly is the current playlist
+        app.audioStreaming.playList = {
+          items: [],
+          playingPosition: 0,
+          id: 0,
+          repeat: 'off',
+          random: 'off',
+          mute: false
+        };
+
+        // set a default (lower vol)
+        soundManager.setVolume(app.audioStreaming.defaultVol);
+
+        // Get last browser playlist collection, if any
+        var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
+        if(lastList != undefined && lastList.length > 0){
+          // when songs are ready, render them
+          app.store.libraryCall(function(){
+            // get collection based on songids
+            app.playlists.playlistGetItems('items', lastList, function(collection){
+              app.audioStreaming.playList.items = collection;
+              // render it too
+              app.audioStreaming.renderPlaylistItems();
+              // add as loaded song
+              if(collection.models != undefined && collection.models[0] != undefined){
+                // load the first song
+                var song = collection.models[0];
+                app.audioStreaming.loadSong(song);
+                // update playing song details around the page
+                app.audioStreaming.updatePlayingState(song.attributes);
+              }
+
+            });
+          }, 'songsReady');
+        }
+
+      } // end onready
+
+    }); // end setup
+
+    // Wake up our sliders
+    app.audioStreaming.progressInit();
+    app.audioStreaming.volumeInit();
   },
 
 
@@ -101,6 +153,19 @@ app.audioStreaming = {
       }
     }
 
+  },
+
+
+  /**
+   * Get the current player
+   */
+  getPlayer: function(){
+    // check if body has the local class
+    if(app.audioStreaming.$body.hasClass(app.audioStreaming.classLocal)){
+      return 'local';
+    } else {
+      return 'xbmc'
+    }
   },
 
 
@@ -134,10 +199,8 @@ app.audioStreaming = {
    * @param collection
    */
   setPlaylistItems: function(collection){
-
     // update in current playlist state
     app.audioStreaming.playList.items = collection;
-
     // save ids to local storage
     var ids = [];
     $.each(collection.models, function(i,d){
@@ -145,16 +208,75 @@ app.audioStreaming = {
         ids.push(d.attributes.songid);
       }
     });
-    console.log('ids', ids);
     app.storageController.setStorage(app.audioStreaming.lastListKey, ids);
   },
 
 
   /**
-   * (re)Render browser playlist to screen
+   *  Appends a new collection to the current playlist collection and re-render list
+   *
+   * @param newCollection
+   */
+  appendPlaylistItems: function(newCollection, callback){
+    // update in current playlist state
+    var collection;
+    if(app.audioStreaming.playList == undefined){
+      // no current playlist extists so just replace
+      collection = newCollection;
+      console.log(collection);
+    } else {
+      // append new models to original collection
+      collection = app.audioStreaming.playList.items;
+      $.each(newCollection.models, function(i,d){
+        collection.models.push(d);
+      });
+      collection.length = collection.models.length;
+    }
+    // set this collection as currently playing
+    app.audioStreaming.setPlaylistItems(collection);
+    // re-render
+    app.audioStreaming.renderPlaylistItems();
+    // call callback
+    if(callback){
+      callback();
+    }
+  },
+
+
+
+  /**
+   *  Replaces collection / playlist and starts playing
+   *
    * @param collection
    */
+  replacePlaylistItems: function(collection, callback){
+    // set this collection as currently playing
+    app.audioStreaming.setPlaylistItems(collection);
+    // re-render
+    app.audioStreaming.renderPlaylistItems();
+    // Load up the song in the first spot
+    app.audioStreaming.loadSong(collection.models[0], function(){
+      // change view
+      app.playlists.changePlaylistView('local');
+      // play song
+      app.audioStreaming.playPosition(0);
+      // call callback
+      if(callback){
+        callback();
+      }
+    });
+  },
+
+
+  /**
+   * (re)Render browser playlist to screen
+   */
   renderPlaylistItems: function(){
+
+    // Protect from dirty data
+    if(app.audioStreaming.playList == undefined){
+      return;
+    }
 
     // Get Song collection
     var collection = app.audioStreaming.playList.items;
@@ -205,18 +327,25 @@ app.audioStreaming = {
           // toggle classes
           $('body').addClass('browser-playing').removeClass('browser-paused');
           app.audioStreaming.updatePlayingState(song);
+          // When we start playing a new song it resets the volume to max
+          var level = $('#browser-volume').slider('value');
+          app.audioStreaming.localPlay.setVolume(level);
+          $(window).trigger('browserPlayerStart', [song]);
         },
         onstop: function(){
           // remove classes
           $('body').removeClass('browser-playing').removeClass('browser-paused');
+          $(window).trigger('browserPlayerStop', [song]);
         },
         onpause:  function(){
           // toggle classes
           $('body').removeClass('browser-playing').addClass('browser-paused');
+          $(window).trigger('browserPlayerStop', [song]);
         },
         onresume:function(){
           // toggle classes
           $('body').addClass('browser-playing').removeClass('browser-paused');
+          $(window).trigger('browserPlayerStart', [song]);
         },
 
         // What happens at then end of a track
@@ -316,6 +445,8 @@ app.audioStreaming = {
       $playingEl.addClass('browser-playing-row')
     }
 
+    app.audioStreaming.setTitle('playing', song.label);
+
     // playing song (@todo flickers fix)
     //$('.song').removeClass('playing-row');
     //$('.song[data-id=' + song.songid + ']').addClass('playing-row');
@@ -350,6 +481,17 @@ app.audioStreaming = {
 
     }
   },
+
+
+  /**
+   * Set document title
+   */
+  setTitle:function (status, title) {
+    if(app.audioStreaming.getPlayer() == 'local'){
+      document.title = (status == 'playing' ? '▶ ' : '') + title + ' | Chorus.'; //doc
+    }
+  },
+
 
 
   // Progress Bar
@@ -391,7 +533,6 @@ app.audioStreaming = {
         app.audioStreaming.localPlay.setVolume(ui.value);
       }
     });
-    console.log('vol', $('#browser-volume'));
   },
 
 
@@ -568,7 +709,5 @@ app.audioStreaming = {
     app.audioStreaming.renderPlaylistItems();
   }
 
-
-
-
 };
+

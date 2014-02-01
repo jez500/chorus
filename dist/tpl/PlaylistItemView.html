@@ -10,10 +10,12 @@
     <div class="playlist-song-actions-wrapper">
         <div class="playlist-song-actions dropdown" data-id="<%= id %>" data-album="<%= albumid %>">
             <button class="playlist-song-thumbsup btn" title="Thumbs Up"><i class="icon-thumbs-up"></i></button>
+            <button class="playlist-song-menu btn" title="More options"><i class="icon-ellipsis-vertical"></i></button>
         </div>
     </div>
     <% } %>
 
     <a class="playlist-play" href="#"><%= label %></a>
+    <div class="info"><%=artistLink%></div>
     <span class="playlist-meta"></span>
 </div>

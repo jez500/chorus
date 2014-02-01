@@ -61,9 +61,7 @@ app.PlaylistItemView = Backbone.View.extend({
     "click .playbtn": "playPosition",
     "click .repeating": "cycleRepeat",
     "click .playlist-song-thumbsup": "thumbsUp",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .playlist-song-menu": "menu"
   },
 
   initialize:function () {
@@ -74,6 +72,8 @@ app.PlaylistItemView = Backbone.View.extend({
     // file fallback
     this.model.id = (typeof this.model.id != 'undefined' ? this.model.id : 'file');
     this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
+    this.model.artistLink = this.buildArtistLink(this.model);
+
     // render
     this.$el.html(this.template(this.model));
 
@@ -86,18 +86,20 @@ app.PlaylistItemView = Backbone.View.extend({
     if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
       this.$el.addClass('thumbs-up')
     }
-
-    // set song menu
-    var songDropDown = app.helpers.menuTemplates('song');
-
-    songDropDown.pull = 'right';
-    $('.playlist-song-actions', this.$el).append( app.helpers.makeDropdown( songDropDown ));
-
     return this;
   },
 
-  playPosition:function(event){
 
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(e){
+    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model) );
+  },
+
+
+  playPosition:function(event){
     if(this.model.list == 'local'){
       // LOCAL BROWSER PLAY
       app.audioStreaming.playPosition(this.model.pos);
@@ -107,11 +109,10 @@ app.PlaylistItemView = Backbone.View.extend({
         app.AudioController.playlistRefresh();
       });
     }
-
   },
 
-  removePosition:function(event){
 
+  removePosition:function(event){
     if(this.model.list == 'local'){
       // LOCAL BROWSER REMOVE
       app.audioStreaming.deleteBrowserPlaylistSong(this.model.pos);
@@ -123,13 +124,13 @@ app.PlaylistItemView = Backbone.View.extend({
         app.AudioController.playlistRefresh();
       });
     }
-
-
   },
+
 
   cycleRepeat:function(event){
     $('#footer').find('.player-repeat').trigger('click');
   },
+
 
   thumbsUp: function(e){
     e.stopPropagation();
@@ -140,23 +141,23 @@ app.PlaylistItemView = Backbone.View.extend({
     $el.toggleClass('thumbs-up');
   },
 
-  downloadSong: function(e){
-    var file = this.model.file;
-    e.stopPropagation();
-    e.preventDefault();
-    app.AudioController.downloadFile(file, function(url){
-      window.location = url;
-    })
-  },
 
-  addToCustomPlaylist: function(e){
-    e.stopPropagation();
-    e.preventDefault();
-    var id = this.model.id;
-    app.playlists.saveCustomPlayListsDialog('song', [id]);
+  /**
+   * A helper to parse
+   * @param model
+   */
+  buildArtistLink: function(model){
+
+    model.albumArtistString = (typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
+    model.artistString = (typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
+    // if no artist or album artist, return null
+    if(model.artistString == '' && model.albumArtistString == ''){
+      return '';
+    }
+    // return link
+    return '<a href="#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString) + '">' +
+      (model.artistString != '' ? model.artistString : model.albumArtistString) + '</a>';
   }
-
-
 
 
 });
@@ -233,7 +234,6 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
   },
 
   render:function () {
-    console.log(this.model);
     this.$el.html(this.template(this.model.attributes));
     return this;
   }

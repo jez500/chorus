@@ -21,24 +21,23 @@ app.SongListView = Backbone.View.extend({
 app.SongView = Backbone.View.extend({
 
   tagName:"li",
-
   className:'song-row',
 
+
   events: {
-    "dblclick .song-title": "loadSong",
-    "click .song-play": "loadSong",
+    "dblclick .song-title": "playSong",
+    "click .song-play": "playSong",
     "click .song-add": "addSong",
     "click .song-thumbsup": "thumbsUp",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist",
-    "click .song-browser-play": "playInBrowser"
+    "click .song-menu": "menu"
   },
+
 
   initialize:function () {
     this.model.on("change", this.render, this);
     this.model.on("destroy", this.close, this);
   },
+
 
   render:function () {
     // add if thumbs up
@@ -47,12 +46,19 @@ app.SongView = Backbone.View.extend({
     }
     // render
     this.$el.html(this.template(this.model.attributes));
-
-    // set song menu
-    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song')  ));
-
     return this;
   },
+
+
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(e){
+    // set song menu
+    app.helpers.menuDialog( app.helpers.menuTemplates('song',this.model.attributes));
+  },
+
 
   /**
    * Inserts into next pos on playlist then plays
@@ -60,20 +66,41 @@ app.SongView = Backbone.View.extend({
    */
   playSong: function(event){
     var song = this.model.attributes;
-    app.playlists.changePlaylistView('xbmc');
-    app.AudioController.insertAndPlaySong('songid', song.songid, function(){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid, function(){
+        // play the last song in the list (what we just added)
+        app.audioStreaming.playPosition((app.audioStreaming.playList.items.models.length - 1));
+      });
+    } else {
+      app.playlists.changePlaylistView('xbmc');
+      app.AudioController.insertAndPlaySong('songid', song.songid, function(){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
+
   },
 
+
+  /**
+   * Append song
+   */
   addSong: function(){
     var song = this.model.attributes;
-    app.AudioController.playlistAdd( 'songid', song.songid, function(result){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid);
+    } else {
+      // Append to XBMC playlist
+      app.AudioController.playlistAdd( 'songid', song.songid, function(result){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
+
   },
+
 
   /**
    * Toggle thumbs up status
@@ -84,32 +111,6 @@ app.SongView = Backbone.View.extend({
       $el = $(e.target).closest('li');
     app.playlists.setThumbsUp(op, 'song', songid);
     $el.toggleClass('thumbs-up');
-  },
-
-  downloadSong: function(e){
-    var file = this.model.attributes.file;
-
-    e.preventDefault();
-    app.AudioController.downloadFile(file, function(url){
-      window.location = url;
-    })
-  },
-
-  playInBrowser: function(e){
-
-    var file = this.model.attributes;
-    e.preventDefault();
-
-    app.audioStreaming.loadSong(file, function(){
-      console.log('boo');
-    })
-
-  },
-
-  addToCustomPlaylist: function(e){
-    e.preventDefault();
-    var id = this.model.attributes.songid;
-    app.playlists.saveCustomPlayListsDialog('song', [id]);
   }
 
 });

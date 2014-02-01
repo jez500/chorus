@@ -382,37 +382,6 @@ app.AudioController.downloadFile = function(file, callback){
 };
 
 
-
-/**
- * Adds an album to the playlist and starts playing the given songid
- * @param songid
- * @param albumid
- */
-/*app.AudioController.playSongInAlbum = function(songid, albumid){
-
-
-  app.AudioController.playlistAdd('albumid', albumid, function(result){
-
-    //find the song and play it
-    var playing = false;
-    $.each(app.AudioController.currentPlaylist.items, function(i,d){
-      //matching song!
-      if(d.id == songid && playing === false){
-        app.AudioController.playPlaylistPosition(i, function(data){
-          //update playlist
-          app.AudioController.playlistRefresh();
-          //notify
-          app.notification('Now playing "' + d.label + '"');
-        });
-        playing = true;
-      }
-    });
-
-  });
-
-};*/
-
-
 /**
  * Generic player command with to callback required
  */
@@ -461,7 +430,7 @@ app.AudioController.getPlaylistItems = function(callback){
   app.xbmcController.command('Playlist.GetItems',
     [
       app.AudioController.playlistId,
-      ['albumid', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album']
+      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
     ], function(result){
     callback(result.result); // return items
   });
@@ -501,16 +470,30 @@ app.AudioController.getNowPlaying = function(callback){
   // this is a rather hefty that gets called every 5 sec so we throttle with error counts
   // only execute when 0
 
-  // reset count to 0 if at throttle
+  // throttle skips this number of checks before checking again
   var throttle = 4;
+  // 10 mins with no connection - increase throttle
+  if(app.counts['503total'] > 30){
+    throttle = 6;
+    app.notification('No connection to XBMC for 10mins! I\'ll check if it\'s there less often now ');
+  }
+  // 30 mins with no connection - increase throttle ((20min * 60sec) / (6throttle * 5interval)) + 30previousThrottle = 40
+  if(app.counts['503total'] > 70){
+    throttle = 12;
+    app.notification('No connection to XBMC for 30mins! I\'m pretty sure it has gone walkabout');
+  }
+
+  // reset count to 0 if at throttle
   if(app.counts[503] > throttle){
     app.counts[503] = 0;
+    app.counts['503total']++;
   }
 
   if(app.counts[503] != 0){
     // up the count and set the state
     app.counts[503]++;
     app.state = 'notconnected';
+    app.notification('Lost connection to XBMC');
     return;
   } else {
     // up the count so gets checked on success
@@ -540,6 +523,7 @@ app.AudioController.getNowPlaying = function(callback){
 
     // success set count to 0
     app.counts[503] = 0;
+    app.counts['503total'] = 0;
 
     // set some values
     ret.volume = properties.result;
@@ -574,6 +558,8 @@ app.AudioController.getNowPlaying = function(callback){
         if(callback){
           callback(ret);
         }
+
+
 
       });
 

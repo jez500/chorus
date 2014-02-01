@@ -2,7 +2,7 @@
 A nice web ui for xbmc, focused on user experience
 Currently only for music, but it might support video and photos in the future.
 
-Used by the [Doghouse Media Team](https://dhmedia.com.au) to control the shared office music box
+Used by the [Doghouse Media Team](http://dhmedia.com.au) to control the shared office music box
 (an old pc running XBMC with chorus, plugged into an amp and a nas)
 
 ## Author
@@ -46,6 +46,24 @@ if either client or server are low power (eg. not a pc).
 This is really tailored for a fairly large screen, it downsizes nicely to about 1200px wide.
 Mobile it is useless at the moment, but a possibility for the future.
 
+
+## Stream music from your XBMC library into your browser ##
+As of version 0.2.0 you can use chorus to control or streaming the music direct to your browser!
+This is still quite experimental a there are a few minor hiccups to consider:
+- It doesn't want to work with Firefox, possible an issue with HTML5 audio and mp3s. When using Chrome and even Internet Explorer 10 it works great.
+- Seeking works intermittently, I think it might be to do with how much of the song is cached, I have also heard that Gotham might fix this but have not yet tried.
+- It didn't work on my Android Media Player, this could also be caused by the XBMC version/build
+- I Haven't tested it over the internet yet, but works great over a LAN
+Otherwise it works really well!
+
+### How to use this browser streaming ###
+In the top right there are some tabs, two of them are named XBMC and Local, this is how you toggle what player the UI
+is controlling.  In Local mode the colour scheme becomes lighter with a hint of blue, In XBMC mode the colors are
+the default darker scheme with a touch of orange.  When you are in a given mode, actions affect that player, so if you
+click Play on a track when in Local mode, it will play through the browser, likewise, when in XBMC mode all commands are
+sent to XBMC.  You can also add media to other playlists by clicking the menu buttons (three dots vertical) on most media items.
+
+
 ## Supported xbmc addons
 - Soundcloud
 
@@ -64,6 +82,7 @@ Chorus uses the following open source libraries, creds to all authors:
 - scrollTo
 - total storage
 - Font awesome
+- Sound Manager 2
 - for all, see lib/enabled
 
 ## Developers
@@ -80,7 +99,7 @@ A few things that are "nice to haves"
 - Addons, Make it work with your favourite addon - I attempted google music but failed even using it via the ui
 - Mobile/Tablet App, I would love to reuse a lot of the code as an app, but dont know how
 - Video Support, It would be cool to both browse your video library but also play videos via the browser
-- In Browser audio playback, this was a feature of xbmcwui and I miss it a bit
+- Browser streaming audio playback... maybe you want it to work in firefox?
 - Photo library, I wouldn't use it, but you might!
 
 ## Screenshots

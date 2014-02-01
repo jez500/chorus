@@ -1,5 +1,13 @@
-
-
+/**
+ * A Generic view used as a wrapper for sub pages
+ *
+ * Why aren't they using to standard backbone router you say?
+ * All of these are really experimental features, rarely used if any were to
+ * be developed into a primary feature it would be refactored into its own view,
+ * This way more can be reused
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.XbmcView = Backbone.View.extend({
 
   tagName:'div',

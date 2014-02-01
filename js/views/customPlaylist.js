@@ -15,7 +15,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     "click .playlist-delete": "deleteCustomListPlaylist",
     "click .thumbsup-append": "appendThumbsup",
     "click .thumbsup-replace": "replaceThumbsup",
-    "click .thumbsup-browser-replace": "browserReplaceThumbsup"
+    "click .thumbsup-browser-replace": "browserReplacePlaylist"
   },
 
   initialize:function () {
@@ -114,12 +114,18 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
 
 
   /**
-   * Replace Browser  playlist with a custom playlist
+   * Replace Browser player playlist with a custom playlist or thumbs up songs
    * @param e
    */
   browserReplacePlaylist: function(e){
     e.preventDefault();
-    app.playlists.playlistAddItems('local', 'list', this.list.id);
+    if(app.helpers.arg(0) == 'thumbsup'){
+      // on thumbs up
+      app.playlists.playlistAddItems('local', 'replace', 'thumbsup', 'song');
+    } else {
+      //on custom playlist
+      app.playlists.playlistAddItems('local', 'replace', 'list', this.list.id);
+    }
   },
 
 
@@ -290,15 +296,17 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     "click .song-add":      "addSong",
     "click .song-thumbsup": "thumbsUp",
     "click .song-remove":   "removeSong",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .song-menu":   "menu",
   },
 
-  initialize:function () {
 
-  },
+  initialize:function () {},
 
+
+  /**
+   * Render
+   * @param e
+   */
   render:function () {
 
     if(typeof this.model.attributes.position == 'undefined'){
@@ -313,11 +321,19 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     // render
     this.$el.html(this.template(this.model.attributes));
 
-    // set playlist menu
-    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song' ) ));
 
     return this;
   },
+
+
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(){
+    app.helpers.makeDropdown( app.helpers.menuDialog('song', this.model.attributes ));
+  },
+
 
   /**
    * Inserts into next pos on playlist then plays

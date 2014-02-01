@@ -6,7 +6,7 @@ var app = {
 
   cached: {}, //for caching views and collections
 
-  counts: {503: 0}, // count defaults
+  counts: {503: 0, '503total': 0}, // count defaults
 
   state: 'notconnected',
 
@@ -148,16 +148,12 @@ app.Router = Backbone.Router.extend({
     app.shellView = new app.ShellView();
     $('body').html(app.shellView.render().el);
 
-    // cache thumbs up
-    app.playlists.getThumbsUp();
+    // Let all that depends on shell being rendered hook in
+    $(window).trigger('shellReady');
 
-    // get version
-    $.get('addon.xml',function(data){
-      app.addonData = $(data).find('addon').attr();
-    });
-
+    // Set content area to var
     this.$content = $("#content");
-    this.$title = $('#title');
+
   },
 
 

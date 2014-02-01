@@ -152,32 +152,45 @@ app.ArtistLargeItemView = Backbone.View.extend({
     app.helpers.menuDialog(menu);
   },
 
-
+  /**
+   * Replace and play
+   * @param e
+   */
   playArtist: function(e){
     e.stopPropagation();
     e.preventDefault();
-    // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
-      app.AudioController.playPlaylistPosition(0, function(){
-        app.notification('Now playing ' + artist.artist);
-        app.AudioController.playlistRefresh();
-      });
-    });
 
+    if(app.audioStreaming.getPlayer() == 'local'){
+      app.playlists.playlistAddItems('local', 'replace', 'artist', artist.artistid);
+    } else {
+      // clear playlist. add artist, play first song
+      app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
+        app.AudioController.playPlaylistPosition(0, function(){
+          app.notification('Now playing ' + artist.artist);
+          app.AudioController.playlistRefresh();
+        });
+      });
+    }
   },
 
-
+  /**
+   * Append
+   * @param e
+   */
   addArtist: function(e){
     e.stopPropagation();
     e.preventDefault();
     // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
-      app.notification(artist.artist + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
-
+    if(app.audioStreaming.getPlayer() == 'local'){
+      app.playlists.playlistAddItems('local', 'append', 'artist', artist.artistid);
+    } else {
+      app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
+        app.notification(artist.artist + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
   },
 
 

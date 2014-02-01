@@ -133,11 +133,6 @@ app.AlbumItemSmallView = Backbone.View.extend({
       this.$el.addClass('recent');
     }
 
-    // add context menu
-   // var albumDropDown = app.helpers.menuTemplates('album');
-    //$('.album-actions', this.$el).append( app.helpers.makeDropdown( albumDropDown ));
-
-
     return this;
   },
 
@@ -162,13 +157,20 @@ app.AlbumItemSmallView = Backbone.View.extend({
   playAlbum: function(e){
     e.stopPropagation();
     e.preventDefault();
-    // clear playlist. add artist, play first song
     var album = this.model.attributes;
-    app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
-      app.AudioController.playPlaylistPosition(0, function(){
-        app.AudioController.playlistRefresh();
+
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // local player add
+      app.playlists.playlistAddItems('local', 'replace', 'album', album.albumid);
+    } else {
+      // clear xbmc playlist. add artist, play first song
+      app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
+        app.AudioController.playPlaylistPosition(0, function(){
+          app.AudioController.playlistRefresh();
+        });
       });
-    });
+    }
+
 
   },
 
@@ -178,12 +180,19 @@ app.AlbumItemSmallView = Backbone.View.extend({
   addAlbum: function(e){
     e.stopPropagation();
     e.preventDefault();
-    // clear playlist. add artist, play first song
     var album = this.model.attributes;
-    app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
-      app.notification(album.album + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
+
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Append to xbmc playlist
+      app.playlists.playlistAddItems('local', 'append', 'album', album.albumid);
+    } else {
+       // Append to xbmc playlist
+      app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
+        app.notification(album.album + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
+
 
   },
 
