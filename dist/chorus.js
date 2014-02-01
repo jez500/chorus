@@ -13426,6 +13426,19 @@ var notificationTimoutObj = {};
 
 
 /**
+ * Generic Helper Utils Binds
+ */
+$(window).on('shellReady', function(){
+  // Get our dialog ready for use
+  app.helpers.dialogInit();
+  // get version
+  $.get('addon.xml',function(data){
+    app.addonData = $(data).find('addon').attr();
+  });
+});
+
+
+/**
  * Dom ready
  */
 $(document).ready(function(){
@@ -13835,6 +13848,35 @@ $(document).ready(function(){
 
 
   /********************************************************************************
+   * Backstretch
+   ********************************************************************************/
+
+
+  /**
+   * Add / update backstretch if required
+   *
+   * @param fanart
+   *  The image to use
+   * @param player
+   * local or xbmc
+   */
+  app.helpers.applyBackstretch = function(fanart, player){
+    // Ensure on homepage and using the correct player
+    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == player){
+      // if homepage backstretch exists and changed, update
+      var $bs = $('.backstretch img'),
+        origImg = $bs.attr('src'),
+        newImg = app.parseImage(fanart, 'fanart');
+      // if image is different
+      if($bs.length > 0 && origImg != newImg){
+        $.backstretch(newImg);
+      }
+    }
+  };
+
+
+
+ /********************************************************************************
    * Title
    ********************************************************************************/
 
@@ -13901,7 +13943,7 @@ $(document).ready(function(){
    */
   app.helpers.dialog = function(content, options){
 
-    $dialog = $( app.helpers.getSelector('dialog') );
+    var $dialog = $( app.helpers.getSelector('dialog') );
 
     // init dialog if required
     if(!$dialog.hasClass('ui-dialog-content')){
@@ -14119,17 +14161,25 @@ $(document).ready(function(){
    * @returns {{}}
    */
   app.helpers.menuTemplates = function(type, model){
+
     var opts = {};
     switch (type){
-
       case 'song':
         opts = {
+          title: (model.album != '' ? model.album : model.label),
           key: 'song',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'song-download', title: 'Download song'},
-            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist'},
-            {url: '#', class: 'song-browser-play', title: 'Play in browser'}
+            {url: '#', class: 'song-download', title: 'Download song', callback: function(){
+              app.AudioController.downloadFile(model.file, function(url){ window.location = url; })
+            }},
+            {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist', callback: function(){
+              //@TODO do an id lookup if no songid
+              if(model.songid){ app.playlists.playlistAddItems('lists', 'new', 'song', model.songid); }
+            }},
+            {url: '#', class: 'song-browser-play', title: 'Play in browser', callback: function(){
+              if(model.songid){ app.playlists.playlistAddItems('local', 'replace', 'song', model.songid); }
+            }}
           ]
         };
         break;
@@ -14137,18 +14187,18 @@ $(document).ready(function(){
       // also contains callbacks
       case 'album':
         opts = {
-          title: (model.label != '' ? model.label : model.album),
+          title: (model.album != '' ? model.album : model.label),
           key: 'album',
           omitwrapper: true,
           items: [
             {url: '#', class: 'album-add-xbmc', title: 'Add to XBMC', callback: function(){
-              app.playlists.playlistAddItems('xbmc', 'album', model.albumid);
+              app.playlists.playlistAddItems('xbmc', 'append', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-local', title: 'Play in browser', callback: function(){
-              app.playlists.playlistAddItems('local', 'album', model.albumid);
+              app.playlists.playlistAddItems('local', 'replace', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'album', model.albumid)
+              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid)
             }}
           ]
         };
@@ -14162,13 +14212,13 @@ $(document).ready(function(){
           omitwrapper: true,
           items: [
             {url: '#', class: 'artist-add-xbmc', title: 'Add to XBMC', callback: function(){
-              app.playlists.playlistAddItems('xbmc', 'artist', model.artistid);
+              app.playlists.playlistAddItems('xbmc', 'append', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-local', title: 'Play in browser', callback: function(){
-              app.playlists.playlistAddItems('local', 'artist', model.artistid);
+              app.playlists.playlistAddItems('local', 'replace', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'artist', model.artistid)
+              app.playlists.playlistAddItems('lists', 'new', 'artist', model.artistid)
             }}
           ]
         };
@@ -14413,7 +14463,7 @@ $(document).ready(function(){
 
   cached: {}, //for caching views and collections
 
-  counts: {503: 0}, // count defaults
+  counts: {503: 0, '503total': 0}, // count defaults
 
   state: 'notconnected',
 
@@ -14478,7 +14528,7 @@ $(document).ready(function(){
     //"musicbrainzalbumid",
     //"musicbrainzalbumartistid",
     "playcount",
-    //"fanart",
+    "fanart",
     "thumbnail",
     "file",
     "albumid",
@@ -14555,16 +14605,12 @@ app.Router = Backbone.Router.extend({
     app.shellView = new app.ShellView();
     $('body').html(app.shellView.render().el);
 
-    // cache thumbs up
-    app.playlists.getThumbsUp();
+    // Let all that depends on shell being rendered hook in
+    $(window).trigger('shellReady');
 
-    // get version
-    $.get('addon.xml',function(data){
-      app.addonData = $(data).find('addon').attr();
-    });
-
+    // Set content area to var
     this.$content = $("#content");
-    this.$title = $('#title');
+
   },
 
 
@@ -14573,40 +14619,37 @@ app.Router = Backbone.Router.extend({
    */
   home: function () { //Not in use atm
 
-    var self = this;
+    var backstretchImage = '';
+
+    // empty content
+    this.$content.html('');
+
+    // title
+    app.helpers.setTitle('');
+
+    // menu
+    app.shellView.selectMenuItem('home', 'no-sidebar');
+
+    // get now playing
     app.AudioController.getNowPlayingSong(function(data){
 
-      if(data.status == 'notPlaying'){
-
-        // get a default fanart
-        var fa = app.parseImage('', 'fanart');
-        $.backstretch(fa);
-        self.$content.html('');
-
+      if(app.audioStreaming.getPlayer() == 'local'){
+        // get the local playing item
+        var browserPlaying = app.audioStreaming.getNowPlayingSong();
+        backstretchImage = (browserPlaying.fanart == undefined ? '' : browserPlaying.fanart);
       } else {
-        // Something is playing
-
-        // add backstretch
-        if($('.backstretch').length == 0){
-          var fa = app.parseImage(data.item.fanart, 'fanart');
-          $.backstretch(fa);
-        }
-
-        // render
-        app.homelView = new app.HomeView({model:data.item});
-        app.homelView.render();
-        self.$content.html(app.homelView.el);
+        // xbmc playing image
+        backstretchImage = (data.item.fanart == undefined ? '' : data.item.fanart);
       }
 
-      // title
-      app.helpers.setTitle('');
+      // Add Backstretch if image
+      if($('.backstretch').length == 0){
+        var fa = app.parseImage(backstretchImage, 'fanart');
+        $.backstretch(fa);
+      }
 
-      // menu
-      app.shellView.selectMenuItem('home', 'no-sidebar');
-
-      //show now playing
-      app.playlists.changePlaylistView('xbmc');
     });
+
   },
 
 
@@ -14738,6 +14781,8 @@ app.Router = Backbone.Router.extend({
         // add back to models
         albumsAdded.models = allAlbums;
         albumsAdded.length = allAlbums.length;
+        // cache for later
+        app.cached.recentlAlbums = albumsAdded;
 
         // render
         app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albumsAdded, className:'album-list-landing'});
@@ -15801,37 +15846,6 @@ app.AudioController.downloadFile = function(file, callback){
 };
 
 
-
-/**
- * Adds an album to the playlist and starts playing the given songid
- * @param songid
- * @param albumid
- */
-/*app.AudioController.playSongInAlbum = function(songid, albumid){
-
-
-  app.AudioController.playlistAdd('albumid', albumid, function(result){
-
-    //find the song and play it
-    var playing = false;
-    $.each(app.AudioController.currentPlaylist.items, function(i,d){
-      //matching song!
-      if(d.id == songid && playing === false){
-        app.AudioController.playPlaylistPosition(i, function(data){
-          //update playlist
-          app.AudioController.playlistRefresh();
-          //notify
-          app.notification('Now playing "' + d.label + '"');
-        });
-        playing = true;
-      }
-    });
-
-  });
-
-};*/
-
-
 /**
  * Generic player command with to callback required
  */
@@ -15880,7 +15894,7 @@ app.AudioController.getPlaylistItems = function(callback){
   app.xbmcController.command('Playlist.GetItems',
     [
       app.AudioController.playlistId,
-      ['albumid', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album']
+      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
     ], function(result){
     callback(result.result); // return items
   });
@@ -15911,6 +15925,7 @@ app.AudioController.audioLibraryScan = function(){
 };
 
 
+
 /**
  * Get now playing
  */
@@ -15920,16 +15935,30 @@ app.AudioController.getNowPlayingSong = function(callback){
   // this is a rather hefty that gets called every 5 sec so we throttle with error counts
   // only execute when 0
 
-  // reset count to 0 if at throttle
+  // throttle skips this number of checks before checking again
   var throttle = 4;
+  // 10 mins with no connection - increase throttle
+  if(app.counts['503total'] > 30){
+    throttle = 6;
+    app.notification('No connection to XBMC for 10mins! I\'ll check if it\'s there less often now ');
+  }
+  // 30 mins with no connection - increase throttle ((20min * 60sec) / (6throttle * 5interval)) + 30previousThrottle = 40
+  if(app.counts['503total'] > 70){
+    throttle = 12;
+    app.notification('No connection to XBMC for 30mins! I\'m pretty sure it has gone walkabout');
+  }
+
+  // reset count to 0 if at throttle
   if(app.counts[503] > throttle){
     app.counts[503] = 0;
+    app.counts['503total']++;
   }
 
   if(app.counts[503] != 0){
     // up the count and set the state
     app.counts[503]++;
     app.state = 'notconnected';
+    app.notification('Lost connection to XBMC');
     return;
   } else {
     // up the count so gets checked on success
@@ -15959,6 +15988,7 @@ app.AudioController.getNowPlayingSong = function(callback){
 
     // success set count to 0
     app.counts[503] = 0;
+    app.counts['503total'] = 0;
 
     // set some values
     ret.volume = properties.result;
@@ -15993,6 +16023,8 @@ app.AudioController.getNowPlayingSong = function(callback){
         if(callback){
           callback(ret);
         }
+
+
 
       });
 
@@ -16065,6 +16097,47 @@ app.AudioController.updatePlayerState = function(){
     //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
   });
 };;/**
+ * Binds
+ * =====================================================================
+ */
+
+/**
+ * On Shell ready
+ * Browser player binds and load last playlist from local storage
+ */
+$(window).on('shellReady', function(){
+  // browser player setup
+  app.audioStreaming.init();
+});
+
+
+/**
+ * On Playback start
+ * Browser player has started (or resumed playback)
+ */
+$(window).on('browserPlayerStart', function(song){
+  app.audioStreaming.playbackInProgress = true;
+  app.audioStreaming.setTitle('playing', song.label);
+});
+
+
+/**
+ * On Playback stop
+ * Browser player has stopped (or paused)
+ */
+$(window).on('browserPlayerStop', function(song){
+  app.audioStreaming.playbackInProgress = false;
+  app.audioStreaming.setTitle('stop', song.label);
+});
+
+
+
+/**
+ * audioStreaming object
+ * =====================================================================
+ */
+
+/**
  * Handles local audio streaming in the browser
  * @type {{}}
  */
@@ -16078,6 +16151,7 @@ app.audioStreaming = {
   progressEl: '#browser-progress-bar',
   volumeEl: '#browser-volume',
   playlistEl: '#playlist-local',
+  playbackInProgress: false,
 
   // local storage
   lastListKey: 'lastBrowserList',
@@ -16093,55 +16167,65 @@ app.audioStreaming = {
    */
   init: function($context){
 
-    //sound manager
-    soundManager.url = '/lib/soundmanager/swf/';
-    soundManager.preferFlash = true;
-    soundManager.flashVersion = 9; // optional: shiny features (default = 8)
-    soundManager.useFlashBlock = false;
-    soundManager.onready(function() {
-      // Ready to use; soundManager.createSound() etc. can now be called.
-    });
-
     app.audioStreaming.$body = $('body');
     app.audioStreaming.$window = $(window);
 
-    // create a local browser playlist object that will contain local player information
-    // most importantly is the current playlist
-    // @TODO see if exists in local storage
-    app.audioStreaming.playList = {
-      items: [],
-      playingPosition: 0,
-      id: 0,
-      repeat: 'off',
-      random: 'off',
-      mute: false
-    };
+    soundManager.setup({
 
+      url: 'lib/soundmanager/swf/',
+      flashVersion: 9,
+      preferFlash: true, // prefer 100% HTML5 mode, where both supported
+      useHTML5Audio: true,
+      useFlashBlock: false,
 
-    // Get last browser playlist collection, if any
-    var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
-    console.log(lastList);
-    if(lastList != undefined && lastList.length > 0){
-      // when songs are ready, render them
-      app.store.libraryCall(function(){
-        // get collection based on songids
-        app.playlists.playlistGetItems('items', lastList, function(collection){
-          app.audioStreaming.playList.items = collection;
-          console.log(collection);
-          // render it too
-          app.audioStreaming.renderPlaylistItems();
-          // add as loaded song
-          if(collection.models != undefined && collection.models[0] != undefined){
-            // load the first song
-            var song = collection.models[0];
-            app.audioStreaming.loadSong(song);
-            // update playing song details around the page
-            app.audioStreaming.updatePlayingState(song.attributes);
-          }
+      // Sound manager ready!
+      onready: function(){
+        $(window).trigger('soundManagerReady');
 
-        });
-      }, 'songsReady');
-    }
+        // create a local browser playlist object that will contain local player information
+        // most importantly is the current playlist
+        app.audioStreaming.playList = {
+          items: [],
+          playingPosition: 0,
+          id: 0,
+          repeat: 'off',
+          random: 'off',
+          mute: false
+        };
+
+        // set a default (lower vol)
+        soundManager.setVolume(app.audioStreaming.defaultVol);
+
+        // Get last browser playlist collection, if any
+        var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
+        if(lastList != undefined && lastList.length > 0){
+          // when songs are ready, render them
+          app.store.libraryCall(function(){
+            // get collection based on songids
+            app.playlists.playlistGetItems('items', lastList, function(collection){
+              app.audioStreaming.playList.items = collection;
+              // render it too
+              app.audioStreaming.renderPlaylistItems();
+              // add as loaded song
+              if(collection.models != undefined && collection.models[0] != undefined){
+                // load the first song
+                var song = collection.models[0];
+                app.audioStreaming.loadSong(song);
+                // update playing song details around the page
+                app.audioStreaming.updatePlayingState(song.attributes);
+              }
+
+            });
+          }, 'songsReady');
+        }
+
+      } // end onready
+
+    }); // end setup
+
+    // Wake up our sliders
+    app.audioStreaming.progressInit();
+    app.audioStreaming.volumeInit();
   },
 
 
@@ -16151,22 +16235,55 @@ app.audioStreaming = {
    * @param player
    */
   setPlayer: function(player){
+    var song;
 
-    if(player == undefined || player == ''){ //toggle
-      app.audioStreaming.$body.toggleClass(app.audioStreaming.classXbmc).toggleClass(app.audioStreaming.classLocal);
-    } else {
-      if(player == 'xbmc'){
-        app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
-      }
-      if(player == 'local'){
-        app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
-        // if empty, render
-        if($('ul.browser-playlist-song-list').length == 0){
-          app.audioStreaming.renderPlaylistItems();
-        }
-      }
+    // Switch to XBMC Player
+    if(player == 'xbmc'){
+      app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
+      // Homepage Backstretch for xbmc (if applicable)
+      song = app.cached.nowPlaying.item;
+      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'xbmc');
     }
 
+    // Switch to Local Player
+    if(player == 'local'){
+      app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
+      // if empty, render
+      if($('ul.browser-playlist-song-list').length == 0){
+        app.audioStreaming.renderPlaylistItems();
+      }
+      // Homepage Backstretch for local (if applicable)
+      song = app.audioStreaming.getNowPlayingSong();
+      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
+    }
+
+  },
+
+
+  /**
+   * Get the current player
+   */
+  getPlayer: function(){
+    // check if body has the local class
+    if(app.audioStreaming.$body.hasClass(app.audioStreaming.classLocal)){
+      return 'local';
+    } else {
+      return 'xbmc'
+    }
+  },
+
+
+  /**
+   * Get currently playing song
+   * @returns {*}
+   */
+  getNowPlayingSong: function(){
+    if(app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] != undefined){
+      var model = app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition];
+      return model.attributes;
+    } else {
+      return {};
+    }
   },
 
 
@@ -16182,7 +16299,6 @@ app.audioStreaming = {
     if(app.audioStreaming.playList.items.models.length > 0){
         var model = app.audioStreaming.playList.items.models[parseInt(pos)].attributes;
         app.audioStreaming.playList.playingPosition = pos;
-        console.log(model);
         app.audioStreaming.loadSong({attributes: model}, function(){
           // play
           app.audioStreaming.play();
@@ -16200,10 +16316,8 @@ app.audioStreaming = {
    * @param collection
    */
   setPlaylistItems: function(collection){
-
     // update in current playlist state
     app.audioStreaming.playList.items = collection;
-
     // save ids to local storage
     var ids = [];
     $.each(collection.models, function(i,d){
@@ -16211,16 +16325,75 @@ app.audioStreaming = {
         ids.push(d.attributes.songid);
       }
     });
-    console.log('ids', ids);
     app.storageController.setStorage(app.audioStreaming.lastListKey, ids);
   },
 
 
   /**
-   * (re)Render browser playlist to screen
+   *  Appends a new collection to the current playlist collection and re-render list
+   *
+   * @param newCollection
+   */
+  appendPlaylistItems: function(newCollection, callback){
+    // update in current playlist state
+    var collection;
+    if(app.audioStreaming.playList == undefined){
+      // no current playlist extists so just replace
+      collection = newCollection;
+      console.log(collection);
+    } else {
+      // append new models to original collection
+      collection = app.audioStreaming.playList.items;
+      $.each(newCollection.models, function(i,d){
+        collection.models.push(d);
+      });
+      collection.length = collection.models.length;
+    }
+    // set this collection as currently playing
+    app.audioStreaming.setPlaylistItems(collection);
+    // re-render
+    app.audioStreaming.renderPlaylistItems();
+    // call callback
+    if(callback){
+      callback();
+    }
+  },
+
+
+
+  /**
+   *  Replaces collection / playlist and starts playing
+   *
    * @param collection
    */
+  replacePlaylistItems: function(collection, callback){
+    // set this collection as currently playing
+    app.audioStreaming.setPlaylistItems(collection);
+    // re-render
+    app.audioStreaming.renderPlaylistItems();
+    // Load up the song in the first spot
+    app.audioStreaming.loadSong(collection.models[0], function(){
+      // change view
+      app.playlists.changePlaylistView('local');
+      // play song
+      app.audioStreaming.playPosition(0);
+      // call callback
+      if(callback){
+        callback();
+      }
+    });
+  },
+
+
+  /**
+   * (re)Render browser playlist to screen
+   */
   renderPlaylistItems: function(){
+
+    // Protect from dirty data
+    if(app.audioStreaming.playList == undefined){
+      return;
+    }
 
     // Get Song collection
     var collection = app.audioStreaming.playList.items;
@@ -16271,18 +16444,25 @@ app.audioStreaming = {
           // toggle classes
           $('body').addClass('browser-playing').removeClass('browser-paused');
           app.audioStreaming.updatePlayingState(song);
+          // When we start playing a new song it resets the volume to max
+          var level = $('#browser-volume').slider('value');
+          app.audioStreaming.localPlay.setVolume(level);
+          $(window).trigger('browserPlayerStart', [song]);
         },
         onstop: function(){
           // remove classes
           $('body').removeClass('browser-playing').removeClass('browser-paused');
+          $(window).trigger('browserPlayerStop', [song]);
         },
         onpause:  function(){
           // toggle classes
           $('body').removeClass('browser-playing').addClass('browser-paused');
+          $(window).trigger('browserPlayerStop', [song]);
         },
         onresume:function(){
           // toggle classes
           $('body').addClass('browser-playing').removeClass('browser-paused');
+          $(window).trigger('browserPlayerStart', [song]);
         },
 
         // What happens at then end of a track
@@ -16382,6 +16562,12 @@ app.audioStreaming = {
       $playingEl.addClass('browser-playing-row')
     }
 
+    // Set title and play icon
+    app.audioStreaming.setTitle('playing', song.label);
+
+    // Homepage Backstretch
+    app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
+
     // playing song (@todo flickers fix)
     //$('.song').removeClass('playing-row');
     //$('.song[data-id=' + song.songid + ']').addClass('playing-row');
@@ -16416,6 +16602,17 @@ app.audioStreaming = {
 
     }
   },
+
+
+  /**
+   * Set document title
+   */
+  setTitle:function (status, title) {
+    if(app.audioStreaming.getPlayer() == 'local'){
+      document.title = (status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
+    }
+  },
+
 
 
   // Progress Bar
@@ -16457,7 +16654,6 @@ app.audioStreaming = {
         app.audioStreaming.localPlay.setVolume(ui.value);
       }
     });
-    console.log('vol', $('#browser-volume'));
   },
 
 
@@ -16634,10 +16830,9 @@ app.audioStreaming = {
     app.audioStreaming.renderPlaylistItems();
   }
 
+};
 
-
-
-};;/**
+;/**
  * The app.playlists object is a collection of methods and properties specifically for
  * custom playlist functionality and helpers
  *
@@ -16648,6 +16843,23 @@ app.playlists = {
   storageKeyThumbsUp: 'playlist:thumbsUp'
 };
 
+
+/**
+ * Playlist Binds
+ */
+$(window).on('shellReady', function(){
+  // cache thumbs up
+  app.playlists.getThumbsUp();
+  // set playlist menu
+  $('.playlist-actions-wrapper', this.$el).html(
+    app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
+  );
+  //add custom playlists to dom
+  app.playlists.addCustomPlayLists(function(view){
+    var $sb = $('#playlist-lists', self.$el);
+    $sb.html(view.render().el);
+  });
+});
 
 
 /**
@@ -16745,6 +16957,8 @@ app.playlists.playlistGetItems = function(type, delta, callback){
  *
  * @param playlist
  *  playlist to add the type[delta] to. Options: xbmc, local, lists
+ * @param op
+ *  append, replace (replace will play), new (for custom lists)
  * @param type
  *  @see plalistGetItems
  * @param delta
@@ -16752,9 +16966,14 @@ app.playlists.playlistGetItems = function(type, delta, callback){
  * @param callback
  *  @see plalistGetItems
  */
-app.playlists.playlistAddItems = function(playlist, type, delta, callback){
+app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
 
   app.playlists.playlistGetItems(type, delta, function(collection){
+
+    // gate
+    if(collection.length == 0){
+      return;
+    }
 
     var items = [];
     $.each(collection.models, function(i,d){
@@ -16773,32 +16992,55 @@ app.playlists.playlistAddItems = function(playlist, type, delta, callback){
 
     switch(playlist){
 
-      // Add to xbmc playlist
+      // Append / Replace xbmc playlist @TODO abstract elsewhere
       case 'xbmc':
-        app.AudioController.playlistAddMultiple('mixed', items, function(){
-          app.AudioController.playlistRefresh();
-          app.playlists.changePlaylistView('xbmc');
-          callback();
-        });
-        break;
 
-      // Add to Local browser playlist - and play
-      case 'local':
-          // @todo abstract this
-          app.audioStreaming.setPlaylistItems(collection);
-          app.audioStreaming.renderPlaylistItems(collection);
-          app.audioStreaming.loadSong(collection.models[0], function(){
-            app.playlists.changePlaylistView('local');
-            // play song
-            app.audioStreaming.playPosition(0);
+        if(op == 'append'){
+          // Add items
+          app.AudioController.playlistAddMultiple('mixed', items, function(){
+            app.AudioController.playlistRefresh();
+            app.playlists.changePlaylistView('xbmc');
             callback();
           });
+        } else {
+          // Clear first then add items
+          app.AudioController.playlistClear(function(){
+            // Add items
+            app.AudioController.playlistAddMultiple('mixed', items, function(){
+              app.AudioController.playlistRefresh();
+              app.playlists.changePlaylistView('xbmc');
+              app.AudioController.playPlaylistPosition(i, function(data){
+                //update playlist
+                app.AudioController.playlistRefresh();
+                //callback
+                callback();
+              });
+            });
+          })
+        }
+
+        break;
+
+      // Append / Replace Local browser playlist
+      case 'local':
+
+        if(op == 'append'){
+          console.log('append', collection);
+          app.audioStreaming.appendPlaylistItems(collection, callback);
+        } else {
+          // replace and play
+          console.log('replace', collection);
+          app.audioStreaming.replacePlaylistItems(collection, callback)
+        }
+
         break;
 
       // Add to Custom Lists
       case 'lists':
+
         app.playlists.changePlaylistView('lists');
         app.playlists.saveCustomPlayListsDialog('local', items);
+
         break;
     }
 
@@ -17539,11 +17781,7 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.albumFields, //properties
   arg2: {"start": 0, "end": 15000}, //count
-<<<<<<< HEAD
-  arg3: {"sort": {"method": "album"}},
-=======
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
->>>>>>> minor tweaks, test build
   //method/params
   methods: {
     read:  ['AudioLibrary.GetAlbums', 'arg1', 'arg2', 'arg3']
@@ -18229,16 +18467,15 @@ app.MemoryStore = function (successCallback, errorCallback) {
     return ret;
   };
 
-
-
-
   //  call it on construct
   this.syncAudio(successCallback);
 
+
+
   /*
-   * Force sync songs with xbmc
+   * Force sync songs with xbmc DEPRECATED
    */
-  this.parseAudio = function(songs){
+  /* this.parseAudio = function(songs){
 
 
     //loop over each song
@@ -18280,7 +18517,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     });
 
-  };
+  };*/
 
 
   // Used to simulate async calls. This is done to provide a consistent
@@ -18454,6 +18691,9 @@ app.AlbumArtistView = Backbone.View.extend({
   className:'album-artist-item',
 
   initialize:function () {
+
+    console.log(this.model.attributes);
+
     this.artistModel = new app.Artist({"id": this.model.attributes.artistid, "fields":app.artistFields});
     this.artistAlbums = {};
   },
@@ -18465,10 +18705,6 @@ app.AlbumArtistView = Backbone.View.extend({
 
       //base template
       self.$el.html(self.template(artist.attributes));
-
-
-      // set the sidebar title
-      //$('#title a').html('Artists').attr('href', '#artists');
 
       //get the artists albums
       self.albumList = new app.AlbumCollection();
@@ -18623,11 +18859,6 @@ app.AlbumItemSmallView = Backbone.View.extend({
       this.$el.addClass('recent');
     }
 
-    // add context menu
-   // var albumDropDown = app.helpers.menuTemplates('album');
-    //$('.album-actions', this.$el).append( app.helpers.makeDropdown( albumDropDown ));
-
-
     return this;
   },
 
@@ -18652,13 +18883,20 @@ app.AlbumItemSmallView = Backbone.View.extend({
   playAlbum: function(e){
     e.stopPropagation();
     e.preventDefault();
-    // clear playlist. add artist, play first song
     var album = this.model.attributes;
-    app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
-      app.AudioController.playPlaylistPosition(0, function(){
-        app.AudioController.playlistRefresh();
+
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // local player add
+      app.playlists.playlistAddItems('local', 'replace', 'album', album.albumid);
+    } else {
+      // clear xbmc playlist. add artist, play first song
+      app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
+        app.AudioController.playPlaylistPosition(0, function(){
+          app.AudioController.playlistRefresh();
+        });
       });
-    });
+    }
+
 
   },
 
@@ -18668,12 +18906,19 @@ app.AlbumItemSmallView = Backbone.View.extend({
   addAlbum: function(e){
     e.stopPropagation();
     e.preventDefault();
-    // clear playlist. add artist, play first song
     var album = this.model.attributes;
-    app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
-      app.notification(album.album + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
+
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Append to xbmc playlist
+      app.playlists.playlistAddItems('local', 'append', 'album', album.albumid);
+    } else {
+       // Append to xbmc playlist
+      app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
+        app.notification(album.album + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
+
 
   },
 
@@ -18710,7 +18955,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
     "click .artist-add":       "addArtist",
     "click .artist-thumbsup":  "thumbsUp",
     "click .artist-fanart":    "toggleFanart",
-    "click .artist-menu":    "menu"
+    "click .artist-menu":       "menu"
   },
 
   initialize:function () {
@@ -18760,24 +19005,35 @@ app.AlbumItemSmallView = Backbone.View.extend({
 
     // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
-      app.AudioController.playPlaylistPosition(0, function(){
-        app.AudioController.playlistRefresh();
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'replace', 'artist', artist.artistid);
+    } else {
+      // Replace and play XBMC
+      app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
+        app.AudioController.playPlaylistPosition(0, function(){
+          app.AudioController.playlistRefresh();
+        });
       });
-    });
-
+    }
   },
+
 
   addArtist: function(){
-
     // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
-      app.notification(artist.artist + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
-
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'append', 'artist', artist.artistid);
+    } else {
+      // Replace and play XBMC
+      app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
+        app.notification(artist.artist + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
   },
+
 
   thumbsUp: function(e){
 
@@ -19048,32 +19304,45 @@ app.ArtistLargeItemView = Backbone.View.extend({
     app.helpers.menuDialog(menu);
   },
 
-
+  /**
+   * Replace and play
+   * @param e
+   */
   playArtist: function(e){
     e.stopPropagation();
     e.preventDefault();
-    // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
-      app.AudioController.playPlaylistPosition(0, function(){
-        app.notification('Now playing ' + artist.artist);
-        app.AudioController.playlistRefresh();
-      });
-    });
 
+    if(app.audioStreaming.getPlayer() == 'local'){
+      app.playlists.playlistAddItems('local', 'replace', 'artist', artist.artistid);
+    } else {
+      // clear playlist. add artist, play first song
+      app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
+        app.AudioController.playPlaylistPosition(0, function(){
+          app.notification('Now playing ' + artist.artist);
+          app.AudioController.playlistRefresh();
+        });
+      });
+    }
   },
 
-
+  /**
+   * Append
+   * @param e
+   */
   addArtist: function(e){
     e.stopPropagation();
     e.preventDefault();
     // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
-      app.notification(artist.artist + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
-
+    if(app.audioStreaming.getPlayer() == 'local'){
+      app.playlists.playlistAddItems('local', 'append', 'artist', artist.artistid);
+    } else {
+      app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
+        app.notification(artist.artist + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
   },
 
 
@@ -19122,7 +19391,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     "click .playlist-delete": "deleteCustomListPlaylist",
     "click .thumbsup-append": "appendThumbsup",
     "click .thumbsup-replace": "replaceThumbsup",
-    "click .thumbsup-browser-replace": "browserReplaceThumbsup"
+    "click .thumbsup-browser-replace": "browserReplacePlaylist"
   },
 
   initialize:function () {
@@ -19221,12 +19490,18 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
 
 
   /**
-   * Replace Browser  playlist with a custom playlist
+   * Replace Browser player playlist with a custom playlist or thumbs up songs
    * @param e
    */
   browserReplacePlaylist: function(e){
     e.preventDefault();
-    app.playlists.playlistAddItems('local', 'list', this.list.id);
+    if(app.helpers.arg(0) == 'thumbsup'){
+      // on thumbs up
+      app.playlists.playlistAddItems('local', 'replace', 'thumbsup', 'song');
+    } else {
+      //on custom playlist
+      app.playlists.playlistAddItems('local', 'replace', 'list', this.list.id);
+    }
   },
 
 
@@ -19397,15 +19672,17 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     "click .song-add":      "addSong",
     "click .song-thumbsup": "thumbsUp",
     "click .song-remove":   "removeSong",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .song-menu":   "menu",
   },
 
-  initialize:function () {
 
-  },
+  initialize:function () {},
 
+
+  /**
+   * Render
+   * @param e
+   */
   render:function () {
 
     if(typeof this.model.attributes.position == 'undefined'){
@@ -19420,11 +19697,19 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     // render
     this.$el.html(this.template(this.model.attributes));
 
-    // set playlist menu
-    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song' ) ));
 
     return this;
   },
+
+
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(){
+    app.helpers.makeDropdown( app.helpers.menuDialog('song', this.model.attributes ));
+  },
+
 
   /**
    * Inserts into next pos on playlist then plays
@@ -19587,9 +19872,7 @@ app.FileView = Backbone.View.extend({
     "click .file-play": "playDir",
     "click .file-type-directory": "clickDir",
     "click .file-add": "addDir",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .song-menu":  "menu"
   },
 
   initialize:function () {
@@ -19597,19 +19880,22 @@ app.FileView = Backbone.View.extend({
   },
 
   render:function () {
-
     // render
     this.$el.html(this.template(this.model.attributes));
-
-    // set song menu
-    $('.file-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song')  ));
-
     // post process file
     this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, this.model.attributes);
-
     return this;
-
   },
+
+
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(e){
+    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model.attributes) )
+  },
+
 
   clickDir:function(e){
     e.stopPropagation();
@@ -19825,10 +20111,10 @@ app.playerStateView = Backbone.View.extend({
     this.setTitle();
 
     var data = this.model,
-    // time stuff
+      // time stuff
       $time = $('#time'),
       cur = (parseInt(data.player.percentage) / 100) * parseInt(data.item.duration),
-    // playlist stuff
+      // playlist stuff
       meta = app.helpers.parseArtistsArray(data.item),
       $playlistActive = $('.playlist .playing-row');
 
@@ -19866,7 +20152,7 @@ app.playerStateView = Backbone.View.extend({
 
     // Backstretch
     // @TODO move to home view as bind
-    if(location.hash == '#' || location.hash == ''){
+    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == 'xbmc'){
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
@@ -19909,8 +20195,10 @@ app.playerStateView = Backbone.View.extend({
    * Set document title
    */
   setTitle:function () {
-    var data = this.model;
-    document.title = (status == 'playing' ? '▶ ' : '') + data.item.label + ' | Chorus.'; //doc
+    var data = this.model, title = data.item.label;
+    if(app.audioStreaming.getPlayer() == 'xbmc'){
+      document.title = (data.status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
+    }
   },
 
 
@@ -20040,9 +20328,7 @@ app.PlaylistItemView = Backbone.View.extend({
     "click .playbtn": "playPosition",
     "click .repeating": "cycleRepeat",
     "click .playlist-song-thumbsup": "thumbsUp",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist"
+    "click .playlist-song-menu": "menu"
   },
 
   initialize:function () {
@@ -20053,6 +20339,8 @@ app.PlaylistItemView = Backbone.View.extend({
     // file fallback
     this.model.id = (typeof this.model.id != 'undefined' ? this.model.id : 'file');
     this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
+    this.model.artistLink = this.buildArtistLink(this.model);
+
     // render
     this.$el.html(this.template(this.model));
 
@@ -20065,18 +20353,20 @@ app.PlaylistItemView = Backbone.View.extend({
     if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
       this.$el.addClass('thumbs-up')
     }
-
-    // set song menu
-    var songDropDown = app.helpers.menuTemplates('song');
-
-    songDropDown.pull = 'right';
-    $('.playlist-song-actions', this.$el).append( app.helpers.makeDropdown( songDropDown ));
-
     return this;
   },
 
-  playPosition:function(event){
 
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(e){
+    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model) );
+  },
+
+
+  playPosition:function(event){
     if(this.model.list == 'local'){
       // LOCAL BROWSER PLAY
       app.audioStreaming.playPosition(this.model.pos);
@@ -20086,11 +20376,10 @@ app.PlaylistItemView = Backbone.View.extend({
         app.AudioController.playlistRefresh();
       });
     }
-
   },
 
-  removePosition:function(event){
 
+  removePosition:function(event){
     if(this.model.list == 'local'){
       // LOCAL BROWSER REMOVE
       app.audioStreaming.deleteBrowserPlaylistSong(this.model.pos);
@@ -20102,13 +20391,13 @@ app.PlaylistItemView = Backbone.View.extend({
         app.AudioController.playlistRefresh();
       });
     }
-
-
   },
+
 
   cycleRepeat:function(event){
     $('#footer').find('.player-repeat').trigger('click');
   },
+
 
   thumbsUp: function(e){
     e.stopPropagation();
@@ -20119,23 +20408,23 @@ app.PlaylistItemView = Backbone.View.extend({
     $el.toggleClass('thumbs-up');
   },
 
-  downloadSong: function(e){
-    var file = this.model.file;
-    e.stopPropagation();
-    e.preventDefault();
-    app.AudioController.downloadFile(file, function(url){
-      window.location = url;
-    })
-  },
 
-  addToCustomPlaylist: function(e){
-    e.stopPropagation();
-    e.preventDefault();
-    var id = this.model.id;
-    app.playlists.saveCustomPlayListsDialog('song', [id]);
+  /**
+   * A helper to parse
+   * @param model
+   */
+  buildArtistLink: function(model){
+
+    model.albumArtistString = (typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
+    model.artistString = (typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
+    // if no artist or album artist, return null
+    if(model.artistString == '' && model.albumArtistString == ''){
+      return '';
+    }
+    // return link
+    return '<a href="#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString) + '">' +
+      (model.artistString != '' ? model.artistString : model.albumArtistString) + '</a>';
   }
-
-
 
 
 });
@@ -20212,7 +20501,6 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
   },
 
   render:function () {
-    console.log(this.model);
     this.$el.html(this.template(this.model.attributes));
     return this;
   }
@@ -20479,22 +20767,6 @@ app.searchView = Backbone.View.extend({
 
     // Init player state cycle
     setInterval(app.AudioController.updatePlayerState, 5000);
-
-    // set playlist menu
-    $('.playlist-actions-wrapper', this.$el).html(
-      app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
-    );
-
-    //custom playlists
-    app.playlists.addCustomPlayLists(function(view){
-      var $sb = $('#playlist-lists', self.$el);
-      $sb.html(view.render().el);
-    });
-
-
-    // browser player
-    app.audioStreaming.init(this.$el);
-
 
     return this;
   },
@@ -20870,24 +21142,23 @@ app.searchView = Backbone.View.extend({
 app.SongView = Backbone.View.extend({
 
   tagName:"li",
-
   className:'song-row',
 
+
   events: {
-    "dblclick .song-title": "loadSong",
-    "click .song-play": "loadSong",
+    "dblclick .song-title": "playSong",
+    "click .song-play": "playSong",
     "click .song-add": "addSong",
     "click .song-thumbsup": "thumbsUp",
-    //menu
-    "click .song-download":  "downloadSong",
-    "click .song-custom-playlist": "addToCustomPlaylist",
-    "click .song-browser-play": "playInBrowser"
+    "click .song-menu": "menu"
   },
+
 
   initialize:function () {
     this.model.on("change", this.render, this);
     this.model.on("destroy", this.close, this);
   },
+
 
   render:function () {
     // add if thumbs up
@@ -20896,12 +21167,19 @@ app.SongView = Backbone.View.extend({
     }
     // render
     this.$el.html(this.template(this.model.attributes));
-
-    // set song menu
-    $('.song-actions', this.$el).append( app.helpers.makeDropdown( app.helpers.menuTemplates('song')  ));
-
     return this;
   },
+
+
+  /**
+   * Contextual Menu
+   * @param e
+   */
+  menu: function(e){
+    // set song menu
+    app.helpers.menuDialog( app.helpers.menuTemplates('song',this.model.attributes));
+  },
+
 
   /**
    * Inserts into next pos on playlist then plays
@@ -20909,20 +21187,41 @@ app.SongView = Backbone.View.extend({
    */
   playSong: function(event){
     var song = this.model.attributes;
-    app.playlists.changePlaylistView('xbmc');
-    app.AudioController.insertAndPlaySong('songid', song.songid, function(){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid, function(){
+        // play the last song in the list (what we just added)
+        app.audioStreaming.playPosition((app.audioStreaming.playList.items.models.length - 1));
+      });
+    } else {
+      app.playlists.changePlaylistView('xbmc');
+      app.AudioController.insertAndPlaySong('songid', song.songid, function(){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
+
   },
 
+
+  /**
+   * Append song
+   */
   addSong: function(){
     var song = this.model.attributes;
-    app.AudioController.playlistAdd( 'songid', song.songid, function(result){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
-    });
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // Replace and play Local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid);
+    } else {
+      // Append to XBMC playlist
+      app.AudioController.playlistAdd( 'songid', song.songid, function(result){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRefresh();
+      });
+    }
+
   },
+
 
   /**
    * Toggle thumbs up status
@@ -20933,36 +21232,18 @@ app.SongView = Backbone.View.extend({
       $el = $(e.target).closest('li');
     app.playlists.setThumbsUp(op, 'song', songid);
     $el.toggleClass('thumbs-up');
-  },
-
-  downloadSong: function(e){
-    var file = this.model.attributes.file;
-
-    e.preventDefault();
-    app.AudioController.downloadFile(file, function(url){
-      window.location = url;
-    })
-  },
-
-  playInBrowser: function(e){
-
-    var file = this.model.attributes;
-    e.preventDefault();
-
-    app.audioStreaming.loadSong(file, function(){
-      console.log('boo');
-    })
-
-  },
-
-  addToCustomPlaylist: function(e){
-    e.preventDefault();
-    var id = this.model.attributes.songid;
-    app.playlists.saveCustomPlayListsDialog('song', [id]);
   }
 
-});;
-
+});;/**
+ * A Generic view used as a wrapper for sub pages
+ *
+ * Why aren't they using to standard backbone router you say?
+ * All of these are really experimental features, rarely used if any were to
+ * be developed into a primary feature it would be refactored into its own view,
+ * This way more can be reused
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.XbmcView = Backbone.View.extend({
 
   tagName:'div',
