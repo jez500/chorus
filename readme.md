@@ -48,8 +48,8 @@ Mobile it is useless at the moment, but a possibility for the future.
 
 
 ## Stream music from your XBMC library into your browser ##
-As of version 0.2.0 you can use chorus to control or streaming the music direct to your browser!
-This is still quite experimental a there are a few minor hiccups to consider:
+As of version 0.2.0 you can use chorus to control XBMC or use it to stream the music direct to your browser!
+This is still quite experimental and there are a few minor hiccups to consider:
 - It doesn't want to work with Firefox, possible an issue with HTML5 audio and mp3s. When using Chrome and even Internet Explorer 10 it works great.
 - Seeking works intermittently, I think it might be to do with how much of the song is cached, I have also heard that Gotham might fix this but have not yet tried.
 - It didn't work on my Android Media Player, this could also be caused by the XBMC version/build
