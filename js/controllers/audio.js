@@ -426,11 +426,13 @@ app.AudioController.seek = function(position, callback ){
  * Get items from playlist
  */
 app.AudioController.getPlaylistItems = function(callback){
+  var activePlayer = (typeof app.cached.nowPlaying != 'undefined' ? app.cached.nowPlaying.activePlayer : app.AudioController.playlistId);
   app.xbmcController.command('Playlist.GetItems',
     [
-      app.AudioController.playlistId,
+      activePlayer,
       ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
     ], function(result){
+      console.log(result);
     callback(result.result); // return items
   });
 };
@@ -467,7 +469,7 @@ app.AudioController.audioLibraryScan = function(){
 
 app.AudioController.getNowPlayingSong = function(callback){
 
-  // this is a rather hefty that gets called every 5 sec so we throttle with error counts
+  // this is a rather hefty function that gets called every 5 sec so we throttle with error counts
   // only execute when 0
 
   // throttle skips this number of checks before checking again
@@ -559,8 +561,6 @@ app.AudioController.getNowPlayingSong = function(callback){
           callback(ret);
         }
 
-
-
       });
 
     } else {
@@ -570,7 +570,6 @@ app.AudioController.getNowPlayingSong = function(callback){
       callback(ret);
 
     }
-
 
   });
 

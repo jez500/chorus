@@ -39,6 +39,7 @@ module.exports = function(grunt) {
           'js/collections/xbmc.js',
           'js/collections/audio.js',
           'js/collections/files.js',
+          'js/collections/video.js',
 
           // application views
           'js/views/*.js'
@@ -49,7 +50,7 @@ module.exports = function(grunt) {
     },
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+        banner: '/*! <%= pkg.name %> by Jeremy Graham - built on <%= grunt.template.today("dd-mm-yyyy") %> */\n'
       },
       dist: {
         files: {

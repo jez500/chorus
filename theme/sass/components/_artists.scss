@@ -1,81 +1,12 @@
 // Artists
 #artist-tabs {
-  background: $color-concrete;
-  padding: 0 0 0;
-  position: relative;
-  ul {
-    border-bottom: none;
-    margin-bottom: 5px;
-  }
-  a {
-    color: #f6f6f6;
-    border-radius: 0;
-    border: none;
-    font-size: 110%;
-    padding: 11px 20px;
-
-    opacity: 0.9;
-    &:hover {
-      background: $color-asbestos;
-      opacity: 1;
-    }
-  }
-  li {
-    margin: 0;
-    &.active {
-      a {
-        color: $color-darkest-xbmc;
-        font-weight: bold;
-        opacity: 1;
-        background: #fff !important;
-        &:hover {
-          background: #fff;
-          border-bottom-color: #fff;
-        }
-      }
-    }
-  }
-
   .artist-actions {
-    position: absolute;
-    right: 5px;
-    top: 0px;
-    .btn {
-      background: none;
-      padding: 10px 13px;
-      @include border-radius(0);
-      float: left;
-      color: #f6f6f6;
-      &:focus,
-      &:hover {
-        background: transparent;
-        color: $color-dark-xbmc;
-      }
-    }
-    &.thumbs-up {
-      .icon-thumbs-up {
-        color: $color-carrot;
-      }
-    }
   }
 }
 
 // Fanart
 .artist-fanart {
-  overflow: hidden;
-  height: 342px;
-  margin-top: -#{$height-header + 5};
-  cursor: pointer;
-  img {
-    cursor: pointer;
-    width: 100%;
-    margin-top: -5%;
-    min-width: 600px;
-  }
-  &.full-size {
-    height: auto;
-    margin-top: 0;
-  }
+
 }
 
 .artist-detail {

@@ -97,6 +97,16 @@
       }
     }
 
+  } @else if $size == 'poster'{ // Video overrides ///////////////////
+    width: 164px;
+    min-width: 150px;
+    max-width: 175px;
+    height: 307px;
+    margin: 5px;
+    .image {
+      height: 250px;
+    }
+
   } @else { // small (default) //////////////////////
 
     min-width: $card-small-width;

@@ -1,4 +1,8 @@
-/*
+/****************************************************************************
+ * AUDIO
+ ****************************************************************************/
+
+/**
  * Get Song collection
  */
 app.SongXbmcCollection = Backbone.Collection.extend({
@@ -30,7 +34,7 @@ app.SongXbmcCollection = Backbone.Collection.extend({
 
 
 
-/*
+/**
  * Get Song collection
  */
 app.SongFilteredXbmcCollection = Backbone.Collection.extend({
@@ -62,7 +66,7 @@ app.SongFilteredXbmcCollection = Backbone.Collection.extend({
 
 
 
-/*
+/**
  * Get Album collection
  */
 app.AlbumXbmcCollection = Backbone.Collection.extend({
@@ -177,5 +181,61 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   //return the artists key from the result
   parse:  function(resp, xhr){
     return resp.artists;
+  }
+});
+
+
+/****************************************************************************
+ * VIDEO
+ ****************************************************************************/
+
+
+/**
+ * Get Movie collection (all movies)
+ */
+app.MovieXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc artist call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.Movie,
+  //collection params
+  arg1: ['year', 'thumbnail'], //properties
+  arg2: function(){
+    return this.models[0].attributes.range;
+  },
+  //method/params
+  methods: {
+    read:  ['VideoLibrary.GetMovies', 'arg1', 'arg2']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    return resp.movies;
+  }
+});
+
+
+/**
+ * Get Movie collection (all movies)
+ */
+app.AllMovieXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc artist call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.Movie,
+  //method/params
+  methods: {
+    read:  ['VideoLibrary.GetMovies']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    return resp.movies;
   }
 });

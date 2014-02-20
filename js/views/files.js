@@ -94,7 +94,7 @@ app.FileView = Backbone.View.extend({
     "click .file-play": "playDir",
     "click .file-type-directory": "clickDir",
     "click .file-add": "addDir",
-    "click .song-menu":  "menu"
+    "click .file-menu":  "menu"
   },
 
   initialize:function () {
@@ -115,7 +115,8 @@ app.FileView = Backbone.View.extend({
    * @param e
    */
   menu: function(e){
-    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model.attributes) )
+    this.model.attributes.label = this.model.attributes.title;
+    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model.attributes) );
   },
 
 

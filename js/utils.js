@@ -373,6 +373,38 @@ $(document).ready(function(){
   };
 
 
+  /**
+   * Freewall Poster Layout
+   * @param selector
+   */
+  app.helpers.addPosterFreewall = function(selector){
+    var wall = new freewall(selector);
+    wall.reset({
+      selector: 'li',
+      animate: true,
+      cellW: 170,
+      cellH: '305',
+      onResize: function() {
+        wall.fitWidth();
+      }
+    });
+    wall.fitWidth();
+  };
+
+
+  /**
+   * Trigger lazyload
+   */
+  app.helpers.triggerContentLazy = function(){
+    // trigger lazyload
+    $("img.lazy").lazyload({
+      //  effect : "fadeIn",
+      threshold : 200
+    });
+    // show visible
+    $(window).trigger('scroll');
+
+  };
 
 
   /********************************************************************************
@@ -435,6 +467,30 @@ $(document).ready(function(){
 
 
   /********************************************************************************
+   * Pagination
+   ********************************************************************************/
+
+  /**
+   * Give it a pagenumber and it will build return a range object suitable for a API request
+   *
+   * @param pageNum
+   * @returns {{start: number, end: number}}
+   */
+  app.helpers.createPaginationRange = function(pageNum, fullRange){
+    // Do some maths
+    var page = (pageNum != undefined ? parseInt(pageNum) : 0),
+      start = (page * app.itemsPerPage),
+      end = (start + app.itemsPerPage);
+    // override if fullRange
+    if(fullRange && fullRange === true){
+      start = 0;
+    }
+    // Return the range
+    return {'end': end, 'start': start};
+  };
+
+
+  /********************************************************************************
    * Backstretch
    ********************************************************************************/
 
@@ -472,29 +528,58 @@ $(document).ready(function(){
    * Wrapper for setting page title
    * @param value
    * @param options
+   *   tabs = {url:title, url:title}
+   *   addATag = wraps the value in an a tag
    * @returns {boolean}
    */
   app.helpers.setTitle = function(value, options){
     var defaults = {
-      addATag: false
+      addATag: false,
+      tabs: false,
+      activeTab: 0
     };
 
     var settings = $.extend(defaults,options),
       $title = $('#title');
 
+    $title.empty();
+
+    // add <a> tag if set
     if(settings.addATag){
-      value = '<a>' + value + '</a>'
+      $title.append($('<a class="title-sub" href="' + settings.addATag + '">' + value + '</a>'));
     }
 
-    // default
-    $title.html(value);
+    // append tabs
+    var n = 0;
+    console.log(settings.tabs);
+    if(settings.tabs !== false){
+      var $tabs = $('<div class="nav nav-tabs"></div>');
+      for(i in settings.tabs){
+        var $el = $('<a href="' + i + '" class="nav-tab">' + settings.tabs[i] + '</a>');
+        if(n == settings.activeTab){
+          $el.addClass('active');
+        }
+        $tabs.append( $el );
+        n++;
+      }
+      $title.append($tabs);
+    }
+
+    // if value not added, as that in a wrapper
+    if(!settings.addATag){
+      $title.append('<div class="title-main">' + value + '</div>');
+    }
+
+    //cache
+    app.currentPageTitle = value;
   };
+
 
   /**
    * Wrapper for getting page title
    */
   app.helpers.getTitle = function(){
-    return $('#title');
+    return app.currentPageTitle;
   };
 
 
@@ -537,8 +622,8 @@ $(document).ready(function(){
       app.helpers.dialogInit();
     }
 
-    $dialog.dialog( "option", "height", "auto");
     $dialog.dialog( "option", "title", " ");
+    $dialog.dialog( "option", "height", "auto");
     $dialog.dialog( "option", "buttons", {});
 
     //set content and options
@@ -691,6 +776,7 @@ $(document).ready(function(){
       title: menu.title
     });
 
+
   };
 
 
@@ -753,7 +839,7 @@ $(document).ready(function(){
     switch (type){
       case 'song':
         opts = {
-          title: (model.album != '' ? model.album : model.label),
+          title: (typeof model.label != 'undefined' && model.label != '' ? model.label : (model.album != '' ? model.album : '')),
           key: 'song',
           omitwrapper: true,
           items: [
@@ -899,6 +985,24 @@ $(document).ready(function(){
 
 
   /********************************************************************************
+   * Infinate scroll
+   ********************************************************************************/
+
+  app.helpers.nearbottom = function(e) {
+    var $window = $(window);
+
+    var pixelsFromWindowBottomToBottom = 0 + $(document).height() - ($window.scrollTop()) - $window.height();
+    var pixelsToBottom = 600;
+
+    return (pixelsFromWindowBottomToBottom < pixelsToBottom);
+
+  };
+
+
+
+
+
+  /********************************************************************************
    * No namespace @todo move/rename
    ********************************************************************************/
 
@@ -908,6 +1012,9 @@ $(document).ready(function(){
    */
   app.parseImage = function(rawPath, type){
     type = (typeof type == 'undefined' ? 'default' : type);
+    if(type == 'space'){
+      return 'theme/images/space.png';
+    }
     //no image, return placeholder
     if(typeof(rawPath) == "undefined" || rawPath == ''){
       if(type == 'fanart'){

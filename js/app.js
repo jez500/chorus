@@ -8,9 +8,13 @@ var app = {
 
   counts: {503: 0, '503total': 0}, // count defaults
 
-  state: 'notconnected',
+  state: 'notconnected', // Not connected yet
 
-  jsonRpcUrl: '/jsonrpc',
+  jsonRpcUrl: '/jsonrpc', // JsonRPC endpoint
+
+  itemsPerPage: 50, // Our default pagination amount
+
+  nextPageLoading: false,
 
   // variables (settings defaults)
   vars: {
@@ -82,6 +86,41 @@ var app = {
     "displayartist",
     "albumartistid"
   ],
+  movieFields: [
+    "title",
+    "genre",
+    "year",
+    "rating",
+    "director",
+    "trailer",
+    "tagline",
+    "plot",
+    "plotoutline",
+    "originaltitle",
+    "lastplayed",
+    "playcount",
+    "writer",
+    "studio",
+    "mpaa",
+    "cast",
+    "country",
+    "imdbnumber",
+    "runtime",
+    "set",
+    "showlink",
+    "streamdetails",
+    "top250",
+    "votes",
+    "fanart",
+    "thumbnail",
+    "file",
+    "sorttitle",
+    "resume",
+    "setid",
+    "dateadded",
+    "tag",
+    "art"
+  ],
 
   fileFields: [
     'title', 'size', 'mimetype', 'file', 'dateadded', 'thumbnail', 'artistid', 'albumid', 'uniqueid'
@@ -111,7 +150,9 @@ var app = {
     "PlaylistCustomListItemView",
     "CustomPlaylistSongView",
     "FilesView",
-    "FileView"
+    "FileView",
+    "MovieListItemView",
+    "MovieView"
   ],
 
   tpl: {} // for templates that are lazy loaded
@@ -135,6 +176,9 @@ app.Router = Backbone.Router.extend({
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
+    "movies/:page/:num":    "movies",
+    "movies":               "moviesLanding",
+    "movie/:id":            "movie",
     "xbmc/:op":             "xbmc"
   },
 
@@ -251,7 +295,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html($el);
 
     // title
-    app.helpers.setTitle('Artists', {addATag:true});
+    app.helpers.setTitle('Artists', {addATag:"#artists"});
 
     // set menu
     app.shellView.selectMenuItem('artists', 'sidebar');
@@ -333,7 +377,7 @@ app.Router = Backbone.Router.extend({
         self.$content.html($el);
 
         // set title
-        app.helpers.setTitle('Recent', {addATag:true});
+        app.helpers.setTitle('Recent', {addATag:"#albums"});
 
         // set menu
         app.shellView.selectMenuItem('albums', 'no-sidebar');
@@ -459,14 +503,157 @@ app.Router = Backbone.Router.extend({
         .prepend('<h2 class="sidebar-title"><a href="#albums">Albums</a></h2>');
       app.helpers.firstSidebarBinds();
     }});
+  },
 
 
+
+
+  /**
+   * Browse all movies
+   * uses lazyload, infinite scroll and intelligent back button
+   *
+   */
+  movies: function(page, num){
+
+    // vars
+    var $content = $('#content'),
+      $results = $('ul.movie-list',$content),
+      fullRange = false,
+      scrolled = false;
+
+
+
+    // init pager
+    if($results.length == 0){
+      // empty page
+      if(typeof page == 'undefined'){
+        var page = 'page', num = 0;
+        app.moviePageNum = 0;
+      }
+      // Loading
+      $content.html('<div class="loading-box">Loading Movies</div>');
+      // set title and add some tabs
+      app.helpers.setTitle('Movies', { addATag:'#movies', tabs: {'#movies': 'Recently Added', '#movies/page/0' : 'Browse All'}, activeTab: 1});
+      // set menu
+      app.shellView.selectMenuItem('movies', 'no-sidebar');
+      // direct to this page
+      if(page && num){
+        app.moviePageNum = num;
+        fullRange = true;
+      }
+    } else {
+      // appending to page no other setup required
+      app.moviePageNum++;
+      // force a page via url
+      if(page && num > 0){
+        app.moviePageNum = num;
+      }
+    }
+
+    // init the collection
+    app.cached.movieCollection = new app.MovieCollection();
+    // fetch results
+    app.cached.movieCollection.fetch({"fullRange": fullRange, "success": function(collection){
+      // get the view of results
+      app.cached.movieListView = new app.MovieListView({model: collection});
+      // do we append or replace
+      if(app.moviePageNum == 0 || fullRange === true){
+        $content.html(app.cached.movieListView.render().$el);
+
+        // scroll to top
+        $(window).scrollTo(0);
+
+        // back from a movie, scrollto that movie
+        if(fullRange == true && typeof app.vars.backHash != 'undefined'){
+          var parts = app.vars.backHash.split('/');
+          if(parts[0] == '#movie'){
+            $(window).scrollTo( $('.movie-row-' + parts[1]) , 0, {offset: -200});
+            scrolled = true;
+          }
+        }
+
+        // scroll to page number
+        if(fullRange === true && scrolled !== true){
+          $(window).scrollTo( '85%' );
+        }
+
+      } else {
+        // if last page was empty, dont change hash
+        // or render
+        var $lastList = $('.video-list').last();
+        if($lastList.find('li').length == 0){
+          // dont render
+          $lastList.remove();
+        } else {
+          // chnage the hash without triggering the router (for back action)
+          app.router.navigate('movies/page/' + app.moviePageNum);
+          $content.append(app.cached.movieListView.render().$el);
+        }
+
+      }
+
+      app.helpers.triggerContentLazy();
+
+    }});
 
   },
 
 
   /**
+   * Movie landing page
+   */
+  moviesLanding: function () {
+    app.helpers.setTitle('Movies', { addATag:'#movies', tabs: {'#movies': 'Recently Added', '#movies/page/0' : 'Browse All'}, activeTab: 0});
+
+    app.movieRecentCollection = new app.MovieRecentCollection();
+    app.movieRecentCollection.fetch({"success": function(collection){
+      var $c = $('#content');
+      app.cached.movieListView = new app.MovieListView({model: collection});
+      // render
+      $c.html(app.cached.movieListView.render().$el);
+      // no pagination
+      $c.find('.next-page').remove();
+      // change class
+      $c.find('ul').removeClass('movie-list').addClass('movie-recent-list');
+      app.helpers.triggerContentLazy();
+      // scroll to top
+      $(window).scrollTo(0);
+    }});
+  },
+
+
+  /**
+   * A single movie
+   * @param id
+   */
+  movie: function (id) {
+
+    var movie = new app.Movie({"id": parseInt(id)}),
+      self = this;
+
+    movie.fetch({
+      success: function (data) {
+
+        console.log(data);
+
+        // render content
+        self.$content.html(new app.MovieView({model: data}).render().el);
+        app.helpers.setTitle('<a href="#/movies">Movie</a><b></b>' + data.attributes.title);
+
+        // set menu
+        app.shellView.selectMenuItem('movie', 'sidebar');
+      }
+    });
+
+  },
+
+
+
+  /**
    * Scan for music
+   *
+   * @TODO remove from router, and bind to click instead
+   *
    * @param type
    *  audio
    */

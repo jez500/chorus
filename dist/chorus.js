@@ -14708,7 +14708,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html($el);
 
     // title
-    app.helpers.setTitle('Artists', {addATag:true});
+    app.helpers.setTitle('Artists', {addATag:'#artists'});
 
     // set menu
     app.shellView.selectMenuItem('artists', 'sidebar');
@@ -14790,7 +14790,7 @@ app.Router = Backbone.Router.extend({
         self.$content.html($el);
 
         // set title
-        app.helpers.setTitle('Recent', {addATag:true});
+        app.helpers.setTitle('Recent', {addATag:'#albums'});
 
         // set menu
         app.shellView.selectMenuItem('albums', 'no-sidebar');

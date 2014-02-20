@@ -1,0 +1,119 @@
+ul.video-list {
+  margin: 0px 12px 20px 10px;
+  li {
+    .card {
+      @include card('poster');
+      float: left;
+    }
+    &.next-page {
+      display: none;
+    }
+  }
+}
+
+.section-movies {
+  #sidebar-first {
+    display: none;
+  }
+  #main {
+    margin-left: $width-header;
+  }
+  .nav {
+    margin-bottom: 0;
+  }
+}
+
+.section-movie {
+  #sidebar-first {
+    display: none;
+  }
+  .video-side {
+    padding: 10px;
+    background: #f9f9f9;
+    img {
+
+      width: 100%;
+    }
+  }
+  .tab-pane {
+    padding: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .video-thumb {
+    position: absolute;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    margin-top: -38px;
+    img {
+      max-width: 240px;
+    }
+  }
+
+  .cast-member {
+    background: #fff;
+    overflow: hidden;
+    float: left;
+    width: 210px;
+    margin: 0 10px 10px 0;
+    img {
+      width: 60px;
+      height: 90px;
+      background: #999;
+      float: left;
+      margin-right: 15px;
+    }
+    strong {
+      display: block;
+      line-height: 20px;
+      padding-top: 10px;
+    }
+  }
+
+  #details {
+    &.has-fanart {
+      position: fixed;
+      left: 50px;
+      right: 300px;
+      bottom: $height-footer;
+      top: 0;
+      .video-tab-wrapper {
+        margin: 80px 80px 0 21px;
+      }
+      .content-actions {
+        top: -41px;
+      }
+      .tab-wrapper {
+        background: rgba(246, 246, 246, 0.89);
+        margin-left: 280px;
+       // min-height: 342px;
+        margin-top: 110px;
+        position: relative;
+        max-width: 940px;
+        .content-tabs {
+          background: none;
+        }
+        .nav-tabs {
+          position: absolute;
+          margin-top: -36px;
+          font-weight: bold;
+          li a {
+            border: none;
+            @include border-radius(0)
+          }
+          li.active a {
+            background: rgba(246, 246, 246, 0.89) !important;
+          }
+          li:hover a {
+            background: #888 !important;
+          }
+        }
+      }
+    }
+  }
+  #movie-detail {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}

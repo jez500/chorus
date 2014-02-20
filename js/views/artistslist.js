@@ -53,11 +53,17 @@ app.ArtistListItemView = Backbone.View.extend({
     e.preventDefault();
     // clear playlist. add artist, play first song
     var artist = this.model.attributes;
-    app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
-      app.AudioController.playPlaylistPosition(0, function(){
-        app.AudioController.playlistRefresh();
+
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // local player add
+      app.playlists.playlistAddItems('local', 'replace', 'artist', artist.artistid);
+    } else {
+      app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
+        app.AudioController.playPlaylistPosition(0, function(){
+          app.AudioController.playlistRefresh();
+        });
       });
-    });
+    }
 
   }
 

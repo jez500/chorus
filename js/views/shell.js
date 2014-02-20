@@ -15,7 +15,7 @@ app.ShellView = Backbone.View.extend({
     // init first page change to setup classes, etc.
     self.pageChange(location.hash, '#init');
 
-    $window.bind('hashchange', function() {
+    $window.bind('hashchange', function(e) {
       var newHash = location.hash,
           lastHash = app.vars.lastHash,
           back = (typeof lastHash == 'undefined' ? '#' : lastHash);
@@ -26,8 +26,10 @@ app.ShellView = Backbone.View.extend({
       }
 
       // set last hash
+      app.vars.backHash = lastHash;
       app.vars.lastHash = newHash;
 
+      $(window).trigger('pageChange', [e, newHash, back]);
     });
 
     /**
@@ -133,6 +135,7 @@ app.ShellView = Backbone.View.extend({
     })
       // Add the current page
       .addClass('section-'+ key);
+
   },
 
   /**

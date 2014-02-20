@@ -74,8 +74,6 @@ app.PlaylistItemView = Backbone.View.extend({
     this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
     this.model.artistLink = this.buildArtistLink(this.model);
 
-    console.log(this.model);
-
     // render
     this.$el.html(this.template(this.model));
 

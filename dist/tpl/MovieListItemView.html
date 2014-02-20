@@ -1,0 +1,15 @@
+<div class="card movie-row movie-row-<%= movieid %> clearfix" data-id="<%= movieid %>">
+
+    <a class="image-wrapper" href="#movie/<%= movieid %>" title="<%= title %>">
+        <img class="image lazy" src="<%= app.parseImage('', 'space') %>" data-original="<%= app.parseImage(thumbnail) %>" />
+    </a>
+    <div class="details">
+        <p class="item-title" title="<%= title %>">
+            <a class="image-wrapper" href="#movie/<%= movieid %>"><span><%= label %></span></a>
+        </p>
+        <p class="item-sub-title">
+            <span><%= year %></span>
+        </p>
+
+    </div>
+</div>
