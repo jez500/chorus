@@ -63,7 +63,7 @@ app.Song = Backbone.Model.extend({
 app.PlaylistItem= Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: '', list: 'xbmc'}
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: '', list: 'xbmc', playlistId: 0, url: '#artists'}
 
 });
 

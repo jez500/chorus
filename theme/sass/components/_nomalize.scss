@@ -19,6 +19,8 @@ body {
 }
 a {
   text-decoration: none;
+  color: $color-midnight-blue;
+  color: $color-wet-asphalt;
 }
 h2, h3, h4 {
   font-weight: normal;
@@ -26,14 +28,26 @@ h2, h3, h4 {
   line-height: 1.2;
   font-size: 22px;
 }
+h2 {
+  color: #444;
+  font-size: 28px;
+  color: rgba(34, 34, 34, 0.61);
+  margin-top: 8px;
+}
 h3 {
   line-height: 1.3;
   font-size: 19px;
+  color: rgba(17, 17, 17, 0.83);
+  margin-bottom: 15px;
 }
 h4 {
   font-weight: bold;
   line-height: 1.4;
-  font-size: 16px;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted rgba(70, 70, 70, 0.11);
+  color: rgba(70, 70, 70, 0.32)
 }
 .text-copy {
   margin: 15px 10px;

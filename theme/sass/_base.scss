@@ -5,12 +5,10 @@ $color-header: rgba(235, 236, 236, 0.4);
 $color-mist: #EEE;
 $color-header-mid: #9AA4AF;
 $color-concrete: rgba(100, 100, 100, 0.28);
-$color-asbestos: #7F8C8D;
 $color-asbestos: #6E7374;
 $color-clouds: #EEEFF0;
 $color-silver: #BDC3C7;
 $color-whitesmoke: #f7f7f7;
-$color-slate: #606768;
 $color-slate: #2b2f30;
 $color-light-slate: #6c7374;
 $color-light-slate: #3b3f40;
@@ -20,6 +18,10 @@ $color-orange: #F39C12;
 $color-carrot: #E67E22;
 $color-green-sea: #16A085;
 $color-pastel-orange: #FFD786;
+
+// trans
+$color-trans-light: rgba(196, 196, 196, 0.48);
+$color-trans-white: rgba(246, 246, 246, 0.82);
 
 // playing colours
 $playing-xbmc: $color-orange;
@@ -32,15 +34,25 @@ $color-darkest-local: #7F8486;
 $color-dark-local: #6C6F6F;
 
 
-//sizing
+//sizing (breakpoints)
+$width-mobile: 600px;
+$width-small: 1360px;
+$width-large: 1700px;
+
+// layout
 $height-logo: 105px;
 $height-header: 50px;
 $height-footer: 70px;
 $width-header: 50px;
+
 $width-sidebar-first-region: 280px;
 $width-sidebar-first: $width-sidebar-first-region + $width-header;
+$width-sidebar-first-small: 230px;
+$width-sidebar-first-large: 400px;
+
 $width-sidebar-second:360px;
 $width-sidebar-second-small:260px;
+
 $mini-img-width: 60px;
 
 // cards
@@ -60,5 +72,8 @@ $card-large-image-height: 370px;
 @import "compass/utilities/sprites"; // See http://compass-style.org/help/tutorials/spriting/
 @import "compass/css3";     // Use one CSS3 mixin instead of multiple vendor prefixes.
 @import "compass/typography/vertical_rhythm"; // Helps set up a vertical rhythm.
+@import "breakpoint";
+@import "singularitygs";
+
 
 

@@ -82,6 +82,14 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       }});
       break;
 
+    case 'movie':
+// returns model not collection
+//      plCollection = new app.Movie({id: parseInt(delta)});
+//      plCollection.fetch({"success": function(data){
+//        callback(data);
+//      }});
+      break;
+
     case 'list': // local playlist id = delta
       plCollection = new app.PlaylistCustomListSongCollection();
       plCollection.fetch({"name":delta, "success": function(res){
@@ -164,7 +172,7 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
         if(op == 'append'){
           // Add items
           app.AudioController.playlistAddMultiple('mixed', items, function(){
-            app.AudioController.playlistRefresh();
+            app.AudioController.playlistRender();
             app.playlists.changePlaylistView('xbmc');
             callback();
           });
@@ -173,11 +181,11 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
           app.AudioController.playlistClear(function(){
             // Add items
             app.AudioController.playlistAddMultiple('mixed', items, function(){
-              app.AudioController.playlistRefresh();
+              app.AudioController.playlistRender();
               app.playlists.changePlaylistView('xbmc');
               app.AudioController.playPlaylistPosition(i, function(data){
                 //update playlist
-                app.AudioController.playlistRefresh();
+                app.AudioController.playlistRender();
                 //callback
                 callback();
               });
@@ -251,7 +259,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   //the item just moved
   var $thisItem = $(ui.item[0]).find('div.playlist-item'),
     changed = {},
-    $sortable = $thisItem.closest("ul.playlist");
+    $sortable = $thisItem.closest("ul.playlist"),
+    type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio');
 
   //loop over each playlist item to see what (if any has changed)
   $sortable.find('div.playlist-item').each(function(i,d){
@@ -264,8 +273,9 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
 
   //if an item has changed position, swap its position in xbmc
   if(changed.from != undefined && changed.from !== changed.to){
-    app.AudioController.playlistSwap(changed.from, changed.to, function(res){
-      app.AudioController.playlistRefresh();
+    var controller = (type == 'audio' ? app.AudioController : app.VideoController);
+    controller.playlistSwap(changed.from, changed.to, function(res){
+      controller.playlistRender();
     })
   }
 };
@@ -291,7 +301,7 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
   //if an item has changed position, swap its position in xbmc
   if(changed.from != undefined && changed.from !== changed.to){
     app.AudioController.playlistSwap(changed.from, changed.to, function(res){
-      app.AudioController.playlistRefresh();
+      app.AudioController.playlistRender();
     })
   }
 };
@@ -760,9 +770,125 @@ app.playlists.getThumbsUp = function(type){
  * get thumbs up
  *
  * @param type
+ * @param id
  */
 app.playlists.isThumbsUp = function(type, id){
   return (typeof app.cached.thumbsUp[type] != 'undefined' &&
     typeof app.cached.thumbsUp[type].lookup[id] != 'undefined');
 };
 
+
+
+/**
+ * XBMC Playlist
+ *
+ * @param playlistId
+ * @param callback
+ */
+app.playlists.getXbmcPlaylist = function(playlistId, callback){
+
+  app.xbmcController.command('Playlist.GetItems',
+    [
+      playlistId,
+      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
+    ], function(result){
+      var res = result.result;
+      // set playlistId on models and collection
+      res.playlistId = playlistId;
+      $.each(res.items, function(i,d){
+        res.items[i].playlistId = playlistId;
+      });
+      // return items
+      callback(res);
+    });
+
+
+};
+
+
+/**
+ * Refresh the playlist
+ *
+ * @param playlistId
+ * @param callback
+ */
+app.playlists.renderXbmcPlaylist = function(playlistId, callback){
+
+  // xbmc playlist
+  app.playlists.getXbmcPlaylist(playlistId, function(result){
+
+    //cache
+    app.cached.xbmcPlaylist = result.items;
+    var $pl = $('#playlist-xbmc');
+
+    //create a new playlist view and render
+    app.playlistView = new app.PlaylistView({model:{playlistId: playlistId, models:result.items}});
+    $pl.html(app.playlistView.render().el);
+
+    app.AudioController.getNowPlayingSong(function(data){
+
+      //update shell to now playing info
+      app.shellView.updateState(data);
+      //rebind controls to playlist after refresh
+      app.playlistView.playlistBinds(this);
+    });
+
+    if(app.helpers.exists(callback)){
+      callback(result);
+    }
+
+  });
+
+};
+
+
+/**
+ * Swap the position of an item in the playlist
+ *
+ * This moves an item from one position to another
+ * It does this by cloning pos1, remove original pos, insert pos1 clone into pos2
+ * Not to be confused with xbmc playlist.swap which is fairly useless IMO
+ *
+ * @param playlistId
+ *  xbmc playlistid
+ * @param type
+ *  eg. songid, movieid
+ * @param pos1
+ *  current playlist position
+ * @param pos2
+ *  new playlist position
+ * @param callback
+ */
+app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
+
+  //get playlist items
+  app.playlists.getXbmcPlaylist(playlistId, function(result){
+    //clone for insert
+    var clone = result.items[pos1],
+      insert = {},
+      controller = (playlistId == 1 ? app.VideoController : app.AudioController);
+
+    //if songid found use that as a preference
+    if(clone.id != undefined && typeof clone.id == 'number'){
+      insert[type] = clone.id;
+    } else { //use filepath if no songid
+      insert.file = clone.file;
+    }
+
+
+    //remove the original
+    controller.removePlaylistPosition(pos1, function(result){
+      //insert the clone
+      app.xbmcController.command('Playlist.Insert', [playlistId, pos2, insert], function(data){
+        //get playlist items
+        controller.getPlaylistItems(function(result){
+          //update cache
+          controller.currentPlaylist = result;
+          callback(result);
+
+        })
+      });
+    });
+
+  })
+};

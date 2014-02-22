@@ -1,10 +1,17 @@
 <div class="card movie-row movie-row-<%= movieid %> clearfix" data-id="<%= movieid %>">
-
-    <a class="image-wrapper" href="#movie/<%= movieid %>" title="<%= title %>">
+    <a class="image-wrapper" href="#movie/<%= movieid %>" title="<%= label %>">
         <img class="image lazy" src="<%= app.parseImage('', 'space') %>" data-original="<%= app.parseImage(thumbnail) %>" />
     </a>
+    <div class="actions-wrapper movie-actions-wrapper">
+        <div class="actions movie-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= movieid %>">
+            <button class="movie-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
+            <button class="movie-play btn" title="Replace the playlist with this movie and start playing"><i class="fa fa-play"></i></button>
+            <button class="movie-add btn" title="Add this movie to the playlist"><i class="fa fa-plus"></i></button>
+            <button class="movie-menu btn" title="More movie options"><i class="fa fa-ellipsis-v"></i></button>
+        </div>
+    </div>
     <div class="details">
-        <p class="item-title" title="<%= title %>">
+        <p class="item-title" title="<%= label %>">
             <a class="image-wrapper" href="#movie/<%= movieid %>"><span><%= label %></span></a>
         </p>
         <p class="item-sub-title">

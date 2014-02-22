@@ -166,7 +166,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
       // clear xbmc playlist. add artist, play first song
       app.AudioController.playlistClearAdd( 'albumid', album.albumid, function(result){
         app.AudioController.playPlaylistPosition(0, function(){
-          app.AudioController.playlistRefresh();
+          app.AudioController.playlistRender();
         });
       });
     }
@@ -189,7 +189,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
        // Append to xbmc playlist
       app.AudioController.playlistAdd( 'albumid', album.albumid, function(result){
         app.notification(album.album + ' added to the playlist');
-        app.AudioController.playlistRefresh();
+        app.AudioController.playlistRender();
       });
     }
 

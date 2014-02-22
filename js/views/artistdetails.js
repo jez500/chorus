@@ -62,7 +62,7 @@ app.ArtistView = Backbone.View.extend({
       // Replace and play XBMC
       app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
         app.AudioController.playPlaylistPosition(0, function(){
-          app.AudioController.playlistRefresh();
+          app.AudioController.playlistRender();
         });
       });
     }
@@ -79,7 +79,7 @@ app.ArtistView = Backbone.View.extend({
       // Replace and play XBMC
       app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
         app.notification(artist.artist + ' added to the playlist');
-        app.AudioController.playlistRefresh();
+        app.AudioController.playlistRender();
       });
     }
   },

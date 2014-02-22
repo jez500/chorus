@@ -85,3 +85,35 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 
 });
 
+
+/**
+ * A lightweight collection of all movies (cached).
+ */
+app.MovieAllCollection = Backbone.Collection.extend({
+  model: app.Movie,
+
+  cached: [],
+  fullyLoaded: false,
+
+  sync: function(method, model, options) {
+
+    if(typeof app.stores.allMovies == 'undefined'){
+      // no cache, do a lookup
+      var allMovies = new app.AllMovieXbmcCollection();
+      allMovies.fetch({"success": function(data){
+        // Sort
+        data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+        // Cache
+        app.stores.allMovies = data.models;
+        // Return
+        options.success(data.models);
+      }});
+    } else {
+      // else return cache;
+      options.success(app.stores.allMovies);
+    }
+
+  }
+
+});
+

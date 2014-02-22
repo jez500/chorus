@@ -1,3 +1,25 @@
+@mixin player-tab-active {
+  background: rgba(255,255,255,0.4);
+  color: $color-light-slate;
+}
+.active-player-tabs {
+  background: #eee;
+  overflow: hidden;
+  margin-bottom: 5px;
+  li {
+    float: left;
+    padding: 5px 20px;
+    cursor: pointer;
+    color: #777;
+    &.active,
+    &:hover {
+      background: rgba(255,255,255,0.4);
+    }
+    &.active {
+      @include player-tab-active;
+    }
+  }
+}
 .playlist,
 .custom-lists,
 .browser-playlist-song-list {
@@ -88,6 +110,7 @@
       opacity: 0;
       background: $color-clouds;
       z-index: 1;
+      background-size: cover;
     }
     .playlist-song-actions-wrapper {
       display: none;
@@ -119,7 +142,7 @@
       @include transition(all 0.3s linear);
       height: 80px;
       background: $color-clouds;
-      background: url(../images/row-playing.gif) 0px 0px no-repeat;
+      background: image-url('row-playing.gif') 0px 0px no-repeat;
       padding-right: 75px;
       background-color: $color-mist;
       .actions {
@@ -159,6 +182,7 @@
         opacity: 1;
         right: 0;
         left: auto;
+
       }
       &:hover {
         .info {
@@ -266,3 +290,17 @@
     }
   }
 }
+
+//// Music
+//body.activePlayer-0 {
+//  .active-player-tabs li.player-audio {
+//    @include player-tab-active;
+//  }
+//}
+//
+//// Video
+//body.activePlayer-1 {
+//  .active-player-tabs li.player-video {
+//    @include player-tab-active;
+//  }
+//}

@@ -49,10 +49,8 @@ app.ShellView = Backbone.View.extend({
     this.$el.html(this.template());
     var self = this;
 
-    //set playlist
-    app.AudioController.playlistRefresh(function(result){
-
-    });
+    // playlist
+    app.AudioController.playlistRender();
 
     //init the progress bar
     this.$progressSlider = $( "#progress-bar", this.el );
@@ -328,7 +326,7 @@ app.ShellView = Backbone.View.extend({
    */
   refreshPlaylist: function(e){
     e.preventDefault();
-    app.AudioController.playlistRefresh();
+    app.AudioController.playlistRender();
   },
 
 
@@ -348,7 +346,7 @@ app.ShellView = Backbone.View.extend({
     e.preventDefault();
     // Clear playlist
     app.AudioController.playlistClear(function(data){
-      app.AudioController.playlistRefresh();
+      app.AudioController.playlistRender();
     });
   },
 

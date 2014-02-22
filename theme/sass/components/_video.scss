@@ -21,99 +21,314 @@ ul.video-list {
   .nav {
     margin-bottom: 0;
   }
+  #content {
+    padding-top: 9px;
+  }
 }
 
 .section-movie {
   #sidebar-first {
     display: none;
   }
+  // fixed sidebar of movie
   .video-side {
     padding: 10px;
-    background: #f9f9f9;
-    img {
-
-      width: 100%;
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    width: $width-sidebar-first-small;
+    z-index: 20;
+    .video-thumb {
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.7);
+      position: relative;
+      img {
+        width: 100%;
+        max-width: $width-sidebar-first-small;
+      }
+    }
+    // hover actions
+    .actions-wrapper {
+      @include hover-play-button;
+      @include center-absolute(5px);
+      width: auto;
+      z-index: 30;
+      background: rgba(0, 0, 0, 0.28);
+      .actions {
+        float: right;
+      }
+      .btn {
+        opacity: 0.7;
+        &:focus,
+        &:hover {
+          background: none;
+          opacity: 1;
+        }
+      }
+      .movie-play {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        font-size: 250%;
+      }
+      .thumbs-up {
+        .movie-thumbsup {
+          color: $color-carrot;
+        }
+      }
+    }
+    @include breakpoint($width-small){
+      top: 51px;
+      left: 50px;
+      width: 279px;
+      .video-thumb {
+        padding: 10px;
+        img {
+          max-width: 240px;
+        }
+      }
+      .actions-wrapper {
+        @include center-absolute(10px);
+      }
+    }
+    @include breakpoint($width-large){
+      width: $width-sidebar-first-large;
+      .video-thumb img {
+        max-width: $width-sidebar-first-large;
+      }
     }
   }
   .tab-pane {
     padding: 15px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-
-  .video-thumb {
-    position: absolute;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.7);
-    margin-top: -38px;
-    img {
-      max-width: 240px;
+    @include breakpoint($width-large){
+      padding: 15px 25px;
     }
   }
 
+  .video-thumb {
+
+
+
+  }
+  #movie-cast {
+    overflow: hidden;
+  }
   .cast-member {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.69);
     overflow: hidden;
     float: left;
-    width: 210px;
-    margin: 0 10px 10px 0;
+    width: 207px;
+    margin: 5px;
+    height: 90%;
+    color: $color-light-slate;
     img {
       width: 60px;
       height: 90px;
       background: #999;
       float: left;
-      margin-right: 15px;
+      margin-right: 8px;
     }
     strong {
       display: block;
       line-height: 20px;
       padding-top: 10px;
+      font-weight: normal;
+      font-size: 110%;
+      height: 18px;
+      overflow: hidden;
+    }
+    span {
+      font-size: 90%;
+      color: #AAA;
+      max-height: 44px;
+      overflow: hidden;
+      display: block;
+      margin-top: 5px;
+      margin-right: 5px;
+      line-height: 15px;
     }
   }
 
+  #fanart-background {
+    position: fixed;
+    left: 50px;
+    right: $width-sidebar-second-small;
+    bottom: $height-footer;
+    top: 0;
+    @include breakpoint($width-small){
+      right: $width-sidebar-second;
+    }
+  }
   #details {
+    max-width:1205px;
+    @include breakpoint($width-large){
+      margin-left: 130px;
+    }
+    .video-tab-wrapper {
+      margin: 48px 0px 0 0px;
+      @include breakpoint($width-small){
+        margin: 59px 90px 0 0px;
+      }
+    }
+    .content-actions {
+      top: -41px;
+    }
+    .tab-wrapper {
+      background: $color-trans-white;
+      position: relative;
+      min-height: 343px;
+      .content-tabs {
+        background: none;
+      }
+      .library-pager {
+        position: absolute;
+        right: 7px;
+        width: 150px;
+        top: -48px;
+        padding: 7px 0;
+        margin: 0px;
+        @include breakpoint($width-small){
+          right: 0;
+          top: -52px;
+        }
+        a {
+          padding: 8px 0px;
+          color: rgba(85, 85, 85, 0.36);
+        }
+      }
+      .nav-tabs {
+        position: absolute;
+        margin-top: -48px;
+        font-weight: bold;
+        li a {
+          border: none;
+          @include border-radius(0);
+          font-weight: normal;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          line-height: 28px;
+          em {
+            font-size: 10px;
+            padding-left: 2px;
+            color: #A5A5A5;
+            letter-spacing: -1px;
+          }
+        }
+        li.active a {
+          background: $color-trans-white !important;
+          font-size: 17px;
+        }
+        li:hover a {
+          background: $color-trans-light !important;
+          color: #444;
+        }
+      }
+    }
     &.has-fanart {
-      position: fixed;
-      left: 50px;
-      right: 300px;
-      bottom: $height-footer;
-      top: 0;
-      .video-tab-wrapper {
-        margin: 80px 80px 0 21px;
-      }
-      .content-actions {
-        top: -41px;
-      }
-      .tab-wrapper {
-        background: rgba(246, 246, 246, 0.89);
-        margin-left: 280px;
-       // min-height: 342px;
-        margin-top: 110px;
-        position: relative;
-        max-width: 940px;
-        .content-tabs {
-          background: none;
-        }
-        .nav-tabs {
-          position: absolute;
-          margin-top: -36px;
-          font-weight: bold;
-          li a {
-            border: none;
-            @include border-radius(0)
-          }
-          li.active a {
-            background: rgba(246, 246, 246, 0.89) !important;
-          }
-          li:hover a {
-            background: #888 !important;
-          }
-        }
-      }
     }
   }
   #movie-detail {
     font-size: 14px;
     line-height: 20px;
   }
+  #movie-tabs {
+    a,
+    .btn {
+      color: #555;
+      &:hover {
+        color: #999;
+      }
+    }
+    a:hover {
+      color: #eee;
+    }
+  }
 }
+
+#movie-detail {
+  $grids: 8;
+  $gutters: 0.8em;
+  .col-1 {
+    margin-bottom: 20px;
+    @include breakpoint($width-mobile) {
+      @include  grid-span(4, 1, 6);
+    }
+
+
+  }
+  .col-2 {
+
+    @include breakpoint($width-mobile) {
+      @include  grid-span(2, 5, 6);
+    }
+
+
+    .rating {
+      margin-bottom: 30px;
+      overflow: hidden;
+      height: 70px;
+      .fa-star,
+      .value {
+        font-size: 60px;
+        line-height: 70px;
+        padding-left: 10px;
+        color: rgba(43, 47, 48, 0.56);
+        float: right;
+      }
+      .fa-star {
+        font-size: 50px;
+        color: rgba(43, 47, 48, 0.30);
+      }
+      .votes {
+        clear: both;
+        color: rgba(46, 46, 46, 0.34);
+        font-size: 13px;
+        margin: 5px 0;
+      }
+    }
+    h4 {
+      text-align: right;
+      margin-right: 10px;
+      padding-right: 7px;
+    }
+//    ul {
+//      color: #666;
+//      font-size: 90%;
+//      padding-right: 10px;
+//    }
+  }
+}
+
+.sub-block {
+  ul {
+    padding-right: 15px;
+    text-align: right;
+    padding-bottom: 6px;
+    li {
+      font-size: 14px;
+      color: rgba(70, 70, 70, 0.8);
+      strong {
+        text-transform: uppercase;
+        padding-left: 9px;
+      }
+      small {
+        font-size: 12px;
+        color: rgba(68, 68, 68, 0.36);
+      }
+    }
+  }
+}
+
+
+
+body {
+  &.section-movie {
+    .backstretch {
+      background: #fff;
+      img {
+        opacity: 0.2;
+      }
+    }
+  }
+}
+

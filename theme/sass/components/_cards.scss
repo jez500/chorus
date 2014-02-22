@@ -97,14 +97,23 @@
       }
     }
 
-  } @else if $size == 'poster'{ // Video overrides ///////////////////
-    width: 164px;
-    min-width: 150px;
-    max-width: 175px;
-    height: 307px;
-    margin: 5px;
+  } @else if $size == 'poster'{ // Video overrides //////////////////
+    width: 170px;
+    min-width: 170px;
+    max-width: 189px;
+    height: 310px;
+    margin: 7px;
     .image {
-      height: 250px;
+      height: 252px;
+    }
+    .actions-wrapper {
+      height:252px;
+      .movie-play {
+        position: absolute;
+        left: 10px;
+        bottom: 9px;
+        font-size: 190%;
+      }
     }
 
   } @else { // small (default) //////////////////////

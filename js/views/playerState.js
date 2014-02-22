@@ -89,6 +89,13 @@ app.playerStateView = Backbone.View.extend({
       .addClass(data.status)
       .addClass( 'random-' + (data.player.shuffled === true ? 'on' : 'off') )
       .addClass( 'repeat-' + data.player.repeat );
+
+    // Remove all classes starting with 'activePlayer'
+    this.$body.removeClass (function (index, css) {
+      return (css.match (/\bactivePlayer\S+/g) || []).join(' ');
+    })
+      // Add the current player / playlist
+      .addClass('activePlayer-'+ data.activePlayer);
   },
 
 
@@ -106,22 +113,34 @@ app.playerStateView = Backbone.View.extend({
     var data = this.model,
       // time stuff
       $time = $('#time'),
-      cur = (parseInt(data.player.percentage) / 100) * parseInt(data.item.duration),
+      cur = 0,
+      dur = 0,
       // playlist stuff
       meta = app.helpers.parseArtistsArray(data.item),
       $playlistActive = $('.playlist .playing-row');
 
     //set playlist meta and playing row
     $('.playing-song-meta').html(meta);
-    $playlistActive.find('.playlist-meta').html(meta);
-    $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
+   // $playlistActive.find('.playlist-meta').html(meta);
+   // $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
 
     //set progress
     app.shellView.$progressSlider.slider( "value",data.player.percentage );
 
-    //time
-    $time.find('.time-cur').html(app.helpers.secToTime(Math.floor(cur)));
-    $time.find('.time-total').html(app.helpers.secToTime(data.item.duration));
+    // switch between audio / video formatting
+    if(data.activePlayer == 1){
+      // Video
+      dur = data.player.totaltime.hours + ':' + data.player.totaltime.minutes + ':' + data.player.totaltime.seconds;
+      cur = data.player.time.hours + ':' + data.player.time.minutes + ':' + data.player.time.seconds;
+    } else if (data.activePlayer == 0){
+      // Audio
+      dur = app.helpers.secToTime(parseInt(data.item.duration));
+      cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * dur));
+    }
+
+    // set time
+    $time.find('.time-cur').html(cur);
+    $time.find('.time-total').html(dur);
 
   },
 
@@ -135,10 +154,13 @@ app.playerStateView = Backbone.View.extend({
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .attr('src',app.parseImage(data.item.thumbnail))
+      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')")
       .attr('title', data.item.album)
-      .parent().attr('href', '#album/' + data.item.albumid);
+      .attr('href', '#album/' + data.item.albumid);
 
+    if(app.cached.nowPlaying.activePlayer == 1){
+      this.$nowPlaying.find('#playing-thumb').attr('href', '#' + data.item.type + '/' + data.item.albumid);
+    }
     // set title
     $('.playing-song-title').html(data.item.label); //now playing
 
@@ -157,7 +179,12 @@ app.playerStateView = Backbone.View.extend({
     }
 
     // refresh playlist
-    app.AudioController.playlistRefresh();
+    if(app.cached.nowPlaying.activePlayer == 0){
+      app.AudioController.playlistRender();
+    } else if(app.cached.nowPlaying.activePlayer == 1){
+      app.VideoController.playlistRender();
+    }
+
   },
 
   /**

@@ -6,7 +6,7 @@
 app.Movie = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {movieid: 1, thumbnail: '', fanart: '', year: ''},
+  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies'},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -32,7 +32,7 @@ app.Movie = Backbone.Model.extend({
 app.TVShow = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': []},
+  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -51,7 +51,7 @@ app.TVShow = Backbone.Model.extend({
 app.TVEpisode = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': []},
+  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -69,7 +69,7 @@ app.TVEpisode = Backbone.Model.extend({
 app.Video = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': []},
+  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#video'},
 
   sync: function(method, model, options) {
     if (method === "read") {

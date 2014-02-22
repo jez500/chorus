@@ -16,32 +16,8 @@ app.AudioController = {
  * Refresh the playlist
  * @param callback
  */
-app.AudioController.playlistRefresh = function(callback){
-
-  // xbmc playlist
-  app.AudioController.getPlaylistItems(function(result){
-
-    //cache
-    app.cached.xbmcPlaylist = result.items;
-
-    //create a new playlist view and render
-    app.playlistView = new app.PlaylistView({model:{models:result.items}});
-    $('#playlist-xbmc').html(app.playlistView.render().el);
-
-    app.AudioController.getNowPlayingSong(function(data){
-
-      //update shell to now playing info
-      app.shellView.updateState(data);
-      //rebind controls to playlist after refresh
-      app.playlistView.playlistBinds(this);
-    });
-
-    if(app.helpers.exists(callback)){
-      callback(result);
-    }
-
-  });
-
+app.AudioController.playlistRender = function(callback){
+  app.playlists.renderXbmcPlaylist(app.AudioController.playlistId, callback);
 };
 
 
@@ -119,43 +95,14 @@ app.AudioController.playlistAddMultiple = function(type, ids, callback){
 /**
  * Swap the position of an item in the playlist
  *
- * This moves an item from one position to another
- * It does this by cloning pos1, remove original pos, insert pos1 clone into pos2
- * Not to be confused with xbmc playlist.swap which is fairly useless IMO
- *
  * @param pos1
  *  current playlist position
  * @param pos2
  *  new playlist position
+ *  @param callback
  */
 app.AudioController.playlistSwap = function(pos1, pos2, callback){
-
-  //get playlist items
-  app.AudioController.getPlaylistItems(function(result){
-    //clone for insert
-    var clone = result.items[pos1],
-      insert = {};
-    //if songid found use that as a preference
-    if(clone.id != undefined && typeof clone.id == 'number'){
-      insert.songid = clone.id;
-    } else { //use filepath if no songid
-      insert.file = clone.file;
-    }
-    //remove the original
-    app.AudioController.removePlaylistPosition(pos1, function(result){
-      //insert the clone
-      app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos2,insert], function(data){
-        //get playlist items
-        app.AudioController.getPlaylistItems(function(result){
-          //update cache
-          app.AudioController.currentPlaylist = result;
-          callback(result);
-
-        })
-      });
-    });
-
-  })
+  app.playlists.playlistSwap(app.AudioController.playlistId, 'songid', pos1, pos2, callback);
 };
 
 
@@ -213,7 +160,7 @@ app.AudioController.playlistPlaySongId = function(playSongId, callback){
       if(d.id == playSongId && playing === false){
         app.AudioController.playPlaylistPosition(i, function(data){
           //update playlist
-          app.AudioController.playlistRefresh();
+          app.AudioController.playlistRender();
           //notify
           app.notification('Now playing "' + d.label + '"');
         });
@@ -415,7 +362,7 @@ app.AudioController.removePlaylistPosition = function(position, callback ){
  * Seek curently playing to a percentage
  */
 app.AudioController.seek = function(position, callback ){
-  app.xbmcController.command('Player.Seek', [app.AudioController.playlistId, position], function(result){
+  app.xbmcController.command('Player.Seek', [app.cached.nowPlaying.activePlayer, position], function(result){
     if(app.helpers.exists(callback)){
       callback(result.result); // return items
     }
@@ -426,15 +373,7 @@ app.AudioController.seek = function(position, callback ){
  * Get items from playlist
  */
 app.AudioController.getPlaylistItems = function(callback){
-  var activePlayer = (typeof app.cached.nowPlaying != 'undefined' ? app.cached.nowPlaying.activePlayer : app.AudioController.playlistId);
-  app.xbmcController.command('Playlist.GetItems',
-    [
-      activePlayer,
-      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
-    ], function(result){
-      console.log(result);
-    callback(result.result); // return items
-  });
+  app.playlists.getXbmcPlaylist(app.AudioController.playlistId, callback);
 };
 
 

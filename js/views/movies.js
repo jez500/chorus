@@ -108,8 +108,13 @@ app.MovieListItemView = Backbone.View.extend({
   className: 'movie-item-content',
 
   events:{
-    "click .play-movie": "playMovie"
+    "click .movie-play": "playMovie",
+    "click .movie-add": "addMovie",
+    "click .movie-thumbsup": "thumbsUp",
+    "click .movie-menu": "menu",
+    "click .actions-wrapper": "view"
   },
+
 
   initialize:function () {
     this.model.on("change", this.render, this);
@@ -119,13 +124,69 @@ app.MovieListItemView = Backbone.View.extend({
   render:function () {
 
     var model = this.model.attributes;
-   // model.subtext = ( typeof model.genre != 'undefined' ? model.genre.join(', ') : '' );
+    model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
+
     this.$el.html(this.template(model));
     return this;
   },
 
+
+  /**
+   * Nav to movie page
+   */
+  view: function(){
+    document.location = '#movie/' + this.model.attributes.movieid;
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('movie', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
+  },
+
+
+  /**
+   * Set as thumbsup
+   * @param e
+   */
+  thumbsUp: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var movie = this.model.attributes,
+      op = (app.playlists.isThumbsUp('movie', movie.movieid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.movie-actions');
+    app.playlists.setThumbsUp(op, 'movie', movie.movieid);
+    $el.toggleClass('thumbs-up');
+
+  },
+
+
   playMovie: function(e){
     e.preventDefault();
+    e.stopPropagation();
+    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+
+  addMovie: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    app.VideoController.addToPlaylist(this.model.attributes.movieid, 'movieid', 'add', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
 
   }
 
@@ -137,27 +198,133 @@ app.MovieListItemView = Backbone.View.extend({
  */
 app.MovieView = Backbone.View.extend({
 
-  initialize:function () {
+  allMovieCache: [],
 
+  initialize:function () {
+    var self = this;
+    // get all movies into a cache if required
+    // needed for next button
+    var allMovies = new app.MovieAllCollection();
+    allMovies.fetch({"success": function(data){
+      console.log(data);
+      self.allMovieCache = data;
+    }});
+  },
+
+  events:{
+    "click .library-back": "libraryBack",
+    "click .library-next": "libraryNext",
+    "click .movie-play": "playMovie",
+    "click .movie-add": "addMovie",
+    "click .movie-thumbsup": "thumbsUp",
+    "click .movie-menu": "menu"
   },
 
   render: function () {
 
+
+
     var model = this.model.attributes;
+    model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     //main detail
     this.$el.html(this.template(model));
 
     console.log(model);
-    // sidebar
-    var $side = $('<div class="video-side"></div>');
-    $side.append($('<img src="'+app.parseImage(model.thumbnail)+'" />'));
 
-    $('#details',this.$el).backstretch(app.parseImage(model.fanart));
-
-    //app.helpers.setFirstSidebarContent($side);
+    // backstretch
+    $('#fanart-background',this.$el).backstretch(app.parseImage(model.fanart, 'fanart'));
 
     return this;
+  },
+
+
+
+  libraryBack: function(e){
+    e.preventDefault();
+    // same as using the back button
+    window.history.back();
+  },
+
+  /**
+   * Navigate Next
+   * @param e
+   */
+  libraryNext: function(e){
+    e.preventDefault();
+
+    // next movie in cache
+    var next = false,
+      nextId = 0,
+      self = this;
+
+    // loop over all movies
+    $.each(self.allMovieCache.models, function(i,d){
+      var movie = d.attributes;
+      // current was last
+      if(next === true){
+        nextId = parseInt(movie.movieid);
+        next = false;
+      }
+      if(movie.movieid == self.model.attributes.id){
+        next = true;
+      }
+    });
+
+    // next movie id available
+    if(nextId > 0){
+      document.location = '#movie/' + nextId;
+    }
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('movie', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
+  },
+
+
+  /**
+   * Set as thumbsup
+   * @param e
+   */
+  thumbsUp: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var movie = this.model.attributes,
+      op = (app.playlists.isThumbsUp('movie', movie.movieid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.movie-actions');
+    app.playlists.setThumbsUp(op, 'movie', movie.movieid);
+    $el.toggleClass('thumbs-up');
+
+  },
+
+
+  playMovie: function(e){
+    e.preventDefault();
+    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+
+  addMovie: function(e){
+    e.preventDefault();
+    app.VideoController.addToPlaylist(this.model.attributes.movieid, 'movieid', 'add', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
+
   }
 
 

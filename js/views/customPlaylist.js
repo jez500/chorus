@@ -188,7 +188,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
           // play first song
           app.AudioController.playPlaylistPosition(0, function(data){
             //update playlist
-            app.AudioController.playlistRefresh();
+            app.AudioController.playlistRender();
             //notify
             app.notification('Playlist updated and playing');
           });
@@ -211,7 +211,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     }
     app.AudioController.playlistAddMultiple('mixed', items, function(result){
       // refresh playlist and switch to what got added
-      app.AudioController.playlistRefresh();
+      app.AudioController.playlistRender();
       app.playlists.changePlaylistView('xbmc');
       if(callback){
         callback(result);
@@ -346,7 +346,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     app.playlists.changePlaylistView('xbmc');
     app.AudioController.insertAndPlaySong(key.type, key.id, function(){
       app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
+      app.AudioController.playlistRender();
     });
   },
 
@@ -355,7 +355,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
       key = app.helpers.getSongKey(song);
     app.AudioController.playlistAdd(key.type, key.id, function(result){
       app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
+      app.AudioController.playlistRender();
     });
   },
 

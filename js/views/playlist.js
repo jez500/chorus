@@ -6,9 +6,14 @@
 
 app.PlaylistView = Backbone.View.extend({
 
-  tagName:'ul',
+  tagName:'div',
 
-  className:'playlist',
+  className:'playlist-wrapper',
+
+  events: {
+    "click .player-audio": "viewAudio",
+    "click .player-video": "viewVideo"
+  },
 
   initialize:function () {
 
@@ -17,21 +22,36 @@ app.PlaylistView = Backbone.View.extend({
   render:function () {
     // html
     this.$el.empty();
-    var pos = 0; //position
+    var pos = 0, //position
+      $tabs = $('<ul class="active-player-tabs"></ul>'),
+      $items = $('<ul class="playlist"></ul>'),
+      plId = (typeof this.model.playlistId != 'undefined' ? this.model.playlistId : 0);
+
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
-      this.$el.append(new app.PlaylistItemView({model:item}).render().el);
+      item.playlistId = plId;
+      $items.append(new app.PlaylistItemView({model:item}).render().el);
     }, this);
+    this.$el.append($items);
 
     // reload thumbsup
     app.playlists.getThumbsUp();
 
     // bind others
     $(window).bind('playlistUpdate', this.playlistBinds());
+
+    // make and prepend tabs
+    $tabs.append('<li class="player-audio' + (plId == 0 ? ' active' : '') + '">Audio</li>');
+    $tabs.append('<li class="player-video' + (plId == 1 ? ' active' : '') + '">Video</li>');
+
+    this.$el.prepend($tabs);
+
+    this.$el.addClass('plid-' + plId);
+
     return this;
   },
 
-  playlistBinds:function(self){
+  playlistBinds:function(){
 
     //sortable
     $sortable = $( "ul.playlist");
@@ -45,6 +65,14 @@ app.PlaylistView = Backbone.View.extend({
       }
     }).disableSelection();
 
+  },
+
+  viewAudio:function(e){
+    app.AudioController.playlistRender();
+  },
+
+  viewVideo:function(e){
+    app.VideoController.playlistRender();
   }
 
 });
@@ -81,6 +109,7 @@ app.PlaylistItemView = Backbone.View.extend({
     if(this.model.id == 'file'){
       $('.song', this.$el).data('file', this.model.file);
     }
+    $('.song', this.$el).data('playlistId', this.model.playlistId);
 
     // add if thumbs up
     if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
@@ -95,7 +124,12 @@ app.PlaylistItemView = Backbone.View.extend({
    * @param e
    */
   menu: function(e){
-    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model) );
+    if(this.model.playlistId == 1){
+      app.helpers.menuDialog( app.helpers.menuTemplates('movie', this.model) );
+    } else {
+      app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model) );
+    }
+
   },
 
 
@@ -105,8 +139,11 @@ app.PlaylistItemView = Backbone.View.extend({
       app.audioStreaming.playPosition(this.model.pos);
     } else {
       // XBMC PLAYER
-      app.AudioController.playPlaylistPosition(this.model.pos, function(data){
-        app.AudioController.playlistRefresh();
+      // Toggle between music / video playlists
+      var playlistController = (this.model.playlistId == 1 ? app.VideoController : app.AudioController);
+      // play and refresh
+      playlistController.playPlaylistPosition(this.model.pos, function(data){
+        playlistController.playlistRender();
       });
     }
   },
@@ -119,9 +156,11 @@ app.PlaylistItemView = Backbone.View.extend({
       app.audioStreaming.renderPlaylistItems();
     } else {
       // XBMC PLAYER
+      // Toggle between music / video playlists
+      var playlistController = (this.model.playlistId == 1 ? app.VideoController : app.AudioController);
       var self = this;
-      app.AudioController.removePlaylistPosition(this.model.pos, function(data){
-        app.AudioController.playlistRefresh();
+      playlistController.removePlaylistPosition(this.model.pos, function(data){
+        playlistController.playlistRender();
       });
     }
   },
@@ -134,10 +173,11 @@ app.PlaylistItemView = Backbone.View.extend({
 
   thumbsUp: function(e){
     e.stopPropagation();
-    var songid = this.model.id,
-      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
+    var id = this.model.id,
+      type = (this.model.playlistId == 1 ? 'video' : 'song'),
+      op = (app.playlists.isThumbsUp(type, id) ? 'remove' : 'add'),
       $el = $(e.target).closest('li');
-    app.playlists.setThumbsUp(op, 'song', songid);
+    app.playlists.setThumbsUp(op, type, id);
     $el.toggleClass('thumbs-up');
   },
 
@@ -148,8 +188,8 @@ app.PlaylistItemView = Backbone.View.extend({
    */
   buildArtistLink: function(model){
     // build artist names
-    model.albumArtistString = (typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
-    model.artistString = (typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
+    model.albumArtistString = (typeof model.albumartist != 'undefined' && typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
+    model.artistString = (typeof model.artist != 'undefined' && typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
     // add title
     var title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
     // if no artist or album artist, return null

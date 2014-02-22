@@ -237,6 +237,26 @@ $(document).ready(function(){
     return (typeof data != 'undefined');
   };
 
+  /**
+   * Parse a rating into x.x/10 stars
+   * @return float
+   */
+  app.helpers.rating = function(rating){
+    return Math.round(rating * 10) / 10;
+  };
+
+  /**
+   * Add a url to a collection of models
+   * @return float
+   */
+  app.helpers.buildUrls = function(models, page, idKey){
+    $.each(models, function(i,d){
+      models[i].url = '#' + page + '/' + d[idKey];
+    });
+    return models;
+  };
+
+
 
   /********************************************************************************
    * First Sidebar
@@ -809,7 +829,7 @@ $(document).ready(function(){
     if(!settings.omitwrapper){
       tpl += '<div class="' + settings.key + '-actions list-actions">';
     }
-    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></button>';
+    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="fa-ellipsis-v"></i></button>';
     tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
     for(i in settings.items){
       var item = settings.items[i];
@@ -893,6 +913,30 @@ $(document).ready(function(){
             {url: '#', class: 'artist-add-lists', title: 'Save to lists', callback: function(){
               app.playlists.playlistAddItems('lists', 'new', 'artist', model.artistid)
             }}
+          ]
+        };
+        break;
+
+      // also contains callbacks
+      case 'movie':
+        opts = {
+          title: model.label,
+          key: 'movie',
+          omitwrapper: true,
+          items: [
+            {url: '#', class: 'movie-download', title: 'Download Movie', callback: function(){
+              app.AudioController.downloadFile(model.file, function(url){ window.location = url; })
+            }}
+//            ,
+//            {url: '#', class: 'movie-add-xbmc', title: 'Add to XBMC', callback: function(){
+//              app.playlists.playlistAddItems('xbmc', 'append', 'album', model.albumid);
+//            }},
+//            {url: '#', class: 'movie-add-local', title: 'Play in browser', callback: function(){
+//              app.playlists.playlistAddItems('local', 'replace', 'album', model.albumid);
+//            }},
+//            {url: '#', class: 'movie-add-lists', title: 'Save to lists', callback: function(){
+//              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid)
+//            }}
           ]
         };
         break;

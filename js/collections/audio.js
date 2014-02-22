@@ -186,8 +186,10 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
 });
 
 
-
-
+/**
+ * Get a list of song models based on an array of songids
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.CustomSongCollection = Backbone.Collection.extend({
 
   model: app.Song,

@@ -60,7 +60,7 @@ app.ArtistListItemView = Backbone.View.extend({
     } else {
       app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
         app.AudioController.playPlaylistPosition(0, function(){
-          app.AudioController.playlistRefresh();
+          app.AudioController.playlistRender();
         });
       });
     }
@@ -174,7 +174,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
       app.AudioController.playlistClearAdd( 'artistid', artist.artistid, function(result){
         app.AudioController.playPlaylistPosition(0, function(){
           app.notification('Now playing ' + artist.artist);
-          app.AudioController.playlistRefresh();
+          app.AudioController.playlistRender();
         });
       });
     }
@@ -194,7 +194,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
     } else {
       app.AudioController.playlistAdd( 'artistid', artist.artistid, function(result){
         app.notification(artist.artist + ' added to the playlist');
-        app.AudioController.playlistRefresh();
+        app.AudioController.playlistRender();
       });
     }
   },

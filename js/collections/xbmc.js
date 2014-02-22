@@ -151,7 +151,7 @@ app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
       resp.albums[i].recent = 'played';
     });
     var a = app.helpers.shuffle(resp.albums);
-    return a;
+    return app.helpers.buildUrls(a, 'album', 'albumid');
   }
 });
 
@@ -180,7 +180,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    return resp.artists;
+    return app.helpers.buildUrls(resp.artists, 'artist', 'artistid');
   }
 });
 
@@ -213,7 +213,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    return resp.movies;
+    return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });
 
@@ -236,6 +236,6 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    return resp.movies;
+    return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });

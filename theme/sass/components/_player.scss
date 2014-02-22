@@ -49,7 +49,7 @@
         padding: 3px 0;
         width: 25%;
         float: left;
-        .icon-volume-up {
+        .fa-volume-up {
           display: none;
         }
       }
@@ -104,6 +104,7 @@
     overflow: hidden;
     float: left;
     margin-top: -1px;
+    background-size: cover;
     img {
       height: $height-footer;
       display: block;
@@ -166,7 +167,7 @@
 #browser-player-footer {
   display: none;
   background: $color-darkest-local;
-  .icon-pause {
+  .fa-pause {
     display: none;
   }
   .footer-left,
@@ -196,7 +197,7 @@ body {
     }
   }
   // xbmc player
-  .player-play .icon-pause {
+  .player-play .fa-pause {
     display: none;
     margin-top: 3px;
   }
@@ -214,17 +215,17 @@ body {
   // xbmc is playing
   &.playing {
     .player-play {
-      .icon-pause {
+      .fa-pause {
         display: block;
       }
-      .icon-play {
+      .fa-play {
         display: none;
       }
     }
     #sidebar-second .sidebar-header .playlist-primary-tabs li.xbmc-tab i {
       color: $playing-xbmc;
       display: none;
-      &.icon-play {
+      &.fa-play {
         display: inline;
       }
     }
@@ -264,10 +265,10 @@ body {
 
   &.muted {
     #footer .footer-right .actions-wrapper {
-      .icon-volume-up {
+      .fa-volume-up {
         display: block;
       }
-      .icon-volume-down {
+      .fa-volume-down {
         display: none;
       }
     }
@@ -341,17 +342,17 @@ body {
     }
     // footer play/pause
     #browser-player-footer .footer-left {
-      .icon-play {
+      .fa-play {
         display: none;
       }
-      .icon-pause {
+      .fa-pause {
         display: inline;
       }
     }
     #sidebar-second .sidebar-header .playlist-primary-tabs li.local-tab i {
       color: $playing-local;
       display: none;
-      &.icon-play {
+      &.fa-play {
         display: inline;
       }
     }
@@ -378,10 +379,10 @@ body {
   }
   &.bp-mute {
     #browser-player-footer .footer-right .actions-wrapper .browser-player-mute {
-      .icon-volume-down {
+      .fa-volume-down {
         display: none;
       }
-      .icon-volume-up {
+      .fa-volume-up {
         display: inline;
         color: #eee;
       }

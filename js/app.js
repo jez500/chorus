@@ -533,7 +533,7 @@ app.Router = Backbone.Router.extend({
       // Loading
       $content.html('<div class="loading-box">Loading Movies</div>');
       // set title and add some tabs
-      app.helpers.setTitle('Movies', { addATag:'#movies', tabs: {'#movies': 'Recently Added', '#movies/page/0' : 'Browse All'}, activeTab: 1});
+      app.helpers.setTitle('All Movies', { addATag:'#movies/page/0', tabs: {'#movies': 'Recently Added'}, activeTab: 1});
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
       // direct to this page
@@ -577,6 +577,8 @@ app.Router = Backbone.Router.extend({
           $(window).scrollTo( '85%' );
         }
 
+        app.helpers.triggerContentLazy();
+
       } else {
         // if last page was empty, dont change hash
         // or render
@@ -594,7 +596,8 @@ app.Router = Backbone.Router.extend({
 
       app.helpers.triggerContentLazy();
 
-    }});
+
+    }}); // end get collection
 
   },
 
@@ -603,22 +606,32 @@ app.Router = Backbone.Router.extend({
    * Movie landing page
    */
   moviesLanding: function () {
-    app.helpers.setTitle('Movies', { addATag:'#movies', tabs: {'#movies': 'Recently Added', '#movies/page/0' : 'Browse All'}, activeTab: 0});
 
+    var self = this;
+    app.helpers.setTitle('Recently Added', { addATag:'#movies', tabs: {'#movies/page/0' : 'Browse All'}, activeTab: 1});
+
+    // loading
+    self.$content.html('<div class="loading-box">Loading Movies</div>');
+
+    // get recent collection
     app.movieRecentCollection = new app.MovieRecentCollection();
     app.movieRecentCollection.fetch({"success": function(collection){
-      var $c = $('#content');
+
       app.cached.movieListView = new app.MovieListView({model: collection});
       // render
-      $c.html(app.cached.movieListView.render().$el);
+      self.$content.html(app.cached.movieListView.render().$el);
       // no pagination
-      $c.find('.next-page').remove();
+      self.$content.find('.next-page').remove();
       // change class
-      $c.find('ul').removeClass('movie-list').addClass('movie-recent-list');
+      self.$content.find('ul').removeClass('movie-list').addClass('movie-recent-list');
+      // set menu
+      app.shellView.selectMenuItem('movies', 'no-sidebar');
+      // lazyload
       app.helpers.triggerContentLazy();
       // scroll to top
       $(window).scrollTo(0);
     }});
+
   },
 
 
@@ -631,6 +644,8 @@ app.Router = Backbone.Router.extend({
     var movie = new app.Movie({"id": parseInt(id)}),
       self = this;
 
+    self.$content.html('<div class="loading-box">Loading Movie</div>');
+
     movie.fetch({
       success: function (data) {
 
@@ -638,7 +653,7 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.MovieView({model: data}).render().el);
-        app.helpers.setTitle('<a href="#/movies">Movie</a><b></b>' + data.attributes.title);
+        app.helpers.setTitle( data.attributes.title + ' <span>' + data.attributes.year + '</span>');
 
         // set menu
         app.shellView.selectMenuItem('movie', 'sidebar');

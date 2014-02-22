@@ -5,7 +5,7 @@
   position: relative;
   .list-actions {
     position: absolute;
-    z-index: 10;
+    z-index: 50;
     top: -42px;
     right: 260px;
     .btn {
@@ -84,7 +84,7 @@
       font-size: 14.994px;
       i {
         display: none;
-        &.icon-thumbs-up {
+        &.fa-thumbs-up {
           margin-right: 49px;
         }
       }
@@ -94,7 +94,7 @@
       .song-actions-wrapper .btn.song-thumbsup {
         color: $color-dark-xbmc;
       }
-      .visible-song-actions-wrapper i.icon-thumbs-up {
+      .visible-song-actions-wrapper i.fa-thumbs-up {
         display: inline-block;
       }
     }

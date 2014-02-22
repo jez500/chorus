@@ -1,37 +1,17 @@
 
 /**
- * Include media queries
+ * Include media queries (to be moved to breakpoint)
  */
 
-// 320px
-@media only screen and (min-width: 320px){
-  @import "320";
+// $width-small
+@media only screen and (min-width: $width-small){
+  @import "_small";
 }
-// 480px
-@media only screen and (min-width: 480px){
-  @import "480";
-}
-// 600px
-@media only screen and (min-width: 600px){
-  @import "600";
-}
-// 768px
-@media only screen and (min-width: 768px){
-  @import "768";
-}
-// 992px
-@media only screen and (min-width: 992px){
-  @import "992";
-}
-// 1200px
-@media only screen and (min-width: 1200px){
-  @import "1200";
-}
-// 1382px
-@media only screen and (min-width: 1382px){
-  @import "1382";
-}
-// 1600px
-@media only screen and (min-width: 1599px){
-  @import "1600";
-}
+
+
+/**
+ * Grids
+ */
+$grids: 4;
+//$grids: add-grid(8 at 40em);
+

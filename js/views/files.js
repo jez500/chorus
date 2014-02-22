@@ -170,7 +170,7 @@ app.FileView = Backbone.View.extend({
 
     app.AudioController.insertAndPlaySong(key, value, function(result){
       app.notification(file.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
+      app.AudioController.playlistRender();
     });
   },
 
@@ -190,7 +190,7 @@ app.FileView = Backbone.View.extend({
 
     app.AudioController.playlistAdd( key, value, function(result){
       app.notification(file.label + ' added to the playlist');
-      app.AudioController.playlistRefresh();
+      app.AudioController.playlistRender();
     });
 
   },
