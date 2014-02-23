@@ -84,7 +84,9 @@ body.fixed-header {
 // main > content
 #content {
   padding: 0;
-  margin-right: $width-sidebar-second-small;
+  @include breakpoint($width-mobile){
+    margin-right: $width-sidebar-second-small;
+  }
 }
 
 // top of page
@@ -427,8 +429,17 @@ body.fixed-header {
   position: fixed;
   top: 0;
   right: 0;
-  bottom: 0;
+  bottom: auto;
   z-index: 25;
+  height: $height-header;
+  &:hover {
+    bottom: 0;
+    height: auto;
+  }
+  @include breakpoint($width-mobile){
+    bottom: 0;
+    height: auto;
+  }
   .sidebar-header {
 
     height: $height-header;
@@ -500,6 +511,7 @@ body.fixed-header {
     }
   }
 }
+
 
 // Second sidebar - Homepage
 $home-sidebar-width: $width-sidebar-second-small + 300;

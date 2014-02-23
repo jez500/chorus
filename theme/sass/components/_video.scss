@@ -26,9 +26,21 @@ ul.video-list {
   }
 }
 
+
+
+
+
+/** MOVIE *******************/
+
 .section-movie {
   #sidebar-first {
     display: none;
+  }
+  .backstretch {
+    background: #fff;
+    img {
+      opacity: 0.2;
+    }
   }
   // fixed sidebar of movie
   .video-side {
@@ -116,17 +128,32 @@ ul.video-list {
   .cast-member {
     background: rgba(255, 255, 255, 0.69);
     overflow: hidden;
-    float: left;
-    width: 207px;
-    margin: 5px;
-    height: 90%;
+    margin: 5px 0;
+    height: 80px;
     color: $color-light-slate;
-    img {
+    @include breakpoint($width-mobile){
+      float: left;
+      margin: 0 2% 5px 0;
+      width: 48%;
+    }
+    @include breakpoint($width-small){
+      margin: 0 1% 10px 0;
+      width: 32%;
+    }
+    @include breakpoint($width-large){
+      margin-right: 1%;
+      width: 24%;
+    }
+    .image {
       width: 60px;
-      height: 90px;
+      height: 80px;
       background: #999;
       float: left;
       margin-right: 8px;
+      background-size: cover;
+      display: block;
+      margin-top: 0;
+      max-height: none;
     }
     strong {
       display: block;
@@ -152,9 +179,12 @@ ul.video-list {
   #fanart-background {
     position: fixed;
     left: 50px;
-    right: $width-sidebar-second-small;
+    right: 0;
     bottom: $height-footer;
     top: 0;
+    @include breakpoint($width-mobile){
+      right: $width-sidebar-second-small;
+    }
     @include breakpoint($width-small){
       right: $width-sidebar-second;
     }
@@ -204,22 +234,18 @@ ul.video-list {
           border: none;
           @include border-radius(0);
           font-weight: normal;
-          padding-top: 10px;
-          padding-bottom: 10px;
+          padding: 14px 17px 6px;
           line-height: 28px;
-          em {
-            font-size: 10px;
-            padding-left: 2px;
-            color: #A5A5A5;
-            letter-spacing: -1px;
-          }
+          background: rgba(255,255,255, 0.3);
+          text-align: center;
         }
+        li.active a:hover,
         li.active a {
           background: $color-trans-white !important;
           font-size: 17px;
         }
         li:hover a {
-          background: $color-trans-light !important;
+          background: rgba(255,255,255, 0.5) !important;
           color: #444;
         }
       }
@@ -321,14 +347,4 @@ ul.video-list {
 
 
 
-body {
-  &.section-movie {
-    .backstretch {
-      background: #fff;
-      img {
-        opacity: 0.2;
-      }
-    }
-  }
-}
 

@@ -233,7 +233,12 @@ app.MovieView = Backbone.View.extend({
     console.log(model);
 
     // backstretch
-    $('#fanart-background',this.$el).backstretch(app.parseImage(model.fanart, 'fanart'));
+    _.defer(function(){
+      var $fart = $('#fanart-background',this.$el),
+        fart = app.parseImage(model.fanart, 'fanart');
+      $fart.backstretch(fart);
+    });
+
 
     return this;
   },

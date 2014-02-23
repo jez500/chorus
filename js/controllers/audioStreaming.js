@@ -218,16 +218,19 @@ app.audioStreaming = {
    * @param collection
    */
   setPlaylistItems: function(collection){
-    // update in current playlist state
-    app.audioStreaming.playList.items = collection;
+
     // save ids to local storage
     var ids = [];
     $.each(collection.models, function(i,d){
       if(typeof d.attributes.songid != 'undefined'){
         ids.push(d.attributes.songid);
+        collection.models[i].attributes.type = 'song';
       }
     });
     app.storageController.setStorage(app.audioStreaming.lastListKey, ids);
+
+    // update in current playlist state
+    app.audioStreaming.playList.items = collection;
   },
 
 

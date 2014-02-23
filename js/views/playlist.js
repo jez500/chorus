@@ -98,18 +98,21 @@ app.PlaylistItemView = Backbone.View.extend({
 
   render:function () {
     // file fallback
-    this.model.id = (typeof this.model.id != 'undefined' ? this.model.id : 'file');
-    this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
-    this.model.artistLink = this.buildArtistLink(this.model);
+    var model = this.model;
+
+    model.id = (typeof model.id != 'undefined' ? model.id : 'file');
+    model.albumid = (typeof model.albumid != 'undefined' ? model.albumid : 'file');
+    model.subLink = this.buildSubLink(model);
+    model.url = (model.albumid != 'file' ? '#album/' + model.albumid : app.helpers.buildUrl(model.type, model.id));
 
     // render
-    this.$el.html(this.template(this.model));
+    this.$el.html(this.template(model));
 
     // if file, add its path
     if(this.model.id == 'file'){
-      $('.song', this.$el).data('file', this.model.file);
+      $('.song', this.$el).data('file', model.file);
     }
-    $('.song', this.$el).data('playlistId', this.model.playlistId);
+    $('.song', this.$el).data('playlistId', model.playlistId);
 
     // add if thumbs up
     if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
@@ -186,19 +189,33 @@ app.PlaylistItemView = Backbone.View.extend({
    * A helper to parse
    * @param model
    */
-  buildArtistLink: function(model){
-    // build artist names
-    model.albumArtistString = (typeof model.albumartist != 'undefined' && typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
-    model.artistString = (typeof model.artist != 'undefined' && typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
-    // add title
-    var title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
-    // if no artist or album artist, return null
-    if(model.artistString == '' && model.albumArtistString == ''){
+  buildSubLink: function(model){
+
+    if(model.type == 'song'){
+
+      // build artist names
+      model.albumArtistString = (typeof model.albumartist != 'undefined' && typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
+      model.artistString = (typeof model.artist != 'undefined' && typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
+
+      // build song vars
+      var title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration),
+        url = '#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString),
+        text = (model.artistString != '' ? model.artistString : model.albumArtistString);
+
+      // if no artist or album artist, return null
+      if(model.artistString == '' && model.albumArtistString == ''){
+        return '';
+      }
+
+    } else if (model.type == 'movie' || model.type == 'tvshow' || model.type == 'episode') {
+      var text = model.year, url = '#movies/year/' + model.year, title = 'More movies from ' + text;
+    } else {
       return '';
     }
+
     // return link
-    return '<a title="'+ title +'" href="#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString) + '">' +
-      (model.artistString != '' ? model.artistString : model.albumArtistString) + '</a>';
+    return '<a title="'+ title +'" href="' + url + '">' + text + '</a>';
+
   }
 
 

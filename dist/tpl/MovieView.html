@@ -24,12 +24,9 @@
                 </div>
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#movie-detail" data-toggle="tab">Overview</a></li>
-                    <li data-id="about"><a href="#movie-cast" data-toggle="tab">Cast
-                        <% if(cast.length > 0){ %>
-                           <em><%=(cast.length > 10 ? '10+' : cast.length)%></em>
-                        <% } %>
-
-                    </a></li>
+                    <% if(cast.length > 0){ %>
+                        <li data-id="about"><a href="#movie-cast" title="<%=cast.length%> cast members found" data-toggle="tab">Cast</a></li>
+                    <% } %>
                 </ul>
             </div>
 
@@ -37,8 +34,14 @@
                 <div id="movie-detail" class="tab-pane active">
                     <div class="col-1">
                         <h2><%=tagline%></h2>
+
                         <h3><%=plotoutline%></h3>
                         <p><%=plot%></p>
+                        <% if(genre.length > 0){ %>
+                        <div class="genres"><% for(i in genre){ %>
+                            <% if(genre[i] != ''){ %><a class="genre" href="#movies/genre/<%=genre[i]%>"><%=genre[i]%></a><% } %>
+                            <% } %></div>
+                        <% } %>
                         <div class="buttons">
                             <a href="#movie/<%= movieid %>" class="movie-play btn cta"><i class="fa fa-play"></i>Play movie</a>
                             <a href="#movie/<%= movieid %>" class="movie-add btn"><i class="fa fa-plus"></i> Queue</a>
@@ -88,7 +91,7 @@
                         var c = cast[k];
                         if(i <= 40){ %>
                             <a class="cast-member" href="http://www.imdb.com/find?s=nm&q=<%=encodeURIComponent(c.name)%>" target="_blank">
-                                <img src="<%= app.parseImage(c.thumbnail) %>" />
+                                <span class="image" style="background-image: url('<%= app.parseImage(c.thumbnail) %>')" ></span>
                                 <strong><%=c.name%></strong>
                                 <span><%=c.role%></span>
                             </a>

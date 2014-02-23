@@ -1,8 +1,11 @@
-<div class="playlist-item song playlist-pos-<%= pos %>" data-id="<%= pos %>" data-songid="<%= id %>" data-path="<%= file %>" data-playlistId="<%=playlistId%>">
+<%
+var plid = (typeof playlistId != 'undefined' ? playlistId : 0);
+%>
+<div class="playlist-item song playlist-pos-<%= pos %>" data-id="<%= pos %>" data-songid="<%= id %>" data-path="<%= file %>" data-playlistId="<%= plid %>">
     <i class="repeating icon-repeat" title="this song is on an endless repeat, click to stop repeating"></i>
     <div class="actions">
         <span class="fa fa-play playbtn"></span>
-        <span class="fa fa-remove removebtn"></span>
+        <span class="fa fa-times removebtn"></span>
     </div>
     <a href="#album/<%= albumid %>" class="thumb" style="background-image: url('<%= app.parseImage( thumbnail ) %>')"></a>
 
@@ -15,7 +18,7 @@
     </div>
     <% } %>
 
-    <a class="playlist-play" href="#"><%= label %></a>
-    <div class="info"><%=artistLink%></div>
+    <a class="playlist-play" href="<%= url %>"><%= label %></a>
+    <div class="info"><%=subLink%></div>
     <span class="playlist-meta"></span>
 </div>

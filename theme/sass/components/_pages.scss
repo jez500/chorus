@@ -286,27 +286,32 @@ h3.search-heading {
     border-bottom: none;
     margin-bottom: 5px;
   }
-  a {
+  .nav-tabs > li > a {
     color: #f6f6f6;
     border-radius: 0;
     border: none;
     font-size: 110%;
     padding: 11px 20px;
+    @include border-radius(0);
 
     opacity: 0.9;
     &:hover {
       background: $color-asbestos;
       opacity: 1;
+      border: none;
     }
   }
   li {
     margin: 0;
+    @include border-radius(0);
     &.active {
       a {
+        border: none;
         color: $color-darkest-xbmc;
         font-weight: bold;
         opacity: 1;
         background: #fff !important;
+        padding-bottom: 12px;
         &:hover {
           background: #fff;
           border-bottom-color: #fff;
@@ -319,7 +324,7 @@ h3.search-heading {
 
 .tab-content {
   .buttons {
-    margin: 40px 0 20px;
+    margin: 30px 0 20px;
     .btn {
       background: $color-trans-light;
       color: rgba(68, 68, 68, 0.71);
@@ -331,7 +336,7 @@ h3.search-heading {
         color: rgba(68, 68, 68, 0.9);
       }
       &.cta {
-        background: rgba(230, 126, 34, 0.8);
+        background: $playing-xbmc;
         color: #fff;
         font-weight: bold;
         &:hover {
@@ -392,6 +397,19 @@ h3.search-heading {
 }
 
 
+.genres {
+  margin: 20px 0 0;
+  border-bottom: $line-dotted;
+  padding-bottom: 30px;
+  a {
+    display: inline-block;
+    padding: 5px 8px;
+    margin-right: 5px;
+    background: $color-trans-light;
+    color: rgba(52, 73, 94, 0.55);
+    font-size: 13px;
+  }
+}
 
 // Body overrides
 body {

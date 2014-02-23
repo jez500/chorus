@@ -87,6 +87,37 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 
 
 /**
+ * A collection of movies matching a filter
+ */
+app.MovieFitleredCollection = Backbone.Collection.extend({
+  model: app.Movie,
+
+  cached: [],
+  fullyLoaded: false,
+
+  sync: function(method, model, options) {
+
+    var sort = {"sort": {"method": "title"}},
+      opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter];
+    console.log('result from ', opt);
+
+    for(k in options.filter){
+      var key = k + ':' + options.filter[k];
+    }
+
+    app.xbmcController.command('VideoLibrary.GetMovies', opt, function(data){
+      console.log('result from ', opt);
+      console.log('data ', data);
+
+      options.success(data.result.movies);
+    })
+
+  }
+
+});
+
+
+/**
  * A lightweight collection of all movies (cached).
  */
 app.MovieAllCollection = Backbone.Collection.extend({

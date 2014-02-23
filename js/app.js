@@ -176,7 +176,8 @@ app.Router = Backbone.Router.extend({
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
-    "movies/:page/:num":    "movies",
+    "movies/page/:num":     "movies",
+    "movies/genre/:genre":  "moviesGenre",
     "movies":               "moviesLanding",
     "movie/:id":            "movie",
     "xbmc/:op":             "xbmc"
@@ -513,15 +514,15 @@ app.Router = Backbone.Router.extend({
    * uses lazyload, infinite scroll and intelligent back button
    *
    */
-  movies: function(page, num){
+  movies: function(num){
 
     // vars
     var $content = $('#content'),
       $results = $('ul.movie-list',$content),
       fullRange = false,
-      scrolled = false;
-
-
+      scrolled = false,
+      self = this,
+      page = 'page';
 
     // init pager
     if($results.length == 0){
@@ -635,6 +636,45 @@ app.Router = Backbone.Router.extend({
   },
 
 
+
+  /**
+   * Movie landing page
+   */
+  moviesGenre: function (genre) {
+    console.log(genre);
+
+    var self = this;
+    app.helpers.setTitle(genre, {
+      addATag:'#movies/genre/' + genre,
+      tabs: {'#movies/page/0' : 'Browse All', '#movies' : 'Recent'}
+
+    });
+
+    // loading
+    self.$content.html('<div class="loading-box">Loading Movies</div>');
+
+    // get recent collection
+    app.movieFitleredCollection = new app.MovieFitleredCollection();
+    app.movieFitleredCollection.fetch({"filter" : {'genre': genre}, "success": function(collection){
+
+      app.cached.movieListView = new app.MovieListView({model: collection});
+      // render
+      self.$content.html(app.cached.movieListView.render().$el);
+      // no pagination
+      self.$content.find('.next-page').remove();
+      // change class
+      self.$content.find('ul').removeClass('movie-list').addClass('movie-genre-list');
+      // set menu
+      app.shellView.selectMenuItem('movies', 'no-sidebar');
+      // lazyload
+      app.helpers.triggerContentLazy();
+      // scroll to top
+      $(window).scrollTo(0);
+    }});
+
+  },
+
+
   /**
    * A single movie
    * @param id
@@ -661,6 +701,10 @@ app.Router = Backbone.Router.extend({
     });
 
   },
+
+
+
+
 
 
 

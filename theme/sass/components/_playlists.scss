@@ -71,6 +71,7 @@
       height: 15px;
       overflow: hidden;
       font-size: 12px;
+      line-height: 10px;
     }
     .repeating {
       position: absolute;
@@ -96,7 +97,7 @@
       }
       .info {
         display: block;
-        line-height: 10px;
+
       }
     }
 
@@ -148,6 +149,12 @@
       .actions {
         display: none;
       }
+      .info {
+        display: block;
+        padding-left: 36px;
+        line-height: 15px;
+        margin-top: 4px;
+      }
       .playlist-play {
         padding: 9px 5px 2px 35px;
         white-space: normal;
@@ -183,11 +190,6 @@
         right: 0;
         left: auto;
 
-      }
-      &:hover {
-        .info {
-          display: none;
-        }
       }
       .playlist-song-actions-wrapper {
         z-index: 3;

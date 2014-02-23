@@ -121,8 +121,6 @@ app.playerStateView = Backbone.View.extend({
 
     //set playlist meta and playing row
     $('.playing-song-meta').html(meta);
-   // $playlistActive.find('.playlist-meta').html(meta);
-   // $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
 
     //set progress
     app.shellView.$progressSlider.slider( "value",data.player.percentage );
@@ -135,7 +133,7 @@ app.playerStateView = Backbone.View.extend({
     } else if (data.activePlayer == 0){
       // Audio
       dur = app.helpers.secToTime(parseInt(data.item.duration));
-      cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * dur));
+      cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
     }
 
     // set time
@@ -203,7 +201,7 @@ app.playerStateView = Backbone.View.extend({
       } else if($d.hasClass('playlist-item')){
 
         // match pos in xbmc list
-        if($d.data('id') == data.player.position && !$d.parent().hasClass('browser-player')){
+        if($d.data('id') == data.player.position && !$d.parent().hasClass('browser-player') && $d.data('playlistId') == data.activePlayer){
           $d.addClass('playing-row');
         }
       }
@@ -266,7 +264,7 @@ app.playerStateView = Backbone.View.extend({
     }
 
     // set repeat title text
-    if(noState || lastState.player.repeat != data.player.repeat){
+    if(noState || typeof lastState.player == 'undefined' || lastState.player.repeat != data.player.repeat){
       var $t = $('.player-repeat'), t = $t.attr('title'),
         n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
       if(t != n){ $t.attr('title', n); }

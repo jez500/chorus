@@ -1,5 +1,6 @@
 // Artists
 #artist-tabs {
+  margin-top: -38px;
   .artist-actions {
   }
 }
@@ -46,7 +47,7 @@
 .has-fanart {
   #artist-tabs {
     background: none;
-    margin-top: -42px;
+
     z-index: 10;
     ul {
       margin-left: 15px;

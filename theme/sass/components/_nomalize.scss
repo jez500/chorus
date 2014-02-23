@@ -46,7 +46,7 @@ h4 {
   font-size: 14px;
   text-transform: uppercase;
   padding-bottom: 5px;
-  border-bottom: 1px dotted rgba(70, 70, 70, 0.11);
+  border-bottom: $line-dotted;
   color: rgba(70, 70, 70, 0.32)
 }
 .text-copy {

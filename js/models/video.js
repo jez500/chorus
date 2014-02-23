@@ -6,16 +6,16 @@
 app.Movie = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies'},
+  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies', 'thumbsup': false, 'libraryId': 1},
 
   sync: function(method, model, options) {
     if (method === "read") {
 
       app.xbmcController.command('VideoLibrary.GetMovieDetails',[parseInt(this.id), app.movieFields], function(data){
-        console.log(data);
-        // @todo fix logic for thumbs up
-        data.result.moviedetails.thumbsup = false;
-        options.success(data.result.moviedetails);
+        var m = data.result.moviedetails;
+        // get thumbsup
+        m.thumbsup = app.playlists.getThumbsUp('movie', m.movieid);
+        options.success(m);
       })
 
 

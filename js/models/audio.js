@@ -45,7 +45,7 @@ app.Album = Backbone.Model.extend({
 app.Song = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]},
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], 'type': 'song', 'playlistId': 0, 'url': '#', 'subLink': ''},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -63,7 +63,7 @@ app.Song = Backbone.Model.extend({
 app.PlaylistItem= Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: '', list: 'xbmc', playlistId: 0, url: '#artists'}
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: '', list: 'xbmc', playlistId: 0, 'type': 'file'}
 
 });
 
@@ -75,7 +75,7 @@ app.PlaylistItem= Backbone.Model.extend({
 app.PlaylistCustomListItem= Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'name':'', 'items':[], 'id': 0}
+  defaults: {'name':'', 'items':[], 'id': 0, 'type': 'file'}
 
 });
 

@@ -23,8 +23,11 @@ $color-pastel-orange: #FFD786;
 $color-trans-light: rgba(196, 196, 196, 0.48);
 $color-trans-white: rgba(246, 246, 246, 0.82);
 
+// lines
+$line-dotted: 1px dotted rgba(70, 70, 70, 0.11);
+
 // playing colours
-$playing-xbmc: $color-orange;
+$playing-xbmc: $color-carrot;
 $playing-local: #2BA5CC;
 
 $color-darkest-xbmc: $color-slate;
@@ -35,7 +38,7 @@ $color-dark-local: #6C6F6F;
 
 
 //sizing (breakpoints)
-$width-mobile: 600px;
+$width-mobile: 800px;
 $width-small: 1360px;
 $width-large: 1700px;
 

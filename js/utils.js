@@ -245,15 +245,35 @@ $(document).ready(function(){
     return Math.round(rating * 10) / 10;
   };
 
+
+  /********************************************************************************
+   * URL Functions
+   ********************************************************************************/
+
+
   /**
    * Add a url to a collection of models
    * @return float
    */
   app.helpers.buildUrls = function(models, page, idKey){
     $.each(models, function(i,d){
-      models[i].url = '#' + page + '/' + d[idKey];
+      models[i].url = app.helpers.buildUrl(page, d[idKey]);
     });
     return models;
+  };
+
+
+  /**
+   * Add a url to a collection of models
+   * @return float
+   */
+  app.helpers.buildUrl = function(type, id){
+    // songs and files go home
+    if(type == 'song' || type == 'file'){
+      return '#';
+    }
+    // else build
+    return '#' + type + '/' + id;
   };
 
 
@@ -571,14 +591,10 @@ $(document).ready(function(){
 
     // append tabs
     var n = 0;
-    console.log(settings.tabs);
     if(settings.tabs !== false){
       var $tabs = $('<div class="nav nav-tabs"></div>');
       for(i in settings.tabs){
         var $el = $('<a href="' + i + '" class="nav-tab">' + settings.tabs[i] + '</a>');
-        if(n == settings.activeTab){
-          $el.addClass('active');
-        }
         $tabs.append( $el );
         n++;
       }
@@ -829,7 +845,7 @@ $(document).ready(function(){
     if(!settings.omitwrapper){
       tpl += '<div class="' + settings.key + '-actions list-actions">';
     }
-    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="fa-ellipsis-v"></i></button>';
+    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>';
     tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
     for(i in settings.items){
       var item = settings.items[i];
