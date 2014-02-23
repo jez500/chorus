@@ -23,11 +23,12 @@ Install webinerface.chorus.zip via the zip, basically:
 TODO: Get it in the XBMC repo
 
 ## Updating / Manual install
-Updating via a zip through the ui is proving patchy for me, so if you are updating or
-have any problems with installing eg. stuck on "loading application"then you should try this:
+Updating via a zip through the ui is proving patchy for me, so if you are updating from an older version or
+have any problems with installing eg. stuck on "loading application" then you should try this:
 - Find your user addons folder. eg ~/.xbmc/addons or %user%/AppData/roaming/XBMC/addons
-- Delete the webinerface.chorus folder (if exists)
+- Delete the addons/webinerface.chorus folder (if exists)
 - Grab the latest webinerface.chorus.zip and extract its contents into your addons folder
+- You should now have a addons/webinerface.chorus folder again
 - Restart xbmc and refresh your browser for good measure
 
 ## Enabling

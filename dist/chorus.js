@@ -15692,9 +15692,6 @@ app.Router = Backbone.Router.extend({
 
     movie.fetch({
       success: function (data) {
-
-        console.log(data);
-
         // render content
         self.$content.html(new app.MovieView({model: data}).render().el);
         app.helpers.setTitle( data.attributes.title + ' <span>' + data.attributes.year + '</span>');
@@ -18448,9 +18445,11 @@ app.playlists.getXbmcPlaylist = function(playlistId, callback){
       var res = result.result;
       // set playlistId on models and collection
       res.playlistId = playlistId;
-      $.each(res.items, function(i,d){
-        res.items[i].playlistId = playlistId;
-      });
+      if(res.items !== undefined){
+        $.each(res.items, function(i,d){
+          res.items[i].playlistId = playlistId;
+        });
+      }
       // return items
       callback(res);
     });
@@ -18626,7 +18625,6 @@ app.VideoController.playVideoId = function(id, type, callback){
 app.VideoController.addToPlaylist = function(id, type, position, callback ){
   var f = {};
   f[type] = id;
-  console.log(f);
 
   if(position == 'add'){
     app.xbmcController.command('Playlist.Add', [app.VideoController.playlistId, f], function(result){
@@ -21261,27 +21259,7 @@ app.MoviesView = Backbone.View.extend({
 
   render: function () {
 
-//    // Create structure
-//    var $tabs = $('<ul class="nav nav-tabs"></ul>'),
-//      $tabContent = $('<div class="tab-content"></div>'),
-//      $tabWrapper = $('<div class="content-tabs"></div>');
-//
-//    var tabs = ['Recently Added', 'Browse'];
-//    $.each(tabs, function(i,d){
-//      // create tabs
-//      var $tab = $('<li class="tab tab-' + i + (i == 0 ? ' active' : '') + '" ></li>');
-//      $tab.append( $('<a data-toggle="tab" href="#tab-' + i + '">' + d + '</a>') );
-//      $tabs.append($tab);
-//      // create panes
-//      $tabContent.append( $('<div class="tab-pane' + (i == 0 ? ' active' : '') + '" id="tab-' + i + '" >Loading ' + d + '</div>') );
-//    });
-//
-//
-//    $tabWrapper.append($tabs).append($tabContent);
-//    this.$el.html($tabWrapper);
-//
-//    // Load the contents
-//
+    // @TODO: landing page?
 
     return this;
   }
@@ -21372,6 +21350,11 @@ app.MovieListItemView = Backbone.View.extend({
     this.model.on("destroy", this.close, this);
   },
 
+
+  /**
+   * Render it
+   * @returns {MovieListItemView}
+   */
   render:function () {
 
     var model = this.model.attributes;
@@ -21420,6 +21403,10 @@ app.MovieListItemView = Backbone.View.extend({
   },
 
 
+  /**
+   * Play it
+   * @param e
+   */
   playMovie: function(e){
     e.preventDefault();
     e.stopPropagation();
@@ -21431,6 +21418,10 @@ app.MovieListItemView = Backbone.View.extend({
   },
 
 
+  /**
+   * Queue it
+   * @param e
+   */
   addMovie: function(e){
     e.preventDefault();
     e.stopPropagation();
@@ -21457,11 +21448,14 @@ app.MovieView = Backbone.View.extend({
     // needed for next button
     var allMovies = new app.MovieAllCollection();
     allMovies.fetch({"success": function(data){
-      console.log(data);
       self.allMovieCache = data;
     }});
   },
 
+
+  /**
+   * Clicks
+   */
   events:{
     "click .library-back": "libraryBack",
     "click .library-next": "libraryNext",
@@ -21471,17 +21465,18 @@ app.MovieView = Backbone.View.extend({
     "click .movie-menu": "menu"
   },
 
+
+  /**
+   * Render it
+   * @returns {MovieView}
+   */
   render: function () {
-
-
 
     var model = this.model.attributes;
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     //main detail
     this.$el.html(this.template(model));
-
-    console.log(model);
 
     // backstretch
     _.defer(function(){
@@ -21490,17 +21485,20 @@ app.MovieView = Backbone.View.extend({
       $fart.backstretch(fart);
     });
 
-
     return this;
   },
 
 
-
+  /**
+   * Same as click browser back button
+   * @param e
+   */
   libraryBack: function(e){
     e.preventDefault();
     // same as using the back button
     window.history.back();
   },
+
 
   /**
    * Navigate Next
@@ -21564,6 +21562,10 @@ app.MovieView = Backbone.View.extend({
   },
 
 
+  /**
+   * Play it
+   * @param e
+   */
   playMovie: function(e){
     e.preventDefault();
     app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', function(data){
@@ -21574,6 +21576,10 @@ app.MovieView = Backbone.View.extend({
   },
 
 
+  /**
+   * Queue it
+   * @param e
+   */
   addMovie: function(e){
     e.preventDefault();
     app.VideoController.addToPlaylist(this.model.attributes.movieid, 'movieid', 'add', function(data){

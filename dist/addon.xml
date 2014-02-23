@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.chorus"
-  version="0.2.2"
+  version="0.2.3"
   name="Chorus"
   provider-name="jez500">
   <requires>
@@ -12,7 +12,7 @@
     point="xbmc.gui.webinterface"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Chorus - A music centric web interface</summary>
-    <description lang="en">A web interface for a shared music player</description>
+    <description lang="en">A web interface for a shared player</description>
     <platform>all</platform>
     <language>en</language>
   </extension>
