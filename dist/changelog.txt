@@ -1,3 +1,16 @@
+Version 0.2.2:
+- Framework for xbmc video integration
+- Integrated XBMC video playback and video playlists into the UI
+- Created full page view of a movie with navigation, vital statistics, cast and more.
+- Ability to browse all movies with infinite scroll, url pagination, back button support and lazy loaded images
+- Browse movies with a genre filter
+- Upgraded to latest font-awesome and updated a few icons
+- Lots of playlist fixes including empty lists if the items are not in the library
+- Added the awesome breakpoint and singularitygs gems as a requirement for build
+- Used breakpoint and singularity to start making things much more responsive (work in progress)
+- many more general fixes (and maybe a few new bugs)
+
+
 Version 0.2.1:
 - Significant refactor of js and css
 - Lots of playlist updates and refinements
