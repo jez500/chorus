@@ -1,6 +1,6 @@
 # Chorus
 A nice web ui for xbmc, focused on user experience
-Currently only for music, but it might support video and photos in the future.
+Currently only for music and movies, but it might support tv and photos in the future.
 
 Used by the [Doghouse Media Team](http://dhmedia.com.au) to control the shared office music box
 (an old pc running XBMC with chorus, plugged into an amp and a nas)
@@ -19,8 +19,16 @@ mail@jez500.com
 
 ## Installing
 Install webinerface.chorus.zip via the zip, basically:
-XBMC > Settings > AddOns > Install from zip
+- XBMC > Settings > AddOns > Install from zip
 TODO: Get it in the XBMC repo
+
+## Updating / Manual install
+Updating via a zip through the ui is proving patchy for me, so if you are updating or
+have any problems with installing eg. stuck on "loading application"then you should try this:
+- Find your user addons folder. eg ~/.xbmc/addons or %user%/AppData/roaming/XBMC/addons
+- Delete the webinerface.chorus folder (if exists)
+- Grab the latest webinerface.chorus.zip and extract its contents into your addons folder
+- Restart xbmc and refresh your browser for good measure
 
 ## Enabling
 - XBMC > Stystem > Settings > Services > Webserver
@@ -29,7 +37,7 @@ TODO: Get it in the XBMC repo
 - select chorus
 
 ## Using
-Add your music sources and do a full music scan in xbmc.
+Add your music/movies sources and do a full music/video scan in xbmc.
 Then simply go to the address of the computer running xbmc in your browser
 (if you are using a port number add that to the url)
 eg.
@@ -98,7 +106,7 @@ A few things that are "nice to haves"
 - Backbone, this is my first project using backbone and I am sure I could be doing some things better (refactor)
 - Addons, Make it work with your favourite addon - I attempted google music but failed even using it via the ui
 - Mobile/Tablet App, I would love to reuse a lot of the code as an app, but dont know how
-- Video Support, It would be cool to both browse your video library but also play videos via the browser
+- Video Support, Movies work, now we need tv
 - Browser streaming audio playback... maybe you want it to work in firefox?
 - Photo library, I wouldn't use it, but you might!
 
@@ -119,3 +127,8 @@ A few things that are "nice to haves"
 ![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/album.jpg "Albums")
 
 ![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/album1.jpg "Albums landing")
+
+### Movies
+![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/movies.jpg "Movies")
+
+![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/movie.jpg "Movie")
