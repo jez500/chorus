@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.chorus"
-  version="0.2.3"
+  version="0.2.4"
   name="Chorus"
   provider-name="jez500">
   <requires>
-    <import addon="xbmc.gui" version="4.0.0"/>
     <import addon="xbmc.json" version="6.0.0" />
   </requires>
   <extension

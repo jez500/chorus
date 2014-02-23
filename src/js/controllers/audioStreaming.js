@@ -100,7 +100,7 @@ app.audioStreaming = {
 
         // Get last browser playlist collection, if any
         var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
-        if(lastList !== undefined && lastList.length > 0){
+        if(lastList !== undefined && lastList !== null && lastList.length > 0){
           // when songs are ready, render them
           app.store.libraryCall(function(){
             // get collection based on songids
@@ -180,7 +180,8 @@ app.audioStreaming = {
    * @returns {*}
    */
   getNowPlayingSong: function(){
-    if(app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] !== undefined){
+    if(app.audioStreaming.playList.items.models !== undefined &&
+      app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] !== undefined){
       var model = app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition];
       return model.attributes;
     } else {

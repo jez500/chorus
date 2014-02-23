@@ -779,7 +779,8 @@ app.playlists.getThumbsUp = function(type){
  * @param id
  */
 app.playlists.isThumbsUp = function(type, id){
-  return (typeof app.cached.thumbsUp[type] != 'undefined' &&
+  return (typeof app.cached.thumbsUp != 'undefined' &&
+    typeof app.cached.thumbsUp[type] != 'undefined' &&
     typeof app.cached.thumbsUp[type].lookup[id] != 'undefined');
 };
 
