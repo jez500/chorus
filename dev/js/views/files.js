@@ -17,17 +17,17 @@ app.FilesView = Backbone.View.extend({
       $filesContainer = $('#files-container', $content),
       $fc = $('<ul class="files-music"></ul>');
 
-    if($filesContainer.length == 0){
+    if($filesContainer.length === 0){
       $content.html(this.template(this.model));
     }
 
     this.model.models.sort(function(a,b){
-      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
+      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
     });
 
     _.each(this.model.models, function (file) {
 
-      if(file.attributes.filetype == '' || file.attributes.filetype == 'directory'){
+      if(file.attributes.filetype === '' || file.attributes.filetype == 'directory'){
         // is a dir
         this.$el.append(new app.FileView({model:file}).render().el);
       } else {
@@ -37,7 +37,7 @@ app.FilesView = Backbone.View.extend({
 
     }, this);
 
-    if($fc.html() != ''){
+    if($fc.html() !== ''){
       $filesContainer.html($fc);
     } else {
       $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
@@ -69,7 +69,7 @@ app.FilesListView = Backbone.View.extend({
     this.$el.empty();
 
     this.model.models.sort(function(a,b){
-      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
+      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
     });
 
     _.each(this.model.models, function (file) {
@@ -142,7 +142,7 @@ app.FileView = Backbone.View.extend({
 
       // dont append if already appended
       //console.log(self.$el);
-      if(self.$el.find('ul.files-list').length == 0){
+      if(self.$el.find('ul.files-list').length === 0){
         self.$el.append(el);
       }
 
@@ -165,7 +165,7 @@ app.FileView = Backbone.View.extend({
 
     if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
       key = file.type + 'id';
-      value = file.id
+      value = file.id;
     }
 
     app.AudioController.insertAndPlaySong(key, value, function(result){
@@ -185,7 +185,7 @@ app.FileView = Backbone.View.extend({
 
     if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
       key = file.type + 'id';
-      value = file.id
+      value = file.id;
     }
 
     app.AudioController.playlistAdd( key, value, function(result){
@@ -201,7 +201,7 @@ app.FileView = Backbone.View.extend({
     e.preventDefault();
     app.AudioController.downloadFile(file, function(url){
       window.location = url;
-    })
+    });
   },
 
   addToCustomPlaylist: function(e){

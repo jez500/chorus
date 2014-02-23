@@ -47,7 +47,7 @@ app.AudioController.playlistAdd = function(type, id, callback){
 
       callback(result);
 
-    })
+    });
   });
 
 };
@@ -64,7 +64,7 @@ app.AudioController.playlistAdd = function(type, id, callback){
 app.AudioController.playlistAddMultiple = function(type, ids, callback){
 
   var commands = [],  id;
-  for(n in ids){
+  for(var n in ids){
     param = {};
     id = ids[n];
     // used only for songs, switches between file and id depending on var type
@@ -86,7 +86,7 @@ app.AudioController.playlistAddMultiple = function(type, ids, callback){
 
       callback(result);
 
-    })
+    });
   });
 
 };
@@ -219,7 +219,7 @@ app.AudioController.insertAndPlaySong = function(type, id, callback){
           }
         });
       });
-    })
+    });
   } else {
     // playing, insert
     app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
@@ -242,7 +242,7 @@ app.AudioController.songLoadMultiple = function(songids, callback){
     var commands = [];
 
     // create commands
-    for(n in songids){
+    for(var n in songids){
       var sid = songids[n];
       if(typeof sid == 'number'){
         // it is a song and sid should be a songid
@@ -283,17 +283,17 @@ app.AudioController.songLoadMultiple = function(songids, callback){
         });
 
         // add songs back in their correct order using a dictionary
-        for(n in songids){
-          var sid = songids[n];
+        for(var s in songids){
+          var sid = songids[s];
           if(typeof sid == 'number' && typeof dict[sid] != 'undefined'){
-            songids[n] = dict[sid];
+            songids[s] = dict[sid];
           }
         }
 
         // lastly, we clean up the output and ensure every item is an object
         // we also assign final position in the list
         var p = 0;
-        for(n in songids){
+        for(var n in songids){
           var item = songids[n];
           if(typeof item == 'object'){
             item.position = p;
@@ -430,7 +430,7 @@ app.AudioController.getNowPlayingSong = function(callback){
     app.counts['503total']++;
   }
 
-  if(app.counts[503] != 0){
+  if(app.counts[503] !== 0){
     // up the count and set the state
     app.counts[503]++;
     app.state = 'notconnected';

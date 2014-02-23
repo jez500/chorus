@@ -129,7 +129,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
     // enrich the model
     model.title = ( typeof model.label != "undefined" ? model.label : model.artist );
     model.url = '#album/' + model.artistid;
-    model.img = (model.fanart != '' ? model.fanart : model.thumbnail);
+    model.img = (model.fanart !== '' ? model.fanart : model.thumbnail);
 
     this.$el.html(this.template(model));
 

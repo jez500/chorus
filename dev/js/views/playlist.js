@@ -41,7 +41,7 @@ app.PlaylistView = Backbone.View.extend({
     $(window).bind('playlistUpdate', this.playlistBinds());
 
     // make and prepend tabs
-    $tabs.append('<li class="player-audio' + (plId == 0 ? ' active' : '') + '">Audio</li>');
+    $tabs.append('<li class="player-audio' + (plId === 0 ? ' active' : '') + '">Audio</li>');
     $tabs.append('<li class="player-video' + (plId == 1 ? ' active' : '') + '">Video</li>');
 
     this.$el.prepend($tabs);
@@ -116,7 +116,7 @@ app.PlaylistItemView = Backbone.View.extend({
 
     // add if thumbs up
     if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
-      this.$el.addClass('thumbs-up')
+      this.$el.addClass('thumbs-up');
     }
     return this;
   },
@@ -191,6 +191,8 @@ app.PlaylistItemView = Backbone.View.extend({
    */
   buildSubLink: function(model){
 
+    var url, text, title;
+
     if(model.type == 'song'){
 
       // build artist names
@@ -198,17 +200,19 @@ app.PlaylistItemView = Backbone.View.extend({
       model.artistString = (typeof model.artist != 'undefined' && typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
 
       // build song vars
-      var title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration),
-        url = '#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString),
-        text = (model.artistString != '' ? model.artistString : model.albumArtistString);
+      title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
+      url = '#search/' + (model.albumArtistString !== '' ? model.albumArtistString : model.artistString);
+      text = (model.artistString !== '' ? model.artistString : model.albumArtistString);
 
       // if no artist or album artist, return null
-      if(model.artistString == '' && model.albumArtistString == ''){
+      if(model.artistString === '' && model.albumArtistString === ''){
         return '';
       }
 
     } else if (model.type == 'movie' || model.type == 'tvshow' || model.type == 'episode') {
-      var text = model.year, url = '#movies/year/' + model.year, title = 'More movies from ' + text;
+      text = model.year;
+      url = '#movies/year/' + model.year;
+      title = 'More movies from ' + text;
     } else {
       return '';
     }

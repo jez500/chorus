@@ -128,7 +128,7 @@ app.ArtistSummaryView = Backbone.View.extend({
 
 
       //scroll fanart down
-      if(self.model.attributes.fanart != ''){
+      if(self.model.attributes.fanart !== ''){
         //$('body').scrollTo(176);
       }
 

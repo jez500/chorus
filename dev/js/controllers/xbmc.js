@@ -30,7 +30,7 @@ app.xbmcController.command = function(command, options, callback, errorCallback)
     error: function(result) {
       app.helpers.errorHandler('xbmc command call: ' + command, [result, options]);
       if(errorCallback){
-        errorCallback([result, options])
+        errorCallback([result, options]);
       }
     }
   });
@@ -47,7 +47,7 @@ app.xbmcController.multipleCommand = function(commands, callback){
 
   $.jsonRPC.batchRequest(commands, {
     success: function(result) {
-      for(i in result){
+      for(var i in result){
         if(typeof result[i].error != 'undefined'){
           // suppress errors unless required
           //console.log(result, commands[i]);

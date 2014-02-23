@@ -30,7 +30,7 @@ app.FileCollection = Backbone.Collection.extend({
       // add a title before return
       var sources = self.parseData(res.result.sources);
       callback(sources);
-    })
+    });
 
   },
 
@@ -48,7 +48,7 @@ app.FileCollection = Backbone.Collection.extend({
 
       callback(files);
 
-    })
+    });
 
   },
 
@@ -58,13 +58,13 @@ app.FileCollection = Backbone.Collection.extend({
    * @returns {*}
    */
   parseData: function(models){
-    for(i in models){
+    for(var i in models){
 
-      if(typeof models[i].filetype == 'undefined' || models[i].filetype == ''){
+      if(typeof models[i].filetype == 'undefined' || models[i].filetype === ''){
         models[i].filetype = 'directory';
       }
 
-      if(typeof models[i].id == 'undefined' || models[i].id == 0){
+      if(typeof models[i].id == 'undefined' || models[i].id === 0){
         models[i].id = models[i].file;
       }
 
@@ -77,7 +77,7 @@ app.FileCollection = Backbone.Collection.extend({
         models[i].type = 'file';
       }
 
-      if(typeof models[i].title == 'undefined' || models[i].title == ''){
+      if(typeof models[i].title == 'undefined' || models[i].title === ''){
         models[i].title = models[i].label;
       }
 

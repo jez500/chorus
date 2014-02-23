@@ -145,7 +145,7 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
   app.playlists.playlistGetItems(type, delta, function(collection){
 
     // gate
-    if(collection.length == 0){
+    if(collection.length === 0){
       return;
     }
 
@@ -190,7 +190,7 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
                 callback();
               });
             });
-          })
+          });
         }
 
         break;
@@ -204,7 +204,7 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
         } else {
           // replace and play
           console.log('replace', collection);
-          app.audioStreaming.replacePlaylistItems(collection, callback)
+          app.audioStreaming.replacePlaylistItems(collection, callback);
         }
 
         break;
@@ -272,11 +272,11 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   });
 
   //if an item has changed position, swap its position in xbmc
-  if(changed.from != undefined && changed.from !== changed.to){
+  if(changed.from !== undefined && changed.from !== changed.to){
     var controller = (type == 'audio' ? app.AudioController : app.VideoController);
     controller.playlistSwap(changed.from, changed.to, function(res){
       controller.playlistRender();
-    })
+    });
   }
 };
 
@@ -299,10 +299,10 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
   });
   console.log(changed);
   //if an item has changed position, swap its position in xbmc
-  if(changed.from != undefined && changed.from !== changed.to){
+  if(changed.from !== undefined && changed.from !== changed.to){
     app.AudioController.playlistSwap(changed.from, changed.to, function(res){
       app.AudioController.playlistRender();
-    })
+    });
   }
 };
 
@@ -346,13 +346,13 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
   // validate type & items
   type = (typeof type == 'undefined' ? 'xbmc' : type);
-  items= (typeof items == 'undefined' ? [] : items);
+  items = (typeof items == 'undefined' ? [] : items);
 
   // vars
   var lists = app.playlists.getCustomPlaylist(),
     htmlList = '';
 
-  for(i in lists){
+  for(var i in lists){
     htmlList += '<li data-id="' + lists[i].id + '">' + lists[i].name + '</li>';
   }
 
@@ -363,7 +363,7 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
   var content = '<p>Create a new playlist<br />' +
     '<input class="form-text" type="text" id="newlistname" /> <button class="btn bind-enter" id="savenewlist">Save</button></p>' +
-    (htmlList != '' ? '<p>Or add to an existing list</p><ul id="existinglists">' + htmlList + '</ul>' : '');
+    (htmlList !== '' ? '<p>Or add to an existing list</p><ul id="existinglists">' + htmlList + '</ul>' : '');
 
   // Create Dialog
   app.helpers.dialog(content, {
@@ -408,7 +408,8 @@ app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
   var items = [],
     lists = app.playlists.getCustomPlaylist(),
     lastId = 0,
-    plObj = {};
+    plObj = {},
+    i = 0;
 
   if(source == 'xbmc'){
 
@@ -467,7 +468,7 @@ app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
       for(i in lists){
         if(id == lists[i].id){
           // append to matching list
-          for(n in items){
+          for(var n in items){
             lists[i].items.push(items[n]);
           }
           // plobj
@@ -516,13 +517,14 @@ app.playlists.getCustomPlaylist = function(id){
 
   // get lists
   var currentPlaylists = app.storageController.getStorage(app.playlists.storageKeyLists),
-    listsRaw = (currentPlaylists != null ? currentPlaylists : []),
-    lists = [];
+    listsRaw = (currentPlaylists !== null ? currentPlaylists : []),
+    lists = [],
+    n = 0;
 
   // ensure we have a clean data set
   for(n in listsRaw){
     var item = listsRaw[n];
-    if(typeof item != 'undefined' && item != null){
+    if(typeof item != 'undefined' && item !== null){
       lists.push(item);
     }
   }
@@ -549,7 +551,7 @@ app.playlists.deleteCustomPlaylist = function(id){
     o = [];
 
   // add all but the removed to o
-  for(n in lists){
+  for(var n in lists){
     item = lists[n];
     if(item.id != id){
       o[n] =  item;
@@ -597,11 +599,12 @@ app.playlists.updateCustomPlayLists = function(){
  * replace custom playlist items with new items - useful for for sorting
  */
 app.playlists.replaceCustomPlayList = function(listId, items){
+  var lists = {};
 
   // thumbs up - only songs are sortable
   if(listId == 'thumbsup'){
 
-    var lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
+    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
 
     lists.song = {items: items};
 
@@ -613,9 +616,10 @@ app.playlists.replaceCustomPlayList = function(listId, items){
 
   // Get a full list then update our specific list
   listId = parseInt(listId);
-  var lists = app.playlists.getCustomPlaylist();
+  lists = app.playlists.getCustomPlaylist();
+
   if(items.length > 0){
-    for(i in lists){
+    for(var i in lists){
       // if matching list, update
       if(lists[i].id == listId){
         lists[i].items = items;
@@ -648,12 +652,12 @@ app.playlists.getDropdown = function(){
     buttons.delete = 'Delete';
   }
 
-  for(key in buttons){
+  for(var key in buttons){
     items.push({
       url: '#',
       class: type + '-' + key,
       title: buttons[key]
-    })
+    });
   }
 
   return app.helpers.makeDropdown({
@@ -682,7 +686,8 @@ app.playlists.setThumbsUp = function(op, type, id){
     currentThumbsUp = allThumbsUp[type],
     newList = [],
     exists = false,
-    itemTemplate = {items: []};
+    itemTemplate = {items: []},
+    i = 0;
 
   if(typeof currentThumbsUp == 'undefined' || typeof currentThumbsUp.items == 'undefined'){
     currentThumbsUp = itemTemplate;
@@ -707,8 +712,8 @@ app.playlists.setThumbsUp = function(op, type, id){
     case 'remove':
       // loop and re add all but the id to remove
       for(i in currentThumbsUp.items){
-        if(currentThumbsUp.items[i] != id && currentThumbsUp.items[i] != null){
-          newList.push(currentThumbsUp.items[i])
+        if(currentThumbsUp.items[i] != id && currentThumbsUp.items[i] !== null){
+          newList.push(currentThumbsUp.items[i]);
         }
       }
       currentThumbsUp.items = newList;
@@ -722,7 +727,7 @@ app.playlists.setThumbsUp = function(op, type, id){
   app.storageController.setStorage(app.playlists.storageKeyThumbsUp, allThumbsUp);
 
   // update cache
-  app.playlists.getThumbsUp()
+  app.playlists.getThumbsUp();
 };
 
 
@@ -733,7 +738,8 @@ app.playlists.setThumbsUp = function(op, type, id){
  */
 app.playlists.getThumbsUp = function(type){
   var currentThumbsUp = app.storageController.getStorage(app.playlists.storageKeyThumbsUp),
-    lists = (currentThumbsUp != null ? currentThumbsUp : {});
+    lists = (currentThumbsUp !== null ? currentThumbsUp : {}),
+    t = 0, n = 0;
 
   // save to cache for "isThumbsUp"
   app.cached.thumbsUp = {};
@@ -746,7 +752,7 @@ app.playlists.getThumbsUp = function(type){
     var items = [];
     for(n in lists[t].items){
       var id = lists[t].items[n];
-      if(id != null){
+      if(id !== null){
         items.push(id);
         app.cached.thumbsUp[t].lookup[id] = true;
       }
@@ -869,12 +875,11 @@ app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
       controller = (playlistId == 1 ? app.VideoController : app.AudioController);
 
     //if songid found use that as a preference
-    if(clone.id != undefined && typeof clone.id == 'number'){
+    if(clone.id !== undefined && typeof clone.id == 'number'){
       insert[type] = clone.id;
     } else { //use filepath if no songid
       insert.file = clone.file;
     }
-
 
     //remove the original
     controller.removePlaylistPosition(pos1, function(result){
@@ -885,10 +890,9 @@ app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
           //update cache
           controller.currentPlaylist = result;
           callback(result);
-
-        })
+        });
       });
     });
 
-  })
+  });
 };

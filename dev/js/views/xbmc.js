@@ -48,7 +48,7 @@ app.XbmcView = Backbone.View.extend({
 
     this.$el = $('<ul class="page-list"></ul>');
 
-    for(p in pages){
+    for(var p in pages){
       var $el = $('<li>').append('<h3><a href="#xbmc/' + p + '">'+ p +'</a></h3>').append('<p>'+pages[p]+'</p>');
       this.$el.append($el);
     }
@@ -206,7 +206,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
       self.$select.empty();
 
 
-      for(m in data.result.methods){
+      for(var m in data.result.methods){
         self.$select.append($('<option>', {
           value: m,
           text: m
@@ -234,7 +234,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
     $('#method-name', this.$el).html(method);
 
 
-    for(p in methodObj.params){
+    for(var p in methodObj.params){
       var param = methodObj.params[p],
         $div = $('<div />'),
         $el = {};
@@ -247,14 +247,14 @@ app.XbmcJSONrpcView = Backbone.View.extend({
 
       // set the text
       var text = (typeof param.description == 'undefined' ? '' : param.description + "\n\r") +
-        (param.type != '' ? JSON.stringify(param.type, null, 2) : '');
+        (param.type !== '' ? JSON.stringify(param.type, null, 2) : '');
 
 
       // The element used
       // have options, make a select
       if(typeof param.type.enums != 'undefined' && param.type.enums.length > 0){
         $el = $('<select>');
-        for(m in param.type.enums){
+        for(var m in param.type.enums){
           $el.append($('<option>', {
             value: param.type.enums[m],
             text: param.type.enums[m]
@@ -282,10 +282,11 @@ app.XbmcJSONrpcView = Backbone.View.extend({
     }
 
     // add execute button
-    $div = $('<div />')
+    var $ex = $('<div />')
       .addClass('param actions')
       .append('<button class="btn" id="doit">Execute</button>');
-    this.$params.append($div);
+
+    this.$params.append($ex);
 
 
     this.$res.html(JSON.stringify(methodObj, null, 4));
@@ -340,6 +341,6 @@ app.XbmcJSONrpcView = Backbone.View.extend({
   isEncoded:function(text, param, $el){
     console.log(param);
     if(param.type.type == 'integer'){ return false; }
-    return (!$el.hasClass('select') && text != '' && (typeof param.type == 'object' || param.type == 'array'));
+    return (!$el.hasClass('select') && text !== '' && (typeof param.type == 'object' || param.type == 'array'));
   }
 });

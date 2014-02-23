@@ -103,11 +103,11 @@ $(document).ready(function(){
       {background: '#FFCECD'}
     ];
 
-    if(typeof style != undefined){
+    if(style !== undefined){
       defaults = $.extend(defaults, mods[style]);
     }
 
-    for(prop in defaults){
+    for(var prop in defaults){
       styles.push(prop + ': ' + defaults[prop]);
     }
 
@@ -139,7 +139,7 @@ $(document).ready(function(){
    * @returns {*}
    */
   app.helpers.varGet = function(name, fallback){
-    return (typeof app.vars[name] != undefined ? app.vars[name] : fallback);
+    return (app.vars[name] !== undefined ? app.vars[name] : fallback);
   };
 
 
@@ -348,7 +348,7 @@ $(document).ready(function(){
    */
   app.helpers.toggleSidebar = function(state){
     var addc = 'sidebar', rmc = 'no-sidebar', $body = $('body');
-    if(typeof state == undefined){
+    if(state === undefined){
       $body.toggleClass(addc).toggleClass(rmc);
     } else {
       if(state == 'open'){
@@ -474,9 +474,9 @@ $(document).ready(function(){
    */
   app.helpers.parseArtistsArray = function(item){
     var meta = [], str;
-    for(i in item.artist){ //each artist in item
+    for(var i in item.artist){ //each artist in item
 
-      if(item.artistid != undefined){ //artist id found
+      if(item.artistid !== undefined){ //artist id found
         str = '<a href="#artist/' + item.artistid[i] + '">' + item.artist[i] + '</a>';
       } else { //if no artist ids found
         str = item.artist[i];
@@ -489,9 +489,9 @@ $(document).ready(function(){
 
   app.helpers.parseArtistSummary = function(data){
     var totals = {songs:0,albums:0,time:0};
-    for(i in data.models){
+    for(var i in data.models){
       totals.albums++;
-      for(s in data.models[i].attributes.songs){
+      for(var s in data.models[i].attributes.songs){
         totals.songs++;
         totals.time = totals.time + parseInt(data.models[i].attributes.songs[s].attributes.duration);
       }
@@ -518,7 +518,7 @@ $(document).ready(function(){
    */
   app.helpers.createPaginationRange = function(pageNum, fullRange){
     // Do some maths
-    var page = (pageNum != undefined ? parseInt(pageNum) : 0),
+    var page = (pageNum !== undefined ? parseInt(pageNum) : 0),
       start = (page * app.itemsPerPage),
       end = (start + app.itemsPerPage);
     // override if fullRange
@@ -545,7 +545,7 @@ $(document).ready(function(){
    */
   app.helpers.applyBackstretch = function(fanart, player){
     // Ensure on homepage and using the correct player
-    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == player){
+    if(location.hash == '#' || location.hash === '' && app.audioStreaming.getPlayer() == player){
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
@@ -593,7 +593,7 @@ $(document).ready(function(){
     var n = 0;
     if(settings.tabs !== false){
       var $tabs = $('<div class="nav nav-tabs"></div>');
-      for(i in settings.tabs){
+      for(var i in settings.tabs){
         var $el = $('<a href="' + i + '" class="nav-tab">' + settings.tabs[i] + '</a>');
         $tabs.append( $el );
         n++;
@@ -677,7 +677,7 @@ $(document).ready(function(){
           // look for a button with class "bind-enter" first, fallback to OK btn, fallback to none.
           var $parent = $(this).parent(),
             $enterButton = $parent.find('.bind-enter'),
-            $btn = ($enterButton.length == 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
+            $btn = ($enterButton.length === 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
           $btn.trigger("click");
         }
       });
@@ -737,7 +737,7 @@ $(document).ready(function(){
       buttons: {
         "OK": function(){
           var text = $('#promptText').val();
-          if(text != ''){
+          if(text !== ''){
             success(text);
             $( this ).dialog( "close" );
           }
@@ -847,7 +847,7 @@ $(document).ready(function(){
     }
     tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>';
     tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
-    for(i in settings.items){
+    for(var i in settings.items){
       var item = settings.items[i];
       tpl += '<li><a href="' + item.url + '" class="' + item.class + '">' + item.title + '</a></li>';
     }
@@ -875,12 +875,12 @@ $(document).ready(function(){
     switch (type){
       case 'song':
         opts = {
-          title: (typeof model.label != 'undefined' && model.label != '' ? model.label : (model.album != '' ? model.album : '')),
+          title: (model.label !== undefined && model.label !== '' ? model.label : (model.album !== '' ? model.album : '')),
           key: 'song',
           omitwrapper: true,
           items: [
             {url: '#', class: 'song-download', title: 'Download song', callback: function(){
-              app.AudioController.downloadFile(model.file, function(url){ window.location = url; })
+              app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
             }},
             {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist', callback: function(){
               //@TODO do an id lookup if no songid
@@ -896,7 +896,7 @@ $(document).ready(function(){
       // also contains callbacks
       case 'album':
         opts = {
-          title: (model.album != '' ? model.album : model.label),
+          title: (model.album !== '' ? model.album : model.label),
           key: 'album',
           omitwrapper: true,
           items: [
@@ -907,7 +907,7 @@ $(document).ready(function(){
               app.playlists.playlistAddItems('local', 'replace', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid)
+              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid);
             }}
           ]
         };
@@ -927,7 +927,7 @@ $(document).ready(function(){
               app.playlists.playlistAddItems('local', 'replace', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'new', 'artist', model.artistid)
+              app.playlists.playlistAddItems('lists', 'new', 'artist', model.artistid);
             }}
           ]
         };
@@ -941,7 +941,7 @@ $(document).ready(function(){
           omitwrapper: true,
           items: [
             {url: '#', class: 'movie-download', title: 'Download Movie', callback: function(){
-              app.AudioController.downloadFile(model.file, function(url){ window.location = url; })
+              app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
             }}
 //            ,
 //            {url: '#', class: 'movie-add-xbmc', title: 'Add to XBMC', callback: function(){
@@ -1038,7 +1038,7 @@ $(document).ready(function(){
       app.helpers.loadTemplate(tplname, function(tpl){
         html = _.template(tpl,data);
         callback(html);
-      })
+      });
     }
 
   };
@@ -1076,7 +1076,7 @@ $(document).ready(function(){
       return 'theme/images/space.png';
     }
     //no image, return placeholder
-    if(typeof(rawPath) == "undefined" || rawPath == ''){
+    if(rawPath === undefined || rawPath === ''){
       if(type == 'fanart'){
         return app.helpers.getDefaultImage(type);
       }
@@ -1101,7 +1101,7 @@ $(document).ready(function(){
    */
  app.notification = function(msg){
     var $notify = $('#notify');
-    if(msg !== false && msg != ''){
+    if(msg !== false && msg !== ''){
 
       $notify.find('.content').html(msg);
       $notify.removeClass('hidden').parent().removeClass('hidden');
@@ -1170,7 +1170,7 @@ $(document).ready(function(){
      */
     get:function(key, defaultData){
       var t = $.totalStorage( this.nameSpace + key );
-      if(t != undefined && t != ''){
+      if(t !== undefined && t !== ''){
         return t;
       } else {
         return defaultData;

@@ -16,7 +16,7 @@ app.Movie = Backbone.Model.extend({
         // get thumbsup
         m.thumbsup = app.playlists.getThumbsUp('movie', m.movieid);
         options.success(m);
-      })
+      });
 
 
     }

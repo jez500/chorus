@@ -100,7 +100,7 @@ app.audioStreaming = {
 
         // Get last browser playlist collection, if any
         var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
-        if(lastList != undefined && lastList.length > 0){
+        if(lastList !== undefined && lastList.length > 0){
           // when songs are ready, render them
           app.store.libraryCall(function(){
             // get collection based on songids
@@ -109,7 +109,7 @@ app.audioStreaming = {
               // render it too
               app.audioStreaming.renderPlaylistItems();
               // add as loaded song
-              if(collection.models != undefined && collection.models[0] != undefined){
+              if(collection.models !== undefined && collection.models[0] !== undefined){
                 // load the first song
                 var song = collection.models[0];
                 app.audioStreaming.loadSong(song);
@@ -144,19 +144,19 @@ app.audioStreaming = {
       app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
       song = app.cached.nowPlaying.item;
-      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'xbmc');
+      app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'xbmc');
     }
 
     // Switch to Local Player
     if(player == 'local'){
       app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
       // if empty, render
-      if($('ul.browser-playlist-song-list').length == 0){
+      if($('ul.browser-playlist-song-list').length === 0){
         app.audioStreaming.renderPlaylistItems();
       }
       // Homepage Backstretch for local (if applicable)
       song = app.audioStreaming.getNowPlayingSong();
-      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
+      app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'local');
     }
 
   },
@@ -170,7 +170,7 @@ app.audioStreaming = {
     if(app.audioStreaming.$body.hasClass(app.audioStreaming.classLocal)){
       return 'local';
     } else {
-      return 'xbmc'
+      return 'xbmc';
     }
   },
 
@@ -180,7 +180,7 @@ app.audioStreaming = {
    * @returns {*}
    */
   getNowPlayingSong: function(){
-    if(app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] != undefined){
+    if(app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] !== undefined){
       var model = app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition];
       return model.attributes;
     } else {
@@ -242,7 +242,7 @@ app.audioStreaming = {
   appendPlaylistItems: function(newCollection, callback){
     // update in current playlist state
     var collection;
-    if(app.audioStreaming.playList == undefined){
+    if(app.audioStreaming.playList === undefined){
       // no current playlist extists so just replace
       collection = newCollection;
       console.log(collection);
@@ -296,7 +296,7 @@ app.audioStreaming = {
   renderPlaylistItems: function(){
 
     // Protect from dirty data
-    if(app.audioStreaming.playList == undefined){
+    if(app.audioStreaming.playList === undefined){
       return;
     }
 
@@ -464,14 +464,14 @@ app.audioStreaming = {
     // add playing class to correct item in playlist
     var $playingEl = $('li.browser-player .playlist-pos-' + app.audioStreaming.playList.playingPosition);
     if(!$playingEl.hasClass('browser-playing-row')){
-      $playingEl.addClass('browser-playing-row')
+      $playingEl.addClass('browser-playing-row');
     }
 
     // Set title and play icon
     app.audioStreaming.setTitle('playing', song.label);
 
     // Homepage Backstretch
-    app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
+    app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'local');
 
     // playing song (@todo flickers fix)
     //$('.song').removeClass('playing-row');
@@ -488,7 +488,7 @@ app.audioStreaming = {
     var playlist = app.audioStreaming.playList;
     // exit if not init yet
 
-    if(playlist.repeat == undefined){
+    if(playlist.repeat === undefined){
       return;
     }
     // set repeat/rand state
@@ -514,7 +514,7 @@ app.audioStreaming = {
    */
   setTitle:function (status, title) {
     if(app.audioStreaming.getPlayer() == 'local'){
-      document.title = (status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
+      document.title = (status == 'playing' ? '▶ ' : '') + (title !== undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
   },
 
@@ -570,7 +570,7 @@ app.audioStreaming = {
 
   // Controls
   togglePlay: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       // if playing, pause, else play
       if(app.audioStreaming.isPlaying()){
         app.audioStreaming.pause();
@@ -585,7 +585,7 @@ app.audioStreaming = {
    * a wrapper for playing the current song via sound manaher
    */
   play: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       //play existing with local player
       app.audioStreaming.localPlay.play();
       // switch to local view
@@ -595,24 +595,24 @@ app.audioStreaming = {
 
 
   stop: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       app.audioStreaming.localPlay.stop(); //play existing
     }
   },
 
 
   pause: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       app.audioStreaming.localPlay.pause(); //pause existing
     }
   },
 
 
   prev: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList;
       // at 0 play again
-      if(pl.playingPosition == 0){
+      if(pl.playingPosition === 0){
         app.audioStreaming.playPosition(0);
       } else {
         app.audioStreaming.playPosition((pl.playingPosition - 1));
@@ -622,7 +622,7 @@ app.audioStreaming = {
 
 
   next: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList;
 
       // at end 0 is next
@@ -636,7 +636,7 @@ app.audioStreaming = {
 
 
   mute: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
 
       // vars
       var mute = app.audioStreaming.playList.mute,
@@ -661,7 +661,7 @@ app.audioStreaming = {
 
 
   repeat: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList, newVal;
       // toggle between 3 different states
       switch(pl.repeat){
@@ -684,7 +684,7 @@ app.audioStreaming = {
 
 
   random: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       // set the opposite
       var pl = app.audioStreaming.playList;
       app.audioStreaming.playList.random = (pl.random == 'off' ? 'on' : 'off');

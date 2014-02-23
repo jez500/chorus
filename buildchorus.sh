@@ -2,8 +2,8 @@
 
 echo "Running compass"
 echo "=============================================="
-compass clean ./theme
-compass compile ./theme -e production
+compass clean ./dev/theme
+compass compile ./dev/theme -e production
 
 echo "Running Grunt"
 echo "=============================================="
@@ -16,7 +16,7 @@ rm webinterface.chorus.zip
 echo "Building zip"
 echo "=============================================="
 cp -r ./dist ./webinterface.chorus
-zip -r webinterface.chorus.zip ./webinterface.chorus
+zip -r -q webinterface.chorus.zip ./webinterface.chorus
 rm -rf ./webinterface.chorus
 
 echo "Build complete"

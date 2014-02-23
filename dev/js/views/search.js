@@ -111,7 +111,7 @@ app.searchView = Backbone.View.extend({
 
   // Get a generic logo/icon
   getLogo: function(type){
-    return '<img src="theme/images/icons/icon-' + type + '.png" />'
+    return '<img src="theme/images/icons/icon-' + type + '.png" />';
   },
 
 
@@ -161,7 +161,7 @@ app.searchView = Backbone.View.extend({
           }});
         } else {
           // no res
-          $songs.html('<div class="noresult-box empty">' + self.getLogo('song') + '<span>No Songs found</span></div>')
+          $songs.html('<div class="noresult-box empty">' + self.getLogo('song') + '<span>No Songs found</span></div>');
         }
 
 

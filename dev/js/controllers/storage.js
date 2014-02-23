@@ -13,7 +13,7 @@ app.storageController.getStorage = function(key, callback){
   } else {
     return data;
   }
-}
+};
 
 
 /**
@@ -26,7 +26,7 @@ app.storageController.setStorage = function(key, value, callback){
   } else {
     return value;
   }
-}
+};
 
 
 

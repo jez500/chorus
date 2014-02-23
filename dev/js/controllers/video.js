@@ -26,8 +26,8 @@ app.VideoController.playVideoId = function(id, type, callback){
       console.log(data);
       app.VideoController.playPlaylistPosition(0, function(play){
         callback(data.result);
-      })
-    })
+      });
+    });
   });
 
 };

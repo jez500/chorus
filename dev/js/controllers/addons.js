@@ -14,7 +14,7 @@ app.addOns.getSources = function(callback){
       addons = [];
 
     // parse
-    for(i in sources){
+    for(var i in sources){
       var item = sources[i];
       if(item.enabled){
         item.file = 'plugin://' + item.addonid + '/';
@@ -30,7 +30,7 @@ app.addOns.getSources = function(callback){
     if(callback){
       callback(addons);
     }
-  })
+  });
 
 };
 
@@ -54,7 +54,7 @@ app.addOns.ready = function(callback){
  */
 app.addOns.getAddon = function(addonKey){
   if(typeof app.cached.addonSources != 'undefined'){
-    for(i in app.cached.addonSources){
+    for(var i in app.cached.addonSources){
       var item = app.cached.addonSources[i],
         itemAddonKey = app.addOns.slug(item);
       if(itemAddonKey == addonKey){
@@ -76,7 +76,7 @@ app.addOns.invokeAll = function(functionName, record, arg1, arg2){
 
   // this invokes other modules
   if(typeof app.cached.addonSources != 'undefined'){
-    for(i in app.cached.addonSources){
+    for(var i in app.cached.addonSources){
       var item = app.cached.addonSources[i],
         addonKey = app.addOns.slug(item);
 

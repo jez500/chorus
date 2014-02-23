@@ -37,7 +37,7 @@ app.ArtistsView = Backbone.View.extend({
   renderSidebar:function(){
 
     // if no existing artist list (don't re-render if not required)
-    if($('.artist-list .artist').length == 0){
+    if($('.artist-list .artist').length === 0){
 
       // get artists list
       this.artistsList = new app.ArtistCollection();

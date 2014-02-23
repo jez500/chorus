@@ -26,7 +26,7 @@ app.playerStateView = Backbone.View.extend({
 
     // enrich
     data.playingItemChanged = (lastPlaying != data.item.file);
-    data.status = (app.helpers.exists(data.player.speed) && data.player.speed == 0 ? 'paused' : data.status);
+    data.status = (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status);
     app.state = data.status;
 
     // resave model
@@ -130,7 +130,7 @@ app.playerStateView = Backbone.View.extend({
       // Video
       dur = data.player.totaltime.hours + ':' + data.player.totaltime.minutes + ':' + data.player.totaltime.seconds;
       cur = data.player.time.hours + ':' + data.player.time.minutes + ':' + data.player.time.seconds;
-    } else if (data.activePlayer == 0){
+    } else if (data.activePlayer === 0){
       // Audio
       dur = app.helpers.secToTime(parseInt(data.item.duration));
       cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
@@ -165,7 +165,7 @@ app.playerStateView = Backbone.View.extend({
 
     // Backstretch
     // @TODO move to home view as bind
-    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == 'xbmc'){
+    if(location.hash == '#' || location.hash === '' && app.audioStreaming.getPlayer() == 'xbmc'){
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
@@ -177,7 +177,7 @@ app.playerStateView = Backbone.View.extend({
     }
 
     // refresh playlist
-    if(app.cached.nowPlaying.activePlayer == 0){
+    if(app.cached.nowPlaying.activePlayer === 0){
       app.AudioController.playlistRender();
     } else if(app.cached.nowPlaying.activePlayer == 1){
       app.VideoController.playlistRender();
@@ -215,7 +215,7 @@ app.playerStateView = Backbone.View.extend({
   setTitle:function () {
     var data = this.model, title = data.item.label;
     if(app.audioStreaming.getPlayer() == 'xbmc'){
-      document.title = (data.status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
+      document.title = (data.status == 'playing' ? '▶ ' : '') + (title !== undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
   },
 
@@ -249,14 +249,15 @@ app.playerStateView = Backbone.View.extend({
   playerCron:function (){
     var data = this.model,
       lastState =  app.helpers.varGet('lastState', ''),
-      noState = (typeof lastState == 'undefined' || typeof lastState.volume == 'undefined');
+      noState = (typeof lastState == 'undefined' || typeof lastState.volume == 'undefined'),
+      $t = {}, t = '', n ='';
 
     //set volume, only if we must
-    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active')  // is the slider currently being moved?
-      && (noState || lastState.volume.volume != data.volume.volume)){
+    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active') &&  // is the slider currently being moved?
+      (noState || lastState.volume.volume != data.volume.volume)){
       app.shellView.$volumeSlider.slider( "value",data.volume.volume );
       //muted class
-      if(data.volume.volume == 0){
+      if(data.volume.volume === 0){
         $('body').addClass('muted');
       } else {
         $('body').removeClass('muted');
@@ -265,14 +266,16 @@ app.playerStateView = Backbone.View.extend({
 
     // set repeat title text
     if(noState || typeof lastState.player == 'undefined' || lastState.player.repeat != data.player.repeat){
-      var $t = $('.player-repeat'), t = $t.attr('title'),
-        n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
+       $t = $('.player-repeat');
+       t = $t.attr('title');
+       n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
       if(t != n){ $t.attr('title', n); }
     }
 
     // set random title text
     if(noState || lastState.player.shuffled != data.player.shuffled){
-      var $t = $('.player-random'), t = $t.attr('title'),
+        $t = $('.player-random');
+        t = $t.attr('title');
         n = 'Random is ' + (data.player.shuffled === true ? 'On' : 'Off');
       if(t != n){ $t.attr('title', n); }
     }

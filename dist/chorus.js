@@ -12957,7 +12957,380 @@
 (function(e,t){function i(t,i){var s,n,r,o=t.nodeName.toLowerCase();return"area"===o?(s=t.parentNode,n=s.name,t.href&&n&&"map"===s.nodeName.toLowerCase()?(r=e("img[usemap=#"+n+"]")[0],!!r&&a(r)):!1):(/input|select|textarea|button|object/.test(o)?!t.disabled:"a"===o?t.href||i:i)&&a(t)}function a(t){return e.expr.filters.visible(t)&&!e(t).parents().addBack().filter(function(){return"hidden"===e.css(this,"visibility")}).length}var s=0,n=/^ui-id-\d+$/;e.ui=e.ui||{},e.extend(e.ui,{version:"1.10.3",keyCode:{BACKSPACE:8,COMMA:188,DELETE:46,DOWN:40,END:35,ENTER:13,ESCAPE:27,HOME:36,LEFT:37,NUMPAD_ADD:107,NUMPAD_DECIMAL:110,NUMPAD_DIVIDE:111,NUMPAD_ENTER:108,NUMPAD_MULTIPLY:106,NUMPAD_SUBTRACT:109,PAGE_DOWN:34,PAGE_UP:33,PERIOD:190,RIGHT:39,SPACE:32,TAB:9,UP:38}}),e.fn.extend({focus:function(t){return function(i,a){return"number"==typeof i?this.each(function(){var t=this;setTimeout(function(){e(t).focus(),a&&a.call(t)},i)}):t.apply(this,arguments)}}(e.fn.focus),scrollParent:function(){var t;return t=e.ui.ie&&/(static|relative)/.test(this.css("position"))||/absolute/.test(this.css("position"))?this.parents().filter(function(){return/(relative|absolute|fixed)/.test(e.css(this,"position"))&&/(auto|scroll)/.test(e.css(this,"overflow")+e.css(this,"overflow-y")+e.css(this,"overflow-x"))}).eq(0):this.parents().filter(function(){return/(auto|scroll)/.test(e.css(this,"overflow")+e.css(this,"overflow-y")+e.css(this,"overflow-x"))}).eq(0),/fixed/.test(this.css("position"))||!t.length?e(document):t},zIndex:function(i){if(i!==t)return this.css("zIndex",i);if(this.length)for(var a,s,n=e(this[0]);n.length&&n[0]!==document;){if(a=n.css("position"),("absolute"===a||"relative"===a||"fixed"===a)&&(s=parseInt(n.css("zIndex"),10),!isNaN(s)&&0!==s))return s;n=n.parent()}return 0},uniqueId:function(){return this.each(function(){this.id||(this.id="ui-id-"+ ++s)})},removeUniqueId:function(){return this.each(function(){n.test(this.id)&&e(this).removeAttr("id")})}}),e.extend(e.expr[":"],{data:e.expr.createPseudo?e.expr.createPseudo(function(t){return function(i){return!!e.data(i,t)}}):function(t,i,a){return!!e.data(t,a[3])},focusable:function(t){return i(t,!isNaN(e.attr(t,"tabindex")))},tabbable:function(t){var a=e.attr(t,"tabindex"),s=isNaN(a);return(s||a>=0)&&i(t,!s)}}),e("<a>").outerWidth(1).jquery||e.each(["Width","Height"],function(i,a){function s(t,i,a,s){return e.each(n,function(){i-=parseFloat(e.css(t,"padding"+this))||0,a&&(i-=parseFloat(e.css(t,"border"+this+"Width"))||0),s&&(i-=parseFloat(e.css(t,"margin"+this))||0)}),i}var n="Width"===a?["Left","Right"]:["Top","Bottom"],r=a.toLowerCase(),o={innerWidth:e.fn.innerWidth,innerHeight:e.fn.innerHeight,outerWidth:e.fn.outerWidth,outerHeight:e.fn.outerHeight};e.fn["inner"+a]=function(i){return i===t?o["inner"+a].call(this):this.each(function(){e(this).css(r,s(this,i)+"px")})},e.fn["outer"+a]=function(t,i){return"number"!=typeof t?o["outer"+a].call(this,t):this.each(function(){e(this).css(r,s(this,t,!0,i)+"px")})}}),e.fn.addBack||(e.fn.addBack=function(e){return this.add(null==e?this.prevObject:this.prevObject.filter(e))}),e("<a>").data("a-b","a").removeData("a-b").data("a-b")&&(e.fn.removeData=function(t){return function(i){return arguments.length?t.call(this,e.camelCase(i)):t.call(this)}}(e.fn.removeData)),e.ui.ie=!!/msie [\w.]+/.exec(navigator.userAgent.toLowerCase()),e.support.selectstart="onselectstart"in document.createElement("div"),e.fn.extend({disableSelection:function(){return this.bind((e.support.selectstart?"selectstart":"mousedown")+".ui-disableSelection",function(e){e.preventDefault()})},enableSelection:function(){return this.unbind(".ui-disableSelection")}}),e.extend(e.ui,{plugin:{add:function(t,i,a){var s,n=e.ui[t].prototype;for(s in a)n.plugins[s]=n.plugins[s]||[],n.plugins[s].push([i,a[s]])},call:function(e,t,i){var a,s=e.plugins[t];if(s&&e.element[0].parentNode&&11!==e.element[0].parentNode.nodeType)for(a=0;s.length>a;a++)e.options[s[a][0]]&&s[a][1].apply(e.element,i)}},hasScroll:function(t,i){if("hidden"===e(t).css("overflow"))return!1;var a=i&&"left"===i?"scrollLeft":"scrollTop",s=!1;return t[a]>0?!0:(t[a]=1,s=t[a]>0,t[a]=0,s)}})})(jQuery);(function(e,t){var i=0,s=Array.prototype.slice,a=e.cleanData;e.cleanData=function(t){for(var i,s=0;null!=(i=t[s]);s++)try{e(i).triggerHandler("remove")}catch(n){}a(t)},e.widget=function(i,s,a){var n,r,o,h,l={},u=i.split(".")[0];i=i.split(".")[1],n=u+"-"+i,a||(a=s,s=e.Widget),e.expr[":"][n.toLowerCase()]=function(t){return!!e.data(t,n)},e[u]=e[u]||{},r=e[u][i],o=e[u][i]=function(e,i){return this._createWidget?(arguments.length&&this._createWidget(e,i),t):new o(e,i)},e.extend(o,r,{version:a.version,_proto:e.extend({},a),_childConstructors:[]}),h=new s,h.options=e.widget.extend({},h.options),e.each(a,function(i,a){return e.isFunction(a)?(l[i]=function(){var e=function(){return s.prototype[i].apply(this,arguments)},t=function(e){return s.prototype[i].apply(this,e)};return function(){var i,s=this._super,n=this._superApply;return this._super=e,this._superApply=t,i=a.apply(this,arguments),this._super=s,this._superApply=n,i}}(),t):(l[i]=a,t)}),o.prototype=e.widget.extend(h,{widgetEventPrefix:r?h.widgetEventPrefix:i},l,{constructor:o,namespace:u,widgetName:i,widgetFullName:n}),r?(e.each(r._childConstructors,function(t,i){var s=i.prototype;e.widget(s.namespace+"."+s.widgetName,o,i._proto)}),delete r._childConstructors):s._childConstructors.push(o),e.widget.bridge(i,o)},e.widget.extend=function(i){for(var a,n,r=s.call(arguments,1),o=0,h=r.length;h>o;o++)for(a in r[o])n=r[o][a],r[o].hasOwnProperty(a)&&n!==t&&(i[a]=e.isPlainObject(n)?e.isPlainObject(i[a])?e.widget.extend({},i[a],n):e.widget.extend({},n):n);return i},e.widget.bridge=function(i,a){var n=a.prototype.widgetFullName||i;e.fn[i]=function(r){var o="string"==typeof r,h=s.call(arguments,1),l=this;return r=!o&&h.length?e.widget.extend.apply(null,[r].concat(h)):r,o?this.each(function(){var s,a=e.data(this,n);return a?e.isFunction(a[r])&&"_"!==r.charAt(0)?(s=a[r].apply(a,h),s!==a&&s!==t?(l=s&&s.jquery?l.pushStack(s.get()):s,!1):t):e.error("no such method '"+r+"' for "+i+" widget instance"):e.error("cannot call methods on "+i+" prior to initialization; "+"attempted to call method '"+r+"'")}):this.each(function(){var t=e.data(this,n);t?t.option(r||{})._init():e.data(this,n,new a(r,this))}),l}},e.Widget=function(){},e.Widget._childConstructors=[],e.Widget.prototype={widgetName:"widget",widgetEventPrefix:"",defaultElement:"<div>",options:{disabled:!1,create:null},_createWidget:function(t,s){s=e(s||this.defaultElement||this)[0],this.element=e(s),this.uuid=i++,this.eventNamespace="."+this.widgetName+this.uuid,this.options=e.widget.extend({},this.options,this._getCreateOptions(),t),this.bindings=e(),this.hoverable=e(),this.focusable=e(),s!==this&&(e.data(s,this.widgetFullName,this),this._on(!0,this.element,{remove:function(e){e.target===s&&this.destroy()}}),this.document=e(s.style?s.ownerDocument:s.document||s),this.window=e(this.document[0].defaultView||this.document[0].parentWindow)),this._create(),this._trigger("create",null,this._getCreateEventData()),this._init()},_getCreateOptions:e.noop,_getCreateEventData:e.noop,_create:e.noop,_init:e.noop,destroy:function(){this._destroy(),this.element.unbind(this.eventNamespace).removeData(this.widgetName).removeData(this.widgetFullName).removeData(e.camelCase(this.widgetFullName)),this.widget().unbind(this.eventNamespace).removeAttr("aria-disabled").removeClass(this.widgetFullName+"-disabled "+"ui-state-disabled"),this.bindings.unbind(this.eventNamespace),this.hoverable.removeClass("ui-state-hover"),this.focusable.removeClass("ui-state-focus")},_destroy:e.noop,widget:function(){return this.element},option:function(i,s){var a,n,r,o=i;if(0===arguments.length)return e.widget.extend({},this.options);if("string"==typeof i)if(o={},a=i.split("."),i=a.shift(),a.length){for(n=o[i]=e.widget.extend({},this.options[i]),r=0;a.length-1>r;r++)n[a[r]]=n[a[r]]||{},n=n[a[r]];if(i=a.pop(),s===t)return n[i]===t?null:n[i];n[i]=s}else{if(s===t)return this.options[i]===t?null:this.options[i];o[i]=s}return this._setOptions(o),this},_setOptions:function(e){var t;for(t in e)this._setOption(t,e[t]);return this},_setOption:function(e,t){return this.options[e]=t,"disabled"===e&&(this.widget().toggleClass(this.widgetFullName+"-disabled ui-state-disabled",!!t).attr("aria-disabled",t),this.hoverable.removeClass("ui-state-hover"),this.focusable.removeClass("ui-state-focus")),this},enable:function(){return this._setOption("disabled",!1)},disable:function(){return this._setOption("disabled",!0)},_on:function(i,s,a){var n,r=this;"boolean"!=typeof i&&(a=s,s=i,i=!1),a?(s=n=e(s),this.bindings=this.bindings.add(s)):(a=s,s=this.element,n=this.widget()),e.each(a,function(a,o){function h(){return i||r.options.disabled!==!0&&!e(this).hasClass("ui-state-disabled")?("string"==typeof o?r[o]:o).apply(r,arguments):t}"string"!=typeof o&&(h.guid=o.guid=o.guid||h.guid||e.guid++);var l=a.match(/^(\w+)\s*(.*)$/),u=l[1]+r.eventNamespace,c=l[2];c?n.delegate(c,u,h):s.bind(u,h)})},_off:function(e,t){t=(t||"").split(" ").join(this.eventNamespace+" ")+this.eventNamespace,e.unbind(t).undelegate(t)},_delay:function(e,t){function i(){return("string"==typeof e?s[e]:e).apply(s,arguments)}var s=this;return setTimeout(i,t||0)},_hoverable:function(t){this.hoverable=this.hoverable.add(t),this._on(t,{mouseenter:function(t){e(t.currentTarget).addClass("ui-state-hover")},mouseleave:function(t){e(t.currentTarget).removeClass("ui-state-hover")}})},_focusable:function(t){this.focusable=this.focusable.add(t),this._on(t,{focusin:function(t){e(t.currentTarget).addClass("ui-state-focus")},focusout:function(t){e(t.currentTarget).removeClass("ui-state-focus")}})},_trigger:function(t,i,s){var a,n,r=this.options[t];if(s=s||{},i=e.Event(i),i.type=(t===this.widgetEventPrefix?t:this.widgetEventPrefix+t).toLowerCase(),i.target=this.element[0],n=i.originalEvent)for(a in n)a in i||(i[a]=n[a]);return this.element.trigger(i,s),!(e.isFunction(r)&&r.apply(this.element[0],[i].concat(s))===!1||i.isDefaultPrevented())}},e.each({show:"fadeIn",hide:"fadeOut"},function(t,i){e.Widget.prototype["_"+t]=function(s,a,n){"string"==typeof a&&(a={effect:a});var r,o=a?a===!0||"number"==typeof a?i:a.effect||i:t;a=a||{},"number"==typeof a&&(a={duration:a}),r=!e.isEmptyObject(a),a.complete=n,a.delay&&s.delay(a.delay),r&&e.effects&&e.effects.effect[o]?s[t](a):o!==t&&s[o]?s[o](a.duration,a.easing,n):s.queue(function(i){e(this)[t](),n&&n.call(s[0]),i()})}})})(jQuery);(function(e){var t=!1;e(document).mouseup(function(){t=!1}),e.widget("ui.mouse",{version:"1.10.3",options:{cancel:"input,textarea,button,select,option",distance:1,delay:0},_mouseInit:function(){var t=this;this.element.bind("mousedown."+this.widgetName,function(e){return t._mouseDown(e)}).bind("click."+this.widgetName,function(i){return!0===e.data(i.target,t.widgetName+".preventClickEvent")?(e.removeData(i.target,t.widgetName+".preventClickEvent"),i.stopImmediatePropagation(),!1):undefined}),this.started=!1},_mouseDestroy:function(){this.element.unbind("."+this.widgetName),this._mouseMoveDelegate&&e(document).unbind("mousemove."+this.widgetName,this._mouseMoveDelegate).unbind("mouseup."+this.widgetName,this._mouseUpDelegate)},_mouseDown:function(i){if(!t){this._mouseStarted&&this._mouseUp(i),this._mouseDownEvent=i;var s=this,a=1===i.which,n="string"==typeof this.options.cancel&&i.target.nodeName?e(i.target).closest(this.options.cancel).length:!1;return a&&!n&&this._mouseCapture(i)?(this.mouseDelayMet=!this.options.delay,this.mouseDelayMet||(this._mouseDelayTimer=setTimeout(function(){s.mouseDelayMet=!0},this.options.delay)),this._mouseDistanceMet(i)&&this._mouseDelayMet(i)&&(this._mouseStarted=this._mouseStart(i)!==!1,!this._mouseStarted)?(i.preventDefault(),!0):(!0===e.data(i.target,this.widgetName+".preventClickEvent")&&e.removeData(i.target,this.widgetName+".preventClickEvent"),this._mouseMoveDelegate=function(e){return s._mouseMove(e)},this._mouseUpDelegate=function(e){return s._mouseUp(e)},e(document).bind("mousemove."+this.widgetName,this._mouseMoveDelegate).bind("mouseup."+this.widgetName,this._mouseUpDelegate),i.preventDefault(),t=!0,!0)):!0}},_mouseMove:function(t){return e.ui.ie&&(!document.documentMode||9>document.documentMode)&&!t.button?this._mouseUp(t):this._mouseStarted?(this._mouseDrag(t),t.preventDefault()):(this._mouseDistanceMet(t)&&this._mouseDelayMet(t)&&(this._mouseStarted=this._mouseStart(this._mouseDownEvent,t)!==!1,this._mouseStarted?this._mouseDrag(t):this._mouseUp(t)),!this._mouseStarted)},_mouseUp:function(t){return e(document).unbind("mousemove."+this.widgetName,this._mouseMoveDelegate).unbind("mouseup."+this.widgetName,this._mouseUpDelegate),this._mouseStarted&&(this._mouseStarted=!1,t.target===this._mouseDownEvent.target&&e.data(t.target,this.widgetName+".preventClickEvent",!0),this._mouseStop(t)),!1},_mouseDistanceMet:function(e){return Math.max(Math.abs(this._mouseDownEvent.pageX-e.pageX),Math.abs(this._mouseDownEvent.pageY-e.pageY))>=this.options.distance},_mouseDelayMet:function(){return this.mouseDelayMet},_mouseStart:function(){},_mouseDrag:function(){},_mouseStop:function(){},_mouseCapture:function(){return!0}})})(jQuery);(function(e,t){function i(e,t,i){return[parseFloat(e[0])*(p.test(e[0])?t/100:1),parseFloat(e[1])*(p.test(e[1])?i/100:1)]}function s(t,i){return parseInt(e.css(t,i),10)||0}function a(t){var i=t[0];return 9===i.nodeType?{width:t.width(),height:t.height(),offset:{top:0,left:0}}:e.isWindow(i)?{width:t.width(),height:t.height(),offset:{top:t.scrollTop(),left:t.scrollLeft()}}:i.preventDefault?{width:0,height:0,offset:{top:i.pageY,left:i.pageX}}:{width:t.outerWidth(),height:t.outerHeight(),offset:t.offset()}}e.ui=e.ui||{};var n,r=Math.max,o=Math.abs,h=Math.round,l=/left|center|right/,u=/top|center|bottom/,c=/[\+\-]\d+(\.[\d]+)?%?/,d=/^\w+/,p=/%$/,f=e.fn.position;e.position={scrollbarWidth:function(){if(n!==t)return n;var i,s,a=e("<div style='display:block;width:50px;height:50px;overflow:hidden;'><div style='height:100px;width:auto;'></div></div>"),r=a.children()[0];return e("body").append(a),i=r.offsetWidth,a.css("overflow","scroll"),s=r.offsetWidth,i===s&&(s=a[0].clientWidth),a.remove(),n=i-s},getScrollInfo:function(t){var i=t.isWindow?"":t.element.css("overflow-x"),s=t.isWindow?"":t.element.css("overflow-y"),a="scroll"===i||"auto"===i&&t.width<t.element[0].scrollWidth,n="scroll"===s||"auto"===s&&t.height<t.element[0].scrollHeight;return{width:n?e.position.scrollbarWidth():0,height:a?e.position.scrollbarWidth():0}},getWithinInfo:function(t){var i=e(t||window),s=e.isWindow(i[0]);return{element:i,isWindow:s,offset:i.offset()||{left:0,top:0},scrollLeft:i.scrollLeft(),scrollTop:i.scrollTop(),width:s?i.width():i.outerWidth(),height:s?i.height():i.outerHeight()}}},e.fn.position=function(t){if(!t||!t.of)return f.apply(this,arguments);t=e.extend({},t);var n,p,m,g,v,y,b=e(t.of),_=e.position.getWithinInfo(t.within),x=e.position.getScrollInfo(_),k=(t.collision||"flip").split(" "),w={};return y=a(b),b[0].preventDefault&&(t.at="left top"),p=y.width,m=y.height,g=y.offset,v=e.extend({},g),e.each(["my","at"],function(){var e,i,s=(t[this]||"").split(" ");1===s.length&&(s=l.test(s[0])?s.concat(["center"]):u.test(s[0])?["center"].concat(s):["center","center"]),s[0]=l.test(s[0])?s[0]:"center",s[1]=u.test(s[1])?s[1]:"center",e=c.exec(s[0]),i=c.exec(s[1]),w[this]=[e?e[0]:0,i?i[0]:0],t[this]=[d.exec(s[0])[0],d.exec(s[1])[0]]}),1===k.length&&(k[1]=k[0]),"right"===t.at[0]?v.left+=p:"center"===t.at[0]&&(v.left+=p/2),"bottom"===t.at[1]?v.top+=m:"center"===t.at[1]&&(v.top+=m/2),n=i(w.at,p,m),v.left+=n[0],v.top+=n[1],this.each(function(){var a,l,u=e(this),c=u.outerWidth(),d=u.outerHeight(),f=s(this,"marginLeft"),y=s(this,"marginTop"),D=c+f+s(this,"marginRight")+x.width,T=d+y+s(this,"marginBottom")+x.height,M=e.extend({},v),S=i(w.my,u.outerWidth(),u.outerHeight());"right"===t.my[0]?M.left-=c:"center"===t.my[0]&&(M.left-=c/2),"bottom"===t.my[1]?M.top-=d:"center"===t.my[1]&&(M.top-=d/2),M.left+=S[0],M.top+=S[1],e.support.offsetFractions||(M.left=h(M.left),M.top=h(M.top)),a={marginLeft:f,marginTop:y},e.each(["left","top"],function(i,s){e.ui.position[k[i]]&&e.ui.position[k[i]][s](M,{targetWidth:p,targetHeight:m,elemWidth:c,elemHeight:d,collisionPosition:a,collisionWidth:D,collisionHeight:T,offset:[n[0]+S[0],n[1]+S[1]],my:t.my,at:t.at,within:_,elem:u})}),t.using&&(l=function(e){var i=g.left-M.left,s=i+p-c,a=g.top-M.top,n=a+m-d,h={target:{element:b,left:g.left,top:g.top,width:p,height:m},element:{element:u,left:M.left,top:M.top,width:c,height:d},horizontal:0>s?"left":i>0?"right":"center",vertical:0>n?"top":a>0?"bottom":"middle"};c>p&&p>o(i+s)&&(h.horizontal="center"),d>m&&m>o(a+n)&&(h.vertical="middle"),h.important=r(o(i),o(s))>r(o(a),o(n))?"horizontal":"vertical",t.using.call(this,e,h)}),u.offset(e.extend(M,{using:l}))})},e.ui.position={fit:{left:function(e,t){var i,s=t.within,a=s.isWindow?s.scrollLeft:s.offset.left,n=s.width,o=e.left-t.collisionPosition.marginLeft,h=a-o,l=o+t.collisionWidth-n-a;t.collisionWidth>n?h>0&&0>=l?(i=e.left+h+t.collisionWidth-n-a,e.left+=h-i):e.left=l>0&&0>=h?a:h>l?a+n-t.collisionWidth:a:h>0?e.left+=h:l>0?e.left-=l:e.left=r(e.left-o,e.left)},top:function(e,t){var i,s=t.within,a=s.isWindow?s.scrollTop:s.offset.top,n=t.within.height,o=e.top-t.collisionPosition.marginTop,h=a-o,l=o+t.collisionHeight-n-a;t.collisionHeight>n?h>0&&0>=l?(i=e.top+h+t.collisionHeight-n-a,e.top+=h-i):e.top=l>0&&0>=h?a:h>l?a+n-t.collisionHeight:a:h>0?e.top+=h:l>0?e.top-=l:e.top=r(e.top-o,e.top)}},flip:{left:function(e,t){var i,s,a=t.within,n=a.offset.left+a.scrollLeft,r=a.width,h=a.isWindow?a.scrollLeft:a.offset.left,l=e.left-t.collisionPosition.marginLeft,u=l-h,c=l+t.collisionWidth-r-h,d="left"===t.my[0]?-t.elemWidth:"right"===t.my[0]?t.elemWidth:0,p="left"===t.at[0]?t.targetWidth:"right"===t.at[0]?-t.targetWidth:0,f=-2*t.offset[0];0>u?(i=e.left+d+p+f+t.collisionWidth-r-n,(0>i||o(u)>i)&&(e.left+=d+p+f)):c>0&&(s=e.left-t.collisionPosition.marginLeft+d+p+f-h,(s>0||c>o(s))&&(e.left+=d+p+f))},top:function(e,t){var i,s,a=t.within,n=a.offset.top+a.scrollTop,r=a.height,h=a.isWindow?a.scrollTop:a.offset.top,l=e.top-t.collisionPosition.marginTop,u=l-h,c=l+t.collisionHeight-r-h,d="top"===t.my[1],p=d?-t.elemHeight:"bottom"===t.my[1]?t.elemHeight:0,f="top"===t.at[1]?t.targetHeight:"bottom"===t.at[1]?-t.targetHeight:0,m=-2*t.offset[1];0>u?(s=e.top+p+f+m+t.collisionHeight-r-n,e.top+p+f+m>u&&(0>s||o(u)>s)&&(e.top+=p+f+m)):c>0&&(i=e.top-t.collisionPosition.marginTop+p+f+m-h,e.top+p+f+m>c&&(i>0||c>o(i))&&(e.top+=p+f+m))}},flipfit:{left:function(){e.ui.position.flip.left.apply(this,arguments),e.ui.position.fit.left.apply(this,arguments)},top:function(){e.ui.position.flip.top.apply(this,arguments),e.ui.position.fit.top.apply(this,arguments)}}},function(){var t,i,s,a,n,r=document.getElementsByTagName("body")[0],o=document.createElement("div");t=document.createElement(r?"div":"body"),s={visibility:"hidden",width:0,height:0,border:0,margin:0,background:"none"},r&&e.extend(s,{position:"absolute",left:"-1000px",top:"-1000px"});for(n in s)t.style[n]=s[n];t.appendChild(o),i=r||document.documentElement,i.insertBefore(t,i.firstChild),o.style.cssText="position: absolute; left: 10.7432222px;",a=e(o).offset().left,e.support.offsetFractions=a>10&&11>a,t.innerHTML="",i.removeChild(t)}()})(jQuery);(function(e){e.widget("ui.draggable",e.ui.mouse,{version:"1.10.3",widgetEventPrefix:"drag",options:{addClasses:!0,appendTo:"parent",axis:!1,connectToSortable:!1,containment:!1,cursor:"auto",cursorAt:!1,grid:!1,handle:!1,helper:"original",iframeFix:!1,opacity:!1,refreshPositions:!1,revert:!1,revertDuration:500,scope:"default",scroll:!0,scrollSensitivity:20,scrollSpeed:20,snap:!1,snapMode:"both",snapTolerance:20,stack:!1,zIndex:!1,drag:null,start:null,stop:null},_create:function(){"original"!==this.options.helper||/^(?:r|a|f)/.test(this.element.css("position"))||(this.element[0].style.position="relative"),this.options.addClasses&&this.element.addClass("ui-draggable"),this.options.disabled&&this.element.addClass("ui-draggable-disabled"),this._mouseInit()},_destroy:function(){this.element.removeClass("ui-draggable ui-draggable-dragging ui-draggable-disabled"),this._mouseDestroy()},_mouseCapture:function(t){var i=this.options;return this.helper||i.disabled||e(t.target).closest(".ui-resizable-handle").length>0?!1:(this.handle=this._getHandle(t),this.handle?(e(i.iframeFix===!0?"iframe":i.iframeFix).each(function(){e("<div class='ui-draggable-iframeFix' style='background: #fff;'></div>").css({width:this.offsetWidth+"px",height:this.offsetHeight+"px",position:"absolute",opacity:"0.001",zIndex:1e3}).css(e(this).offset()).appendTo("body")}),!0):!1)},_mouseStart:function(t){var i=this.options;return this.helper=this._createHelper(t),this.helper.addClass("ui-draggable-dragging"),this._cacheHelperProportions(),e.ui.ddmanager&&(e.ui.ddmanager.current=this),this._cacheMargins(),this.cssPosition=this.helper.css("position"),this.scrollParent=this.helper.scrollParent(),this.offsetParent=this.helper.offsetParent(),this.offsetParentCssPosition=this.offsetParent.css("position"),this.offset=this.positionAbs=this.element.offset(),this.offset={top:this.offset.top-this.margins.top,left:this.offset.left-this.margins.left},this.offset.scroll=!1,e.extend(this.offset,{click:{left:t.pageX-this.offset.left,top:t.pageY-this.offset.top},parent:this._getParentOffset(),relative:this._getRelativeOffset()}),this.originalPosition=this.position=this._generatePosition(t),this.originalPageX=t.pageX,this.originalPageY=t.pageY,i.cursorAt&&this._adjustOffsetFromHelper(i.cursorAt),this._setContainment(),this._trigger("start",t)===!1?(this._clear(),!1):(this._cacheHelperProportions(),e.ui.ddmanager&&!i.dropBehaviour&&e.ui.ddmanager.prepareOffsets(this,t),this._mouseDrag(t,!0),e.ui.ddmanager&&e.ui.ddmanager.dragStart(this,t),!0)},_mouseDrag:function(t,i){if("fixed"===this.offsetParentCssPosition&&(this.offset.parent=this._getParentOffset()),this.position=this._generatePosition(t),this.positionAbs=this._convertPositionTo("absolute"),!i){var a=this._uiHash();if(this._trigger("drag",t,a)===!1)return this._mouseUp({}),!1;this.position=a.position}return this.options.axis&&"y"===this.options.axis||(this.helper[0].style.left=this.position.left+"px"),this.options.axis&&"x"===this.options.axis||(this.helper[0].style.top=this.position.top+"px"),e.ui.ddmanager&&e.ui.ddmanager.drag(this,t),!1},_mouseStop:function(t){var i=this,a=!1;return e.ui.ddmanager&&!this.options.dropBehaviour&&(a=e.ui.ddmanager.drop(this,t)),this.dropped&&(a=this.dropped,this.dropped=!1),"original"!==this.options.helper||e.contains(this.element[0].ownerDocument,this.element[0])?("invalid"===this.options.revert&&!a||"valid"===this.options.revert&&a||this.options.revert===!0||e.isFunction(this.options.revert)&&this.options.revert.call(this.element,a)?e(this.helper).animate(this.originalPosition,parseInt(this.options.revertDuration,10),function(){i._trigger("stop",t)!==!1&&i._clear()}):this._trigger("stop",t)!==!1&&this._clear(),!1):!1},_mouseUp:function(t){return e("div.ui-draggable-iframeFix").each(function(){this.parentNode.removeChild(this)}),e.ui.ddmanager&&e.ui.ddmanager.dragStop(this,t),e.ui.mouse.prototype._mouseUp.call(this,t)},cancel:function(){return this.helper.is(".ui-draggable-dragging")?this._mouseUp({}):this._clear(),this},_getHandle:function(t){return this.options.handle?!!e(t.target).closest(this.element.find(this.options.handle)).length:!0},_createHelper:function(t){var i=this.options,a=e.isFunction(i.helper)?e(i.helper.apply(this.element[0],[t])):"clone"===i.helper?this.element.clone().removeAttr("id"):this.element;return a.parents("body").length||a.appendTo("parent"===i.appendTo?this.element[0].parentNode:i.appendTo),a[0]===this.element[0]||/(fixed|absolute)/.test(a.css("position"))||a.css("position","absolute"),a},_adjustOffsetFromHelper:function(t){"string"==typeof t&&(t=t.split(" ")),e.isArray(t)&&(t={left:+t[0],top:+t[1]||0}),"left"in t&&(this.offset.click.left=t.left+this.margins.left),"right"in t&&(this.offset.click.left=this.helperProportions.width-t.right+this.margins.left),"top"in t&&(this.offset.click.top=t.top+this.margins.top),"bottom"in t&&(this.offset.click.top=this.helperProportions.height-t.bottom+this.margins.top)},_getParentOffset:function(){var t=this.offsetParent.offset();return"absolute"===this.cssPosition&&this.scrollParent[0]!==document&&e.contains(this.scrollParent[0],this.offsetParent[0])&&(t.left+=this.scrollParent.scrollLeft(),t.top+=this.scrollParent.scrollTop()),(this.offsetParent[0]===document.body||this.offsetParent[0].tagName&&"html"===this.offsetParent[0].tagName.toLowerCase()&&e.ui.ie)&&(t={top:0,left:0}),{top:t.top+(parseInt(this.offsetParent.css("borderTopWidth"),10)||0),left:t.left+(parseInt(this.offsetParent.css("borderLeftWidth"),10)||0)}},_getRelativeOffset:function(){if("relative"===this.cssPosition){var e=this.element.position();return{top:e.top-(parseInt(this.helper.css("top"),10)||0)+this.scrollParent.scrollTop(),left:e.left-(parseInt(this.helper.css("left"),10)||0)+this.scrollParent.scrollLeft()}}return{top:0,left:0}},_cacheMargins:function(){this.margins={left:parseInt(this.element.css("marginLeft"),10)||0,top:parseInt(this.element.css("marginTop"),10)||0,right:parseInt(this.element.css("marginRight"),10)||0,bottom:parseInt(this.element.css("marginBottom"),10)||0}},_cacheHelperProportions:function(){this.helperProportions={width:this.helper.outerWidth(),height:this.helper.outerHeight()}},_setContainment:function(){var t,i,a,s=this.options;return s.containment?"window"===s.containment?(this.containment=[e(window).scrollLeft()-this.offset.relative.left-this.offset.parent.left,e(window).scrollTop()-this.offset.relative.top-this.offset.parent.top,e(window).scrollLeft()+e(window).width()-this.helperProportions.width-this.margins.left,e(window).scrollTop()+(e(window).height()||document.body.parentNode.scrollHeight)-this.helperProportions.height-this.margins.top],undefined):"document"===s.containment?(this.containment=[0,0,e(document).width()-this.helperProportions.width-this.margins.left,(e(document).height()||document.body.parentNode.scrollHeight)-this.helperProportions.height-this.margins.top],undefined):s.containment.constructor===Array?(this.containment=s.containment,undefined):("parent"===s.containment&&(s.containment=this.helper[0].parentNode),i=e(s.containment),a=i[0],a&&(t="hidden"!==i.css("overflow"),this.containment=[(parseInt(i.css("borderLeftWidth"),10)||0)+(parseInt(i.css("paddingLeft"),10)||0),(parseInt(i.css("borderTopWidth"),10)||0)+(parseInt(i.css("paddingTop"),10)||0),(t?Math.max(a.scrollWidth,a.offsetWidth):a.offsetWidth)-(parseInt(i.css("borderRightWidth"),10)||0)-(parseInt(i.css("paddingRight"),10)||0)-this.helperProportions.width-this.margins.left-this.margins.right,(t?Math.max(a.scrollHeight,a.offsetHeight):a.offsetHeight)-(parseInt(i.css("borderBottomWidth"),10)||0)-(parseInt(i.css("paddingBottom"),10)||0)-this.helperProportions.height-this.margins.top-this.margins.bottom],this.relative_container=i),undefined):(this.containment=null,undefined)},_convertPositionTo:function(t,i){i||(i=this.position);var a="absolute"===t?1:-1,s="absolute"!==this.cssPosition||this.scrollParent[0]!==document&&e.contains(this.scrollParent[0],this.offsetParent[0])?this.scrollParent:this.offsetParent;return this.offset.scroll||(this.offset.scroll={top:s.scrollTop(),left:s.scrollLeft()}),{top:i.top+this.offset.relative.top*a+this.offset.parent.top*a-("fixed"===this.cssPosition?-this.scrollParent.scrollTop():this.offset.scroll.top)*a,left:i.left+this.offset.relative.left*a+this.offset.parent.left*a-("fixed"===this.cssPosition?-this.scrollParent.scrollLeft():this.offset.scroll.left)*a}},_generatePosition:function(t){var i,a,s,n,r=this.options,o="absolute"!==this.cssPosition||this.scrollParent[0]!==document&&e.contains(this.scrollParent[0],this.offsetParent[0])?this.scrollParent:this.offsetParent,l=t.pageX,h=t.pageY;return this.offset.scroll||(this.offset.scroll={top:o.scrollTop(),left:o.scrollLeft()}),this.originalPosition&&(this.containment&&(this.relative_container?(a=this.relative_container.offset(),i=[this.containment[0]+a.left,this.containment[1]+a.top,this.containment[2]+a.left,this.containment[3]+a.top]):i=this.containment,t.pageX-this.offset.click.left<i[0]&&(l=i[0]+this.offset.click.left),t.pageY-this.offset.click.top<i[1]&&(h=i[1]+this.offset.click.top),t.pageX-this.offset.click.left>i[2]&&(l=i[2]+this.offset.click.left),t.pageY-this.offset.click.top>i[3]&&(h=i[3]+this.offset.click.top)),r.grid&&(s=r.grid[1]?this.originalPageY+Math.round((h-this.originalPageY)/r.grid[1])*r.grid[1]:this.originalPageY,h=i?s-this.offset.click.top>=i[1]||s-this.offset.click.top>i[3]?s:s-this.offset.click.top>=i[1]?s-r.grid[1]:s+r.grid[1]:s,n=r.grid[0]?this.originalPageX+Math.round((l-this.originalPageX)/r.grid[0])*r.grid[0]:this.originalPageX,l=i?n-this.offset.click.left>=i[0]||n-this.offset.click.left>i[2]?n:n-this.offset.click.left>=i[0]?n-r.grid[0]:n+r.grid[0]:n)),{top:h-this.offset.click.top-this.offset.relative.top-this.offset.parent.top+("fixed"===this.cssPosition?-this.scrollParent.scrollTop():this.offset.scroll.top),left:l-this.offset.click.left-this.offset.relative.left-this.offset.parent.left+("fixed"===this.cssPosition?-this.scrollParent.scrollLeft():this.offset.scroll.left)}},_clear:function(){this.helper.removeClass("ui-draggable-dragging"),this.helper[0]===this.element[0]||this.cancelHelperRemoval||this.helper.remove(),this.helper=null,this.cancelHelperRemoval=!1},_trigger:function(t,i,a){return a=a||this._uiHash(),e.ui.plugin.call(this,t,[i,a]),"drag"===t&&(this.positionAbs=this._convertPositionTo("absolute")),e.Widget.prototype._trigger.call(this,t,i,a)},plugins:{},_uiHash:function(){return{helper:this.helper,position:this.position,originalPosition:this.originalPosition,offset:this.positionAbs}}}),e.ui.plugin.add("draggable","connectToSortable",{start:function(t,i){var a=e(this).data("ui-draggable"),s=a.options,n=e.extend({},i,{item:a.element});a.sortables=[],e(s.connectToSortable).each(function(){var i=e.data(this,"ui-sortable");i&&!i.options.disabled&&(a.sortables.push({instance:i,shouldRevert:i.options.revert}),i.refreshPositions(),i._trigger("activate",t,n))})},stop:function(t,i){var a=e(this).data("ui-draggable"),s=e.extend({},i,{item:a.element});e.each(a.sortables,function(){this.instance.isOver?(this.instance.isOver=0,a.cancelHelperRemoval=!0,this.instance.cancelHelperRemoval=!1,this.shouldRevert&&(this.instance.options.revert=this.shouldRevert),this.instance._mouseStop(t),this.instance.options.helper=this.instance.options._helper,"original"===a.options.helper&&this.instance.currentItem.css({top:"auto",left:"auto"})):(this.instance.cancelHelperRemoval=!1,this.instance._trigger("deactivate",t,s))})},drag:function(t,i){var a=e(this).data("ui-draggable"),s=this;e.each(a.sortables,function(){var n=!1,r=this;this.instance.positionAbs=a.positionAbs,this.instance.helperProportions=a.helperProportions,this.instance.offset.click=a.offset.click,this.instance._intersectsWith(this.instance.containerCache)&&(n=!0,e.each(a.sortables,function(){return this.instance.positionAbs=a.positionAbs,this.instance.helperProportions=a.helperProportions,this.instance.offset.click=a.offset.click,this!==r&&this.instance._intersectsWith(this.instance.containerCache)&&e.contains(r.instance.element[0],this.instance.element[0])&&(n=!1),n})),n?(this.instance.isOver||(this.instance.isOver=1,this.instance.currentItem=e(s).clone().removeAttr("id").appendTo(this.instance.element).data("ui-sortable-item",!0),this.instance.options._helper=this.instance.options.helper,this.instance.options.helper=function(){return i.helper[0]},t.target=this.instance.currentItem[0],this.instance._mouseCapture(t,!0),this.instance._mouseStart(t,!0,!0),this.instance.offset.click.top=a.offset.click.top,this.instance.offset.click.left=a.offset.click.left,this.instance.offset.parent.left-=a.offset.parent.left-this.instance.offset.parent.left,this.instance.offset.parent.top-=a.offset.parent.top-this.instance.offset.parent.top,a._trigger("toSortable",t),a.dropped=this.instance.element,a.currentItem=a.element,this.instance.fromOutside=a),this.instance.currentItem&&this.instance._mouseDrag(t)):this.instance.isOver&&(this.instance.isOver=0,this.instance.cancelHelperRemoval=!0,this.instance.options.revert=!1,this.instance._trigger("out",t,this.instance._uiHash(this.instance)),this.instance._mouseStop(t,!0),this.instance.options.helper=this.instance.options._helper,this.instance.currentItem.remove(),this.instance.placeholder&&this.instance.placeholder.remove(),a._trigger("fromSortable",t),a.dropped=!1)})}}),e.ui.plugin.add("draggable","cursor",{start:function(){var t=e("body"),i=e(this).data("ui-draggable").options;t.css("cursor")&&(i._cursor=t.css("cursor")),t.css("cursor",i.cursor)},stop:function(){var t=e(this).data("ui-draggable").options;t._cursor&&e("body").css("cursor",t._cursor)}}),e.ui.plugin.add("draggable","opacity",{start:function(t,i){var a=e(i.helper),s=e(this).data("ui-draggable").options;a.css("opacity")&&(s._opacity=a.css("opacity")),a.css("opacity",s.opacity)},stop:function(t,i){var a=e(this).data("ui-draggable").options;a._opacity&&e(i.helper).css("opacity",a._opacity)}}),e.ui.plugin.add("draggable","scroll",{start:function(){var t=e(this).data("ui-draggable");t.scrollParent[0]!==document&&"HTML"!==t.scrollParent[0].tagName&&(t.overflowOffset=t.scrollParent.offset())},drag:function(t){var i=e(this).data("ui-draggable"),a=i.options,s=!1;i.scrollParent[0]!==document&&"HTML"!==i.scrollParent[0].tagName?(a.axis&&"x"===a.axis||(i.overflowOffset.top+i.scrollParent[0].offsetHeight-t.pageY<a.scrollSensitivity?i.scrollParent[0].scrollTop=s=i.scrollParent[0].scrollTop+a.scrollSpeed:t.pageY-i.overflowOffset.top<a.scrollSensitivity&&(i.scrollParent[0].scrollTop=s=i.scrollParent[0].scrollTop-a.scrollSpeed)),a.axis&&"y"===a.axis||(i.overflowOffset.left+i.scrollParent[0].offsetWidth-t.pageX<a.scrollSensitivity?i.scrollParent[0].scrollLeft=s=i.scrollParent[0].scrollLeft+a.scrollSpeed:t.pageX-i.overflowOffset.left<a.scrollSensitivity&&(i.scrollParent[0].scrollLeft=s=i.scrollParent[0].scrollLeft-a.scrollSpeed))):(a.axis&&"x"===a.axis||(t.pageY-e(document).scrollTop()<a.scrollSensitivity?s=e(document).scrollTop(e(document).scrollTop()-a.scrollSpeed):e(window).height()-(t.pageY-e(document).scrollTop())<a.scrollSensitivity&&(s=e(document).scrollTop(e(document).scrollTop()+a.scrollSpeed))),a.axis&&"y"===a.axis||(t.pageX-e(document).scrollLeft()<a.scrollSensitivity?s=e(document).scrollLeft(e(document).scrollLeft()-a.scrollSpeed):e(window).width()-(t.pageX-e(document).scrollLeft())<a.scrollSensitivity&&(s=e(document).scrollLeft(e(document).scrollLeft()+a.scrollSpeed)))),s!==!1&&e.ui.ddmanager&&!a.dropBehaviour&&e.ui.ddmanager.prepareOffsets(i,t)}}),e.ui.plugin.add("draggable","snap",{start:function(){var t=e(this).data("ui-draggable"),i=t.options;t.snapElements=[],e(i.snap.constructor!==String?i.snap.items||":data(ui-draggable)":i.snap).each(function(){var i=e(this),a=i.offset();this!==t.element[0]&&t.snapElements.push({item:this,width:i.outerWidth(),height:i.outerHeight(),top:a.top,left:a.left})})},drag:function(t,i){var a,s,n,r,o,l,h,u,d,c,p=e(this).data("ui-draggable"),f=p.options,m=f.snapTolerance,g=i.offset.left,v=g+p.helperProportions.width,y=i.offset.top,b=y+p.helperProportions.height;for(d=p.snapElements.length-1;d>=0;d--)o=p.snapElements[d].left,l=o+p.snapElements[d].width,h=p.snapElements[d].top,u=h+p.snapElements[d].height,o-m>v||g>l+m||h-m>b||y>u+m||!e.contains(p.snapElements[d].item.ownerDocument,p.snapElements[d].item)?(p.snapElements[d].snapping&&p.options.snap.release&&p.options.snap.release.call(p.element,t,e.extend(p._uiHash(),{snapItem:p.snapElements[d].item})),p.snapElements[d].snapping=!1):("inner"!==f.snapMode&&(a=m>=Math.abs(h-b),s=m>=Math.abs(u-y),n=m>=Math.abs(o-v),r=m>=Math.abs(l-g),a&&(i.position.top=p._convertPositionTo("relative",{top:h-p.helperProportions.height,left:0}).top-p.margins.top),s&&(i.position.top=p._convertPositionTo("relative",{top:u,left:0}).top-p.margins.top),n&&(i.position.left=p._convertPositionTo("relative",{top:0,left:o-p.helperProportions.width}).left-p.margins.left),r&&(i.position.left=p._convertPositionTo("relative",{top:0,left:l}).left-p.margins.left)),c=a||s||n||r,"outer"!==f.snapMode&&(a=m>=Math.abs(h-y),s=m>=Math.abs(u-b),n=m>=Math.abs(o-g),r=m>=Math.abs(l-v),a&&(i.position.top=p._convertPositionTo("relative",{top:h,left:0}).top-p.margins.top),s&&(i.position.top=p._convertPositionTo("relative",{top:u-p.helperProportions.height,left:0}).top-p.margins.top),n&&(i.position.left=p._convertPositionTo("relative",{top:0,left:o}).left-p.margins.left),r&&(i.position.left=p._convertPositionTo("relative",{top:0,left:l-p.helperProportions.width}).left-p.margins.left)),!p.snapElements[d].snapping&&(a||s||n||r||c)&&p.options.snap.snap&&p.options.snap.snap.call(p.element,t,e.extend(p._uiHash(),{snapItem:p.snapElements[d].item})),p.snapElements[d].snapping=a||s||n||r||c)}}),e.ui.plugin.add("draggable","stack",{start:function(){var t,i=this.data("ui-draggable").options,a=e.makeArray(e(i.stack)).sort(function(t,i){return(parseInt(e(t).css("zIndex"),10)||0)-(parseInt(e(i).css("zIndex"),10)||0)});a.length&&(t=parseInt(e(a[0]).css("zIndex"),10)||0,e(a).each(function(i){e(this).css("zIndex",t+i)}),this.css("zIndex",t+a.length))}}),e.ui.plugin.add("draggable","zIndex",{start:function(t,i){var a=e(i.helper),s=e(this).data("ui-draggable").options;a.css("zIndex")&&(s._zIndex=a.css("zIndex")),a.css("zIndex",s.zIndex)},stop:function(t,i){var a=e(this).data("ui-draggable").options;a._zIndex&&e(i.helper).css("zIndex",a._zIndex)}})})(jQuery);(function(e){function t(e,t,i){return e>t&&t+i>e}e.widget("ui.droppable",{version:"1.10.3",widgetEventPrefix:"drop",options:{accept:"*",activeClass:!1,addClasses:!0,greedy:!1,hoverClass:!1,scope:"default",tolerance:"intersect",activate:null,deactivate:null,drop:null,out:null,over:null},_create:function(){var t=this.options,i=t.accept;this.isover=!1,this.isout=!0,this.accept=e.isFunction(i)?i:function(e){return e.is(i)},this.proportions={width:this.element[0].offsetWidth,height:this.element[0].offsetHeight},e.ui.ddmanager.droppables[t.scope]=e.ui.ddmanager.droppables[t.scope]||[],e.ui.ddmanager.droppables[t.scope].push(this),t.addClasses&&this.element.addClass("ui-droppable")},_destroy:function(){for(var t=0,i=e.ui.ddmanager.droppables[this.options.scope];i.length>t;t++)i[t]===this&&i.splice(t,1);this.element.removeClass("ui-droppable ui-droppable-disabled")},_setOption:function(t,i){"accept"===t&&(this.accept=e.isFunction(i)?i:function(e){return e.is(i)}),e.Widget.prototype._setOption.apply(this,arguments)},_activate:function(t){var i=e.ui.ddmanager.current;this.options.activeClass&&this.element.addClass(this.options.activeClass),i&&this._trigger("activate",t,this.ui(i))},_deactivate:function(t){var i=e.ui.ddmanager.current;this.options.activeClass&&this.element.removeClass(this.options.activeClass),i&&this._trigger("deactivate",t,this.ui(i))},_over:function(t){var i=e.ui.ddmanager.current;i&&(i.currentItem||i.element)[0]!==this.element[0]&&this.accept.call(this.element[0],i.currentItem||i.element)&&(this.options.hoverClass&&this.element.addClass(this.options.hoverClass),this._trigger("over",t,this.ui(i)))},_out:function(t){var i=e.ui.ddmanager.current;i&&(i.currentItem||i.element)[0]!==this.element[0]&&this.accept.call(this.element[0],i.currentItem||i.element)&&(this.options.hoverClass&&this.element.removeClass(this.options.hoverClass),this._trigger("out",t,this.ui(i)))},_drop:function(t,i){var a=i||e.ui.ddmanager.current,s=!1;return a&&(a.currentItem||a.element)[0]!==this.element[0]?(this.element.find(":data(ui-droppable)").not(".ui-draggable-dragging").each(function(){var t=e.data(this,"ui-droppable");return t.options.greedy&&!t.options.disabled&&t.options.scope===a.options.scope&&t.accept.call(t.element[0],a.currentItem||a.element)&&e.ui.intersect(a,e.extend(t,{offset:t.element.offset()}),t.options.tolerance)?(s=!0,!1):undefined}),s?!1:this.accept.call(this.element[0],a.currentItem||a.element)?(this.options.activeClass&&this.element.removeClass(this.options.activeClass),this.options.hoverClass&&this.element.removeClass(this.options.hoverClass),this._trigger("drop",t,this.ui(a)),this.element):!1):!1},ui:function(e){return{draggable:e.currentItem||e.element,helper:e.helper,position:e.position,offset:e.positionAbs}}}),e.ui.intersect=function(e,i,a){if(!i.offset)return!1;var s,n,r=(e.positionAbs||e.position.absolute).left,o=r+e.helperProportions.width,l=(e.positionAbs||e.position.absolute).top,h=l+e.helperProportions.height,u=i.offset.left,d=u+i.proportions.width,c=i.offset.top,p=c+i.proportions.height;switch(a){case"fit":return r>=u&&d>=o&&l>=c&&p>=h;case"intersect":return r+e.helperProportions.width/2>u&&d>o-e.helperProportions.width/2&&l+e.helperProportions.height/2>c&&p>h-e.helperProportions.height/2;case"pointer":return s=(e.positionAbs||e.position.absolute).left+(e.clickOffset||e.offset.click).left,n=(e.positionAbs||e.position.absolute).top+(e.clickOffset||e.offset.click).top,t(n,c,i.proportions.height)&&t(s,u,i.proportions.width);case"touch":return(l>=c&&p>=l||h>=c&&p>=h||c>l&&h>p)&&(r>=u&&d>=r||o>=u&&d>=o||u>r&&o>d);default:return!1}},e.ui.ddmanager={current:null,droppables:{"default":[]},prepareOffsets:function(t,i){var a,s,n=e.ui.ddmanager.droppables[t.options.scope]||[],r=i?i.type:null,o=(t.currentItem||t.element).find(":data(ui-droppable)").addBack();e:for(a=0;n.length>a;a++)if(!(n[a].options.disabled||t&&!n[a].accept.call(n[a].element[0],t.currentItem||t.element))){for(s=0;o.length>s;s++)if(o[s]===n[a].element[0]){n[a].proportions.height=0;continue e}n[a].visible="none"!==n[a].element.css("display"),n[a].visible&&("mousedown"===r&&n[a]._activate.call(n[a],i),n[a].offset=n[a].element.offset(),n[a].proportions={width:n[a].element[0].offsetWidth,height:n[a].element[0].offsetHeight})}},drop:function(t,i){var a=!1;return e.each((e.ui.ddmanager.droppables[t.options.scope]||[]).slice(),function(){this.options&&(!this.options.disabled&&this.visible&&e.ui.intersect(t,this,this.options.tolerance)&&(a=this._drop.call(this,i)||a),!this.options.disabled&&this.visible&&this.accept.call(this.element[0],t.currentItem||t.element)&&(this.isout=!0,this.isover=!1,this._deactivate.call(this,i)))}),a},dragStart:function(t,i){t.element.parentsUntil("body").bind("scroll.droppable",function(){t.options.refreshPositions||e.ui.ddmanager.prepareOffsets(t,i)})},drag:function(t,i){t.options.refreshPositions&&e.ui.ddmanager.prepareOffsets(t,i),e.each(e.ui.ddmanager.droppables[t.options.scope]||[],function(){if(!this.options.disabled&&!this.greedyChild&&this.visible){var a,s,n,r=e.ui.intersect(t,this,this.options.tolerance),o=!r&&this.isover?"isout":r&&!this.isover?"isover":null;o&&(this.options.greedy&&(s=this.options.scope,n=this.element.parents(":data(ui-droppable)").filter(function(){return e.data(this,"ui-droppable").options.scope===s}),n.length&&(a=e.data(n[0],"ui-droppable"),a.greedyChild="isover"===o)),a&&"isover"===o&&(a.isover=!1,a.isout=!0,a._out.call(a,i)),this[o]=!0,this["isout"===o?"isover":"isout"]=!1,this["isover"===o?"_over":"_out"].call(this,i),a&&"isout"===o&&(a.isout=!1,a.isover=!0,a._over.call(a,i)))}})},dragStop:function(t,i){t.element.parentsUntil("body").unbind("scroll.droppable"),t.options.refreshPositions||e.ui.ddmanager.prepareOffsets(t,i)}}})(jQuery);(function(e){function t(e){return parseInt(e,10)||0}function i(e){return!isNaN(parseInt(e,10))}e.widget("ui.resizable",e.ui.mouse,{version:"1.10.3",widgetEventPrefix:"resize",options:{alsoResize:!1,animate:!1,animateDuration:"slow",animateEasing:"swing",aspectRatio:!1,autoHide:!1,containment:!1,ghost:!1,grid:!1,handles:"e,s,se",helper:!1,maxHeight:null,maxWidth:null,minHeight:10,minWidth:10,zIndex:90,resize:null,start:null,stop:null},_create:function(){var t,i,s,a,n,r=this,o=this.options;if(this.element.addClass("ui-resizable"),e.extend(this,{_aspectRatio:!!o.aspectRatio,aspectRatio:o.aspectRatio,originalElement:this.element,_proportionallyResizeElements:[],_helper:o.helper||o.ghost||o.animate?o.helper||"ui-resizable-helper":null}),this.element[0].nodeName.match(/canvas|textarea|input|select|button|img/i)&&(this.element.wrap(e("<div class='ui-wrapper' style='overflow: hidden;'></div>").css({position:this.element.css("position"),width:this.element.outerWidth(),height:this.element.outerHeight(),top:this.element.css("top"),left:this.element.css("left")})),this.element=this.element.parent().data("ui-resizable",this.element.data("ui-resizable")),this.elementIsWrapper=!0,this.element.css({marginLeft:this.originalElement.css("marginLeft"),marginTop:this.originalElement.css("marginTop"),marginRight:this.originalElement.css("marginRight"),marginBottom:this.originalElement.css("marginBottom")}),this.originalElement.css({marginLeft:0,marginTop:0,marginRight:0,marginBottom:0}),this.originalResizeStyle=this.originalElement.css("resize"),this.originalElement.css("resize","none"),this._proportionallyResizeElements.push(this.originalElement.css({position:"static",zoom:1,display:"block"})),this.originalElement.css({margin:this.originalElement.css("margin")}),this._proportionallyResize()),this.handles=o.handles||(e(".ui-resizable-handle",this.element).length?{n:".ui-resizable-n",e:".ui-resizable-e",s:".ui-resizable-s",w:".ui-resizable-w",se:".ui-resizable-se",sw:".ui-resizable-sw",ne:".ui-resizable-ne",nw:".ui-resizable-nw"}:"e,s,se"),this.handles.constructor===String)for("all"===this.handles&&(this.handles="n,e,s,w,se,sw,ne,nw"),t=this.handles.split(","),this.handles={},i=0;t.length>i;i++)s=e.trim(t[i]),n="ui-resizable-"+s,a=e("<div class='ui-resizable-handle "+n+"'></div>"),a.css({zIndex:o.zIndex}),"se"===s&&a.addClass("ui-icon ui-icon-gripsmall-diagonal-se"),this.handles[s]=".ui-resizable-"+s,this.element.append(a);this._renderAxis=function(t){var i,s,a,n;t=t||this.element;for(i in this.handles)this.handles[i].constructor===String&&(this.handles[i]=e(this.handles[i],this.element).show()),this.elementIsWrapper&&this.originalElement[0].nodeName.match(/textarea|input|select|button/i)&&(s=e(this.handles[i],this.element),n=/sw|ne|nw|se|n|s/.test(i)?s.outerHeight():s.outerWidth(),a=["padding",/ne|nw|n/.test(i)?"Top":/se|sw|s/.test(i)?"Bottom":/^e$/.test(i)?"Right":"Left"].join(""),t.css(a,n),this._proportionallyResize()),e(this.handles[i]).length},this._renderAxis(this.element),this._handles=e(".ui-resizable-handle",this.element).disableSelection(),this._handles.mouseover(function(){r.resizing||(this.className&&(a=this.className.match(/ui-resizable-(se|sw|ne|nw|n|e|s|w)/i)),r.axis=a&&a[1]?a[1]:"se")}),o.autoHide&&(this._handles.hide(),e(this.element).addClass("ui-resizable-autohide").mouseenter(function(){o.disabled||(e(this).removeClass("ui-resizable-autohide"),r._handles.show())}).mouseleave(function(){o.disabled||r.resizing||(e(this).addClass("ui-resizable-autohide"),r._handles.hide())})),this._mouseInit()},_destroy:function(){this._mouseDestroy();var t,i=function(t){e(t).removeClass("ui-resizable ui-resizable-disabled ui-resizable-resizing").removeData("resizable").removeData("ui-resizable").unbind(".resizable").find(".ui-resizable-handle").remove()};return this.elementIsWrapper&&(i(this.element),t=this.element,this.originalElement.css({position:t.css("position"),width:t.outerWidth(),height:t.outerHeight(),top:t.css("top"),left:t.css("left")}).insertAfter(t),t.remove()),this.originalElement.css("resize",this.originalResizeStyle),i(this.originalElement),this},_mouseCapture:function(t){var i,s,a=!1;for(i in this.handles)s=e(this.handles[i])[0],(s===t.target||e.contains(s,t.target))&&(a=!0);return!this.options.disabled&&a},_mouseStart:function(i){var s,a,n,r=this.options,o=this.element.position(),h=this.element;return this.resizing=!0,/absolute/.test(h.css("position"))?h.css({position:"absolute",top:h.css("top"),left:h.css("left")}):h.is(".ui-draggable")&&h.css({position:"absolute",top:o.top,left:o.left}),this._renderProxy(),s=t(this.helper.css("left")),a=t(this.helper.css("top")),r.containment&&(s+=e(r.containment).scrollLeft()||0,a+=e(r.containment).scrollTop()||0),this.offset=this.helper.offset(),this.position={left:s,top:a},this.size=this._helper?{width:h.outerWidth(),height:h.outerHeight()}:{width:h.width(),height:h.height()},this.originalSize=this._helper?{width:h.outerWidth(),height:h.outerHeight()}:{width:h.width(),height:h.height()},this.originalPosition={left:s,top:a},this.sizeDiff={width:h.outerWidth()-h.width(),height:h.outerHeight()-h.height()},this.originalMousePosition={left:i.pageX,top:i.pageY},this.aspectRatio="number"==typeof r.aspectRatio?r.aspectRatio:this.originalSize.width/this.originalSize.height||1,n=e(".ui-resizable-"+this.axis).css("cursor"),e("body").css("cursor","auto"===n?this.axis+"-resize":n),h.addClass("ui-resizable-resizing"),this._propagate("start",i),!0},_mouseDrag:function(t){var i,s=this.helper,a={},n=this.originalMousePosition,r=this.axis,o=this.position.top,h=this.position.left,l=this.size.width,u=this.size.height,c=t.pageX-n.left||0,d=t.pageY-n.top||0,p=this._change[r];return p?(i=p.apply(this,[t,c,d]),this._updateVirtualBoundaries(t.shiftKey),(this._aspectRatio||t.shiftKey)&&(i=this._updateRatio(i,t)),i=this._respectSize(i,t),this._updateCache(i),this._propagate("resize",t),this.position.top!==o&&(a.top=this.position.top+"px"),this.position.left!==h&&(a.left=this.position.left+"px"),this.size.width!==l&&(a.width=this.size.width+"px"),this.size.height!==u&&(a.height=this.size.height+"px"),s.css(a),!this._helper&&this._proportionallyResizeElements.length&&this._proportionallyResize(),e.isEmptyObject(a)||this._trigger("resize",t,this.ui()),!1):!1},_mouseStop:function(t){this.resizing=!1;var i,s,a,n,r,o,h,l=this.options,u=this;return this._helper&&(i=this._proportionallyResizeElements,s=i.length&&/textarea/i.test(i[0].nodeName),a=s&&e.ui.hasScroll(i[0],"left")?0:u.sizeDiff.height,n=s?0:u.sizeDiff.width,r={width:u.helper.width()-n,height:u.helper.height()-a},o=parseInt(u.element.css("left"),10)+(u.position.left-u.originalPosition.left)||null,h=parseInt(u.element.css("top"),10)+(u.position.top-u.originalPosition.top)||null,l.animate||this.element.css(e.extend(r,{top:h,left:o})),u.helper.height(u.size.height),u.helper.width(u.size.width),this._helper&&!l.animate&&this._proportionallyResize()),e("body").css("cursor","auto"),this.element.removeClass("ui-resizable-resizing"),this._propagate("stop",t),this._helper&&this.helper.remove(),!1},_updateVirtualBoundaries:function(e){var t,s,a,n,r,o=this.options;r={minWidth:i(o.minWidth)?o.minWidth:0,maxWidth:i(o.maxWidth)?o.maxWidth:1/0,minHeight:i(o.minHeight)?o.minHeight:0,maxHeight:i(o.maxHeight)?o.maxHeight:1/0},(this._aspectRatio||e)&&(t=r.minHeight*this.aspectRatio,a=r.minWidth/this.aspectRatio,s=r.maxHeight*this.aspectRatio,n=r.maxWidth/this.aspectRatio,t>r.minWidth&&(r.minWidth=t),a>r.minHeight&&(r.minHeight=a),r.maxWidth>s&&(r.maxWidth=s),r.maxHeight>n&&(r.maxHeight=n)),this._vBoundaries=r},_updateCache:function(e){this.offset=this.helper.offset(),i(e.left)&&(this.position.left=e.left),i(e.top)&&(this.position.top=e.top),i(e.height)&&(this.size.height=e.height),i(e.width)&&(this.size.width=e.width)},_updateRatio:function(e){var t=this.position,s=this.size,a=this.axis;return i(e.height)?e.width=e.height*this.aspectRatio:i(e.width)&&(e.height=e.width/this.aspectRatio),"sw"===a&&(e.left=t.left+(s.width-e.width),e.top=null),"nw"===a&&(e.top=t.top+(s.height-e.height),e.left=t.left+(s.width-e.width)),e},_respectSize:function(e){var t=this._vBoundaries,s=this.axis,a=i(e.width)&&t.maxWidth&&t.maxWidth<e.width,n=i(e.height)&&t.maxHeight&&t.maxHeight<e.height,r=i(e.width)&&t.minWidth&&t.minWidth>e.width,o=i(e.height)&&t.minHeight&&t.minHeight>e.height,h=this.originalPosition.left+this.originalSize.width,l=this.position.top+this.size.height,u=/sw|nw|w/.test(s),c=/nw|ne|n/.test(s);return r&&(e.width=t.minWidth),o&&(e.height=t.minHeight),a&&(e.width=t.maxWidth),n&&(e.height=t.maxHeight),r&&u&&(e.left=h-t.minWidth),a&&u&&(e.left=h-t.maxWidth),o&&c&&(e.top=l-t.minHeight),n&&c&&(e.top=l-t.maxHeight),e.width||e.height||e.left||!e.top?e.width||e.height||e.top||!e.left||(e.left=null):e.top=null,e},_proportionallyResize:function(){if(this._proportionallyResizeElements.length){var e,t,i,s,a,n=this.helper||this.element;for(e=0;this._proportionallyResizeElements.length>e;e++){if(a=this._proportionallyResizeElements[e],!this.borderDif)for(this.borderDif=[],i=[a.css("borderTopWidth"),a.css("borderRightWidth"),a.css("borderBottomWidth"),a.css("borderLeftWidth")],s=[a.css("paddingTop"),a.css("paddingRight"),a.css("paddingBottom"),a.css("paddingLeft")],t=0;i.length>t;t++)this.borderDif[t]=(parseInt(i[t],10)||0)+(parseInt(s[t],10)||0);a.css({height:n.height()-this.borderDif[0]-this.borderDif[2]||0,width:n.width()-this.borderDif[1]-this.borderDif[3]||0})}}},_renderProxy:function(){var t=this.element,i=this.options;this.elementOffset=t.offset(),this._helper?(this.helper=this.helper||e("<div style='overflow:hidden;'></div>"),this.helper.addClass(this._helper).css({width:this.element.outerWidth()-1,height:this.element.outerHeight()-1,position:"absolute",left:this.elementOffset.left+"px",top:this.elementOffset.top+"px",zIndex:++i.zIndex}),this.helper.appendTo("body").disableSelection()):this.helper=this.element},_change:{e:function(e,t){return{width:this.originalSize.width+t}},w:function(e,t){var i=this.originalSize,s=this.originalPosition;return{left:s.left+t,width:i.width-t}},n:function(e,t,i){var s=this.originalSize,a=this.originalPosition;return{top:a.top+i,height:s.height-i}},s:function(e,t,i){return{height:this.originalSize.height+i}},se:function(t,i,s){return e.extend(this._change.s.apply(this,arguments),this._change.e.apply(this,[t,i,s]))},sw:function(t,i,s){return e.extend(this._change.s.apply(this,arguments),this._change.w.apply(this,[t,i,s]))},ne:function(t,i,s){return e.extend(this._change.n.apply(this,arguments),this._change.e.apply(this,[t,i,s]))},nw:function(t,i,s){return e.extend(this._change.n.apply(this,arguments),this._change.w.apply(this,[t,i,s]))}},_propagate:function(t,i){e.ui.plugin.call(this,t,[i,this.ui()]),"resize"!==t&&this._trigger(t,i,this.ui())},plugins:{},ui:function(){return{originalElement:this.originalElement,element:this.element,helper:this.helper,position:this.position,size:this.size,originalSize:this.originalSize,originalPosition:this.originalPosition}}}),e.ui.plugin.add("resizable","animate",{stop:function(t){var i=e(this).data("ui-resizable"),s=i.options,a=i._proportionallyResizeElements,n=a.length&&/textarea/i.test(a[0].nodeName),r=n&&e.ui.hasScroll(a[0],"left")?0:i.sizeDiff.height,o=n?0:i.sizeDiff.width,h={width:i.size.width-o,height:i.size.height-r},l=parseInt(i.element.css("left"),10)+(i.position.left-i.originalPosition.left)||null,u=parseInt(i.element.css("top"),10)+(i.position.top-i.originalPosition.top)||null;i.element.animate(e.extend(h,u&&l?{top:u,left:l}:{}),{duration:s.animateDuration,easing:s.animateEasing,step:function(){var s={width:parseInt(i.element.css("width"),10),height:parseInt(i.element.css("height"),10),top:parseInt(i.element.css("top"),10),left:parseInt(i.element.css("left"),10)};a&&a.length&&e(a[0]).css({width:s.width,height:s.height}),i._updateCache(s),i._propagate("resize",t)}})}}),e.ui.plugin.add("resizable","containment",{start:function(){var i,s,a,n,r,o,h,l=e(this).data("ui-resizable"),u=l.options,c=l.element,d=u.containment,p=d instanceof e?d.get(0):/parent/.test(d)?c.parent().get(0):d;p&&(l.containerElement=e(p),/document/.test(d)||d===document?(l.containerOffset={left:0,top:0},l.containerPosition={left:0,top:0},l.parentData={element:e(document),left:0,top:0,width:e(document).width(),height:e(document).height()||document.body.parentNode.scrollHeight}):(i=e(p),s=[],e(["Top","Right","Left","Bottom"]).each(function(e,a){s[e]=t(i.css("padding"+a))}),l.containerOffset=i.offset(),l.containerPosition=i.position(),l.containerSize={height:i.innerHeight()-s[3],width:i.innerWidth()-s[1]},a=l.containerOffset,n=l.containerSize.height,r=l.containerSize.width,o=e.ui.hasScroll(p,"left")?p.scrollWidth:r,h=e.ui.hasScroll(p)?p.scrollHeight:n,l.parentData={element:p,left:a.left,top:a.top,width:o,height:h}))},resize:function(t){var i,s,a,n,r=e(this).data("ui-resizable"),o=r.options,h=r.containerOffset,l=r.position,u=r._aspectRatio||t.shiftKey,c={top:0,left:0},d=r.containerElement;d[0]!==document&&/static/.test(d.css("position"))&&(c=h),l.left<(r._helper?h.left:0)&&(r.size.width=r.size.width+(r._helper?r.position.left-h.left:r.position.left-c.left),u&&(r.size.height=r.size.width/r.aspectRatio),r.position.left=o.helper?h.left:0),l.top<(r._helper?h.top:0)&&(r.size.height=r.size.height+(r._helper?r.position.top-h.top:r.position.top),u&&(r.size.width=r.size.height*r.aspectRatio),r.position.top=r._helper?h.top:0),r.offset.left=r.parentData.left+r.position.left,r.offset.top=r.parentData.top+r.position.top,i=Math.abs((r._helper?r.offset.left-c.left:r.offset.left-c.left)+r.sizeDiff.width),s=Math.abs((r._helper?r.offset.top-c.top:r.offset.top-h.top)+r.sizeDiff.height),a=r.containerElement.get(0)===r.element.parent().get(0),n=/relative|absolute/.test(r.containerElement.css("position")),a&&n&&(i-=r.parentData.left),i+r.size.width>=r.parentData.width&&(r.size.width=r.parentData.width-i,u&&(r.size.height=r.size.width/r.aspectRatio)),s+r.size.height>=r.parentData.height&&(r.size.height=r.parentData.height-s,u&&(r.size.width=r.size.height*r.aspectRatio))},stop:function(){var t=e(this).data("ui-resizable"),i=t.options,s=t.containerOffset,a=t.containerPosition,n=t.containerElement,r=e(t.helper),o=r.offset(),h=r.outerWidth()-t.sizeDiff.width,l=r.outerHeight()-t.sizeDiff.height;t._helper&&!i.animate&&/relative/.test(n.css("position"))&&e(this).css({left:o.left-a.left-s.left,width:h,height:l}),t._helper&&!i.animate&&/static/.test(n.css("position"))&&e(this).css({left:o.left-a.left-s.left,width:h,height:l})}}),e.ui.plugin.add("resizable","alsoResize",{start:function(){var t=e(this).data("ui-resizable"),i=t.options,s=function(t){e(t).each(function(){var t=e(this);t.data("ui-resizable-alsoresize",{width:parseInt(t.width(),10),height:parseInt(t.height(),10),left:parseInt(t.css("left"),10),top:parseInt(t.css("top"),10)})})};"object"!=typeof i.alsoResize||i.alsoResize.parentNode?s(i.alsoResize):i.alsoResize.length?(i.alsoResize=i.alsoResize[0],s(i.alsoResize)):e.each(i.alsoResize,function(e){s(e)})},resize:function(t,i){var s=e(this).data("ui-resizable"),a=s.options,n=s.originalSize,r=s.originalPosition,o={height:s.size.height-n.height||0,width:s.size.width-n.width||0,top:s.position.top-r.top||0,left:s.position.left-r.left||0},h=function(t,s){e(t).each(function(){var t=e(this),a=e(this).data("ui-resizable-alsoresize"),n={},r=s&&s.length?s:t.parents(i.originalElement[0]).length?["width","height"]:["width","height","top","left"];e.each(r,function(e,t){var i=(a[t]||0)+(o[t]||0);i&&i>=0&&(n[t]=i||null)}),t.css(n)})};"object"!=typeof a.alsoResize||a.alsoResize.nodeType?h(a.alsoResize):e.each(a.alsoResize,function(e,t){h(e,t)})},stop:function(){e(this).removeData("resizable-alsoresize")}}),e.ui.plugin.add("resizable","ghost",{start:function(){var t=e(this).data("ui-resizable"),i=t.options,s=t.size;t.ghost=t.originalElement.clone(),t.ghost.css({opacity:.25,display:"block",position:"relative",height:s.height,width:s.width,margin:0,left:0,top:0}).addClass("ui-resizable-ghost").addClass("string"==typeof i.ghost?i.ghost:""),t.ghost.appendTo(t.helper)},resize:function(){var t=e(this).data("ui-resizable");t.ghost&&t.ghost.css({position:"relative",height:t.size.height,width:t.size.width})},stop:function(){var t=e(this).data("ui-resizable");t.ghost&&t.helper&&t.helper.get(0).removeChild(t.ghost.get(0))}}),e.ui.plugin.add("resizable","grid",{resize:function(){var t=e(this).data("ui-resizable"),i=t.options,s=t.size,a=t.originalSize,n=t.originalPosition,r=t.axis,o="number"==typeof i.grid?[i.grid,i.grid]:i.grid,h=o[0]||1,l=o[1]||1,u=Math.round((s.width-a.width)/h)*h,c=Math.round((s.height-a.height)/l)*l,d=a.width+u,p=a.height+c,f=i.maxWidth&&d>i.maxWidth,m=i.maxHeight&&p>i.maxHeight,g=i.minWidth&&i.minWidth>d,v=i.minHeight&&i.minHeight>p;i.grid=o,g&&(d+=h),v&&(p+=l),f&&(d-=h),m&&(p-=l),/^(se|s|e)$/.test(r)?(t.size.width=d,t.size.height=p):/^(ne)$/.test(r)?(t.size.width=d,t.size.height=p,t.position.top=n.top-c):/^(sw)$/.test(r)?(t.size.width=d,t.size.height=p,t.position.left=n.left-u):(t.size.width=d,t.size.height=p,t.position.top=n.top-c,t.position.left=n.left-u)}})})(jQuery);(function(e){e.widget("ui.selectable",e.ui.mouse,{version:"1.10.3",options:{appendTo:"body",autoRefresh:!0,distance:0,filter:"*",tolerance:"touch",selected:null,selecting:null,start:null,stop:null,unselected:null,unselecting:null},_create:function(){var t,i=this;this.element.addClass("ui-selectable"),this.dragged=!1,this.refresh=function(){t=e(i.options.filter,i.element[0]),t.addClass("ui-selectee"),t.each(function(){var t=e(this),i=t.offset();e.data(this,"selectable-item",{element:this,$element:t,left:i.left,top:i.top,right:i.left+t.outerWidth(),bottom:i.top+t.outerHeight(),startselected:!1,selected:t.hasClass("ui-selected"),selecting:t.hasClass("ui-selecting"),unselecting:t.hasClass("ui-unselecting")})})},this.refresh(),this.selectees=t.addClass("ui-selectee"),this._mouseInit(),this.helper=e("<div class='ui-selectable-helper'></div>")},_destroy:function(){this.selectees.removeClass("ui-selectee").removeData("selectable-item"),this.element.removeClass("ui-selectable ui-selectable-disabled"),this._mouseDestroy()},_mouseStart:function(t){var i=this,s=this.options;this.opos=[t.pageX,t.pageY],this.options.disabled||(this.selectees=e(s.filter,this.element[0]),this._trigger("start",t),e(s.appendTo).append(this.helper),this.helper.css({left:t.pageX,top:t.pageY,width:0,height:0}),s.autoRefresh&&this.refresh(),this.selectees.filter(".ui-selected").each(function(){var s=e.data(this,"selectable-item");s.startselected=!0,t.metaKey||t.ctrlKey||(s.$element.removeClass("ui-selected"),s.selected=!1,s.$element.addClass("ui-unselecting"),s.unselecting=!0,i._trigger("unselecting",t,{unselecting:s.element}))}),e(t.target).parents().addBack().each(function(){var s,a=e.data(this,"selectable-item");return a?(s=!t.metaKey&&!t.ctrlKey||!a.$element.hasClass("ui-selected"),a.$element.removeClass(s?"ui-unselecting":"ui-selected").addClass(s?"ui-selecting":"ui-unselecting"),a.unselecting=!s,a.selecting=s,a.selected=s,s?i._trigger("selecting",t,{selecting:a.element}):i._trigger("unselecting",t,{unselecting:a.element}),!1):undefined}))},_mouseDrag:function(t){if(this.dragged=!0,!this.options.disabled){var i,s=this,a=this.options,n=this.opos[0],r=this.opos[1],o=t.pageX,h=t.pageY;return n>o&&(i=o,o=n,n=i),r>h&&(i=h,h=r,r=i),this.helper.css({left:n,top:r,width:o-n,height:h-r}),this.selectees.each(function(){var i=e.data(this,"selectable-item"),l=!1;i&&i.element!==s.element[0]&&("touch"===a.tolerance?l=!(i.left>o||n>i.right||i.top>h||r>i.bottom):"fit"===a.tolerance&&(l=i.left>n&&o>i.right&&i.top>r&&h>i.bottom),l?(i.selected&&(i.$element.removeClass("ui-selected"),i.selected=!1),i.unselecting&&(i.$element.removeClass("ui-unselecting"),i.unselecting=!1),i.selecting||(i.$element.addClass("ui-selecting"),i.selecting=!0,s._trigger("selecting",t,{selecting:i.element}))):(i.selecting&&((t.metaKey||t.ctrlKey)&&i.startselected?(i.$element.removeClass("ui-selecting"),i.selecting=!1,i.$element.addClass("ui-selected"),i.selected=!0):(i.$element.removeClass("ui-selecting"),i.selecting=!1,i.startselected&&(i.$element.addClass("ui-unselecting"),i.unselecting=!0),s._trigger("unselecting",t,{unselecting:i.element}))),i.selected&&(t.metaKey||t.ctrlKey||i.startselected||(i.$element.removeClass("ui-selected"),i.selected=!1,i.$element.addClass("ui-unselecting"),i.unselecting=!0,s._trigger("unselecting",t,{unselecting:i.element})))))}),!1}},_mouseStop:function(t){var i=this;return this.dragged=!1,e(".ui-unselecting",this.element[0]).each(function(){var s=e.data(this,"selectable-item");s.$element.removeClass("ui-unselecting"),s.unselecting=!1,s.startselected=!1,i._trigger("unselected",t,{unselected:s.element})}),e(".ui-selecting",this.element[0]).each(function(){var s=e.data(this,"selectable-item");s.$element.removeClass("ui-selecting").addClass("ui-selected"),s.selecting=!1,s.selected=!0,s.startselected=!0,i._trigger("selected",t,{selected:s.element})}),this._trigger("stop",t),this.helper.remove(),!1}})})(jQuery);(function(e){function t(e,t,i){return e>t&&t+i>e}function i(e){return/left|right/.test(e.css("float"))||/inline|table-cell/.test(e.css("display"))}e.widget("ui.sortable",e.ui.mouse,{version:"1.10.3",widgetEventPrefix:"sort",ready:!1,options:{appendTo:"parent",axis:!1,connectWith:!1,containment:!1,cursor:"auto",cursorAt:!1,dropOnEmpty:!0,forcePlaceholderSize:!1,forceHelperSize:!1,grid:!1,handle:!1,helper:"original",items:"> *",opacity:!1,placeholder:!1,revert:!1,scroll:!0,scrollSensitivity:20,scrollSpeed:20,scope:"default",tolerance:"intersect",zIndex:1e3,activate:null,beforeStop:null,change:null,deactivate:null,out:null,over:null,receive:null,remove:null,sort:null,start:null,stop:null,update:null},_create:function(){var e=this.options;this.containerCache={},this.element.addClass("ui-sortable"),this.refresh(),this.floating=this.items.length?"x"===e.axis||i(this.items[0].item):!1,this.offset=this.element.offset(),this._mouseInit(),this.ready=!0},_destroy:function(){this.element.removeClass("ui-sortable ui-sortable-disabled"),this._mouseDestroy();for(var e=this.items.length-1;e>=0;e--)this.items[e].item.removeData(this.widgetName+"-item");return this},_setOption:function(t,i){"disabled"===t?(this.options[t]=i,this.widget().toggleClass("ui-sortable-disabled",!!i)):e.Widget.prototype._setOption.apply(this,arguments)},_mouseCapture:function(t,i){var s=null,a=!1,n=this;return this.reverting?!1:this.options.disabled||"static"===this.options.type?!1:(this._refreshItems(t),e(t.target).parents().each(function(){return e.data(this,n.widgetName+"-item")===n?(s=e(this),!1):undefined}),e.data(t.target,n.widgetName+"-item")===n&&(s=e(t.target)),s?!this.options.handle||i||(e(this.options.handle,s).find("*").addBack().each(function(){this===t.target&&(a=!0)}),a)?(this.currentItem=s,this._removeCurrentsFromItems(),!0):!1:!1)},_mouseStart:function(t,i,s){var a,n,r=this.options;if(this.currentContainer=this,this.refreshPositions(),this.helper=this._createHelper(t),this._cacheHelperProportions(),this._cacheMargins(),this.scrollParent=this.helper.scrollParent(),this.offset=this.currentItem.offset(),this.offset={top:this.offset.top-this.margins.top,left:this.offset.left-this.margins.left},e.extend(this.offset,{click:{left:t.pageX-this.offset.left,top:t.pageY-this.offset.top},parent:this._getParentOffset(),relative:this._getRelativeOffset()}),this.helper.css("position","absolute"),this.cssPosition=this.helper.css("position"),this.originalPosition=this._generatePosition(t),this.originalPageX=t.pageX,this.originalPageY=t.pageY,r.cursorAt&&this._adjustOffsetFromHelper(r.cursorAt),this.domPosition={prev:this.currentItem.prev()[0],parent:this.currentItem.parent()[0]},this.helper[0]!==this.currentItem[0]&&this.currentItem.hide(),this._createPlaceholder(),r.containment&&this._setContainment(),r.cursor&&"auto"!==r.cursor&&(n=this.document.find("body"),this.storedCursor=n.css("cursor"),n.css("cursor",r.cursor),this.storedStylesheet=e("<style>*{ cursor: "+r.cursor+" !important; }</style>").appendTo(n)),r.opacity&&(this.helper.css("opacity")&&(this._storedOpacity=this.helper.css("opacity")),this.helper.css("opacity",r.opacity)),r.zIndex&&(this.helper.css("zIndex")&&(this._storedZIndex=this.helper.css("zIndex")),this.helper.css("zIndex",r.zIndex)),this.scrollParent[0]!==document&&"HTML"!==this.scrollParent[0].tagName&&(this.overflowOffset=this.scrollParent.offset()),this._trigger("start",t,this._uiHash()),this._preserveHelperProportions||this._cacheHelperProportions(),!s)for(a=this.containers.length-1;a>=0;a--)this.containers[a]._trigger("activate",t,this._uiHash(this));return e.ui.ddmanager&&(e.ui.ddmanager.current=this),e.ui.ddmanager&&!r.dropBehaviour&&e.ui.ddmanager.prepareOffsets(this,t),this.dragging=!0,this.helper.addClass("ui-sortable-helper"),this._mouseDrag(t),!0},_mouseDrag:function(t){var i,s,a,n,r=this.options,o=!1;for(this.position=this._generatePosition(t),this.positionAbs=this._convertPositionTo("absolute"),this.lastPositionAbs||(this.lastPositionAbs=this.positionAbs),this.options.scroll&&(this.scrollParent[0]!==document&&"HTML"!==this.scrollParent[0].tagName?(this.overflowOffset.top+this.scrollParent[0].offsetHeight-t.pageY<r.scrollSensitivity?this.scrollParent[0].scrollTop=o=this.scrollParent[0].scrollTop+r.scrollSpeed:t.pageY-this.overflowOffset.top<r.scrollSensitivity&&(this.scrollParent[0].scrollTop=o=this.scrollParent[0].scrollTop-r.scrollSpeed),this.overflowOffset.left+this.scrollParent[0].offsetWidth-t.pageX<r.scrollSensitivity?this.scrollParent[0].scrollLeft=o=this.scrollParent[0].scrollLeft+r.scrollSpeed:t.pageX-this.overflowOffset.left<r.scrollSensitivity&&(this.scrollParent[0].scrollLeft=o=this.scrollParent[0].scrollLeft-r.scrollSpeed)):(t.pageY-e(document).scrollTop()<r.scrollSensitivity?o=e(document).scrollTop(e(document).scrollTop()-r.scrollSpeed):e(window).height()-(t.pageY-e(document).scrollTop())<r.scrollSensitivity&&(o=e(document).scrollTop(e(document).scrollTop()+r.scrollSpeed)),t.pageX-e(document).scrollLeft()<r.scrollSensitivity?o=e(document).scrollLeft(e(document).scrollLeft()-r.scrollSpeed):e(window).width()-(t.pageX-e(document).scrollLeft())<r.scrollSensitivity&&(o=e(document).scrollLeft(e(document).scrollLeft()+r.scrollSpeed))),o!==!1&&e.ui.ddmanager&&!r.dropBehaviour&&e.ui.ddmanager.prepareOffsets(this,t)),this.positionAbs=this._convertPositionTo("absolute"),this.options.axis&&"y"===this.options.axis||(this.helper[0].style.left=this.position.left+"px"),this.options.axis&&"x"===this.options.axis||(this.helper[0].style.top=this.position.top+"px"),i=this.items.length-1;i>=0;i--)if(s=this.items[i],a=s.item[0],n=this._intersectsWithPointer(s),n&&s.instance===this.currentContainer&&a!==this.currentItem[0]&&this.placeholder[1===n?"next":"prev"]()[0]!==a&&!e.contains(this.placeholder[0],a)&&("semi-dynamic"===this.options.type?!e.contains(this.element[0],a):!0)){if(this.direction=1===n?"down":"up","pointer"!==this.options.tolerance&&!this._intersectsWithSides(s))break;this._rearrange(t,s),this._trigger("change",t,this._uiHash());break}return this._contactContainers(t),e.ui.ddmanager&&e.ui.ddmanager.drag(this,t),this._trigger("sort",t,this._uiHash()),this.lastPositionAbs=this.positionAbs,!1},_mouseStop:function(t,i){if(t){if(e.ui.ddmanager&&!this.options.dropBehaviour&&e.ui.ddmanager.drop(this,t),this.options.revert){var s=this,a=this.placeholder.offset(),n=this.options.axis,r={};n&&"x"!==n||(r.left=a.left-this.offset.parent.left-this.margins.left+(this.offsetParent[0]===document.body?0:this.offsetParent[0].scrollLeft)),n&&"y"!==n||(r.top=a.top-this.offset.parent.top-this.margins.top+(this.offsetParent[0]===document.body?0:this.offsetParent[0].scrollTop)),this.reverting=!0,e(this.helper).animate(r,parseInt(this.options.revert,10)||500,function(){s._clear(t)})}else this._clear(t,i);return!1}},cancel:function(){if(this.dragging){this._mouseUp({target:null}),"original"===this.options.helper?this.currentItem.css(this._storedCSS).removeClass("ui-sortable-helper"):this.currentItem.show();for(var t=this.containers.length-1;t>=0;t--)this.containers[t]._trigger("deactivate",null,this._uiHash(this)),this.containers[t].containerCache.over&&(this.containers[t]._trigger("out",null,this._uiHash(this)),this.containers[t].containerCache.over=0)}return this.placeholder&&(this.placeholder[0].parentNode&&this.placeholder[0].parentNode.removeChild(this.placeholder[0]),"original"!==this.options.helper&&this.helper&&this.helper[0].parentNode&&this.helper.remove(),e.extend(this,{helper:null,dragging:!1,reverting:!1,_noFinalSort:null}),this.domPosition.prev?e(this.domPosition.prev).after(this.currentItem):e(this.domPosition.parent).prepend(this.currentItem)),this},serialize:function(t){var i=this._getItemsAsjQuery(t&&t.connected),s=[];return t=t||{},e(i).each(function(){var i=(e(t.item||this).attr(t.attribute||"id")||"").match(t.expression||/(.+)[\-=_](.+)/);i&&s.push((t.key||i[1]+"[]")+"="+(t.key&&t.expression?i[1]:i[2]))}),!s.length&&t.key&&s.push(t.key+"="),s.join("&")},toArray:function(t){var i=this._getItemsAsjQuery(t&&t.connected),s=[];return t=t||{},i.each(function(){s.push(e(t.item||this).attr(t.attribute||"id")||"")}),s},_intersectsWith:function(e){var t=this.positionAbs.left,i=t+this.helperProportions.width,s=this.positionAbs.top,a=s+this.helperProportions.height,n=e.left,r=n+e.width,o=e.top,h=o+e.height,l=this.offset.click.top,u=this.offset.click.left,c="x"===this.options.axis||s+l>o&&h>s+l,d="y"===this.options.axis||t+u>n&&r>t+u,p=c&&d;return"pointer"===this.options.tolerance||this.options.forcePointerForContainers||"pointer"!==this.options.tolerance&&this.helperProportions[this.floating?"width":"height"]>e[this.floating?"width":"height"]?p:t+this.helperProportions.width/2>n&&r>i-this.helperProportions.width/2&&s+this.helperProportions.height/2>o&&h>a-this.helperProportions.height/2},_intersectsWithPointer:function(e){var i="x"===this.options.axis||t(this.positionAbs.top+this.offset.click.top,e.top,e.height),s="y"===this.options.axis||t(this.positionAbs.left+this.offset.click.left,e.left,e.width),a=i&&s,n=this._getDragVerticalDirection(),r=this._getDragHorizontalDirection();return a?this.floating?r&&"right"===r||"down"===n?2:1:n&&("down"===n?2:1):!1},_intersectsWithSides:function(e){var i=t(this.positionAbs.top+this.offset.click.top,e.top+e.height/2,e.height),s=t(this.positionAbs.left+this.offset.click.left,e.left+e.width/2,e.width),a=this._getDragVerticalDirection(),n=this._getDragHorizontalDirection();return this.floating&&n?"right"===n&&s||"left"===n&&!s:a&&("down"===a&&i||"up"===a&&!i)},_getDragVerticalDirection:function(){var e=this.positionAbs.top-this.lastPositionAbs.top;return 0!==e&&(e>0?"down":"up")},_getDragHorizontalDirection:function(){var e=this.positionAbs.left-this.lastPositionAbs.left;return 0!==e&&(e>0?"right":"left")},refresh:function(e){return this._refreshItems(e),this.refreshPositions(),this},_connectWith:function(){var e=this.options;return e.connectWith.constructor===String?[e.connectWith]:e.connectWith},_getItemsAsjQuery:function(t){var i,s,a,n,r=[],o=[],h=this._connectWith();if(h&&t)for(i=h.length-1;i>=0;i--)for(a=e(h[i]),s=a.length-1;s>=0;s--)n=e.data(a[s],this.widgetFullName),n&&n!==this&&!n.options.disabled&&o.push([e.isFunction(n.options.items)?n.options.items.call(n.element):e(n.options.items,n.element).not(".ui-sortable-helper").not(".ui-sortable-placeholder"),n]);for(o.push([e.isFunction(this.options.items)?this.options.items.call(this.element,null,{options:this.options,item:this.currentItem}):e(this.options.items,this.element).not(".ui-sortable-helper").not(".ui-sortable-placeholder"),this]),i=o.length-1;i>=0;i--)o[i][0].each(function(){r.push(this)});return e(r)},_removeCurrentsFromItems:function(){var t=this.currentItem.find(":data("+this.widgetName+"-item)");this.items=e.grep(this.items,function(e){for(var i=0;t.length>i;i++)if(t[i]===e.item[0])return!1;return!0})},_refreshItems:function(t){this.items=[],this.containers=[this];var i,s,a,n,r,o,h,l,u=this.items,c=[[e.isFunction(this.options.items)?this.options.items.call(this.element[0],t,{item:this.currentItem}):e(this.options.items,this.element),this]],d=this._connectWith();if(d&&this.ready)for(i=d.length-1;i>=0;i--)for(a=e(d[i]),s=a.length-1;s>=0;s--)n=e.data(a[s],this.widgetFullName),n&&n!==this&&!n.options.disabled&&(c.push([e.isFunction(n.options.items)?n.options.items.call(n.element[0],t,{item:this.currentItem}):e(n.options.items,n.element),n]),this.containers.push(n));for(i=c.length-1;i>=0;i--)for(r=c[i][1],o=c[i][0],s=0,l=o.length;l>s;s++)h=e(o[s]),h.data(this.widgetName+"-item",r),u.push({item:h,instance:r,width:0,height:0,left:0,top:0})},refreshPositions:function(t){this.offsetParent&&this.helper&&(this.offset.parent=this._getParentOffset());var i,s,a,n;for(i=this.items.length-1;i>=0;i--)s=this.items[i],s.instance!==this.currentContainer&&this.currentContainer&&s.item[0]!==this.currentItem[0]||(a=this.options.toleranceElement?e(this.options.toleranceElement,s.item):s.item,t||(s.width=a.outerWidth(),s.height=a.outerHeight()),n=a.offset(),s.left=n.left,s.top=n.top);if(this.options.custom&&this.options.custom.refreshContainers)this.options.custom.refreshContainers.call(this);else for(i=this.containers.length-1;i>=0;i--)n=this.containers[i].element.offset(),this.containers[i].containerCache.left=n.left,this.containers[i].containerCache.top=n.top,this.containers[i].containerCache.width=this.containers[i].element.outerWidth(),this.containers[i].containerCache.height=this.containers[i].element.outerHeight();return this},_createPlaceholder:function(t){t=t||this;var i,s=t.options;s.placeholder&&s.placeholder.constructor!==String||(i=s.placeholder,s.placeholder={element:function(){var s=t.currentItem[0].nodeName.toLowerCase(),a=e("<"+s+">",t.document[0]).addClass(i||t.currentItem[0].className+" ui-sortable-placeholder").removeClass("ui-sortable-helper");return"tr"===s?t.currentItem.children().each(function(){e("<td>&#160;</td>",t.document[0]).attr("colspan",e(this).attr("colspan")||1).appendTo(a)}):"img"===s&&a.attr("src",t.currentItem.attr("src")),i||a.css("visibility","hidden"),a},update:function(e,a){(!i||s.forcePlaceholderSize)&&(a.height()||a.height(t.currentItem.innerHeight()-parseInt(t.currentItem.css("paddingTop")||0,10)-parseInt(t.currentItem.css("paddingBottom")||0,10)),a.width()||a.width(t.currentItem.innerWidth()-parseInt(t.currentItem.css("paddingLeft")||0,10)-parseInt(t.currentItem.css("paddingRight")||0,10)))}}),t.placeholder=e(s.placeholder.element.call(t.element,t.currentItem)),t.currentItem.after(t.placeholder),s.placeholder.update(t,t.placeholder)},_contactContainers:function(s){var a,n,r,o,h,l,u,c,d,p,f=null,m=null;for(a=this.containers.length-1;a>=0;a--)if(!e.contains(this.currentItem[0],this.containers[a].element[0]))if(this._intersectsWith(this.containers[a].containerCache)){if(f&&e.contains(this.containers[a].element[0],f.element[0]))continue;f=this.containers[a],m=a}else this.containers[a].containerCache.over&&(this.containers[a]._trigger("out",s,this._uiHash(this)),this.containers[a].containerCache.over=0);if(f)if(1===this.containers.length)this.containers[m].containerCache.over||(this.containers[m]._trigger("over",s,this._uiHash(this)),this.containers[m].containerCache.over=1);else{for(r=1e4,o=null,p=f.floating||i(this.currentItem),h=p?"left":"top",l=p?"width":"height",u=this.positionAbs[h]+this.offset.click[h],n=this.items.length-1;n>=0;n--)e.contains(this.containers[m].element[0],this.items[n].item[0])&&this.items[n].item[0]!==this.currentItem[0]&&(!p||t(this.positionAbs.top+this.offset.click.top,this.items[n].top,this.items[n].height))&&(c=this.items[n].item.offset()[h],d=!1,Math.abs(c-u)>Math.abs(c+this.items[n][l]-u)&&(d=!0,c+=this.items[n][l]),r>Math.abs(c-u)&&(r=Math.abs(c-u),o=this.items[n],this.direction=d?"up":"down"));if(!o&&!this.options.dropOnEmpty)return;if(this.currentContainer===this.containers[m])return;o?this._rearrange(s,o,null,!0):this._rearrange(s,null,this.containers[m].element,!0),this._trigger("change",s,this._uiHash()),this.containers[m]._trigger("change",s,this._uiHash(this)),this.currentContainer=this.containers[m],this.options.placeholder.update(this.currentContainer,this.placeholder),this.containers[m]._trigger("over",s,this._uiHash(this)),this.containers[m].containerCache.over=1}},_createHelper:function(t){var i=this.options,s=e.isFunction(i.helper)?e(i.helper.apply(this.element[0],[t,this.currentItem])):"clone"===i.helper?this.currentItem.clone():this.currentItem;return s.parents("body").length||e("parent"!==i.appendTo?i.appendTo:this.currentItem[0].parentNode)[0].appendChild(s[0]),s[0]===this.currentItem[0]&&(this._storedCSS={width:this.currentItem[0].style.width,height:this.currentItem[0].style.height,position:this.currentItem.css("position"),top:this.currentItem.css("top"),left:this.currentItem.css("left")}),(!s[0].style.width||i.forceHelperSize)&&s.width(this.currentItem.width()),(!s[0].style.height||i.forceHelperSize)&&s.height(this.currentItem.height()),s},_adjustOffsetFromHelper:function(t){"string"==typeof t&&(t=t.split(" ")),e.isArray(t)&&(t={left:+t[0],top:+t[1]||0}),"left"in t&&(this.offset.click.left=t.left+this.margins.left),"right"in t&&(this.offset.click.left=this.helperProportions.width-t.right+this.margins.left),"top"in t&&(this.offset.click.top=t.top+this.margins.top),"bottom"in t&&(this.offset.click.top=this.helperProportions.height-t.bottom+this.margins.top)},_getParentOffset:function(){this.offsetParent=this.helper.offsetParent();var t=this.offsetParent.offset();return"absolute"===this.cssPosition&&this.scrollParent[0]!==document&&e.contains(this.scrollParent[0],this.offsetParent[0])&&(t.left+=this.scrollParent.scrollLeft(),t.top+=this.scrollParent.scrollTop()),(this.offsetParent[0]===document.body||this.offsetParent[0].tagName&&"html"===this.offsetParent[0].tagName.toLowerCase()&&e.ui.ie)&&(t={top:0,left:0}),{top:t.top+(parseInt(this.offsetParent.css("borderTopWidth"),10)||0),left:t.left+(parseInt(this.offsetParent.css("borderLeftWidth"),10)||0)}},_getRelativeOffset:function(){if("relative"===this.cssPosition){var e=this.currentItem.position();return{top:e.top-(parseInt(this.helper.css("top"),10)||0)+this.scrollParent.scrollTop(),left:e.left-(parseInt(this.helper.css("left"),10)||0)+this.scrollParent.scrollLeft()}}return{top:0,left:0}},_cacheMargins:function(){this.margins={left:parseInt(this.currentItem.css("marginLeft"),10)||0,top:parseInt(this.currentItem.css("marginTop"),10)||0}},_cacheHelperProportions:function(){this.helperProportions={width:this.helper.outerWidth(),height:this.helper.outerHeight()}},_setContainment:function(){var t,i,s,a=this.options;"parent"===a.containment&&(a.containment=this.helper[0].parentNode),("document"===a.containment||"window"===a.containment)&&(this.containment=[0-this.offset.relative.left-this.offset.parent.left,0-this.offset.relative.top-this.offset.parent.top,e("document"===a.containment?document:window).width()-this.helperProportions.width-this.margins.left,(e("document"===a.containment?document:window).height()||document.body.parentNode.scrollHeight)-this.helperProportions.height-this.margins.top]),/^(document|window|parent)$/.test(a.containment)||(t=e(a.containment)[0],i=e(a.containment).offset(),s="hidden"!==e(t).css("overflow"),this.containment=[i.left+(parseInt(e(t).css("borderLeftWidth"),10)||0)+(parseInt(e(t).css("paddingLeft"),10)||0)-this.margins.left,i.top+(parseInt(e(t).css("borderTopWidth"),10)||0)+(parseInt(e(t).css("paddingTop"),10)||0)-this.margins.top,i.left+(s?Math.max(t.scrollWidth,t.offsetWidth):t.offsetWidth)-(parseInt(e(t).css("borderLeftWidth"),10)||0)-(parseInt(e(t).css("paddingRight"),10)||0)-this.helperProportions.width-this.margins.left,i.top+(s?Math.max(t.scrollHeight,t.offsetHeight):t.offsetHeight)-(parseInt(e(t).css("borderTopWidth"),10)||0)-(parseInt(e(t).css("paddingBottom"),10)||0)-this.helperProportions.height-this.margins.top])},_convertPositionTo:function(t,i){i||(i=this.position);var s="absolute"===t?1:-1,a="absolute"!==this.cssPosition||this.scrollParent[0]!==document&&e.contains(this.scrollParent[0],this.offsetParent[0])?this.scrollParent:this.offsetParent,n=/(html|body)/i.test(a[0].tagName);return{top:i.top+this.offset.relative.top*s+this.offset.parent.top*s-("fixed"===this.cssPosition?-this.scrollParent.scrollTop():n?0:a.scrollTop())*s,left:i.left+this.offset.relative.left*s+this.offset.parent.left*s-("fixed"===this.cssPosition?-this.scrollParent.scrollLeft():n?0:a.scrollLeft())*s}},_generatePosition:function(t){var i,s,a=this.options,n=t.pageX,r=t.pageY,o="absolute"!==this.cssPosition||this.scrollParent[0]!==document&&e.contains(this.scrollParent[0],this.offsetParent[0])?this.scrollParent:this.offsetParent,h=/(html|body)/i.test(o[0].tagName);return"relative"!==this.cssPosition||this.scrollParent[0]!==document&&this.scrollParent[0]!==this.offsetParent[0]||(this.offset.relative=this._getRelativeOffset()),this.originalPosition&&(this.containment&&(t.pageX-this.offset.click.left<this.containment[0]&&(n=this.containment[0]+this.offset.click.left),t.pageY-this.offset.click.top<this.containment[1]&&(r=this.containment[1]+this.offset.click.top),t.pageX-this.offset.click.left>this.containment[2]&&(n=this.containment[2]+this.offset.click.left),t.pageY-this.offset.click.top>this.containment[3]&&(r=this.containment[3]+this.offset.click.top)),a.grid&&(i=this.originalPageY+Math.round((r-this.originalPageY)/a.grid[1])*a.grid[1],r=this.containment?i-this.offset.click.top>=this.containment[1]&&i-this.offset.click.top<=this.containment[3]?i:i-this.offset.click.top>=this.containment[1]?i-a.grid[1]:i+a.grid[1]:i,s=this.originalPageX+Math.round((n-this.originalPageX)/a.grid[0])*a.grid[0],n=this.containment?s-this.offset.click.left>=this.containment[0]&&s-this.offset.click.left<=this.containment[2]?s:s-this.offset.click.left>=this.containment[0]?s-a.grid[0]:s+a.grid[0]:s)),{top:r-this.offset.click.top-this.offset.relative.top-this.offset.parent.top+("fixed"===this.cssPosition?-this.scrollParent.scrollTop():h?0:o.scrollTop()),left:n-this.offset.click.left-this.offset.relative.left-this.offset.parent.left+("fixed"===this.cssPosition?-this.scrollParent.scrollLeft():h?0:o.scrollLeft())}},_rearrange:function(e,t,i,s){i?i[0].appendChild(this.placeholder[0]):t.item[0].parentNode.insertBefore(this.placeholder[0],"down"===this.direction?t.item[0]:t.item[0].nextSibling),this.counter=this.counter?++this.counter:1;var a=this.counter;this._delay(function(){a===this.counter&&this.refreshPositions(!s)})},_clear:function(e,t){this.reverting=!1;var i,s=[];if(!this._noFinalSort&&this.currentItem.parent().length&&this.placeholder.before(this.currentItem),this._noFinalSort=null,this.helper[0]===this.currentItem[0]){for(i in this._storedCSS)("auto"===this._storedCSS[i]||"static"===this._storedCSS[i])&&(this._storedCSS[i]="");this.currentItem.css(this._storedCSS).removeClass("ui-sortable-helper")}else this.currentItem.show();for(this.fromOutside&&!t&&s.push(function(e){this._trigger("receive",e,this._uiHash(this.fromOutside))}),!this.fromOutside&&this.domPosition.prev===this.currentItem.prev().not(".ui-sortable-helper")[0]&&this.domPosition.parent===this.currentItem.parent()[0]||t||s.push(function(e){this._trigger("update",e,this._uiHash())}),this!==this.currentContainer&&(t||(s.push(function(e){this._trigger("remove",e,this._uiHash())}),s.push(function(e){return function(t){e._trigger("receive",t,this._uiHash(this))}}.call(this,this.currentContainer)),s.push(function(e){return function(t){e._trigger("update",t,this._uiHash(this))}}.call(this,this.currentContainer)))),i=this.containers.length-1;i>=0;i--)t||s.push(function(e){return function(t){e._trigger("deactivate",t,this._uiHash(this))}}.call(this,this.containers[i])),this.containers[i].containerCache.over&&(s.push(function(e){return function(t){e._trigger("out",t,this._uiHash(this))}}.call(this,this.containers[i])),this.containers[i].containerCache.over=0);if(this.storedCursor&&(this.document.find("body").css("cursor",this.storedCursor),this.storedStylesheet.remove()),this._storedOpacity&&this.helper.css("opacity",this._storedOpacity),this._storedZIndex&&this.helper.css("zIndex","auto"===this._storedZIndex?"":this._storedZIndex),this.dragging=!1,this.cancelHelperRemoval){if(!t){for(this._trigger("beforeStop",e,this._uiHash()),i=0;s.length>i;i++)s[i].call(this,e);this._trigger("stop",e,this._uiHash())}return this.fromOutside=!1,!1}if(t||this._trigger("beforeStop",e,this._uiHash()),this.placeholder[0].parentNode.removeChild(this.placeholder[0]),this.helper[0]!==this.currentItem[0]&&this.helper.remove(),this.helper=null,!t){for(i=0;s.length>i;i++)s[i].call(this,e);this._trigger("stop",e,this._uiHash())}return this.fromOutside=!1,!0},_trigger:function(){e.Widget.prototype._trigger.apply(this,arguments)===!1&&this.cancel()},_uiHash:function(t){var i=t||this;return{helper:i.helper,placeholder:i.placeholder||e([]),position:i.position,originalPosition:i.originalPosition,offset:i.positionAbs,item:i.currentItem,sender:t?t.element:null}}})})(jQuery);(function(e){var t,i,a,s,n="ui-button ui-widget ui-state-default ui-corner-all",r="ui-state-hover ui-state-active ",o="ui-button-icons-only ui-button-icon-only ui-button-text-icons ui-button-text-icon-primary ui-button-text-icon-secondary ui-button-text-only",h=function(){var t=e(this);setTimeout(function(){t.find(":ui-button").button("refresh")},1)},l=function(t){var i=t.name,a=t.form,s=e([]);return i&&(i=i.replace(/'/g,"\\'"),s=a?e(a).find("[name='"+i+"']"):e("[name='"+i+"']",t.ownerDocument).filter(function(){return!this.form})),s};e.widget("ui.button",{version:"1.10.3",defaultElement:"<button>",options:{disabled:null,text:!0,label:null,icons:{primary:null,secondary:null}},_create:function(){this.element.closest("form").unbind("reset"+this.eventNamespace).bind("reset"+this.eventNamespace,h),"boolean"!=typeof this.options.disabled?this.options.disabled=!!this.element.prop("disabled"):this.element.prop("disabled",this.options.disabled),this._determineButtonType(),this.hasTitle=!!this.buttonElement.attr("title");var r=this,o=this.options,u="checkbox"===this.type||"radio"===this.type,d=u?"":"ui-state-active",c="ui-state-focus";null===o.label&&(o.label="input"===this.type?this.buttonElement.val():this.buttonElement.html()),this._hoverable(this.buttonElement),this.buttonElement.addClass(n).attr("role","button").bind("mouseenter"+this.eventNamespace,function(){o.disabled||this===t&&e(this).addClass("ui-state-active")}).bind("mouseleave"+this.eventNamespace,function(){o.disabled||e(this).removeClass(d)}).bind("click"+this.eventNamespace,function(e){o.disabled&&(e.preventDefault(),e.stopImmediatePropagation())}),this.element.bind("focus"+this.eventNamespace,function(){r.buttonElement.addClass(c)}).bind("blur"+this.eventNamespace,function(){r.buttonElement.removeClass(c)}),u&&(this.element.bind("change"+this.eventNamespace,function(){s||r.refresh()}),this.buttonElement.bind("mousedown"+this.eventNamespace,function(e){o.disabled||(s=!1,i=e.pageX,a=e.pageY)}).bind("mouseup"+this.eventNamespace,function(e){o.disabled||(i!==e.pageX||a!==e.pageY)&&(s=!0)})),"checkbox"===this.type?this.buttonElement.bind("click"+this.eventNamespace,function(){return o.disabled||s?!1:undefined}):"radio"===this.type?this.buttonElement.bind("click"+this.eventNamespace,function(){if(o.disabled||s)return!1;e(this).addClass("ui-state-active"),r.buttonElement.attr("aria-pressed","true");var t=r.element[0];l(t).not(t).map(function(){return e(this).button("widget")[0]}).removeClass("ui-state-active").attr("aria-pressed","false")}):(this.buttonElement.bind("mousedown"+this.eventNamespace,function(){return o.disabled?!1:(e(this).addClass("ui-state-active"),t=this,r.document.one("mouseup",function(){t=null}),undefined)}).bind("mouseup"+this.eventNamespace,function(){return o.disabled?!1:(e(this).removeClass("ui-state-active"),undefined)}).bind("keydown"+this.eventNamespace,function(t){return o.disabled?!1:((t.keyCode===e.ui.keyCode.SPACE||t.keyCode===e.ui.keyCode.ENTER)&&e(this).addClass("ui-state-active"),undefined)}).bind("keyup"+this.eventNamespace+" blur"+this.eventNamespace,function(){e(this).removeClass("ui-state-active")}),this.buttonElement.is("a")&&this.buttonElement.keyup(function(t){t.keyCode===e.ui.keyCode.SPACE&&e(this).click()})),this._setOption("disabled",o.disabled),this._resetButton()},_determineButtonType:function(){var e,t,i;this.type=this.element.is("[type=checkbox]")?"checkbox":this.element.is("[type=radio]")?"radio":this.element.is("input")?"input":"button","checkbox"===this.type||"radio"===this.type?(e=this.element.parents().last(),t="label[for='"+this.element.attr("id")+"']",this.buttonElement=e.find(t),this.buttonElement.length||(e=e.length?e.siblings():this.element.siblings(),this.buttonElement=e.filter(t),this.buttonElement.length||(this.buttonElement=e.find(t))),this.element.addClass("ui-helper-hidden-accessible"),i=this.element.is(":checked"),i&&this.buttonElement.addClass("ui-state-active"),this.buttonElement.prop("aria-pressed",i)):this.buttonElement=this.element},widget:function(){return this.buttonElement},_destroy:function(){this.element.removeClass("ui-helper-hidden-accessible"),this.buttonElement.removeClass(n+" "+r+" "+o).removeAttr("role").removeAttr("aria-pressed").html(this.buttonElement.find(".ui-button-text").html()),this.hasTitle||this.buttonElement.removeAttr("title")},_setOption:function(e,t){return this._super(e,t),"disabled"===e?(t?this.element.prop("disabled",!0):this.element.prop("disabled",!1),undefined):(this._resetButton(),undefined)},refresh:function(){var t=this.element.is("input, button")?this.element.is(":disabled"):this.element.hasClass("ui-button-disabled");t!==this.options.disabled&&this._setOption("disabled",t),"radio"===this.type?l(this.element[0]).each(function(){e(this).is(":checked")?e(this).button("widget").addClass("ui-state-active").attr("aria-pressed","true"):e(this).button("widget").removeClass("ui-state-active").attr("aria-pressed","false")}):"checkbox"===this.type&&(this.element.is(":checked")?this.buttonElement.addClass("ui-state-active").attr("aria-pressed","true"):this.buttonElement.removeClass("ui-state-active").attr("aria-pressed","false"))},_resetButton:function(){if("input"===this.type)return this.options.label&&this.element.val(this.options.label),undefined;var t=this.buttonElement.removeClass(o),i=e("<span></span>",this.document[0]).addClass("ui-button-text").html(this.options.label).appendTo(t.empty()).text(),a=this.options.icons,s=a.primary&&a.secondary,n=[];a.primary||a.secondary?(this.options.text&&n.push("ui-button-text-icon"+(s?"s":a.primary?"-primary":"-secondary")),a.primary&&t.prepend("<span class='ui-button-icon-primary ui-icon "+a.primary+"'></span>"),a.secondary&&t.append("<span class='ui-button-icon-secondary ui-icon "+a.secondary+"'></span>"),this.options.text||(n.push(s?"ui-button-icons-only":"ui-button-icon-only"),this.hasTitle||t.attr("title",e.trim(i)))):n.push("ui-button-text-only"),t.addClass(n.join(" "))}}),e.widget("ui.buttonset",{version:"1.10.3",options:{items:"button, input[type=button], input[type=submit], input[type=reset], input[type=checkbox], input[type=radio], a, :data(ui-button)"},_create:function(){this.element.addClass("ui-buttonset")},_init:function(){this.refresh()},_setOption:function(e,t){"disabled"===e&&this.buttons.button("option",e,t),this._super(e,t)},refresh:function(){var t="rtl"===this.element.css("direction");this.buttons=this.element.find(this.options.items).filter(":ui-button").button("refresh").end().not(":ui-button").button().end().map(function(){return e(this).button("widget")[0]}).removeClass("ui-corner-all ui-corner-left ui-corner-right").filter(":first").addClass(t?"ui-corner-right":"ui-corner-left").end().filter(":last").addClass(t?"ui-corner-left":"ui-corner-right").end().end()},_destroy:function(){this.element.removeClass("ui-buttonset"),this.buttons.map(function(){return e(this).button("widget")[0]}).removeClass("ui-corner-left ui-corner-right").end().button("destroy")}})})(jQuery);(function(e){var t={buttons:!0,height:!0,maxHeight:!0,maxWidth:!0,minHeight:!0,minWidth:!0,width:!0},i={maxHeight:!0,maxWidth:!0,minHeight:!0,minWidth:!0};e.widget("ui.dialog",{version:"1.10.3",options:{appendTo:"body",autoOpen:!0,buttons:[],closeOnEscape:!0,closeText:"close",dialogClass:"",draggable:!0,hide:null,height:"auto",maxHeight:null,maxWidth:null,minHeight:150,minWidth:150,modal:!1,position:{my:"center",at:"center",of:window,collision:"fit",using:function(t){var i=e(this).css(t).offset().top;0>i&&e(this).css("top",t.top-i)}},resizable:!0,show:null,title:null,width:300,beforeClose:null,close:null,drag:null,dragStart:null,dragStop:null,focus:null,open:null,resize:null,resizeStart:null,resizeStop:null},_create:function(){this.originalCss={display:this.element[0].style.display,width:this.element[0].style.width,minHeight:this.element[0].style.minHeight,maxHeight:this.element[0].style.maxHeight,height:this.element[0].style.height},this.originalPosition={parent:this.element.parent(),index:this.element.parent().children().index(this.element)},this.originalTitle=this.element.attr("title"),this.options.title=this.options.title||this.originalTitle,this._createWrapper(),this.element.show().removeAttr("title").addClass("ui-dialog-content ui-widget-content").appendTo(this.uiDialog),this._createTitlebar(),this._createButtonPane(),this.options.draggable&&e.fn.draggable&&this._makeDraggable(),this.options.resizable&&e.fn.resizable&&this._makeResizable(),this._isOpen=!1},_init:function(){this.options.autoOpen&&this.open()},_appendTo:function(){var t=this.options.appendTo;return t&&(t.jquery||t.nodeType)?e(t):this.document.find(t||"body").eq(0)},_destroy:function(){var e,t=this.originalPosition;this._destroyOverlay(),this.element.removeUniqueId().removeClass("ui-dialog-content ui-widget-content").css(this.originalCss).detach(),this.uiDialog.stop(!0,!0).remove(),this.originalTitle&&this.element.attr("title",this.originalTitle),e=t.parent.children().eq(t.index),e.length&&e[0]!==this.element[0]?e.before(this.element):t.parent.append(this.element)},widget:function(){return this.uiDialog},disable:e.noop,enable:e.noop,close:function(t){var i=this;this._isOpen&&this._trigger("beforeClose",t)!==!1&&(this._isOpen=!1,this._destroyOverlay(),this.opener.filter(":focusable").focus().length||e(this.document[0].activeElement).blur(),this._hide(this.uiDialog,this.options.hide,function(){i._trigger("close",t)}))},isOpen:function(){return this._isOpen},moveToTop:function(){this._moveToTop()},_moveToTop:function(e,t){var i=!!this.uiDialog.nextAll(":visible").insertBefore(this.uiDialog).length;return i&&!t&&this._trigger("focus",e),i},open:function(){var t=this;return this._isOpen?(this._moveToTop()&&this._focusTabbable(),undefined):(this._isOpen=!0,this.opener=e(this.document[0].activeElement),this._size(),this._position(),this._createOverlay(),this._moveToTop(null,!0),this._show(this.uiDialog,this.options.show,function(){t._focusTabbable(),t._trigger("focus")}),this._trigger("open"),undefined)},_focusTabbable:function(){var e=this.element.find("[autofocus]");e.length||(e=this.element.find(":tabbable")),e.length||(e=this.uiDialogButtonPane.find(":tabbable")),e.length||(e=this.uiDialogTitlebarClose.filter(":tabbable")),e.length||(e=this.uiDialog),e.eq(0).focus()},_keepFocus:function(t){function i(){var t=this.document[0].activeElement,i=this.uiDialog[0]===t||e.contains(this.uiDialog[0],t);i||this._focusTabbable()}t.preventDefault(),i.call(this),this._delay(i)},_createWrapper:function(){this.uiDialog=e("<div>").addClass("ui-dialog ui-widget ui-widget-content ui-corner-all ui-front "+this.options.dialogClass).hide().attr({tabIndex:-1,role:"dialog"}).appendTo(this._appendTo()),this._on(this.uiDialog,{keydown:function(t){if(this.options.closeOnEscape&&!t.isDefaultPrevented()&&t.keyCode&&t.keyCode===e.ui.keyCode.ESCAPE)return t.preventDefault(),this.close(t),undefined;if(t.keyCode===e.ui.keyCode.TAB){var i=this.uiDialog.find(":tabbable"),a=i.filter(":first"),s=i.filter(":last");t.target!==s[0]&&t.target!==this.uiDialog[0]||t.shiftKey?t.target!==a[0]&&t.target!==this.uiDialog[0]||!t.shiftKey||(s.focus(1),t.preventDefault()):(a.focus(1),t.preventDefault())}},mousedown:function(e){this._moveToTop(e)&&this._focusTabbable()}}),this.element.find("[aria-describedby]").length||this.uiDialog.attr({"aria-describedby":this.element.uniqueId().attr("id")})},_createTitlebar:function(){var t;this.uiDialogTitlebar=e("<div>").addClass("ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix").prependTo(this.uiDialog),this._on(this.uiDialogTitlebar,{mousedown:function(t){e(t.target).closest(".ui-dialog-titlebar-close")||this.uiDialog.focus()}}),this.uiDialogTitlebarClose=e("<button></button>").button({label:this.options.closeText,icons:{primary:"ui-icon-closethick"},text:!1}).addClass("ui-dialog-titlebar-close").appendTo(this.uiDialogTitlebar),this._on(this.uiDialogTitlebarClose,{click:function(e){e.preventDefault(),this.close(e)}}),t=e("<span>").uniqueId().addClass("ui-dialog-title").prependTo(this.uiDialogTitlebar),this._title(t),this.uiDialog.attr({"aria-labelledby":t.attr("id")})},_title:function(e){this.options.title||e.html("&#160;"),e.text(this.options.title)},_createButtonPane:function(){this.uiDialogButtonPane=e("<div>").addClass("ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"),this.uiButtonSet=e("<div>").addClass("ui-dialog-buttonset").appendTo(this.uiDialogButtonPane),this._createButtons()},_createButtons:function(){var t=this,i=this.options.buttons;return this.uiDialogButtonPane.remove(),this.uiButtonSet.empty(),e.isEmptyObject(i)||e.isArray(i)&&!i.length?(this.uiDialog.removeClass("ui-dialog-buttons"),undefined):(e.each(i,function(i,a){var s,n;a=e.isFunction(a)?{click:a,text:i}:a,a=e.extend({type:"button"},a),s=a.click,a.click=function(){s.apply(t.element[0],arguments)},n={icons:a.icons,text:a.showText},delete a.icons,delete a.showText,e("<button></button>",a).button(n).appendTo(t.uiButtonSet)}),this.uiDialog.addClass("ui-dialog-buttons"),this.uiDialogButtonPane.appendTo(this.uiDialog),undefined)},_makeDraggable:function(){function t(e){return{position:e.position,offset:e.offset}}var i=this,a=this.options;this.uiDialog.draggable({cancel:".ui-dialog-content, .ui-dialog-titlebar-close",handle:".ui-dialog-titlebar",containment:"document",start:function(a,s){e(this).addClass("ui-dialog-dragging"),i._blockFrames(),i._trigger("dragStart",a,t(s))},drag:function(e,a){i._trigger("drag",e,t(a))},stop:function(s,n){a.position=[n.position.left-i.document.scrollLeft(),n.position.top-i.document.scrollTop()],e(this).removeClass("ui-dialog-dragging"),i._unblockFrames(),i._trigger("dragStop",s,t(n))}})},_makeResizable:function(){function t(e){return{originalPosition:e.originalPosition,originalSize:e.originalSize,position:e.position,size:e.size}}var i=this,a=this.options,s=a.resizable,n=this.uiDialog.css("position"),r="string"==typeof s?s:"n,e,s,w,se,sw,ne,nw";this.uiDialog.resizable({cancel:".ui-dialog-content",containment:"document",alsoResize:this.element,maxWidth:a.maxWidth,maxHeight:a.maxHeight,minWidth:a.minWidth,minHeight:this._minHeight(),handles:r,start:function(a,s){e(this).addClass("ui-dialog-resizing"),i._blockFrames(),i._trigger("resizeStart",a,t(s))},resize:function(e,a){i._trigger("resize",e,t(a))},stop:function(s,n){a.height=e(this).height(),a.width=e(this).width(),e(this).removeClass("ui-dialog-resizing"),i._unblockFrames(),i._trigger("resizeStop",s,t(n))}}).css("position",n)},_minHeight:function(){var e=this.options;return"auto"===e.height?e.minHeight:Math.min(e.minHeight,e.height)},_position:function(){var e=this.uiDialog.is(":visible");e||this.uiDialog.show(),this.uiDialog.position(this.options.position),e||this.uiDialog.hide()},_setOptions:function(a){var s=this,n=!1,r={};e.each(a,function(e,a){s._setOption(e,a),e in t&&(n=!0),e in i&&(r[e]=a)}),n&&(this._size(),this._position()),this.uiDialog.is(":data(ui-resizable)")&&this.uiDialog.resizable("option",r)},_setOption:function(e,t){var i,a,s=this.uiDialog;"dialogClass"===e&&s.removeClass(this.options.dialogClass).addClass(t),"disabled"!==e&&(this._super(e,t),"appendTo"===e&&this.uiDialog.appendTo(this._appendTo()),"buttons"===e&&this._createButtons(),"closeText"===e&&this.uiDialogTitlebarClose.button({label:""+t}),"draggable"===e&&(i=s.is(":data(ui-draggable)"),i&&!t&&s.draggable("destroy"),!i&&t&&this._makeDraggable()),"position"===e&&this._position(),"resizable"===e&&(a=s.is(":data(ui-resizable)"),a&&!t&&s.resizable("destroy"),a&&"string"==typeof t&&s.resizable("option","handles",t),a||t===!1||this._makeResizable()),"title"===e&&this._title(this.uiDialogTitlebar.find(".ui-dialog-title")))},_size:function(){var e,t,i,a=this.options;this.element.show().css({width:"auto",minHeight:0,maxHeight:"none",height:0}),a.minWidth>a.width&&(a.width=a.minWidth),e=this.uiDialog.css({height:"auto",width:a.width}).outerHeight(),t=Math.max(0,a.minHeight-e),i="number"==typeof a.maxHeight?Math.max(0,a.maxHeight-e):"none","auto"===a.height?this.element.css({minHeight:t,maxHeight:i,height:"auto"}):this.element.height(Math.max(0,a.height-e)),this.uiDialog.is(":data(ui-resizable)")&&this.uiDialog.resizable("option","minHeight",this._minHeight())},_blockFrames:function(){this.iframeBlocks=this.document.find("iframe").map(function(){var t=e(this);return e("<div>").css({position:"absolute",width:t.outerWidth(),height:t.outerHeight()}).appendTo(t.parent()).offset(t.offset())[0]})},_unblockFrames:function(){this.iframeBlocks&&(this.iframeBlocks.remove(),delete this.iframeBlocks)},_allowInteraction:function(t){return e(t.target).closest(".ui-dialog").length?!0:!!e(t.target).closest(".ui-datepicker").length},_createOverlay:function(){if(this.options.modal){var t=this,i=this.widgetFullName;e.ui.dialog.overlayInstances||this._delay(function(){e.ui.dialog.overlayInstances&&this.document.bind("focusin.dialog",function(a){t._allowInteraction(a)||(a.preventDefault(),e(".ui-dialog:visible:last .ui-dialog-content").data(i)._focusTabbable())})}),this.overlay=e("<div>").addClass("ui-widget-overlay ui-front").appendTo(this._appendTo()),this._on(this.overlay,{mousedown:"_keepFocus"}),e.ui.dialog.overlayInstances++}},_destroyOverlay:function(){this.options.modal&&this.overlay&&(e.ui.dialog.overlayInstances--,e.ui.dialog.overlayInstances||this.document.unbind("focusin.dialog"),this.overlay.remove(),this.overlay=null)}}),e.ui.dialog.overlayInstances=0,e.uiBackCompat!==!1&&e.widget("ui.dialog",e.ui.dialog,{_position:function(){var t,i=this.options.position,a=[],s=[0,0];i?(("string"==typeof i||"object"==typeof i&&"0"in i)&&(a=i.split?i.split(" "):[i[0],i[1]],1===a.length&&(a[1]=a[0]),e.each(["left","top"],function(e,t){+a[e]===a[e]&&(s[e]=a[e],a[e]=t)}),i={my:a[0]+(0>s[0]?s[0]:"+"+s[0])+" "+a[1]+(0>s[1]?s[1]:"+"+s[1]),at:a.join(" ")}),i=e.extend({},e.ui.dialog.prototype.options.position,i)):i=e.ui.dialog.prototype.options.position,t=this.uiDialog.is(":visible"),t||this.uiDialog.show(),this.uiDialog.position(i),t||this.uiDialog.hide()}})})(jQuery);(function(e,t){e.widget("ui.progressbar",{version:"1.10.3",options:{max:100,value:0,change:null,complete:null},min:0,_create:function(){this.oldValue=this.options.value=this._constrainedValue(),this.element.addClass("ui-progressbar ui-widget ui-widget-content ui-corner-all").attr({role:"progressbar","aria-valuemin":this.min}),this.valueDiv=e("<div class='ui-progressbar-value ui-widget-header ui-corner-left'></div>").appendTo(this.element),this._refreshValue()},_destroy:function(){this.element.removeClass("ui-progressbar ui-widget ui-widget-content ui-corner-all").removeAttr("role").removeAttr("aria-valuemin").removeAttr("aria-valuemax").removeAttr("aria-valuenow"),this.valueDiv.remove()},value:function(e){return e===t?this.options.value:(this.options.value=this._constrainedValue(e),this._refreshValue(),t)},_constrainedValue:function(e){return e===t&&(e=this.options.value),this.indeterminate=e===!1,"number"!=typeof e&&(e=0),this.indeterminate?!1:Math.min(this.options.max,Math.max(this.min,e))},_setOptions:function(e){var t=e.value;delete e.value,this._super(e),this.options.value=this._constrainedValue(t),this._refreshValue()},_setOption:function(e,t){"max"===e&&(t=Math.max(this.min,t)),this._super(e,t)},_percentage:function(){return this.indeterminate?100:100*(this.options.value-this.min)/(this.options.max-this.min)},_refreshValue:function(){var t=this.options.value,i=this._percentage();this.valueDiv.toggle(this.indeterminate||t>this.min).toggleClass("ui-corner-right",t===this.options.max).width(i.toFixed(0)+"%"),this.element.toggleClass("ui-progressbar-indeterminate",this.indeterminate),this.indeterminate?(this.element.removeAttr("aria-valuenow"),this.overlayDiv||(this.overlayDiv=e("<div class='ui-progressbar-overlay'></div>").appendTo(this.valueDiv))):(this.element.attr({"aria-valuemax":this.options.max,"aria-valuenow":t}),this.overlayDiv&&(this.overlayDiv.remove(),this.overlayDiv=null)),this.oldValue!==t&&(this.oldValue=t,this._trigger("change")),t===this.options.max&&this._trigger("complete")}})})(jQuery);(function(e){var t=5;e.widget("ui.slider",e.ui.mouse,{version:"1.10.3",widgetEventPrefix:"slide",options:{animate:!1,distance:0,max:100,min:0,orientation:"horizontal",range:!1,step:1,value:0,values:null,change:null,slide:null,start:null,stop:null},_create:function(){this._keySliding=!1,this._mouseSliding=!1,this._animateOff=!0,this._handleIndex=null,this._detectOrientation(),this._mouseInit(),this.element.addClass("ui-slider ui-slider-"+this.orientation+" ui-widget"+" ui-widget-content"+" ui-corner-all"),this._refresh(),this._setOption("disabled",this.options.disabled),this._animateOff=!1},_refresh:function(){this._createRange(),this._createHandles(),this._setupEvents(),this._refreshValue()},_createHandles:function(){var t,i,s=this.options,a=this.element.find(".ui-slider-handle").addClass("ui-state-default ui-corner-all"),n="<a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>",r=[];for(i=s.values&&s.values.length||1,a.length>i&&(a.slice(i).remove(),a=a.slice(0,i)),t=a.length;i>t;t++)r.push(n);this.handles=a.add(e(r.join("")).appendTo(this.element)),this.handle=this.handles.eq(0),this.handles.each(function(t){e(this).data("ui-slider-handle-index",t)})},_createRange:function(){var t=this.options,i="";t.range?(t.range===!0&&(t.values?t.values.length&&2!==t.values.length?t.values=[t.values[0],t.values[0]]:e.isArray(t.values)&&(t.values=t.values.slice(0)):t.values=[this._valueMin(),this._valueMin()]),this.range&&this.range.length?this.range.removeClass("ui-slider-range-min ui-slider-range-max").css({left:"",bottom:""}):(this.range=e("<div></div>").appendTo(this.element),i="ui-slider-range ui-widget-header ui-corner-all"),this.range.addClass(i+("min"===t.range||"max"===t.range?" ui-slider-range-"+t.range:""))):this.range=e([])},_setupEvents:function(){var e=this.handles.add(this.range).filter("a");this._off(e),this._on(e,this._handleEvents),this._hoverable(e),this._focusable(e)},_destroy:function(){this.handles.remove(),this.range.remove(),this.element.removeClass("ui-slider ui-slider-horizontal ui-slider-vertical ui-widget ui-widget-content ui-corner-all"),this._mouseDestroy()},_mouseCapture:function(t){var i,s,a,n,r,o,h,l,u=this,c=this.options;return c.disabled?!1:(this.elementSize={width:this.element.outerWidth(),height:this.element.outerHeight()},this.elementOffset=this.element.offset(),i={x:t.pageX,y:t.pageY},s=this._normValueFromMouse(i),a=this._valueMax()-this._valueMin()+1,this.handles.each(function(t){var i=Math.abs(s-u.values(t));(a>i||a===i&&(t===u._lastChangedValue||u.values(t)===c.min))&&(a=i,n=e(this),r=t)}),o=this._start(t,r),o===!1?!1:(this._mouseSliding=!0,this._handleIndex=r,n.addClass("ui-state-active").focus(),h=n.offset(),l=!e(t.target).parents().addBack().is(".ui-slider-handle"),this._clickOffset=l?{left:0,top:0}:{left:t.pageX-h.left-n.width()/2,top:t.pageY-h.top-n.height()/2-(parseInt(n.css("borderTopWidth"),10)||0)-(parseInt(n.css("borderBottomWidth"),10)||0)+(parseInt(n.css("marginTop"),10)||0)},this.handles.hasClass("ui-state-hover")||this._slide(t,r,s),this._animateOff=!0,!0))},_mouseStart:function(){return!0},_mouseDrag:function(e){var t={x:e.pageX,y:e.pageY},i=this._normValueFromMouse(t);return this._slide(e,this._handleIndex,i),!1},_mouseStop:function(e){return this.handles.removeClass("ui-state-active"),this._mouseSliding=!1,this._stop(e,this._handleIndex),this._change(e,this._handleIndex),this._handleIndex=null,this._clickOffset=null,this._animateOff=!1,!1},_detectOrientation:function(){this.orientation="vertical"===this.options.orientation?"vertical":"horizontal"},_normValueFromMouse:function(e){var t,i,s,a,n;return"horizontal"===this.orientation?(t=this.elementSize.width,i=e.x-this.elementOffset.left-(this._clickOffset?this._clickOffset.left:0)):(t=this.elementSize.height,i=e.y-this.elementOffset.top-(this._clickOffset?this._clickOffset.top:0)),s=i/t,s>1&&(s=1),0>s&&(s=0),"vertical"===this.orientation&&(s=1-s),a=this._valueMax()-this._valueMin(),n=this._valueMin()+s*a,this._trimAlignValue(n)},_start:function(e,t){var i={handle:this.handles[t],value:this.value()};return this.options.values&&this.options.values.length&&(i.value=this.values(t),i.values=this.values()),this._trigger("start",e,i)},_slide:function(e,t,i){var s,a,n;this.options.values&&this.options.values.length?(s=this.values(t?0:1),2===this.options.values.length&&this.options.range===!0&&(0===t&&i>s||1===t&&s>i)&&(i=s),i!==this.values(t)&&(a=this.values(),a[t]=i,n=this._trigger("slide",e,{handle:this.handles[t],value:i,values:a}),s=this.values(t?0:1),n!==!1&&this.values(t,i,!0))):i!==this.value()&&(n=this._trigger("slide",e,{handle:this.handles[t],value:i}),n!==!1&&this.value(i))},_stop:function(e,t){var i={handle:this.handles[t],value:this.value()};this.options.values&&this.options.values.length&&(i.value=this.values(t),i.values=this.values()),this._trigger("stop",e,i)},_change:function(e,t){if(!this._keySliding&&!this._mouseSliding){var i={handle:this.handles[t],value:this.value()};this.options.values&&this.options.values.length&&(i.value=this.values(t),i.values=this.values()),this._lastChangedValue=t,this._trigger("change",e,i)}},value:function(e){return arguments.length?(this.options.value=this._trimAlignValue(e),this._refreshValue(),this._change(null,0),undefined):this._value()},values:function(t,i){var s,a,n;if(arguments.length>1)return this.options.values[t]=this._trimAlignValue(i),this._refreshValue(),this._change(null,t),undefined;if(!arguments.length)return this._values();if(!e.isArray(arguments[0]))return this.options.values&&this.options.values.length?this._values(t):this.value();for(s=this.options.values,a=arguments[0],n=0;s.length>n;n+=1)s[n]=this._trimAlignValue(a[n]),this._change(null,n);this._refreshValue()},_setOption:function(t,i){var s,a=0;switch("range"===t&&this.options.range===!0&&("min"===i?(this.options.value=this._values(0),this.options.values=null):"max"===i&&(this.options.value=this._values(this.options.values.length-1),this.options.values=null)),e.isArray(this.options.values)&&(a=this.options.values.length),e.Widget.prototype._setOption.apply(this,arguments),t){case"orientation":this._detectOrientation(),this.element.removeClass("ui-slider-horizontal ui-slider-vertical").addClass("ui-slider-"+this.orientation),this._refreshValue();break;case"value":this._animateOff=!0,this._refreshValue(),this._change(null,0),this._animateOff=!1;break;case"values":for(this._animateOff=!0,this._refreshValue(),s=0;a>s;s+=1)this._change(null,s);this._animateOff=!1;break;case"min":case"max":this._animateOff=!0,this._refreshValue(),this._animateOff=!1;break;case"range":this._animateOff=!0,this._refresh(),this._animateOff=!1}},_value:function(){var e=this.options.value;return e=this._trimAlignValue(e)},_values:function(e){var t,i,s;if(arguments.length)return t=this.options.values[e],t=this._trimAlignValue(t);if(this.options.values&&this.options.values.length){for(i=this.options.values.slice(),s=0;i.length>s;s+=1)i[s]=this._trimAlignValue(i[s]);return i}return[]},_trimAlignValue:function(e){if(this._valueMin()>=e)return this._valueMin();if(e>=this._valueMax())return this._valueMax();var t=this.options.step>0?this.options.step:1,i=(e-this._valueMin())%t,s=e-i;return 2*Math.abs(i)>=t&&(s+=i>0?t:-t),parseFloat(s.toFixed(5))},_valueMin:function(){return this.options.min},_valueMax:function(){return this.options.max},_refreshValue:function(){var t,i,s,a,n,r=this.options.range,o=this.options,h=this,l=this._animateOff?!1:o.animate,u={};this.options.values&&this.options.values.length?this.handles.each(function(s){i=100*((h.values(s)-h._valueMin())/(h._valueMax()-h._valueMin())),u["horizontal"===h.orientation?"left":"bottom"]=i+"%",e(this).stop(1,1)[l?"animate":"css"](u,o.animate),h.options.range===!0&&("horizontal"===h.orientation?(0===s&&h.range.stop(1,1)[l?"animate":"css"]({left:i+"%"},o.animate),1===s&&h.range[l?"animate":"css"]({width:i-t+"%"},{queue:!1,duration:o.animate})):(0===s&&h.range.stop(1,1)[l?"animate":"css"]({bottom:i+"%"},o.animate),1===s&&h.range[l?"animate":"css"]({height:i-t+"%"},{queue:!1,duration:o.animate}))),t=i}):(s=this.value(),a=this._valueMin(),n=this._valueMax(),i=n!==a?100*((s-a)/(n-a)):0,u["horizontal"===this.orientation?"left":"bottom"]=i+"%",this.handle.stop(1,1)[l?"animate":"css"](u,o.animate),"min"===r&&"horizontal"===this.orientation&&this.range.stop(1,1)[l?"animate":"css"]({width:i+"%"},o.animate),"max"===r&&"horizontal"===this.orientation&&this.range[l?"animate":"css"]({width:100-i+"%"},{queue:!1,duration:o.animate}),"min"===r&&"vertical"===this.orientation&&this.range.stop(1,1)[l?"animate":"css"]({height:i+"%"},o.animate),"max"===r&&"vertical"===this.orientation&&this.range[l?"animate":"css"]({height:100-i+"%"},{queue:!1,duration:o.animate}))},_handleEvents:{keydown:function(i){var s,a,n,r,o=e(i.target).data("ui-slider-handle-index");switch(i.keyCode){case e.ui.keyCode.HOME:case e.ui.keyCode.END:case e.ui.keyCode.PAGE_UP:case e.ui.keyCode.PAGE_DOWN:case e.ui.keyCode.UP:case e.ui.keyCode.RIGHT:case e.ui.keyCode.DOWN:case e.ui.keyCode.LEFT:if(i.preventDefault(),!this._keySliding&&(this._keySliding=!0,e(i.target).addClass("ui-state-active"),s=this._start(i,o),s===!1))return}switch(r=this.options.step,a=n=this.options.values&&this.options.values.length?this.values(o):this.value(),i.keyCode){case e.ui.keyCode.HOME:n=this._valueMin();break;case e.ui.keyCode.END:n=this._valueMax();break;case e.ui.keyCode.PAGE_UP:n=this._trimAlignValue(a+(this._valueMax()-this._valueMin())/t);break;case e.ui.keyCode.PAGE_DOWN:n=this._trimAlignValue(a-(this._valueMax()-this._valueMin())/t);break;case e.ui.keyCode.UP:case e.ui.keyCode.RIGHT:if(a===this._valueMax())return;n=this._trimAlignValue(a+r);break;case e.ui.keyCode.DOWN:case e.ui.keyCode.LEFT:if(a===this._valueMin())return;n=this._trimAlignValue(a-r)}this._slide(i,o,n)},click:function(e){e.preventDefault()},keyup:function(t){var i=e(t.target).data("ui-slider-handle-index");this._keySliding&&(this._keySliding=!1,this._stop(t,i),this._change(t,i),e(t.target).removeClass("ui-state-active"))}}})})(jQuery);(function(e,t){function i(){return++a}function s(e){return e.hash.length>1&&decodeURIComponent(e.href.replace(n,""))===decodeURIComponent(location.href.replace(n,""))}var a=0,n=/#.*$/;e.widget("ui.tabs",{version:"1.10.3",delay:300,options:{active:null,collapsible:!1,event:"click",heightStyle:"content",hide:null,show:null,activate:null,beforeActivate:null,beforeLoad:null,load:null},_create:function(){var t=this,i=this.options;this.running=!1,this.element.addClass("ui-tabs ui-widget ui-widget-content ui-corner-all").toggleClass("ui-tabs-collapsible",i.collapsible).delegate(".ui-tabs-nav > li","mousedown"+this.eventNamespace,function(t){e(this).is(".ui-state-disabled")&&t.preventDefault()}).delegate(".ui-tabs-anchor","focus"+this.eventNamespace,function(){e(this).closest("li").is(".ui-state-disabled")&&this.blur()}),this._processTabs(),i.active=this._initialActive(),e.isArray(i.disabled)&&(i.disabled=e.unique(i.disabled.concat(e.map(this.tabs.filter(".ui-state-disabled"),function(e){return t.tabs.index(e)}))).sort()),this.active=this.options.active!==!1&&this.anchors.length?this._findActive(i.active):e(),this._refresh(),this.active.length&&this.load(i.active)},_initialActive:function(){var i=this.options.active,s=this.options.collapsible,a=location.hash.substring(1);return null===i&&(a&&this.tabs.each(function(s,n){return e(n).attr("aria-controls")===a?(i=s,!1):t}),null===i&&(i=this.tabs.index(this.tabs.filter(".ui-tabs-active"))),(null===i||-1===i)&&(i=this.tabs.length?0:!1)),i!==!1&&(i=this.tabs.index(this.tabs.eq(i)),-1===i&&(i=s?!1:0)),!s&&i===!1&&this.anchors.length&&(i=0),i},_getCreateEventData:function(){return{tab:this.active,panel:this.active.length?this._getPanelForTab(this.active):e()}},_tabKeydown:function(i){var s=e(this.document[0].activeElement).closest("li"),a=this.tabs.index(s),n=!0;if(!this._handlePageNav(i)){switch(i.keyCode){case e.ui.keyCode.RIGHT:case e.ui.keyCode.DOWN:a++;break;case e.ui.keyCode.UP:case e.ui.keyCode.LEFT:n=!1,a--;break;case e.ui.keyCode.END:a=this.anchors.length-1;break;case e.ui.keyCode.HOME:a=0;break;case e.ui.keyCode.SPACE:return i.preventDefault(),clearTimeout(this.activating),this._activate(a),t;case e.ui.keyCode.ENTER:return i.preventDefault(),clearTimeout(this.activating),this._activate(a===this.options.active?!1:a),t;default:return}i.preventDefault(),clearTimeout(this.activating),a=this._focusNextTab(a,n),i.ctrlKey||(s.attr("aria-selected","false"),this.tabs.eq(a).attr("aria-selected","true"),this.activating=this._delay(function(){this.option("active",a)},this.delay))}},_panelKeydown:function(t){this._handlePageNav(t)||t.ctrlKey&&t.keyCode===e.ui.keyCode.UP&&(t.preventDefault(),this.active.focus())},_handlePageNav:function(i){return i.altKey&&i.keyCode===e.ui.keyCode.PAGE_UP?(this._activate(this._focusNextTab(this.options.active-1,!1)),!0):i.altKey&&i.keyCode===e.ui.keyCode.PAGE_DOWN?(this._activate(this._focusNextTab(this.options.active+1,!0)),!0):t},_findNextTab:function(t,i){function s(){return t>a&&(t=0),0>t&&(t=a),t}for(var a=this.tabs.length-1;-1!==e.inArray(s(),this.options.disabled);)t=i?t+1:t-1;return t},_focusNextTab:function(e,t){return e=this._findNextTab(e,t),this.tabs.eq(e).focus(),e},_setOption:function(e,i){return"active"===e?(this._activate(i),t):"disabled"===e?(this._setupDisabled(i),t):(this._super(e,i),"collapsible"===e&&(this.element.toggleClass("ui-tabs-collapsible",i),i||this.options.active!==!1||this._activate(0)),"event"===e&&this._setupEvents(i),"heightStyle"===e&&this._setupHeightStyle(i),t)},_tabId:function(e){return e.attr("aria-controls")||"ui-tabs-"+i()},_sanitizeSelector:function(e){return e?e.replace(/[!"$%&'()*+,.\/:;<=>?@\[\]\^`{|}~]/g,"\\$&"):""},refresh:function(){var t=this.options,i=this.tablist.children(":has(a[href])");t.disabled=e.map(i.filter(".ui-state-disabled"),function(e){return i.index(e)}),this._processTabs(),t.active!==!1&&this.anchors.length?this.active.length&&!e.contains(this.tablist[0],this.active[0])?this.tabs.length===t.disabled.length?(t.active=!1,this.active=e()):this._activate(this._findNextTab(Math.max(0,t.active-1),!1)):t.active=this.tabs.index(this.active):(t.active=!1,this.active=e()),this._refresh()},_refresh:function(){this._setupDisabled(this.options.disabled),this._setupEvents(this.options.event),this._setupHeightStyle(this.options.heightStyle),this.tabs.not(this.active).attr({"aria-selected":"false",tabIndex:-1}),this.panels.not(this._getPanelForTab(this.active)).hide().attr({"aria-expanded":"false","aria-hidden":"true"}),this.active.length?(this.active.addClass("ui-tabs-active ui-state-active").attr({"aria-selected":"true",tabIndex:0}),this._getPanelForTab(this.active).show().attr({"aria-expanded":"true","aria-hidden":"false"})):this.tabs.eq(0).attr("tabIndex",0)},_processTabs:function(){var t=this;this.tablist=this._getList().addClass("ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all").attr("role","tablist"),this.tabs=this.tablist.find("> li:has(a[href])").addClass("ui-state-default ui-corner-top").attr({role:"tab",tabIndex:-1}),this.anchors=this.tabs.map(function(){return e("a",this)[0]}).addClass("ui-tabs-anchor").attr({role:"presentation",tabIndex:-1}),this.panels=e(),this.anchors.each(function(i,a){var n,r,o,h=e(a).uniqueId().attr("id"),l=e(a).closest("li"),u=l.attr("aria-controls");s(a)?(n=a.hash,r=t.element.find(t._sanitizeSelector(n))):(o=t._tabId(l),n="#"+o,r=t.element.find(n),r.length||(r=t._createPanel(o),r.insertAfter(t.panels[i-1]||t.tablist)),r.attr("aria-live","polite")),r.length&&(t.panels=t.panels.add(r)),u&&l.data("ui-tabs-aria-controls",u),l.attr({"aria-controls":n.substring(1),"aria-labelledby":h}),r.attr("aria-labelledby",h)}),this.panels.addClass("ui-tabs-panel ui-widget-content ui-corner-bottom").attr("role","tabpanel")},_getList:function(){return this.element.find("ol,ul").eq(0)},_createPanel:function(t){return e("<div>").attr("id",t).addClass("ui-tabs-panel ui-widget-content ui-corner-bottom").data("ui-tabs-destroy",!0)},_setupDisabled:function(t){e.isArray(t)&&(t.length?t.length===this.anchors.length&&(t=!0):t=!1);for(var i,s=0;i=this.tabs[s];s++)t===!0||-1!==e.inArray(s,t)?e(i).addClass("ui-state-disabled").attr("aria-disabled","true"):e(i).removeClass("ui-state-disabled").removeAttr("aria-disabled");this.options.disabled=t},_setupEvents:function(t){var i={click:function(e){e.preventDefault()}};t&&e.each(t.split(" "),function(e,t){i[t]="_eventHandler"}),this._off(this.anchors.add(this.tabs).add(this.panels)),this._on(this.anchors,i),this._on(this.tabs,{keydown:"_tabKeydown"}),this._on(this.panels,{keydown:"_panelKeydown"}),this._focusable(this.tabs),this._hoverable(this.tabs)},_setupHeightStyle:function(t){var i,s=this.element.parent();"fill"===t?(i=s.height(),i-=this.element.outerHeight()-this.element.height(),this.element.siblings(":visible").each(function(){var t=e(this),s=t.css("position");"absolute"!==s&&"fixed"!==s&&(i-=t.outerHeight(!0))}),this.element.children().not(this.panels).each(function(){i-=e(this).outerHeight(!0)}),this.panels.each(function(){e(this).height(Math.max(0,i-e(this).innerHeight()+e(this).height()))}).css("overflow","auto")):"auto"===t&&(i=0,this.panels.each(function(){i=Math.max(i,e(this).height("").height())}).height(i))},_eventHandler:function(t){var i=this.options,s=this.active,a=e(t.currentTarget),n=a.closest("li"),r=n[0]===s[0],o=r&&i.collapsible,h=o?e():this._getPanelForTab(n),l=s.length?this._getPanelForTab(s):e(),u={oldTab:s,oldPanel:l,newTab:o?e():n,newPanel:h};t.preventDefault(),n.hasClass("ui-state-disabled")||n.hasClass("ui-tabs-loading")||this.running||r&&!i.collapsible||this._trigger("beforeActivate",t,u)===!1||(i.active=o?!1:this.tabs.index(n),this.active=r?e():n,this.xhr&&this.xhr.abort(),l.length||h.length||e.error("jQuery UI Tabs: Mismatching fragment identifier."),h.length&&this.load(this.tabs.index(n),t),this._toggle(t,u))},_toggle:function(t,i){function s(){n.running=!1,n._trigger("activate",t,i)}function a(){i.newTab.closest("li").addClass("ui-tabs-active ui-state-active"),r.length&&n.options.show?n._show(r,n.options.show,s):(r.show(),s())}var n=this,r=i.newPanel,o=i.oldPanel;this.running=!0,o.length&&this.options.hide?this._hide(o,this.options.hide,function(){i.oldTab.closest("li").removeClass("ui-tabs-active ui-state-active"),a()}):(i.oldTab.closest("li").removeClass("ui-tabs-active ui-state-active"),o.hide(),a()),o.attr({"aria-expanded":"false","aria-hidden":"true"}),i.oldTab.attr("aria-selected","false"),r.length&&o.length?i.oldTab.attr("tabIndex",-1):r.length&&this.tabs.filter(function(){return 0===e(this).attr("tabIndex")}).attr("tabIndex",-1),r.attr({"aria-expanded":"true","aria-hidden":"false"}),i.newTab.attr({"aria-selected":"true",tabIndex:0})},_activate:function(t){var i,s=this._findActive(t);s[0]!==this.active[0]&&(s.length||(s=this.active),i=s.find(".ui-tabs-anchor")[0],this._eventHandler({target:i,currentTarget:i,preventDefault:e.noop}))},_findActive:function(t){return t===!1?e():this.tabs.eq(t)},_getIndex:function(e){return"string"==typeof e&&(e=this.anchors.index(this.anchors.filter("[href$='"+e+"']"))),e},_destroy:function(){this.xhr&&this.xhr.abort(),this.element.removeClass("ui-tabs ui-widget ui-widget-content ui-corner-all ui-tabs-collapsible"),this.tablist.removeClass("ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all").removeAttr("role"),this.anchors.removeClass("ui-tabs-anchor").removeAttr("role").removeAttr("tabIndex").removeUniqueId(),this.tabs.add(this.panels).each(function(){e.data(this,"ui-tabs-destroy")?e(this).remove():e(this).removeClass("ui-state-default ui-state-active ui-state-disabled ui-corner-top ui-corner-bottom ui-widget-content ui-tabs-active ui-tabs-panel").removeAttr("tabIndex").removeAttr("aria-live").removeAttr("aria-busy").removeAttr("aria-selected").removeAttr("aria-labelledby").removeAttr("aria-hidden").removeAttr("aria-expanded").removeAttr("role")}),this.tabs.each(function(){var t=e(this),i=t.data("ui-tabs-aria-controls");i?t.attr("aria-controls",i).removeData("ui-tabs-aria-controls"):t.removeAttr("aria-controls")}),this.panels.show(),"content"!==this.options.heightStyle&&this.panels.css("height","")},enable:function(i){var s=this.options.disabled;s!==!1&&(i===t?s=!1:(i=this._getIndex(i),s=e.isArray(s)?e.map(s,function(e){return e!==i?e:null}):e.map(this.tabs,function(e,t){return t!==i?t:null})),this._setupDisabled(s))},disable:function(i){var s=this.options.disabled;if(s!==!0){if(i===t)s=!0;else{if(i=this._getIndex(i),-1!==e.inArray(i,s))return;s=e.isArray(s)?e.merge([i],s).sort():[i]}this._setupDisabled(s)}},load:function(t,i){t=this._getIndex(t);var a=this,n=this.tabs.eq(t),r=n.find(".ui-tabs-anchor"),o=this._getPanelForTab(n),h={tab:n,panel:o};s(r[0])||(this.xhr=e.ajax(this._ajaxSettings(r,i,h)),this.xhr&&"canceled"!==this.xhr.statusText&&(n.addClass("ui-tabs-loading"),o.attr("aria-busy","true"),this.xhr.success(function(e){setTimeout(function(){o.html(e),a._trigger("load",i,h)},1)}).complete(function(e,t){setTimeout(function(){"abort"===t&&a.panels.stop(!1,!0),n.removeClass("ui-tabs-loading"),o.removeAttr("aria-busy"),e===a.xhr&&delete a.xhr},1)})))},_ajaxSettings:function(t,i,s){var a=this;return{url:t.attr("href"),beforeSend:function(t,n){return a._trigger("beforeLoad",i,e.extend({jqXHR:t,ajaxSettings:n},s))}}},_getPanelForTab:function(t){var i=e(t).attr("aria-controls");return this.element.find(this._sanitizeSelector("#"+i))}})})(jQuery);;/*! Backstretch - v2.0.4 - 2013-06-19
  * http://srobbin.com/jquery-plugins/backstretch/
  * Copyright (c) 2013 Scott Robbin; Licensed MIT */
-(function(a,d,p){a.fn.backstretch=function(c,b){(c===p||0===c.length)&&a.error("No images were supplied for Backstretch");0===a(d).scrollTop()&&d.scrollTo(0,0);return this.each(function(){var d=a(this),g=d.data("backstretch");if(g){if("string"==typeof c&&"function"==typeof g[c]){g[c](b);return}b=a.extend(g.options,b);g.destroy(!0)}g=new q(this,c,b);d.data("backstretch",g)})};a.backstretch=function(c,b){return a("body").backstretch(c,b).data("backstretch")};a.expr[":"].backstretch=function(c){return a(c).data("backstretch")!==p};a.fn.backstretch.defaults={centeredX:!0,centeredY:!0,duration:5E3,fade:0};var r={left:0,top:0,overflow:"hidden",margin:0,padding:0,height:"100%",width:"100%",zIndex:-999999},s={position:"absolute",display:"none",margin:0,padding:0,border:"none",width:"auto",height:"auto",maxHeight:"none",maxWidth:"none",zIndex:-999999},q=function(c,b,e){this.options=a.extend({},a.fn.backstretch.defaults,e||{});this.images=a.isArray(b)?b:[b];a.each(this.images,function(){a("<img />")[0].src=this});this.isBody=c===document.body;this.$container=a(c);this.$root=this.isBody?l?a(d):a(document):this.$container;c=this.$container.children(".backstretch").first();this.$wrap=c.length?c:a('<div class="backstretch"></div>').css(r).appendTo(this.$container);this.isBody||(c=this.$container.css("position"),b=this.$container.css("zIndex"),this.$container.css({position:"static"===c?"relative":c,zIndex:"auto"===b?0:b,background:"none"}),this.$wrap.css({zIndex:-999998}));this.$wrap.css({position:this.isBody&&l?"fixed":"absolute"});this.index=0;this.show(this.index);a(d).on("resize.backstretch",a.proxy(this.resize,this)).on("orientationchange.backstretch",a.proxy(function(){this.isBody&&0===d.pageYOffset&&(d.scrollTo(0,1),this.resize())},this))};q.prototype={resize:function(){try{var a={left:0,top:0},b=this.isBody?this.$root.width():this.$root.innerWidth(),e=b,g=this.isBody?d.innerHeight?d.innerHeight:this.$root.height():this.$root.innerHeight(),j=e/this.$img.data("ratio"),f;j>=g?(f=(j-g)/2,this.options.centeredY&&(a.top="-"+f+"px")):(j=g,e=j*this.$img.data("ratio"),f=(e-b)/2,this.options.centeredX&&(a.left="-"+f+"px"));this.$wrap.css({width:b,height:g}).find("img:not(.deleteable)").css({width:e,height:j}).css(a)}catch(h){}return this},show:function(c){if(!(Math.abs(c)>this.images.length-1)){var b=this,e=b.$wrap.find("img").addClass("deleteable"),d={relatedTarget:b.$container[0]};b.$container.trigger(a.Event("backstretch.before",d),[b,c]);this.index=c;clearInterval(b.interval);b.$img=a("<img />").css(s).bind("load",function(f){var h=this.width||a(f.target).width();f=this.height||a(f.target).height();a(this).data("ratio",h/f);a(this).fadeIn(b.options.speed||b.options.fade,function(){e.remove();b.paused||b.cycle();a(["after","show"]).each(function(){b.$container.trigger(a.Event("backstretch."+this,d),[b,c])})});b.resize()}).appendTo(b.$wrap);b.$img.attr("src",b.images[c]);return b}},next:function(){return this.show(this.index<this.images.length-1?this.index+1:0)},prev:function(){return this.show(0===this.index?this.images.length-1:this.index-1)},pause:function(){this.paused=!0;return this},resume:function(){this.paused=!1;this.next();return this},cycle:function(){1<this.images.length&&(clearInterval(this.interval),this.interval=setInterval(a.proxy(function(){this.paused||this.next()},this),this.options.duration));return this},destroy:function(c){a(d).off("resize.backstretch orientationchange.backstretch");clearInterval(this.interval);c||this.$wrap.remove();this.$container.removeData("backstretch")}};var l,f=navigator.userAgent,m=navigator.platform,e=f.match(/AppleWebKit\/([0-9]+)/),e=!!e&&e[1],h=f.match(/Fennec\/([0-9]+)/),h=!!h&&h[1],n=f.match(/Opera Mobi\/([0-9]+)/),t=!!n&&n[1],k=f.match(/MSIE ([0-9]+)/),k=!!k&&k[1];l=!((-1<m.indexOf("iPhone")||-1<m.indexOf("iPad")||-1<m.indexOf("iPod"))&&e&&534>e||d.operamini&&"[object OperaMini]"==={}.toString.call(d.operamini)||n&&7458>t||-1<f.indexOf("Android")&&e&&533>e||h&&6>h||"palmGetResource"in d&&e&&534>e||-1<f.indexOf("MeeGo")&&-1<f.indexOf("NokiaBrowser/8.5.0")||k&&6>=k)})(jQuery,window);;/*!
+
+;(function ($, window, undefined) {
+  'use strict';
+
+  /* PLUGIN DEFINITION
+   * ========================= */
+
+  $.fn.backstretch = function (images, options) {
+    // We need at least one image or method name
+    if (images === undefined || images.length === 0) {
+      $.error("No images were supplied for Backstretch");
+    }
+
+    /*
+     * Scroll the page one pixel to get the right window height on iOS
+     * Pretty harmless for everyone else
+     */
+    if ($(window).scrollTop() === 0 ) {
+      window.scrollTo(0, 0);
+    }
+
+    return this.each(function () {
+      var $this = $(this)
+        , obj = $this.data('backstretch');
+
+      // Do we already have an instance attached to this element?
+      if (obj) {
+
+        // Is this a method they're trying to execute?
+        if (typeof images == 'string' && typeof obj[images] == 'function') {
+          // Call the method
+          obj[images](options);
+
+          // No need to do anything further
+          return;
+        }
+
+        // Merge the old options with the new
+        options = $.extend(obj.options, options);
+
+        // Remove the old instance
+        obj.destroy(true);
+      }
+
+      obj = new Backstretch(this, images, options);
+      $this.data('backstretch', obj);
+    });
+  };
+
+  // If no element is supplied, we'll attach to body
+  $.backstretch = function (images, options) {
+    // Return the instance
+    return $('body')
+      .backstretch(images, options)
+      .data('backstretch');
+  };
+
+  // Custom selector
+  $.expr[':'].backstretch = function(elem) {
+    return $(elem).data('backstretch') !== undefined;
+  };
+
+  /* DEFAULTS
+   * ========================= */
+
+  $.fn.backstretch.defaults = {
+    centeredX: true   // Should we center the image on the X axis?
+    , centeredY: true   // Should we center the image on the Y axis?
+    , duration: 5000    // Amount of time in between slides (if slideshow)
+    , fade: 0           // Speed of fade transition between slides
+  };
+
+  /* STYLES
+   * 
+   * Baked-in styles that we'll apply to our elements.
+   * In an effort to keep the plugin simple, these are not exposed as options.
+   * That said, anyone can override these in their own stylesheet.
+   * ========================= */
+  var styles = {
+    wrap: {
+      left: 0
+      , top: 0
+      , overflow: 'hidden'
+      , margin: 0
+      , padding: 0
+      , height: '100%'
+      , width: '100%'
+      , zIndex: -999999
+    }
+    , img: {
+      position: 'absolute'
+      , display: 'none'
+      , margin: 0
+      , padding: 0
+      , border: 'none'
+      , width: 'auto'
+      , height: 'auto'
+      , maxHeight: 'none'
+      , maxWidth: 'none'
+      , zIndex: -999999
+    }
+  };
+
+  /* CLASS DEFINITION
+   * ========================= */
+  var Backstretch = function (container, images, options) {
+    this.options = $.extend({}, $.fn.backstretch.defaults, options || {});
+
+    /* In its simplest form, we allow Backstretch to be called on an image path.
+     * e.g. $.backstretch('/path/to/image.jpg')
+     * So, we need to turn this back into an array.
+     */
+    this.images = $.isArray(images) ? images : [images];
+
+    // Preload images
+    $.each(this.images, function () {
+      $('<img />')[0].src = this;
+    });
+
+    // Convenience reference to know if the container is body.
+    this.isBody = container === document.body;
+
+    /* We're keeping track of a few different elements
+     *
+     * Container: the element that Backstretch was called on.
+     * Wrap: a DIV that we place the image into, so we can hide the overflow.
+     * Root: Convenience reference to help calculate the correct height.
+     */
+    this.$container = $(container);
+    this.$root = this.isBody ? supportsFixedPosition ? $(window) : $(document) : this.$container;
+
+    // Don't create a new wrap if one already exists (from a previous instance of Backstretch)
+    var $existing = this.$container.children(".backstretch").first();
+    this.$wrap = $existing.length ? $existing : $('<div class="backstretch"></div>').css(styles.wrap).appendTo(this.$container);
+
+    // Non-body elements need some style adjustments
+    if (!this.isBody) {
+      // If the container is statically positioned, we need to make it relative,
+      // and if no zIndex is defined, we should set it to zero.
+      var position = this.$container.css('position')
+        , zIndex = this.$container.css('zIndex');
+
+      this.$container.css({
+        position: position === 'static' ? 'relative' : position
+        , zIndex: zIndex === 'auto' ? 0 : zIndex
+        , background: 'none'
+      });
+
+      // Needs a higher z-index
+      this.$wrap.css({zIndex: -999998});
+    }
+
+    // Fixed or absolute positioning?
+    this.$wrap.css({
+      position: this.isBody && supportsFixedPosition ? 'fixed' : 'absolute'
+    });
+
+    // Set the first image
+    this.index = 0;
+    this.show(this.index);
+
+    // Listen for resize
+    $(window).on('resize.backstretch', $.proxy(this.resize, this))
+      .on('orientationchange.backstretch', $.proxy(function () {
+        // Need to do this in order to get the right window height
+        if (this.isBody && window.pageYOffset === 0) {
+          window.scrollTo(0, 1);
+          this.resize();
+        }
+      }, this));
+  };
+
+  /* PUBLIC METHODS
+   * ========================= */
+  Backstretch.prototype = {
+    resize: function () {
+      try {
+        var bgCSS = {left: 0, top: 0}
+          , rootWidth = this.isBody ? this.$root.width() : this.$root.innerWidth()
+          , bgWidth = rootWidth
+          , rootHeight = this.isBody ? ( window.innerHeight ? window.innerHeight : this.$root.height() ) : this.$root.innerHeight()
+          , bgHeight = bgWidth / this.$img.data('ratio')
+          , bgOffset;
+
+        // Make adjustments based on image ratio
+        if (bgHeight >= rootHeight) {
+          bgOffset = (bgHeight - rootHeight) / 2;
+          if(this.options.centeredY) {
+            bgCSS.top = '-' + bgOffset + 'px';
+          }
+        } else {
+          bgHeight = rootHeight;
+          bgWidth = bgHeight * this.$img.data('ratio');
+          bgOffset = (bgWidth - rootWidth) / 2;
+          if(this.options.centeredX) {
+            bgCSS.left = '-' + bgOffset + 'px';
+          }
+        }
+
+        this.$wrap.css({width: rootWidth, height: rootHeight})
+          .find('img:not(.deleteable)').css({width: bgWidth, height: bgHeight}).css(bgCSS);
+      } catch(err) {
+        // IE7 seems to trigger resize before the image is loaded.
+        // This try/catch block is a hack to let it fail gracefully.
+      }
+
+      return this;
+    }
+
+    // Show the slide at a certain position
+    , show: function (newIndex) {
+
+      // Validate index
+      if (Math.abs(newIndex) > this.images.length - 1) {
+        return;
+      }
+
+      // Vars
+      var self = this
+        , oldImage = self.$wrap.find('img').addClass('deleteable')
+        , evtOptions = { relatedTarget: self.$container[0] };
+
+      // Trigger the "before" event
+      self.$container.trigger($.Event('backstretch.before', evtOptions), [self, newIndex]);
+
+      // Set the new index
+      this.index = newIndex;
+
+      // Pause the slideshow
+      clearInterval(self.interval);
+
+      // New image
+      self.$img = $('<img />')
+        .css(styles.img)
+        .bind('load', function (e) {
+          var imgWidth = this.width || $(e.target).width()
+            , imgHeight = this.height || $(e.target).height();
+
+          // Save the ratio
+          $(this).data('ratio', imgWidth / imgHeight);
+
+          // Show the image, then delete the old one
+          // "speed" option has been deprecated, but we want backwards compatibilty
+          $(this).fadeIn(self.options.speed || self.options.fade, function () {
+            oldImage.remove();
+
+            // Resume the slideshow
+            if (!self.paused) {
+              self.cycle();
+            }
+
+            // Trigger the "after" and "show" events
+            // "show" is being deprecated
+            $(['after', 'show']).each(function () {
+              self.$container.trigger($.Event('backstretch.' + this, evtOptions), [self, newIndex]);
+            });
+          });
+
+          // Resize
+          self.resize();
+        })
+        .appendTo(self.$wrap);
+
+      // Hack for IE img onload event
+      self.$img.attr('src', self.images[newIndex]);
+      return self;
+    }
+
+    , next: function () {
+      // Next slide
+      return this.show(this.index < this.images.length - 1 ? this.index + 1 : 0);
+    }
+
+    , prev: function () {
+      // Previous slide
+      return this.show(this.index === 0 ? this.images.length - 1 : this.index - 1);
+    }
+
+    , pause: function () {
+      // Pause the slideshow
+      this.paused = true;
+      return this;
+    }
+
+    , resume: function () {
+      // Resume the slideshow
+      this.paused = false;
+      this.next();
+      return this;
+    }
+
+    , cycle: function () {
+      // Start/resume the slideshow
+      if(this.images.length > 1) {
+        // Clear the interval, just in case
+        clearInterval(this.interval);
+
+        this.interval = setInterval($.proxy(function () {
+          // Check for paused slideshow
+          if (!this.paused) {
+            this.next();
+          }
+        }, this), this.options.duration);
+      }
+      return this;
+    }
+
+    , destroy: function (preserveBackground) {
+      // Stop the resize events
+      $(window).off('resize.backstretch orientationchange.backstretch');
+
+      // Clear the interval
+      clearInterval(this.interval);
+
+      // Remove Backstretch
+      if(!preserveBackground) {
+        this.$wrap.remove();
+      }
+      this.$container.removeData('backstretch');
+    }
+  };
+
+  /* SUPPORTS FIXED POSITION?
+   *
+   * Based on code from jQuery Mobile 1.1.0
+   * http://jquerymobile.com/
+   *
+   * In a nutshell, we need to figure out if fixed positioning is supported.
+   * Unfortunately, this is very difficult to do on iOS, and usually involves
+   * injecting content, scrolling the page, etc.. It's ugly.
+   * jQuery Mobile uses this workaround. It's not ideal, but works.
+   *
+   * Modified to detect IE6
+   * ========================= */
+
+  var supportsFixedPosition = (function () {
+    var ua = navigator.userAgent
+      , platform = navigator.platform
+    // Rendering engine is Webkit, and capture major version
+      , wkmatch = ua.match( /AppleWebKit\/([0-9]+)/ )
+      , wkversion = !!wkmatch && wkmatch[ 1 ]
+      , ffmatch = ua.match( /Fennec\/([0-9]+)/ )
+      , ffversion = !!ffmatch && ffmatch[ 1 ]
+      , operammobilematch = ua.match( /Opera Mobi\/([0-9]+)/ )
+      , omversion = !!operammobilematch && operammobilematch[ 1 ]
+      , iematch = ua.match( /MSIE ([0-9]+)/ )
+      , ieversion = !!iematch && iematch[ 1 ];
+
+    return !(
+      // iOS 4.3 and older : Platform is iPhone/Pad/Touch and Webkit version is less than 534 (ios5)
+      ((platform.indexOf( "iPhone" ) > -1 || platform.indexOf( "iPad" ) > -1  || platform.indexOf( "iPod" ) > -1 ) && wkversion && wkversion < 534) ||
+
+        // Opera Mini
+        (window.operamini && ({}).toString.call( window.operamini ) === "[object OperaMini]") ||
+        (operammobilematch && omversion < 7458) ||
+
+        //Android lte 2.1: Platform is Android and Webkit version is less than 533 (Android 2.2)
+        (ua.indexOf( "Android" ) > -1 && wkversion && wkversion < 533) ||
+
+        // Firefox Mobile before 6.0 -
+        (ffversion && ffversion < 6) ||
+
+        // WebOS less than 3
+        ("palmGetResource" in window && wkversion && wkversion < 534) ||
+
+        // MeeGo
+        (ua.indexOf( "MeeGo" ) > -1 && ua.indexOf( "NokiaBrowser/8.5.0" ) > -1) ||
+
+        // IE6
+        (ieversion && ieversion <= 6)
+      );
+  }());
+
+}(jQuery, window));;/*!
 jquery.bum-smack 08-01-2014
  https://github.com/mrjoelkemp/jquery.bum-smack
  implentation example: https://gist.github.com/Atinux/1522344 demo: http://infinite-scroll.eu01.aws.af.cm/
@@ -13524,11 +13897,11 @@ $(document).ready(function(){
       {background: '#FFCECD'}
     ];
 
-    if(typeof style != undefined){
+    if(style !== undefined){
       defaults = $.extend(defaults, mods[style]);
     }
 
-    for(prop in defaults){
+    for(var prop in defaults){
       styles.push(prop + ': ' + defaults[prop]);
     }
 
@@ -13560,7 +13933,7 @@ $(document).ready(function(){
    * @returns {*}
    */
   app.helpers.varGet = function(name, fallback){
-    return (typeof app.vars[name] != undefined ? app.vars[name] : fallback);
+    return (app.vars[name] !== undefined ? app.vars[name] : fallback);
   };
 
 
@@ -13658,6 +14031,46 @@ $(document).ready(function(){
     return (typeof data != 'undefined');
   };
 
+  /**
+   * Parse a rating into x.x/10 stars
+   * @return float
+   */
+  app.helpers.rating = function(rating){
+    return Math.round(rating * 10) / 10;
+  };
+
+
+  /********************************************************************************
+   * URL Functions
+   ********************************************************************************/
+
+
+  /**
+   * Add a url to a collection of models
+   * @return float
+   */
+  app.helpers.buildUrls = function(models, page, idKey){
+    $.each(models, function(i,d){
+      models[i].url = app.helpers.buildUrl(page, d[idKey]);
+    });
+    return models;
+  };
+
+
+  /**
+   * Add a url to a collection of models
+   * @return float
+   */
+  app.helpers.buildUrl = function(type, id){
+    // songs and files go home
+    if(type == 'song' || type == 'file'){
+      return '#';
+    }
+    // else build
+    return '#' + type + '/' + id;
+  };
+
+
 
   /********************************************************************************
    * First Sidebar
@@ -13729,7 +14142,7 @@ $(document).ready(function(){
    */
   app.helpers.toggleSidebar = function(state){
     var addc = 'sidebar', rmc = 'no-sidebar', $body = $('body');
-    if(typeof state == undefined){
+    if(state === undefined){
       $body.toggleClass(addc).toggleClass(rmc);
     } else {
       if(state == 'open'){
@@ -13855,9 +14268,9 @@ $(document).ready(function(){
    */
   app.helpers.parseArtistsArray = function(item){
     var meta = [], str;
-    for(i in item.artist){ //each artist in item
+    for(var i in item.artist){ //each artist in item
 
-      if(item.artistid != undefined){ //artist id found
+      if(item.artistid !== undefined){ //artist id found
         str = '<a href="#artist/' + item.artistid[i] + '">' + item.artist[i] + '</a>';
       } else { //if no artist ids found
         str = item.artist[i];
@@ -13870,9 +14283,9 @@ $(document).ready(function(){
 
   app.helpers.parseArtistSummary = function(data){
     var totals = {songs:0,albums:0,time:0};
-    for(i in data.models){
+    for(var i in data.models){
       totals.albums++;
-      for(s in data.models[i].attributes.songs){
+      for(var s in data.models[i].attributes.songs){
         totals.songs++;
         totals.time = totals.time + parseInt(data.models[i].attributes.songs[s].attributes.duration);
       }
@@ -13899,7 +14312,7 @@ $(document).ready(function(){
    */
   app.helpers.createPaginationRange = function(pageNum, fullRange){
     // Do some maths
-    var page = (pageNum != undefined ? parseInt(pageNum) : 0),
+    var page = (pageNum !== undefined ? parseInt(pageNum) : 0),
       start = (page * app.itemsPerPage),
       end = (start + app.itemsPerPage);
     // override if fullRange
@@ -13926,7 +14339,7 @@ $(document).ready(function(){
    */
   app.helpers.applyBackstretch = function(fanart, player){
     // Ensure on homepage and using the correct player
-    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == player){
+    if(location.hash == '#' || location.hash === '' && app.audioStreaming.getPlayer() == player){
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
@@ -13972,14 +14385,10 @@ $(document).ready(function(){
 
     // append tabs
     var n = 0;
-    console.log(settings.tabs);
     if(settings.tabs !== false){
       var $tabs = $('<div class="nav nav-tabs"></div>');
-      for(i in settings.tabs){
+      for(var i in settings.tabs){
         var $el = $('<a href="' + i + '" class="nav-tab">' + settings.tabs[i] + '</a>');
-        if(n == settings.activeTab){
-          $el.addClass('active');
-        }
         $tabs.append( $el );
         n++;
       }
@@ -14062,7 +14471,7 @@ $(document).ready(function(){
           // look for a button with class "bind-enter" first, fallback to OK btn, fallback to none.
           var $parent = $(this).parent(),
             $enterButton = $parent.find('.bind-enter'),
-            $btn = ($enterButton.length == 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
+            $btn = ($enterButton.length === 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
           $btn.trigger("click");
         }
       });
@@ -14122,7 +14531,7 @@ $(document).ready(function(){
       buttons: {
         "OK": function(){
           var text = $('#promptText').val();
-          if(text != ''){
+          if(text !== ''){
             success(text);
             $( this ).dialog( "close" );
           }
@@ -14230,9 +14639,9 @@ $(document).ready(function(){
     if(!settings.omitwrapper){
       tpl += '<div class="' + settings.key + '-actions list-actions">';
     }
-    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical"></i></button>';
+    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>';
     tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
-    for(i in settings.items){
+    for(var i in settings.items){
       var item = settings.items[i];
       tpl += '<li><a href="' + item.url + '" class="' + item.class + '">' + item.title + '</a></li>';
     }
@@ -14260,12 +14669,12 @@ $(document).ready(function(){
     switch (type){
       case 'song':
         opts = {
-          title: (typeof model.label != 'undefined' && model.label != '' ? model.label : (model.album != '' ? model.album : '')),
+          title: (model.label !== undefined && model.label !== '' ? model.label : (model.album !== '' ? model.album : '')),
           key: 'song',
           omitwrapper: true,
           items: [
             {url: '#', class: 'song-download', title: 'Download song', callback: function(){
-              app.AudioController.downloadFile(model.file, function(url){ window.location = url; })
+              app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
             }},
             {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist', callback: function(){
               //@TODO do an id lookup if no songid
@@ -14281,7 +14690,7 @@ $(document).ready(function(){
       // also contains callbacks
       case 'album':
         opts = {
-          title: (model.album != '' ? model.album : model.label),
+          title: (model.album !== '' ? model.album : model.label),
           key: 'album',
           omitwrapper: true,
           items: [
@@ -14292,7 +14701,7 @@ $(document).ready(function(){
               app.playlists.playlistAddItems('local', 'replace', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid)
+              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid);
             }}
           ]
         };
@@ -14312,8 +14721,32 @@ $(document).ready(function(){
               app.playlists.playlistAddItems('local', 'replace', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-lists', title: 'Save to lists', callback: function(){
-              app.playlists.playlistAddItems('lists', 'new', 'artist', model.artistid)
+              app.playlists.playlistAddItems('lists', 'new', 'artist', model.artistid);
             }}
+          ]
+        };
+        break;
+
+      // also contains callbacks
+      case 'movie':
+        opts = {
+          title: model.label,
+          key: 'movie',
+          omitwrapper: true,
+          items: [
+            {url: '#', class: 'movie-download', title: 'Download Movie', callback: function(){
+              app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
+            }}
+//            ,
+//            {url: '#', class: 'movie-add-xbmc', title: 'Add to XBMC', callback: function(){
+//              app.playlists.playlistAddItems('xbmc', 'append', 'album', model.albumid);
+//            }},
+//            {url: '#', class: 'movie-add-local', title: 'Play in browser', callback: function(){
+//              app.playlists.playlistAddItems('local', 'replace', 'album', model.albumid);
+//            }},
+//            {url: '#', class: 'movie-add-lists', title: 'Save to lists', callback: function(){
+//              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid)
+//            }}
           ]
         };
         break;
@@ -14399,7 +14832,7 @@ $(document).ready(function(){
       app.helpers.loadTemplate(tplname, function(tpl){
         html = _.template(tpl,data);
         callback(html);
-      })
+      });
     }
 
   };
@@ -14437,7 +14870,7 @@ $(document).ready(function(){
       return 'theme/images/space.png';
     }
     //no image, return placeholder
-    if(typeof(rawPath) == "undefined" || rawPath == ''){
+    if(rawPath === undefined || rawPath === ''){
       if(type == 'fanart'){
         return app.helpers.getDefaultImage(type);
       }
@@ -14462,7 +14895,7 @@ $(document).ready(function(){
    */
  app.notification = function(msg){
     var $notify = $('#notify');
-    if(msg !== false && msg != ''){
+    if(msg !== false && msg !== ''){
 
       $notify.find('.content').html(msg);
       $notify.removeClass('hidden').parent().removeClass('hidden');
@@ -14531,7 +14964,7 @@ $(document).ready(function(){
      */
     get:function(key, defaultData){
       var t = $.totalStorage( this.nameSpace + key );
-      if(t != undefined && t != ''){
+      if(t !== undefined && t !== ''){
         return t;
       } else {
         return defaultData;
@@ -14748,7 +15181,8 @@ app.Router = Backbone.Router.extend({
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
-    "movies/:page/:num":    "movies",
+    "movies/page/:num":     "movies",
+    "movies/genre/:genre":  "moviesGenre",
     "movies":               "moviesLanding",
     "movie/:id":            "movie",
     "xbmc/:op":             "xbmc"
@@ -14795,14 +15229,14 @@ app.Router = Backbone.Router.extend({
       if(app.audioStreaming.getPlayer() == 'local'){
         // get the local playing item
         var browserPlaying = app.audioStreaming.getNowPlayingSong();
-        backstretchImage = (browserPlaying.fanart == undefined ? '' : browserPlaying.fanart);
+        backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
       } else {
         // xbmc playing image
-        backstretchImage = (data.item.fanart == undefined ? '' : data.item.fanart);
+        backstretchImage = (data.item.fanart === undefined ? '' : data.item.fanart);
       }
 
       // Add Backstretch if image
-      if($('.backstretch').length == 0){
+      if($('.backstretch').length === 0){
         var fa = app.parseImage(backstretchImage, 'fanart');
         $.backstretch(fa);
       }
@@ -14885,7 +15319,7 @@ app.Router = Backbone.Router.extend({
     app.cached.albumView = new app.AlbumView({"model": model, "type":"album"});
 
     // only render if not on album page already
-    if($('.album-page').length == 0){
+    if($('.album-page').length === 0){
     $('#content').html(app.cached.albumView.render().el);
     } else {
       //just call render, don't update content
@@ -15032,7 +15466,7 @@ app.Router = Backbone.Router.extend({
 
   thumbsup: function(){
 
-    var $content = $('#content')
+    var $content = $('#content'),
       $sidebar = app.helpers.getFirstSidebarContent();
 
     // so we get things in the correct order, we have lots of sub wrappers for the different lists
@@ -15085,27 +15519,26 @@ app.Router = Backbone.Router.extend({
    * uses lazyload, infinite scroll and intelligent back button
    *
    */
-  movies: function(page, num){
+  movies: function(num){
 
     // vars
     var $content = $('#content'),
       $results = $('ul.movie-list',$content),
       fullRange = false,
-      scrolled = false;
-
-
+      scrolled = false,
+      self = this,
+      page = 'page';
 
     // init pager
-    if($results.length == 0){
+    if($results.length === 0){
       // empty page
-      if(typeof page == 'undefined'){
-        var page = 'page', num = 0;
+      if(num === 0){
         app.moviePageNum = 0;
       }
       // Loading
       $content.html('<div class="loading-box">Loading Movies</div>');
       // set title and add some tabs
-      app.helpers.setTitle('Movies', { addATag:'#movies', tabs: {'#movies': 'Recently Added', '#movies/page/0' : 'Browse All'}, activeTab: 1});
+      app.helpers.setTitle('All Movies', { addATag:'#movies/page/0', tabs: {'#movies': 'Recently Added'}, activeTab: 1});
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
       // direct to this page
@@ -15117,7 +15550,7 @@ app.Router = Backbone.Router.extend({
       // appending to page no other setup required
       app.moviePageNum++;
       // force a page via url
-      if(page && num > 0){
+      if(num !== undefined){
         app.moviePageNum = num;
       }
     }
@@ -15129,14 +15562,14 @@ app.Router = Backbone.Router.extend({
       // get the view of results
       app.cached.movieListView = new app.MovieListView({model: collection});
       // do we append or replace
-      if(app.moviePageNum == 0 || fullRange === true){
+      if(app.moviePageNum === 0 || fullRange === true){
         $content.html(app.cached.movieListView.render().$el);
 
         // scroll to top
         $(window).scrollTo(0);
 
         // back from a movie, scrollto that movie
-        if(fullRange == true && typeof app.vars.backHash != 'undefined'){
+        if(fullRange === true && typeof app.vars.backHash != 'undefined'){
           var parts = app.vars.backHash.split('/');
           if(parts[0] == '#movie'){
             $(window).scrollTo( $('.movie-row-' + parts[1]) , 0, {offset: -200});
@@ -15149,11 +15582,13 @@ app.Router = Backbone.Router.extend({
           $(window).scrollTo( '85%' );
         }
 
+        app.helpers.triggerContentLazy();
+
       } else {
         // if last page was empty, dont change hash
         // or render
         var $lastList = $('.video-list').last();
-        if($lastList.find('li').length == 0){
+        if($lastList.find('li').length === 0){
           // dont render
           $lastList.remove();
         } else {
@@ -15178,7 +15613,7 @@ app.Router = Backbone.Router.extend({
   moviesLanding: function () {
 
     var self = this;
-    app.helpers.setTitle('Movies', { addATag:'#movies', tabs: {'#movies': 'Recently Added', '#movies/page/0' : 'Browse All'}, activeTab: 0});
+    app.helpers.setTitle('Recently Added', { addATag:'#movies', tabs: {'#movies/page/0' : 'Browse All'}, activeTab: 1});
 
     // loading
     self.$content.html('<div class="loading-box">Loading Movies</div>');
@@ -15194,6 +15629,45 @@ app.Router = Backbone.Router.extend({
       self.$content.find('.next-page').remove();
       // change class
       self.$content.find('ul').removeClass('movie-list').addClass('movie-recent-list');
+      // set menu
+      app.shellView.selectMenuItem('movies', 'no-sidebar');
+      // lazyload
+      app.helpers.triggerContentLazy();
+      // scroll to top
+      $(window).scrollTo(0);
+    }});
+
+  },
+
+
+
+  /**
+   * Movie landing page
+   */
+  moviesGenre: function (genre) {
+    console.log(genre);
+
+    var self = this;
+    app.helpers.setTitle(genre, {
+      addATag:'#movies/genre/' + genre,
+      tabs: {'#movies/page/0' : 'Browse All', '#movies' : 'Recent'}
+
+    });
+
+    // loading
+    self.$content.html('<div class="loading-box">Loading Movies</div>');
+
+    // get recent collection
+    app.movieFitleredCollection = new app.MovieFitleredCollection();
+    app.movieFitleredCollection.fetch({"filter" : {'genre': genre}, "success": function(collection){
+
+      app.cached.movieListView = new app.MovieListView({model: collection});
+      // render
+      self.$content.html(app.cached.movieListView.render().$el);
+      // no pagination
+      self.$content.find('.next-page').remove();
+      // change class
+      self.$content.find('ul').removeClass('movie-list').addClass('movie-genre-list');
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
       // lazyload
@@ -15223,7 +15697,7 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.MovieView({model: data}).render().el);
-        app.helpers.setTitle('<a href="#movies">Movie</a><b></b>' + data.attributes.title);
+        app.helpers.setTitle( data.attributes.title + ' <span>' + data.attributes.year + '</span>');
 
         // set menu
         app.shellView.selectMenuItem('movie', 'sidebar');
@@ -15231,6 +15705,10 @@ app.Router = Backbone.Router.extend({
     });
 
   },
+
+
+
+
 
 
 
@@ -15342,7 +15820,7 @@ app.Album = Backbone.Model.extend({
 app.Song = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]},
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], 'type': 'song', 'playlistId': 0, 'url': '#', 'subLink': ''},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -15360,7 +15838,7 @@ app.Song = Backbone.Model.extend({
 app.PlaylistItem= Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: '', list: 'xbmc'}
+  defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0], songid: 'file', file: '', list: 'xbmc', playlistId: 0, 'type': 'file'}
 
 });
 
@@ -15372,7 +15850,7 @@ app.PlaylistItem= Backbone.Model.extend({
 app.PlaylistCustomListItem= Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'name':'', 'items':[], 'id': 0}
+  defaults: {'name':'', 'items':[], 'id': 0, 'type': 'file'}
 
 });
 
@@ -15430,17 +15908,17 @@ app.File = Backbone.Model.extend({
 app.Movie = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {movieid: 1, thumbnail: '', fanart: '', year: ''},
+  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies', 'thumbsup': false, 'libraryId': 1},
 
   sync: function(method, model, options) {
     if (method === "read") {
 
       app.xbmcController.command('VideoLibrary.GetMovieDetails',[parseInt(this.id), app.movieFields], function(data){
-        console.log(data);
-        // @todo fix logic for thumbs up
-        data.result.moviedetails.thumbsup = false;
-        options.success(data.result.moviedetails);
-      })
+        var m = data.result.moviedetails;
+        // get thumbsup
+        m.thumbsup = app.playlists.getThumbsUp('movie', m.movieid);
+        options.success(m);
+      });
 
 
     }
@@ -15456,7 +15934,7 @@ app.Movie = Backbone.Model.extend({
 app.TVShow = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': []},
+  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -15475,7 +15953,7 @@ app.TVShow = Backbone.Model.extend({
 app.TVEpisode = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': []},
+  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -15493,7 +15971,7 @@ app.TVEpisode = Backbone.Model.extend({
 app.Video = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': []},
+  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#video'},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -15518,7 +15996,7 @@ app.addOns.getSources = function(callback){
       addons = [];
 
     // parse
-    for(i in sources){
+    for(var i in sources){
       var item = sources[i];
       if(item.enabled){
         item.file = 'plugin://' + item.addonid + '/';
@@ -15534,7 +16012,7 @@ app.addOns.getSources = function(callback){
     if(callback){
       callback(addons);
     }
-  })
+  });
 
 };
 
@@ -15558,7 +16036,7 @@ app.addOns.ready = function(callback){
  */
 app.addOns.getAddon = function(addonKey){
   if(typeof app.cached.addonSources != 'undefined'){
-    for(i in app.cached.addonSources){
+    for(var i in app.cached.addonSources){
       var item = app.cached.addonSources[i],
         itemAddonKey = app.addOns.slug(item);
       if(itemAddonKey == addonKey){
@@ -15580,7 +16058,7 @@ app.addOns.invokeAll = function(functionName, record, arg1, arg2){
 
   // this invokes other modules
   if(typeof app.cached.addonSources != 'undefined'){
-    for(i in app.cached.addonSources){
+    for(var i in app.cached.addonSources){
       var item = app.cached.addonSources[i],
         addonKey = app.addOns.slug(item);
 
@@ -15876,31 +16354,7 @@ app.AudioController = {
  * @param callback
  */
 app.AudioController.playlistRender = function(callback){
-
-  // xbmc playlist
-  app.AudioController.getPlaylistItems(function(result){
-
-    //cache
-    app.cached.xbmcPlaylist = result.items;
-
-    //create a new playlist view and render
-    app.playlistView = new app.PlaylistView({model:{models:result.items}});
-    $('#playlist-xbmc').html(app.playlistView.render().el);
-
-    app.AudioController.getNowPlayingSong(function(data){
-
-      //update shell to now playing info
-      app.shellView.updateState(data);
-      //rebind controls to playlist after refresh
-      app.playlistView.playlistBinds(this);
-    });
-
-    if(app.helpers.exists(callback)){
-      callback(result);
-    }
-
-  });
-
+  app.playlists.renderXbmcPlaylist(app.AudioController.playlistId, callback);
 };
 
 
@@ -15930,7 +16384,7 @@ app.AudioController.playlistAdd = function(type, id, callback){
 
       callback(result);
 
-    })
+    });
   });
 
 };
@@ -15947,7 +16401,7 @@ app.AudioController.playlistAdd = function(type, id, callback){
 app.AudioController.playlistAddMultiple = function(type, ids, callback){
 
   var commands = [],  id;
-  for(n in ids){
+  for(var n in ids){
     param = {};
     id = ids[n];
     // used only for songs, switches between file and id depending on var type
@@ -15969,7 +16423,7 @@ app.AudioController.playlistAddMultiple = function(type, ids, callback){
 
       callback(result);
 
-    })
+    });
   });
 
 };
@@ -15978,43 +16432,14 @@ app.AudioController.playlistAddMultiple = function(type, ids, callback){
 /**
  * Swap the position of an item in the playlist
  *
- * This moves an item from one position to another
- * It does this by cloning pos1, remove original pos, insert pos1 clone into pos2
- * Not to be confused with xbmc playlist.swap which is fairly useless IMO
- *
  * @param pos1
  *  current playlist position
  * @param pos2
  *  new playlist position
+ *  @param callback
  */
 app.AudioController.playlistSwap = function(pos1, pos2, callback){
-
-  //get playlist items
-  app.AudioController.getPlaylistItems(function(result){
-    //clone for insert
-    var clone = result.items[pos1],
-      insert = {};
-    //if songid found use that as a preference
-    if(clone.id != undefined && typeof clone.id == 'number'){
-      insert.songid = clone.id;
-    } else { //use filepath if no songid
-      insert.file = clone.file;
-    }
-    //remove the original
-    app.AudioController.removePlaylistPosition(pos1, function(result){
-      //insert the clone
-      app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos2,insert], function(data){
-        //get playlist items
-        app.AudioController.getPlaylistItems(function(result){
-          //update cache
-          app.AudioController.currentPlaylist = result;
-          callback(result);
-
-        })
-      });
-    });
-
-  })
+  app.playlists.playlistSwap(app.AudioController.playlistId, 'songid', pos1, pos2, callback);
 };
 
 
@@ -16131,7 +16556,7 @@ app.AudioController.insertAndPlaySong = function(type, id, callback){
           }
         });
       });
-    })
+    });
   } else {
     // playing, insert
     app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
@@ -16154,7 +16579,7 @@ app.AudioController.songLoadMultiple = function(songids, callback){
     var commands = [];
 
     // create commands
-    for(n in songids){
+    for(var n in songids){
       var sid = songids[n];
       if(typeof sid == 'number'){
         // it is a song and sid should be a songid
@@ -16195,17 +16620,17 @@ app.AudioController.songLoadMultiple = function(songids, callback){
         });
 
         // add songs back in their correct order using a dictionary
-        for(n in songids){
-          var sid = songids[n];
+        for(var s in songids){
+          var sid = songids[s];
           if(typeof sid == 'number' && typeof dict[sid] != 'undefined'){
-            songids[n] = dict[sid];
+            songids[s] = dict[sid];
           }
         }
 
         // lastly, we clean up the output and ensure every item is an object
         // we also assign final position in the list
         var p = 0;
-        for(n in songids){
+        for(var n in songids){
           var item = songids[n];
           if(typeof item == 'object'){
             item.position = p;
@@ -16274,7 +16699,7 @@ app.AudioController.removePlaylistPosition = function(position, callback ){
  * Seek curently playing to a percentage
  */
 app.AudioController.seek = function(position, callback ){
-  app.xbmcController.command('Player.Seek', [app.AudioController.playlistId, position], function(result){
+  app.xbmcController.command('Player.Seek', [app.cached.nowPlaying.activePlayer, position], function(result){
     if(app.helpers.exists(callback)){
       callback(result.result); // return items
     }
@@ -16285,15 +16710,7 @@ app.AudioController.seek = function(position, callback ){
  * Get items from playlist
  */
 app.AudioController.getPlaylistItems = function(callback){
-  var activePlayer = (typeof app.cached.nowPlaying != 'undefined' ? app.cached.nowPlaying.activePlayer : app.AudioController.playlistId);
-  app.xbmcController.command('Playlist.GetItems',
-    [
-      activePlayer,
-      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
-    ], function(result){
-      console.log(result);
-    callback(result.result); // return items
-  });
+  app.playlists.getXbmcPlaylist(app.AudioController.playlistId, callback);
 };
 
 
@@ -16350,7 +16767,7 @@ app.AudioController.getNowPlayingSong = function(callback){
     app.counts['503total']++;
   }
 
-  if(app.counts[503] != 0){
+  if(app.counts[503] !== 0){
     // up the count and set the state
     app.counts[503]++;
     app.state = 'notconnected';
@@ -16591,7 +17008,7 @@ app.audioStreaming = {
 
         // Get last browser playlist collection, if any
         var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
-        if(lastList != undefined && lastList.length > 0){
+        if(lastList !== undefined && lastList.length > 0){
           // when songs are ready, render them
           app.store.libraryCall(function(){
             // get collection based on songids
@@ -16600,7 +17017,7 @@ app.audioStreaming = {
               // render it too
               app.audioStreaming.renderPlaylistItems();
               // add as loaded song
-              if(collection.models != undefined && collection.models[0] != undefined){
+              if(collection.models !== undefined && collection.models[0] !== undefined){
                 // load the first song
                 var song = collection.models[0];
                 app.audioStreaming.loadSong(song);
@@ -16635,19 +17052,19 @@ app.audioStreaming = {
       app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
       song = app.cached.nowPlaying.item;
-      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'xbmc');
+      app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'xbmc');
     }
 
     // Switch to Local Player
     if(player == 'local'){
       app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
       // if empty, render
-      if($('ul.browser-playlist-song-list').length == 0){
+      if($('ul.browser-playlist-song-list').length === 0){
         app.audioStreaming.renderPlaylistItems();
       }
       // Homepage Backstretch for local (if applicable)
       song = app.audioStreaming.getNowPlayingSong();
-      app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
+      app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'local');
     }
 
   },
@@ -16661,7 +17078,7 @@ app.audioStreaming = {
     if(app.audioStreaming.$body.hasClass(app.audioStreaming.classLocal)){
       return 'local';
     } else {
-      return 'xbmc'
+      return 'xbmc';
     }
   },
 
@@ -16671,7 +17088,7 @@ app.audioStreaming = {
    * @returns {*}
    */
   getNowPlayingSong: function(){
-    if(app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] != undefined){
+    if(app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] !== undefined){
       var model = app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition];
       return model.attributes;
     } else {
@@ -16709,16 +17126,19 @@ app.audioStreaming = {
    * @param collection
    */
   setPlaylistItems: function(collection){
-    // update in current playlist state
-    app.audioStreaming.playList.items = collection;
+
     // save ids to local storage
     var ids = [];
     $.each(collection.models, function(i,d){
       if(typeof d.attributes.songid != 'undefined'){
         ids.push(d.attributes.songid);
+        collection.models[i].attributes.type = 'song';
       }
     });
     app.storageController.setStorage(app.audioStreaming.lastListKey, ids);
+
+    // update in current playlist state
+    app.audioStreaming.playList.items = collection;
   },
 
 
@@ -16730,7 +17150,7 @@ app.audioStreaming = {
   appendPlaylistItems: function(newCollection, callback){
     // update in current playlist state
     var collection;
-    if(app.audioStreaming.playList == undefined){
+    if(app.audioStreaming.playList === undefined){
       // no current playlist extists so just replace
       collection = newCollection;
       console.log(collection);
@@ -16784,7 +17204,7 @@ app.audioStreaming = {
   renderPlaylistItems: function(){
 
     // Protect from dirty data
-    if(app.audioStreaming.playList == undefined){
+    if(app.audioStreaming.playList === undefined){
       return;
     }
 
@@ -16952,14 +17372,14 @@ app.audioStreaming = {
     // add playing class to correct item in playlist
     var $playingEl = $('li.browser-player .playlist-pos-' + app.audioStreaming.playList.playingPosition);
     if(!$playingEl.hasClass('browser-playing-row')){
-      $playingEl.addClass('browser-playing-row')
+      $playingEl.addClass('browser-playing-row');
     }
 
     // Set title and play icon
     app.audioStreaming.setTitle('playing', song.label);
 
     // Homepage Backstretch
-    app.helpers.applyBackstretch((song.fanart != undefined ? song.fanart : ''), 'local');
+    app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'local');
 
     // playing song (@todo flickers fix)
     //$('.song').removeClass('playing-row');
@@ -16976,7 +17396,7 @@ app.audioStreaming = {
     var playlist = app.audioStreaming.playList;
     // exit if not init yet
 
-    if(playlist.repeat == undefined){
+    if(playlist.repeat === undefined){
       return;
     }
     // set repeat/rand state
@@ -17002,7 +17422,7 @@ app.audioStreaming = {
    */
   setTitle:function (status, title) {
     if(app.audioStreaming.getPlayer() == 'local'){
-      document.title = (status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
+      document.title = (status == 'playing' ? '▶ ' : '') + (title !== undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
   },
 
@@ -17058,7 +17478,7 @@ app.audioStreaming = {
 
   // Controls
   togglePlay: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       // if playing, pause, else play
       if(app.audioStreaming.isPlaying()){
         app.audioStreaming.pause();
@@ -17073,7 +17493,7 @@ app.audioStreaming = {
    * a wrapper for playing the current song via sound manaher
    */
   play: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       //play existing with local player
       app.audioStreaming.localPlay.play();
       // switch to local view
@@ -17083,24 +17503,24 @@ app.audioStreaming = {
 
 
   stop: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       app.audioStreaming.localPlay.stop(); //play existing
     }
   },
 
 
   pause: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       app.audioStreaming.localPlay.pause(); //pause existing
     }
   },
 
 
   prev: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList;
       // at 0 play again
-      if(pl.playingPosition == 0){
+      if(pl.playingPosition === 0){
         app.audioStreaming.playPosition(0);
       } else {
         app.audioStreaming.playPosition((pl.playingPosition - 1));
@@ -17110,7 +17530,7 @@ app.audioStreaming = {
 
 
   next: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList;
 
       // at end 0 is next
@@ -17124,7 +17544,7 @@ app.audioStreaming = {
 
 
   mute: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
 
       // vars
       var mute = app.audioStreaming.playList.mute,
@@ -17149,7 +17569,7 @@ app.audioStreaming = {
 
 
   repeat: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList, newVal;
       // toggle between 3 different states
       switch(pl.repeat){
@@ -17172,7 +17592,7 @@ app.audioStreaming = {
 
 
   random: function(){
-    if(app.audioStreaming.localPlay != false){
+    if(app.audioStreaming.localPlay !== false){
       // set the opposite
       var pl = app.audioStreaming.playList;
       app.audioStreaming.playList.random = (pl.random == 'off' ? 'on' : 'off');
@@ -17310,10 +17730,11 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       break;
 
     case 'movie':
-      plCollection = new app.Movie({id: parseInt(delta)});
-      plCollection.fetch({"success": function(data){
-        callback(data);
-      }});
+// returns model not collection
+//      plCollection = new app.Movie({id: parseInt(delta)});
+//      plCollection.fetch({"success": function(data){
+//        callback(data);
+//      }});
       break;
 
     case 'list': // local playlist id = delta
@@ -17371,7 +17792,7 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
   app.playlists.playlistGetItems(type, delta, function(collection){
 
     // gate
-    if(collection.length == 0){
+    if(collection.length === 0){
       return;
     }
 
@@ -17416,7 +17837,7 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
                 callback();
               });
             });
-          })
+          });
         }
 
         break;
@@ -17430,7 +17851,7 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
         } else {
           // replace and play
           console.log('replace', collection);
-          app.audioStreaming.replacePlaylistItems(collection, callback)
+          app.audioStreaming.replacePlaylistItems(collection, callback);
         }
 
         break;
@@ -17485,7 +17906,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   //the item just moved
   var $thisItem = $(ui.item[0]).find('div.playlist-item'),
     changed = {},
-    $sortable = $thisItem.closest("ul.playlist");
+    $sortable = $thisItem.closest("ul.playlist"),
+    type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio');
 
   //loop over each playlist item to see what (if any has changed)
   $sortable.find('div.playlist-item').each(function(i,d){
@@ -17497,10 +17919,11 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   });
 
   //if an item has changed position, swap its position in xbmc
-  if(changed.from != undefined && changed.from !== changed.to){
-    app.AudioController.playlistSwap(changed.from, changed.to, function(res){
-      app.AudioController.playlistRender();
-    })
+  if(changed.from !== undefined && changed.from !== changed.to){
+    var controller = (type == 'audio' ? app.AudioController : app.VideoController);
+    controller.playlistSwap(changed.from, changed.to, function(res){
+      controller.playlistRender();
+    });
   }
 };
 
@@ -17523,10 +17946,10 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
   });
   console.log(changed);
   //if an item has changed position, swap its position in xbmc
-  if(changed.from != undefined && changed.from !== changed.to){
+  if(changed.from !== undefined && changed.from !== changed.to){
     app.AudioController.playlistSwap(changed.from, changed.to, function(res){
       app.AudioController.playlistRender();
-    })
+    });
   }
 };
 
@@ -17570,13 +17993,13 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
   // validate type & items
   type = (typeof type == 'undefined' ? 'xbmc' : type);
-  items= (typeof items == 'undefined' ? [] : items);
+  items = (typeof items == 'undefined' ? [] : items);
 
   // vars
   var lists = app.playlists.getCustomPlaylist(),
     htmlList = '';
 
-  for(i in lists){
+  for(var i in lists){
     htmlList += '<li data-id="' + lists[i].id + '">' + lists[i].name + '</li>';
   }
 
@@ -17587,7 +18010,7 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
 
   var content = '<p>Create a new playlist<br />' +
     '<input class="form-text" type="text" id="newlistname" /> <button class="btn bind-enter" id="savenewlist">Save</button></p>' +
-    (htmlList != '' ? '<p>Or add to an existing list</p><ul id="existinglists">' + htmlList + '</ul>' : '');
+    (htmlList !== '' ? '<p>Or add to an existing list</p><ul id="existinglists">' + htmlList + '</ul>' : '');
 
   // Create Dialog
   app.helpers.dialog(content, {
@@ -17632,7 +18055,8 @@ app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
   var items = [],
     lists = app.playlists.getCustomPlaylist(),
     lastId = 0,
-    plObj = {};
+    plObj = {},
+    i = 0;
 
   if(source == 'xbmc'){
 
@@ -17691,7 +18115,7 @@ app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
       for(i in lists){
         if(id == lists[i].id){
           // append to matching list
-          for(n in items){
+          for(var n in items){
             lists[i].items.push(items[n]);
           }
           // plobj
@@ -17740,13 +18164,14 @@ app.playlists.getCustomPlaylist = function(id){
 
   // get lists
   var currentPlaylists = app.storageController.getStorage(app.playlists.storageKeyLists),
-    listsRaw = (currentPlaylists != null ? currentPlaylists : []),
-    lists = [];
+    listsRaw = (currentPlaylists !== null ? currentPlaylists : []),
+    lists = [],
+    n = 0;
 
   // ensure we have a clean data set
   for(n in listsRaw){
     var item = listsRaw[n];
-    if(typeof item != 'undefined' && item != null){
+    if(typeof item != 'undefined' && item !== null){
       lists.push(item);
     }
   }
@@ -17773,7 +18198,7 @@ app.playlists.deleteCustomPlaylist = function(id){
     o = [];
 
   // add all but the removed to o
-  for(n in lists){
+  for(var n in lists){
     item = lists[n];
     if(item.id != id){
       o[n] =  item;
@@ -17821,11 +18246,12 @@ app.playlists.updateCustomPlayLists = function(){
  * replace custom playlist items with new items - useful for for sorting
  */
 app.playlists.replaceCustomPlayList = function(listId, items){
+  var lists = {};
 
   // thumbs up - only songs are sortable
   if(listId == 'thumbsup'){
 
-    var lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
+    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
 
     lists.song = {items: items};
 
@@ -17837,9 +18263,10 @@ app.playlists.replaceCustomPlayList = function(listId, items){
 
   // Get a full list then update our specific list
   listId = parseInt(listId);
-  var lists = app.playlists.getCustomPlaylist();
+  lists = app.playlists.getCustomPlaylist();
+
   if(items.length > 0){
-    for(i in lists){
+    for(var i in lists){
       // if matching list, update
       if(lists[i].id == listId){
         lists[i].items = items;
@@ -17872,12 +18299,12 @@ app.playlists.getDropdown = function(){
     buttons.delete = 'Delete';
   }
 
-  for(key in buttons){
+  for(var key in buttons){
     items.push({
       url: '#',
       class: type + '-' + key,
       title: buttons[key]
-    })
+    });
   }
 
   return app.helpers.makeDropdown({
@@ -17906,7 +18333,8 @@ app.playlists.setThumbsUp = function(op, type, id){
     currentThumbsUp = allThumbsUp[type],
     newList = [],
     exists = false,
-    itemTemplate = {items: []};
+    itemTemplate = {items: []},
+    i = 0;
 
   if(typeof currentThumbsUp == 'undefined' || typeof currentThumbsUp.items == 'undefined'){
     currentThumbsUp = itemTemplate;
@@ -17931,8 +18359,8 @@ app.playlists.setThumbsUp = function(op, type, id){
     case 'remove':
       // loop and re add all but the id to remove
       for(i in currentThumbsUp.items){
-        if(currentThumbsUp.items[i] != id && currentThumbsUp.items[i] != null){
-          newList.push(currentThumbsUp.items[i])
+        if(currentThumbsUp.items[i] != id && currentThumbsUp.items[i] !== null){
+          newList.push(currentThumbsUp.items[i]);
         }
       }
       currentThumbsUp.items = newList;
@@ -17946,7 +18374,7 @@ app.playlists.setThumbsUp = function(op, type, id){
   app.storageController.setStorage(app.playlists.storageKeyThumbsUp, allThumbsUp);
 
   // update cache
-  app.playlists.getThumbsUp()
+  app.playlists.getThumbsUp();
 };
 
 
@@ -17957,7 +18385,8 @@ app.playlists.setThumbsUp = function(op, type, id){
  */
 app.playlists.getThumbsUp = function(type){
   var currentThumbsUp = app.storageController.getStorage(app.playlists.storageKeyThumbsUp),
-    lists = (currentThumbsUp != null ? currentThumbsUp : {});
+    lists = (currentThumbsUp !== null ? currentThumbsUp : {}),
+    t = 0, n = 0;
 
   // save to cache for "isThumbsUp"
   app.cached.thumbsUp = {};
@@ -17970,7 +18399,7 @@ app.playlists.getThumbsUp = function(type){
     var items = [];
     for(n in lists[t].items){
       var id = lists[t].items[n];
-      if(id != null){
+      if(id !== null){
         items.push(id);
         app.cached.thumbsUp[t].lookup[id] = true;
       }
@@ -17994,12 +18423,126 @@ app.playlists.getThumbsUp = function(type){
  * get thumbs up
  *
  * @param type
+ * @param id
  */
 app.playlists.isThumbsUp = function(type, id){
   return (typeof app.cached.thumbsUp[type] != 'undefined' &&
     typeof app.cached.thumbsUp[type].lookup[id] != 'undefined');
 };
 
+
+
+/**
+ * XBMC Playlist
+ *
+ * @param playlistId
+ * @param callback
+ */
+app.playlists.getXbmcPlaylist = function(playlistId, callback){
+
+  app.xbmcController.command('Playlist.GetItems',
+    [
+      playlistId,
+      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
+    ], function(result){
+      var res = result.result;
+      // set playlistId on models and collection
+      res.playlistId = playlistId;
+      $.each(res.items, function(i,d){
+        res.items[i].playlistId = playlistId;
+      });
+      // return items
+      callback(res);
+    });
+
+
+};
+
+
+/**
+ * Refresh the playlist
+ *
+ * @param playlistId
+ * @param callback
+ */
+app.playlists.renderXbmcPlaylist = function(playlistId, callback){
+
+  // xbmc playlist
+  app.playlists.getXbmcPlaylist(playlistId, function(result){
+
+    //cache
+    app.cached.xbmcPlaylist = result.items;
+    var $pl = $('#playlist-xbmc');
+
+    //create a new playlist view and render
+    app.playlistView = new app.PlaylistView({model:{playlistId: playlistId, models:result.items}});
+    $pl.html(app.playlistView.render().el);
+
+    app.AudioController.getNowPlayingSong(function(data){
+
+      //update shell to now playing info
+      app.shellView.updateState(data);
+      //rebind controls to playlist after refresh
+      app.playlistView.playlistBinds(this);
+    });
+
+    if(app.helpers.exists(callback)){
+      callback(result);
+    }
+
+  });
+
+};
+
+
+/**
+ * Swap the position of an item in the playlist
+ *
+ * This moves an item from one position to another
+ * It does this by cloning pos1, remove original pos, insert pos1 clone into pos2
+ * Not to be confused with xbmc playlist.swap which is fairly useless IMO
+ *
+ * @param playlistId
+ *  xbmc playlistid
+ * @param type
+ *  eg. songid, movieid
+ * @param pos1
+ *  current playlist position
+ * @param pos2
+ *  new playlist position
+ * @param callback
+ */
+app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
+
+  //get playlist items
+  app.playlists.getXbmcPlaylist(playlistId, function(result){
+    //clone for insert
+    var clone = result.items[pos1],
+      insert = {},
+      controller = (playlistId == 1 ? app.VideoController : app.AudioController);
+
+    //if songid found use that as a preference
+    if(clone.id !== undefined && typeof clone.id == 'number'){
+      insert[type] = clone.id;
+    } else { //use filepath if no songid
+      insert.file = clone.file;
+    }
+
+    //remove the original
+    controller.removePlaylistPosition(pos1, function(result){
+      //insert the clone
+      app.xbmcController.command('Playlist.Insert', [playlistId, pos2, insert], function(data){
+        //get playlist items
+        controller.getPlaylistItems(function(result){
+          //update cache
+          controller.currentPlaylist = result;
+          callback(result);
+        });
+      });
+    });
+
+  });
+};
 ;app.storageController = {
   nameSpace: 'chorusStorage:'
 };
@@ -18015,7 +18558,7 @@ app.storageController.getStorage = function(key, callback){
   } else {
     return data;
   }
-}
+};
 
 
 /**
@@ -18028,27 +18571,140 @@ app.storageController.setStorage = function(key, value, callback){
   } else {
     return value;
   }
-}
+};
 
 
 
 
 ;
-app.videoController = {
+app.VideoController = {
 
-  playlistId: 1 // video activePlayer
+  playlistId: 1, // video activePlayer
+  currentPlaylist: [] // cache of current video playlist
 
 };
 
+
 /**
  * Play Video
+ * @param id
+ *  int of id to add
+ * @param type
+ *  eg. movieid
+ * @param callback
+ *  result
  */
-app.videoController.playVideoId = function(id, type, clearList){
+app.VideoController.playVideoId = function(id, type, callback){
+  console.log(type);
+  // clear playlist
+  app.VideoController.playlistClear(function(){
+    console.log('cleard');
+    // Add video to playlist based on type/id
+    app.VideoController.addToPlaylist(id, type, 'add', function(data){
+      console.log(data);
+      app.VideoController.playPlaylistPosition(0, function(play){
+        callback(data.result);
+      });
+    });
+  });
+
+};
+
+
+/**
+ * Play something from playlist
+ *
+ * @param id
+ *  int of id to add
+ * @param type
+ *  eg. movieid
+ * @param position
+ *  add to append, or an int to insert at that position
+ * @param callback
+ *  result
+ */
+app.VideoController.addToPlaylist = function(id, type, position, callback ){
+  var f = {};
+  f[type] = id;
+  console.log(f);
+
+  if(position == 'add'){
+    app.xbmcController.command('Playlist.Add', [app.VideoController.playlistId, f], function(result){
+      callback(result.result); // return items
+    });
+  }
+
+};
+
+
+/**
+ * Play something from playlist
+ *
+ * @param position
+ * @param callback
+ */
+app.VideoController.playPlaylistPosition = function(position, callback ){
+  app.xbmcController.command('Player.Open', [{"playlistid": app.VideoController.playlistId,"position":position}], function(result){
+    callback(result.result); // return items
+  });
+};
 
 
 
+/**
+ * Clear the playlist
+ *
+ * @param callback
+ */
+app.VideoController.playlistClear = function(callback){
+  // clear playlist
+  app.xbmcController.command('Playlist.Clear', [app.VideoController.playlistId], function(data){
+    if(callback){
+      callback(data);
+    }
+  });
+};
 
-};;
+
+/**
+ * Get items from playlist
+ */
+app.VideoController.getPlaylistItems = function(callback){
+  app.playlists.getXbmcPlaylist(app.VideoController.playlistId, callback);
+};
+
+/**
+ * Refresh the playlist
+ * @param callback
+ */
+app.VideoController.playlistRender = function(callback){
+  app.playlists.renderXbmcPlaylist(app.VideoController.playlistId, callback);
+};
+
+
+/**
+ * Remove something from playlist
+ */
+app.VideoController.removePlaylistPosition = function(position, callback ){
+  app.xbmcController.command('Playlist.Remove', [app.VideoController.playlistId, position], function(result){
+    callback(result.result); // return items
+  });
+};
+
+
+/**
+ * Swap the position of an item in the playlist
+ *
+ * @param pos1
+ *  current playlist position
+ * @param pos2
+ *  new playlist position
+ *  @param callback
+ */
+app.VideoController.playlistSwap = function(pos1, pos2, callback){
+  app.playlists.playlistSwap(app.VideoController.playlistId, 'movieid', pos1, pos2, callback);
+};
+;
 
 /********************************************************************************
  * Handles all non library calls to xbmc
@@ -18078,9 +18734,9 @@ app.xbmcController.command = function(command, options, callback, errorCallback)
       }
     },
     error: function(result) {
-      app.helpers.errorHandler('xbmc song command call: ' + command, [result, options]);
+      app.helpers.errorHandler('xbmc command call: ' + command, [result, options]);
       if(errorCallback){
-        errorCallback([result, options])
+        errorCallback([result, options]);
       }
     }
   });
@@ -18097,7 +18753,7 @@ app.xbmcController.multipleCommand = function(commands, callback){
 
   $.jsonRPC.batchRequest(commands, {
     success: function(result) {
-      for(i in result){
+      for(var i in result){
         if(typeof result[i].error != 'undefined'){
           // suppress errors unless required
           //console.log(result, commands[i]);
@@ -18270,7 +18926,7 @@ app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
       resp.albums[i].recent = 'played';
     });
     var a = app.helpers.shuffle(resp.albums);
-    return a;
+    return app.helpers.buildUrls(a, 'album', 'albumid');
   }
 });
 
@@ -18299,7 +18955,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    return resp.artists;
+    return app.helpers.buildUrls(resp.artists, 'artist', 'artistid');
   }
 });
 
@@ -18332,7 +18988,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    return resp.movies;
+    return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });
 
@@ -18355,7 +19011,7 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
-    return resp.movies;
+    return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });
 ;
@@ -18466,7 +19122,7 @@ app.PlaylistCustomListCollection = Backbone.Collection.extend({
         o = [], i = 1;
 
       // success
-      for(n in lists){
+      for (var n in lists){
         var item = lists[n];
         item.id = i;
         o.push(item);
@@ -18511,7 +19167,7 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
       var list = app.playlists.getThumbsUp(options.name);
 
       // no further parsing if empty
-      if(list == null || list.length == 0){
+      if(list === null || list.length === 0){
         return {items: []};
       }
 
@@ -18546,8 +19202,10 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
 });
 
 
-
-
+/**
+ * Get a list of song models based on an array of songids
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.CustomSongCollection = Backbone.Collection.extend({
 
   model: app.Song,
@@ -18641,7 +19299,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
           $(window).trigger('songsReady');
 
           // ready action
-          callLater(successCallback,  self)
+          callLater(successCallback,  self);
         }});
       }
 
@@ -18740,7 +19398,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
    * @param callback
    */
   this.multipleArtists = function(artistIds, callback){
-    if(artistIds.length == 0){
+    if(artistIds.length === 0){
       return;
     }
     this.allArtists(function(artists){
@@ -18773,7 +19431,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
     $.each(songs, function(i,d){
 
       // already have a song
-      if(song != null){
+      if(song !== null){
         return;
       }
 
@@ -18809,7 +19467,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
    * @param callback
    */
   this.multipleAlbums = function(albumIds, callback){
-    if(albumIds.length == 0){
+    if(albumIds.length === 0){
       return;
     }
     this.allAlbums(function(albums){
@@ -18832,14 +19490,14 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
     // get a random collection
     this.allArtists(function(data){
-        artists = data.models,
+        var artists = data.models,
           randArtists = _.shuffle(artists),
           farts = [], count = 30, i = 0;
 
         // only add content with artwork
         _.each(randArtists,function(a){
           if(i < count){
-            if(a.attributes.fanart.length != 0 && a.attributes.thumbnail.length != 0){
+            if(a.attributes.fanart.length !== 0 && a.attributes.thumbnail.length !== 0){
               farts.push(a);
               i++;
             }
@@ -18849,7 +19507,7 @@ app.MemoryStore = function (successCallback, errorCallback) {
         if(farts.length < count){
           _.each(randArtists,function(a){
             if(i < count){
-              if(a.attributes.thumbnail.length != 0){
+              if(a.attributes.thumbnail.length !== 0){
                 farts.push(a);
                 i++;
               }
@@ -18884,16 +19542,16 @@ app.MemoryStore = function (successCallback, errorCallback) {
     var data = {}, albums = [], self = this, key = type + id, filter = type + 'id', plural = type + 's';
 
     // if cache exists
-    if(app.helpers.exists(app.stores[plural])
-      && app.helpers.exists(app.stores[plural][key])
-      && app.helpers.exists(app.stores[plural][key].albumsitems)
+    if(app.helpers.exists(app.stores[plural]) &&
+      app.helpers.exists(app.stores[plural][key]) &&
+      app.helpers.exists(app.stores[plural][key].albumsitems)
     ){
       // get cache?
       albums = app.stores[plural][key].albumsitems;
       callLater(callback,  albums);
     }
     // if no cache get/refresh a collection from xbmc
-    if(albums.length == 0) {
+    if(albums.length === 0) {
       // songs by filter
       data[filter] = id;
 
@@ -18912,11 +19570,11 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
   /* parse songs into albums */
   this.parseArtistSongsToAlbums = function(songs){
-    albums = {}, ret = [];
-    for(i in songs){
+    var albums = {}, ret = [];
+    for(var i in songs){
       // vars
       var model = songs[i],
-          item = (typeof model.attributes != 'undefined' ? model.attributes : 0),
+          item = (typeof model.attributes != 'undefined' ? model.attributes : {}),
           albumkey = 'album' + item.albumid;
 
       // parse into albums
@@ -18925,12 +19583,14 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
         // populate album info from first item
         var fields = ['album', 'albumid', 'thumbnail', 'artist', 'artistid'];
-        $.each(fields, function(b, field){
-          if($.isArray(item[field])){
-            item[field] = item[field][0];
+
+        // merge fields
+        for(var f in fields){
+          var field = fields[f];
+          if(item[field] !== undefined){
+            albums[albumkey][field] = item[field];
           }
-          albums[albumkey][field] = item[field];
-        });
+        }
 
         // setup for songlist
         albums[albumkey].songs = [];
@@ -18947,55 +19607,6 @@ app.MemoryStore = function (successCallback, errorCallback) {
   this.syncAudio(successCallback);
 
 
-
-  /*
-   * Force sync songs with xbmc DEPRECATED
-   */
-  /* this.parseAudio = function(songs){
-
-
-    //loop over each song
-    $.each(songs, function(i,data){
-
-      //vars
-      var item = data.attributes
-        , songsDefault = { songs:[], artist: {}, albums: [], albumsitems: [] }
-        , songkey = item.songid
-        , albumid = (typeof item.albumid != "undefined" ? item.albumid : 0)
-        , artistid = (typeof item.artistid != "undefined" ? item.artistid[0] : 0)
-        , genreid = (typeof item.genreid != "undefined" ? item.genreid[0] : 0)
-        , albumkey = 'album' + albumid
-        , artistkey = 'artist' + artistid
-        , genrekey = 'genre' + genreid
-        ;
-
-      // default songs
-      if(typeof app.stores.songs[artistkey] == "undefined"){
-        app.stores.songs[artistkey] = songsDefault;
-      }
-
-      // default artists get more parsing
-      if(typeof app.stores.artists[artistkey] == "undefined"){
-        app.stores.artists[artistkey] = songsDefault;        
-      }
-
-      // default genres
-      if(typeof app.stores.genres[genrekey] == "undefined"){
-        app.stores.genres[genrekey] = songsDefault;
-      }
-
-      //app.stores.albums[albumkey].songs.push(data);
-      app.stores.songs[artistkey].songs.push(data);
-      //app.stores.artists[artistkey].songs.push(data);
-      app.stores.genres[genrekey].songs.push(data);
-      app.stores.all.push(data);
-
-
-    });
-
-  };*/
-
-
   // Used to simulate async calls. This is done to provide a consistent
   // interface with stores that use async data access APIs
   var callLater = function (callback, data) {
@@ -19004,9 +19615,9 @@ app.MemoryStore = function (successCallback, errorCallback) {
         callback(data);
       });
     }
-  }
+  };
 
-}
+};
 
 app.store = new app.MemoryStore(function(){
 
@@ -19044,7 +19655,7 @@ app.FileCollection = Backbone.Collection.extend({
       // add a title before return
       var sources = self.parseData(res.result.sources);
       callback(sources);
-    })
+    });
 
   },
 
@@ -19062,7 +19673,7 @@ app.FileCollection = Backbone.Collection.extend({
 
       callback(files);
 
-    })
+    });
 
   },
 
@@ -19072,13 +19683,13 @@ app.FileCollection = Backbone.Collection.extend({
    * @returns {*}
    */
   parseData: function(models){
-    for(i in models){
+    for(var i in models){
 
-      if(typeof models[i].filetype == 'undefined' || models[i].filetype == ''){
+      if(typeof models[i].filetype == 'undefined' || models[i].filetype === ''){
         models[i].filetype = 'directory';
       }
 
-      if(typeof models[i].id == 'undefined' || models[i].id == 0){
+      if(typeof models[i].id == 'undefined' || models[i].id === 0){
         models[i].id = models[i].file;
       }
 
@@ -19091,7 +19702,7 @@ app.FileCollection = Backbone.Collection.extend({
         models[i].type = 'file';
       }
 
-      if(typeof models[i].title == 'undefined' || models[i].title == ''){
+      if(typeof models[i].title == 'undefined' || models[i].title === ''){
         models[i].title = models[i].label;
       }
 
@@ -19140,7 +19751,7 @@ app.MovieCollection = Backbone.Collection.extend({
 
       // CACHE GET
       // empty cache if first load
-      if(app.moviePageNum == 0){
+      if(app.moviePageNum === 0){
         app.stores.movies = [];
       }
       // prep empty cache
@@ -19192,7 +19803,70 @@ app.MovieRecentCollection = Backbone.Collection.extend({
     app.xbmcController.command('VideoLibrary.GetRecentlyAddedMovies', opt, function(data){
       console.log(data);
       options.success(data.result.movies);
-    })
+    });
+
+  }
+
+});
+
+
+/**
+ * A collection of movies matching a filter
+ */
+app.MovieFitleredCollection = Backbone.Collection.extend({
+  model: app.Movie,
+
+  cached: [],
+  fullyLoaded: false,
+
+  sync: function(method, model, options) {
+
+    var sort = {"sort": {"method": "title"}},
+      opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter];
+    console.log('result from ', opt);
+
+    for(var k in options.filter){
+      var key = k + ':' + options.filter[k];
+    }
+
+    app.xbmcController.command('VideoLibrary.GetMovies', opt, function(data){
+      console.log('result from ', opt);
+      console.log('data ', data);
+
+      options.success(data.result.movies);
+    });
+
+  }
+
+});
+
+
+/**
+ * A lightweight collection of all movies (cached).
+ */
+app.MovieAllCollection = Backbone.Collection.extend({
+  model: app.Movie,
+
+  cached: [],
+  fullyLoaded: false,
+
+  sync: function(method, model, options) {
+
+    if(typeof app.stores.allMovies == 'undefined'){
+      // no cache, do a lookup
+      var allMovies = new app.AllMovieXbmcCollection();
+      allMovies.fetch({"success": function(data){
+        // Sort
+        data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+        // Cache
+        app.stores.allMovies = data.models;
+        // Return
+        options.success(data.models);
+      }});
+    } else {
+      // else return cache;
+      options.success(app.stores.allMovies);
+    }
 
   }
 
@@ -19228,7 +19902,7 @@ app.MovieRecentCollection = Backbone.Collection.extend({
       $('#sidebar-first .album-small-row').removeClass('active');
 
       //check if album exists in current sidebar list and only render if not
-      if($(sidebarSelector).length == 0){
+      if($(sidebarSelector).length === 0){
 
         //add the sidebar view
         self.albumArtistView = new app.AlbumArtistView({"model":data.models[0]});
@@ -19406,7 +20080,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
     model.url = '#album/' + model.albumid;
     model.img = app.parseImage(model.thumbnail);
     model.recenttext = (typeof model.recent != 'undefined' ? 'Recently ' + model.recent : '');
-    model.artisturl = (model.artistid != '' ? '#artist/' + model.artistid : '#artists');
+    model.artisturl = (model.artistid !== '' ? '#artist/' + model.artistid : '#artists');
 
     // apply template
     this.$el.html(this.template(model));
@@ -19641,7 +20315,7 @@ app.ArtistSummaryView = Backbone.View.extend({
 
 
       //scroll fanart down
-      if(self.model.attributes.fanart != ''){
+      if(self.model.attributes.fanart !== ''){
         //$('body').scrollTo(176);
       }
 
@@ -19697,7 +20371,7 @@ app.ArtistSummaryView = Backbone.View.extend({
   renderSidebar:function(){
 
     // if no existing artist list (don't re-render if not required)
-    if($('.artist-list .artist').length == 0){
+    if($('.artist-list .artist').length === 0){
 
       // get artists list
       this.artistsList = new app.ArtistCollection();
@@ -19844,7 +20518,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
     // enrich the model
     model.title = ( typeof model.label != "undefined" ? model.label : model.artist );
     model.url = '#album/' + model.artistid;
-    model.img = (model.fanart != '' ? model.fanart : model.thumbnail);
+    model.img = (model.fanart !== '' ? model.fanart : model.thumbnail);
 
     this.$el.html(this.template(model));
 
@@ -20149,7 +20823,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
    * @param callback
    */
   addCustomListToPlaylist:function(items, callback) {
-    for(i in items){
+    for(var i in items){
       if(typeof items[i] != 'number'){
         items[i] = items[i].file;
       }
@@ -20261,7 +20935,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
     // add if thumbs up
     if( app.playlists.isThumbsUp('song', this.model.attributes.songid) ) {
-      this.$el.addClass('thumbs-up')
+      this.$el.addClass('thumbs-up');
     }
     // render
     this.$el.html(this.template(this.model.attributes));
@@ -20331,7 +21005,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     e.preventDefault();
     app.AudioController.downloadFile(file, function(url){
       window.location = url;
-    })
+    });
   },
 
   addToCustomPlaylist: function(e){
@@ -20364,17 +21038,17 @@ app.CustomPlaylistSongView = Backbone.View.extend({
       $filesContainer = $('#files-container', $content),
       $fc = $('<ul class="files-music"></ul>');
 
-    if($filesContainer.length == 0){
+    if($filesContainer.length === 0){
       $content.html(this.template(this.model));
     }
 
     this.model.models.sort(function(a,b){
-      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
+      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
     });
 
     _.each(this.model.models, function (file) {
 
-      if(file.attributes.filetype == '' || file.attributes.filetype == 'directory'){
+      if(file.attributes.filetype === '' || file.attributes.filetype == 'directory'){
         // is a dir
         this.$el.append(new app.FileView({model:file}).render().el);
       } else {
@@ -20384,7 +21058,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
     }, this);
 
-    if($fc.html() != ''){
+    if($fc.html() !== ''){
       $filesContainer.html($fc);
     } else {
       $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
@@ -20416,7 +21090,7 @@ app.FilesListView = Backbone.View.extend({
     this.$el.empty();
 
     this.model.models.sort(function(a,b){
-      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title)
+      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
     });
 
     _.each(this.model.models, function (file) {
@@ -20489,7 +21163,7 @@ app.FileView = Backbone.View.extend({
 
       // dont append if already appended
       //console.log(self.$el);
-      if(self.$el.find('ul.files-list').length == 0){
+      if(self.$el.find('ul.files-list').length === 0){
         self.$el.append(el);
       }
 
@@ -20512,7 +21186,7 @@ app.FileView = Backbone.View.extend({
 
     if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
       key = file.type + 'id';
-      value = file.id
+      value = file.id;
     }
 
     app.AudioController.insertAndPlaySong(key, value, function(result){
@@ -20532,7 +21206,7 @@ app.FileView = Backbone.View.extend({
 
     if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
       key = file.type + 'id';
-      value = file.id
+      value = file.id;
     }
 
     app.AudioController.playlistAdd( key, value, function(result){
@@ -20548,7 +21222,7 @@ app.FileView = Backbone.View.extend({
     e.preventDefault();
     app.AudioController.downloadFile(file, function(url){
       window.location = url;
-    })
+    });
   },
 
   addToCustomPlaylist: function(e){
@@ -20685,8 +21359,13 @@ app.MovieListItemView = Backbone.View.extend({
   className: 'movie-item-content',
 
   events:{
-    "click .play-movie": "playMovie"
+    "click .movie-play": "playMovie",
+    "click .movie-add": "addMovie",
+    "click .movie-thumbsup": "thumbsUp",
+    "click .movie-menu": "menu",
+    "click .actions-wrapper": "view"
   },
+
 
   initialize:function () {
     this.model.on("change", this.render, this);
@@ -20696,13 +21375,69 @@ app.MovieListItemView = Backbone.View.extend({
   render:function () {
 
     var model = this.model.attributes;
+    model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     this.$el.html(this.template(model));
     return this;
   },
 
+
+  /**
+   * Nav to movie page
+   */
+  view: function(){
+    document.location = '#movie/' + this.model.attributes.movieid;
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('movie', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
+  },
+
+
+  /**
+   * Set as thumbsup
+   * @param e
+   */
+  thumbsUp: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var movie = this.model.attributes,
+      op = (app.playlists.isThumbsUp('movie', movie.movieid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.movie-actions');
+    app.playlists.setThumbsUp(op, 'movie', movie.movieid);
+    $el.toggleClass('thumbs-up');
+
+  },
+
+
   playMovie: function(e){
     e.preventDefault();
+    e.stopPropagation();
+    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+
+  addMovie: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    app.VideoController.addToPlaylist(this.model.attributes.movieid, 'movieid', 'add', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
 
   }
 
@@ -20714,27 +21449,138 @@ app.MovieListItemView = Backbone.View.extend({
  */
 app.MovieView = Backbone.View.extend({
 
-  initialize:function () {
+  allMovieCache: [],
 
+  initialize:function () {
+    var self = this;
+    // get all movies into a cache if required
+    // needed for next button
+    var allMovies = new app.MovieAllCollection();
+    allMovies.fetch({"success": function(data){
+      console.log(data);
+      self.allMovieCache = data;
+    }});
+  },
+
+  events:{
+    "click .library-back": "libraryBack",
+    "click .library-next": "libraryNext",
+    "click .movie-play": "playMovie",
+    "click .movie-add": "addMovie",
+    "click .movie-thumbsup": "thumbsUp",
+    "click .movie-menu": "menu"
   },
 
   render: function () {
 
+
+
     var model = this.model.attributes;
+    model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     //main detail
     this.$el.html(this.template(model));
 
     console.log(model);
-    // sidebar
-    var $side = $('<div class="video-side"></div>');
-    $side.append($('<img src="'+app.parseImage(model.thumbnail)+'" />'));
 
-    $('#fanart-background',this.$el).backstretch(app.parseImage(model.fanart));
+    // backstretch
+    _.defer(function(){
+      var $fart = $('#fanart-background',this.$el),
+        fart = app.parseImage(model.fanart, 'fanart');
+      $fart.backstretch(fart);
+    });
 
-    //app.helpers.setFirstSidebarContent($side);
 
     return this;
+  },
+
+
+
+  libraryBack: function(e){
+    e.preventDefault();
+    // same as using the back button
+    window.history.back();
+  },
+
+  /**
+   * Navigate Next
+   * @param e
+   */
+  libraryNext: function(e){
+    e.preventDefault();
+
+    // next movie in cache
+    var next = false,
+      nextId = 0,
+      self = this;
+
+    // loop over all movies
+    $.each(self.allMovieCache.models, function(i,d){
+      var movie = d.attributes;
+      // current was last
+      if(next === true){
+        nextId = parseInt(movie.movieid);
+        next = false;
+      }
+      if(movie.movieid == self.model.attributes.id){
+        next = true;
+      }
+    });
+
+    // next movie id available
+    if(nextId > 0){
+      document.location = '#movie/' + nextId;
+    }
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('movie', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
+  },
+
+
+  /**
+   * Set as thumbsup
+   * @param e
+   */
+  thumbsUp: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var movie = this.model.attributes,
+      op = (app.playlists.isThumbsUp('movie', movie.movieid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.movie-actions');
+    app.playlists.setThumbsUp(op, 'movie', movie.movieid);
+    $el.toggleClass('thumbs-up');
+
+  },
+
+
+  playMovie: function(e){
+    e.preventDefault();
+    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+
+  addMovie: function(e){
+    e.preventDefault();
+    app.VideoController.addToPlaylist(this.model.attributes.movieid, 'movieid', 'add', function(data){
+      // movie should be playing
+      app.VideoController.playlistRender();
+    });
+
   }
 
 
@@ -20766,7 +21612,7 @@ app.playerStateView = Backbone.View.extend({
 
     // enrich
     data.playingItemChanged = (lastPlaying != data.item.file);
-    data.status = (app.helpers.exists(data.player.speed) && data.player.speed == 0 ? 'paused' : data.status);
+    data.status = (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status);
     app.state = data.status;
 
     // resave model
@@ -20829,6 +21675,13 @@ app.playerStateView = Backbone.View.extend({
       .addClass(data.status)
       .addClass( 'random-' + (data.player.shuffled === true ? 'on' : 'off') )
       .addClass( 'repeat-' + data.player.repeat );
+
+    // Remove all classes starting with 'activePlayer'
+    this.$body.removeClass (function (index, css) {
+      return (css.match (/\bactivePlayer\S+/g) || []).join(' ');
+    })
+      // Add the current player / playlist
+      .addClass('activePlayer-'+ data.activePlayer);
   },
 
 
@@ -20846,22 +21699,32 @@ app.playerStateView = Backbone.View.extend({
     var data = this.model,
       // time stuff
       $time = $('#time'),
-      cur = (parseInt(data.player.percentage) / 100) * parseInt(data.item.duration),
+      cur = 0,
+      dur = 0,
       // playlist stuff
       meta = app.helpers.parseArtistsArray(data.item),
       $playlistActive = $('.playlist .playing-row');
 
     //set playlist meta and playing row
     $('.playing-song-meta').html(meta);
-    $playlistActive.find('.playlist-meta').html(meta);
-    $playlistActive.find('.thumb').attr('src', app.parseImage(data.item.thumbnail));
 
     //set progress
     app.shellView.$progressSlider.slider( "value",data.player.percentage );
 
-    //time
-    $time.find('.time-cur').html(app.helpers.secToTime(Math.floor(cur)));
-    $time.find('.time-total').html(app.helpers.secToTime(data.item.duration));
+    // switch between audio / video formatting
+    if(data.activePlayer == 1){
+      // Video
+      dur = data.player.totaltime.hours + ':' + data.player.totaltime.minutes + ':' + data.player.totaltime.seconds;
+      cur = data.player.time.hours + ':' + data.player.time.minutes + ':' + data.player.time.seconds;
+    } else if (data.activePlayer === 0){
+      // Audio
+      dur = app.helpers.secToTime(parseInt(data.item.duration));
+      cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
+    }
+
+    // set time
+    $time.find('.time-cur').html(cur);
+    $time.find('.time-total').html(dur);
 
   },
 
@@ -20875,17 +21738,20 @@ app.playerStateView = Backbone.View.extend({
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .attr('src',app.parseImage(data.item.thumbnail))
+      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')")
       .attr('title', data.item.album)
-      .parent().attr('href', '#album/' + data.item.albumid);
+      .attr('href', '#album/' + data.item.albumid);
 
+    if(app.cached.nowPlaying.activePlayer == 1){
+      this.$nowPlaying.find('#playing-thumb').attr('href', '#' + data.item.type + '/' + data.item.albumid);
+    }
     // set title
     $('.playing-song-title').html(data.item.label); //now playing
 
 
     // Backstretch
     // @TODO move to home view as bind
-    if(location.hash == '#' || location.hash == '' && app.audioStreaming.getPlayer() == 'xbmc'){
+    if(location.hash == '#' || location.hash === '' && app.audioStreaming.getPlayer() == 'xbmc'){
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
@@ -20897,7 +21763,12 @@ app.playerStateView = Backbone.View.extend({
     }
 
     // refresh playlist
-    app.AudioController.playlistRender();
+    if(app.cached.nowPlaying.activePlayer === 0){
+      app.AudioController.playlistRender();
+    } else if(app.cached.nowPlaying.activePlayer == 1){
+      app.VideoController.playlistRender();
+    }
+
   },
 
   /**
@@ -20916,7 +21787,7 @@ app.playerStateView = Backbone.View.extend({
       } else if($d.hasClass('playlist-item')){
 
         // match pos in xbmc list
-        if($d.data('id') == data.player.position && !$d.parent().hasClass('browser-player')){
+        if($d.data('id') == data.player.position && !$d.parent().hasClass('browser-player') && $d.data('playlistId') == data.activePlayer){
           $d.addClass('playing-row');
         }
       }
@@ -20930,7 +21801,7 @@ app.playerStateView = Backbone.View.extend({
   setTitle:function () {
     var data = this.model, title = data.item.label;
     if(app.audioStreaming.getPlayer() == 'xbmc'){
-      document.title = (data.status == 'playing' ? '▶ ' : '') + (title != undefined ? title + ' | ' : '') + 'Chorus.'; //doc
+      document.title = (data.status == 'playing' ? '▶ ' : '') + (title !== undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
   },
 
@@ -20964,14 +21835,15 @@ app.playerStateView = Backbone.View.extend({
   playerCron:function (){
     var data = this.model,
       lastState =  app.helpers.varGet('lastState', ''),
-      noState = (typeof lastState == 'undefined' || typeof lastState.volume == 'undefined');
+      noState = (typeof lastState == 'undefined' || typeof lastState.volume == 'undefined'),
+      $t = {}, t = '', n ='';
 
     //set volume, only if we must
-    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active')  // is the slider currently being moved?
-      && (noState || lastState.volume.volume != data.volume.volume)){
+    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active') &&  // is the slider currently being moved?
+      (noState || lastState.volume.volume != data.volume.volume)){
       app.shellView.$volumeSlider.slider( "value",data.volume.volume );
       //muted class
-      if(data.volume.volume == 0){
+      if(data.volume.volume === 0){
         $('body').addClass('muted');
       } else {
         $('body').removeClass('muted');
@@ -20979,15 +21851,17 @@ app.playerStateView = Backbone.View.extend({
     }
 
     // set repeat title text
-    if(noState || lastState.player.repeat != data.player.repeat){
-      var $t = $('.player-repeat'), t = $t.attr('title'),
-        n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
+    if(noState || typeof lastState.player == 'undefined' || lastState.player.repeat != data.player.repeat){
+       $t = $('.player-repeat');
+       t = $t.attr('title');
+       n = (data.player.repeat == 'off' ? 'Repeat is off' : 'Currently repeating ' + data.player.repeat);
       if(t != n){ $t.attr('title', n); }
     }
 
     // set random title text
     if(noState || lastState.player.shuffled != data.player.shuffled){
-      var $t = $('.player-random'), t = $t.attr('title'),
+        $t = $('.player-random');
+        t = $t.attr('title');
         n = 'Random is ' + (data.player.shuffled === true ? 'On' : 'Off');
       if(t != n){ $t.attr('title', n); }
     }
@@ -21006,9 +21880,14 @@ app.playerStateView = Backbone.View.extend({
 
 app.PlaylistView = Backbone.View.extend({
 
-  tagName:'ul',
+  tagName:'div',
 
-  className:'playlist',
+  className:'playlist-wrapper',
+
+  events: {
+    "click .player-audio": "viewAudio",
+    "click .player-video": "viewVideo"
+  },
 
   initialize:function () {
 
@@ -21017,21 +21896,36 @@ app.PlaylistView = Backbone.View.extend({
   render:function () {
     // html
     this.$el.empty();
-    var pos = 0; //position
+    var pos = 0, //position
+      $tabs = $('<ul class="active-player-tabs"></ul>'),
+      $items = $('<ul class="playlist"></ul>'),
+      plId = (typeof this.model.playlistId != 'undefined' ? this.model.playlistId : 0);
+
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
-      this.$el.append(new app.PlaylistItemView({model:item}).render().el);
+      item.playlistId = plId;
+      $items.append(new app.PlaylistItemView({model:item}).render().el);
     }, this);
+    this.$el.append($items);
 
     // reload thumbsup
     app.playlists.getThumbsUp();
 
     // bind others
     $(window).bind('playlistUpdate', this.playlistBinds());
+
+    // make and prepend tabs
+    $tabs.append('<li class="player-audio' + (plId === 0 ? ' active' : '') + '">Audio</li>');
+    $tabs.append('<li class="player-video' + (plId == 1 ? ' active' : '') + '">Video</li>');
+
+    this.$el.prepend($tabs);
+
+    this.$el.addClass('plid-' + plId);
+
     return this;
   },
 
-  playlistBinds:function(self){
+  playlistBinds:function(){
 
     //sortable
     $sortable = $( "ul.playlist");
@@ -21045,6 +21939,14 @@ app.PlaylistView = Backbone.View.extend({
       }
     }).disableSelection();
 
+  },
+
+  viewAudio:function(e){
+    app.AudioController.playlistRender();
+  },
+
+  viewVideo:function(e){
+    app.VideoController.playlistRender();
   }
 
 });
@@ -21070,21 +21972,25 @@ app.PlaylistItemView = Backbone.View.extend({
 
   render:function () {
     // file fallback
-    this.model.id = (typeof this.model.id != 'undefined' ? this.model.id : 'file');
-    this.model.albumid = (typeof this.model.albumid != 'undefined' ? this.model.albumid : 'file');
-    this.model.artistLink = this.buildArtistLink(this.model);
+    var model = this.model;
+
+    model.id = (typeof model.id != 'undefined' ? model.id : 'file');
+    model.albumid = (typeof model.albumid != 'undefined' ? model.albumid : 'file');
+    model.subLink = this.buildSubLink(model);
+    model.url = (model.albumid != 'file' ? '#album/' + model.albumid : app.helpers.buildUrl(model.type, model.id));
 
     // render
-    this.$el.html(this.template(this.model));
+    this.$el.html(this.template(model));
 
     // if file, add its path
     if(this.model.id == 'file'){
-      $('.song', this.$el).data('file', this.model.file);
+      $('.song', this.$el).data('file', model.file);
     }
+    $('.song', this.$el).data('playlistId', model.playlistId);
 
     // add if thumbs up
     if( this.model.id != 'file' && app.playlists.isThumbsUp('song', this.model.id) ) {
-      this.$el.addClass('thumbs-up')
+      this.$el.addClass('thumbs-up');
     }
     return this;
   },
@@ -21095,7 +22001,12 @@ app.PlaylistItemView = Backbone.View.extend({
    * @param e
    */
   menu: function(e){
-    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model) );
+    if(this.model.playlistId == 1){
+      app.helpers.menuDialog( app.helpers.menuTemplates('movie', this.model) );
+    } else {
+      app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model) );
+    }
+
   },
 
 
@@ -21105,8 +22016,11 @@ app.PlaylistItemView = Backbone.View.extend({
       app.audioStreaming.playPosition(this.model.pos);
     } else {
       // XBMC PLAYER
-      app.AudioController.playPlaylistPosition(this.model.pos, function(data){
-        app.AudioController.playlistRender();
+      // Toggle between music / video playlists
+      var playlistController = (this.model.playlistId == 1 ? app.VideoController : app.AudioController);
+      // play and refresh
+      playlistController.playPlaylistPosition(this.model.pos, function(data){
+        playlistController.playlistRender();
       });
     }
   },
@@ -21119,9 +22033,11 @@ app.PlaylistItemView = Backbone.View.extend({
       app.audioStreaming.renderPlaylistItems();
     } else {
       // XBMC PLAYER
+      // Toggle between music / video playlists
+      var playlistController = (this.model.playlistId == 1 ? app.VideoController : app.AudioController);
       var self = this;
-      app.AudioController.removePlaylistPosition(this.model.pos, function(data){
-        app.AudioController.playlistRender();
+      playlistController.removePlaylistPosition(this.model.pos, function(data){
+        playlistController.playlistRender();
       });
     }
   },
@@ -21134,10 +22050,11 @@ app.PlaylistItemView = Backbone.View.extend({
 
   thumbsUp: function(e){
     e.stopPropagation();
-    var songid = this.model.id,
-      op = (app.playlists.isThumbsUp('song', songid) ? 'remove' : 'add'),
+    var id = this.model.id,
+      type = (this.model.playlistId == 1 ? 'video' : 'song'),
+      op = (app.playlists.isThumbsUp(type, id) ? 'remove' : 'add'),
       $el = $(e.target).closest('li');
-    app.playlists.setThumbsUp(op, 'song', songid);
+    app.playlists.setThumbsUp(op, type, id);
     $el.toggleClass('thumbs-up');
   },
 
@@ -21146,19 +22063,37 @@ app.PlaylistItemView = Backbone.View.extend({
    * A helper to parse
    * @param model
    */
-  buildArtistLink: function(model){
-    // build artist names
-    model.albumArtistString = (typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
-    model.artistString = (typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
-    // add title
-    var title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
-    // if no artist or album artist, return null
-    if(model.artistString == '' && model.albumArtistString == ''){
+  buildSubLink: function(model){
+
+    var url, text, title;
+
+    if(model.type == 'song'){
+
+      // build artist names
+      model.albumArtistString = (typeof model.albumartist != 'undefined' && typeof model.albumartist[0] != 'undefined' ? model.albumartist[0] : '');
+      model.artistString = (typeof model.artist != 'undefined' && typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
+
+      // build song vars
+      title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
+      url = '#search/' + (model.albumArtistString !== '' ? model.albumArtistString : model.artistString);
+      text = (model.artistString !== '' ? model.artistString : model.albumArtistString);
+
+      // if no artist or album artist, return null
+      if(model.artistString === '' && model.albumArtistString === ''){
+        return '';
+      }
+
+    } else if (model.type == 'movie' || model.type == 'tvshow' || model.type == 'episode') {
+      text = model.year;
+      url = '#movies/year/' + model.year;
+      title = 'More movies from ' + text;
+    } else {
       return '';
     }
+
     // return link
-    return '<a title="'+ title +'" href="#search/' + (model.albumArtistString != '' ? model.albumArtistString : model.artistString) + '">' +
-      (model.artistString != '' ? model.artistString : model.albumArtistString) + '</a>';
+    return '<a title="'+ title +'" href="' + url + '">' + text + '</a>';
+
   }
 
 
@@ -21358,7 +22293,7 @@ app.searchView = Backbone.View.extend({
 
   // Get a generic logo/icon
   getLogo: function(type){
-    return '<img src="theme/images/icons/icon-' + type + '.png" />'
+    return '<img src="theme/images/icons/icon-' + type + '.png" />';
   },
 
 
@@ -21408,7 +22343,7 @@ app.searchView = Backbone.View.extend({
           }});
         } else {
           // no res
-          $songs.html('<div class="noresult-box empty">' + self.getLogo('song') + '<span>No Songs found</span></div>')
+          $songs.html('<div class="noresult-box empty">' + self.getLogo('song') + '<span>No Songs found</span></div>');
         }
 
 
@@ -21471,10 +22406,8 @@ app.searchView = Backbone.View.extend({
     this.$el.html(this.template());
     var self = this;
 
-    //set playlist
-    app.AudioController.playlistRender(function(result){
-
-    });
+    // playlist
+    app.AudioController.playlistRender();
 
     //init the progress bar
     this.$progressSlider = $( "#progress-bar", this.el );
@@ -21568,7 +22501,7 @@ app.searchView = Backbone.View.extend({
   primaryTabClick:function(event){
     $thisTab = $(event.target);
     if(!$thisTab.hasClass('playlist-primary-tab')){
-      $thisTab = $thisTab.closest('li.playlist-primary-tab')
+      $thisTab = $thisTab.closest('li.playlist-primary-tab');
     }
     // toggle based on tab class
     var view = $thisTab.data('pane');
@@ -21653,7 +22586,7 @@ app.searchView = Backbone.View.extend({
             if($d.data('id') == app.helpers.arg(1)){
               $parent.addClass('open');
             } else {
-              $parent.removeClass('open')
+              $parent.removeClass('open');
             }
           });
           break;
@@ -21702,7 +22635,7 @@ app.searchView = Backbone.View.extend({
   //mute
   playerMute:function(){
     //get current vol
-    var cur = this.$volumeSlider.slider( "value"), $body = $('body');
+    var cur = this.$volumeSlider.slider( "value"), $body = $('body'), lastvol;
     if(cur > 0){
       //store current vol then set to 0
       this.lastVol = cur;
@@ -21712,9 +22645,9 @@ app.searchView = Backbone.View.extend({
     } else {
       //if last vol
       if(app.helpers.exists(this.lastVol) && this.lastVol > 0){
-        var lastvol = this.lastVol; //set back to last value
+        lastvol = this.lastVol; //set back to last value
       } else {
-        var lastvol = 50; //default last vol to 50%
+        lastvol = 50; //default last vol to 50%
       }
       //set lastvol
       app.AudioController.setVolume(lastvol);
@@ -21901,7 +22834,7 @@ app.SongView = Backbone.View.extend({
   render:function () {
     // add if thumbs up
     if( app.playlists.isThumbsUp(this.model.attributes.songid) ) {
-      this.$el.addClass('thumbs-up')
+      this.$el.addClass('thumbs-up');
     }
     // render
     this.$el.html(this.template(this.model.attributes));
@@ -22022,7 +22955,7 @@ app.XbmcView = Backbone.View.extend({
 
     this.$el = $('<ul class="page-list"></ul>');
 
-    for(p in pages){
+    for(var p in pages){
       var $el = $('<li>').append('<h3><a href="#xbmc/' + p + '">'+ p +'</a></h3>').append('<p>'+pages[p]+'</p>');
       this.$el.append($el);
     }
@@ -22180,7 +23113,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
       self.$select.empty();
 
 
-      for(m in data.result.methods){
+      for(var m in data.result.methods){
         self.$select.append($('<option>', {
           value: m,
           text: m
@@ -22208,7 +23141,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
     $('#method-name', this.$el).html(method);
 
 
-    for(p in methodObj.params){
+    for(var p in methodObj.params){
       var param = methodObj.params[p],
         $div = $('<div />'),
         $el = {};
@@ -22221,14 +23154,14 @@ app.XbmcJSONrpcView = Backbone.View.extend({
 
       // set the text
       var text = (typeof param.description == 'undefined' ? '' : param.description + "\n\r") +
-        (param.type != '' ? JSON.stringify(param.type, null, 2) : '');
+        (param.type !== '' ? JSON.stringify(param.type, null, 2) : '');
 
 
       // The element used
       // have options, make a select
       if(typeof param.type.enums != 'undefined' && param.type.enums.length > 0){
         $el = $('<select>');
-        for(m in param.type.enums){
+        for(var m in param.type.enums){
           $el.append($('<option>', {
             value: param.type.enums[m],
             text: param.type.enums[m]
@@ -22256,10 +23189,11 @@ app.XbmcJSONrpcView = Backbone.View.extend({
     }
 
     // add execute button
-    $div = $('<div />')
+    var $ex = $('<div />')
       .addClass('param actions')
       .append('<button class="btn" id="doit">Execute</button>');
-    this.$params.append($div);
+
+    this.$params.append($ex);
 
 
     this.$res.html(JSON.stringify(methodObj, null, 4));
@@ -22314,6 +23248,6 @@ app.XbmcJSONrpcView = Backbone.View.extend({
   isEncoded:function(text, param, $el){
     console.log(param);
     if(param.type.type == 'integer'){ return false; }
-    return (!$el.hasClass('select') && text != '' && (typeof param.type == 'object' || param.type == 'array'));
+    return (!$el.hasClass('select') && text !== '' && (typeof param.type == 'object' || param.type == 'array'));
   }
 });

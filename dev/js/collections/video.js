@@ -27,7 +27,7 @@ app.MovieCollection = Backbone.Collection.extend({
 
       // CACHE GET
       // empty cache if first load
-      if(app.moviePageNum == 0){
+      if(app.moviePageNum === 0){
         app.stores.movies = [];
       }
       // prep empty cache
@@ -79,7 +79,7 @@ app.MovieRecentCollection = Backbone.Collection.extend({
     app.xbmcController.command('VideoLibrary.GetRecentlyAddedMovies', opt, function(data){
       console.log(data);
       options.success(data.result.movies);
-    })
+    });
 
   }
 
@@ -101,7 +101,7 @@ app.MovieFitleredCollection = Backbone.Collection.extend({
       opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter];
     console.log('result from ', opt);
 
-    for(k in options.filter){
+    for(var k in options.filter){
       var key = k + ':' + options.filter[k];
     }
 
@@ -110,7 +110,7 @@ app.MovieFitleredCollection = Backbone.Collection.extend({
       console.log('data ', data);
 
       options.success(data.result.movies);
-    })
+    });
 
   }
 

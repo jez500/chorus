@@ -204,7 +204,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
    * @param callback
    */
   addCustomListToPlaylist:function(items, callback) {
-    for(i in items){
+    for(var i in items){
       if(typeof items[i] != 'number'){
         items[i] = items[i].file;
       }
@@ -316,7 +316,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
     // add if thumbs up
     if( app.playlists.isThumbsUp('song', this.model.attributes.songid) ) {
-      this.$el.addClass('thumbs-up')
+      this.$el.addClass('thumbs-up');
     }
     // render
     this.$el.html(this.template(this.model.attributes));
@@ -386,7 +386,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     e.preventDefault();
     app.AudioController.downloadFile(file, function(url){
       window.location = url;
-    })
+    });
   },
 
   addToCustomPlaylist: function(e){

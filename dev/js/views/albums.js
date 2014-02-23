@@ -117,7 +117,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
     model.url = '#album/' + model.albumid;
     model.img = app.parseImage(model.thumbnail);
     model.recenttext = (typeof model.recent != 'undefined' ? 'Recently ' + model.recent : '');
-    model.artisturl = (model.artistid != '' ? '#artist/' + model.artistid : '#artists');
+    model.artisturl = (model.artistid !== '' ? '#artist/' + model.artistid : '#artists');
 
     // apply template
     this.$el.html(this.template(model));

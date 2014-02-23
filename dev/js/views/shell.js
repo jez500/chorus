@@ -144,7 +144,7 @@ app.ShellView = Backbone.View.extend({
   primaryTabClick:function(event){
     $thisTab = $(event.target);
     if(!$thisTab.hasClass('playlist-primary-tab')){
-      $thisTab = $thisTab.closest('li.playlist-primary-tab')
+      $thisTab = $thisTab.closest('li.playlist-primary-tab');
     }
     // toggle based on tab class
     var view = $thisTab.data('pane');
@@ -229,7 +229,7 @@ app.ShellView = Backbone.View.extend({
             if($d.data('id') == app.helpers.arg(1)){
               $parent.addClass('open');
             } else {
-              $parent.removeClass('open')
+              $parent.removeClass('open');
             }
           });
           break;
@@ -278,7 +278,7 @@ app.ShellView = Backbone.View.extend({
   //mute
   playerMute:function(){
     //get current vol
-    var cur = this.$volumeSlider.slider( "value"), $body = $('body');
+    var cur = this.$volumeSlider.slider( "value"), $body = $('body'), lastvol;
     if(cur > 0){
       //store current vol then set to 0
       this.lastVol = cur;
@@ -288,9 +288,9 @@ app.ShellView = Backbone.View.extend({
     } else {
       //if last vol
       if(app.helpers.exists(this.lastVol) && this.lastVol > 0){
-        var lastvol = this.lastVol; //set back to last value
+        lastvol = this.lastVol; //set back to last value
       } else {
-        var lastvol = 50; //default last vol to 50%
+        lastvol = 50; //default last vol to 50%
       }
       //set lastvol
       app.AudioController.setVolume(lastvol);

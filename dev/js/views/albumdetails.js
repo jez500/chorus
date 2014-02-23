@@ -28,7 +28,7 @@ app.AlbumView = Backbone.View.extend({
       $('#sidebar-first .album-small-row').removeClass('active');
 
       //check if album exists in current sidebar list and only render if not
-      if($(sidebarSelector).length == 0){
+      if($(sidebarSelector).length === 0){
 
         //add the sidebar view
         self.albumArtistView = new app.AlbumArtistView({"model":data.models[0]});

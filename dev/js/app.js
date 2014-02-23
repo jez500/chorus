@@ -224,14 +224,14 @@ app.Router = Backbone.Router.extend({
       if(app.audioStreaming.getPlayer() == 'local'){
         // get the local playing item
         var browserPlaying = app.audioStreaming.getNowPlayingSong();
-        backstretchImage = (browserPlaying.fanart == undefined ? '' : browserPlaying.fanart);
+        backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
       } else {
         // xbmc playing image
-        backstretchImage = (data.item.fanart == undefined ? '' : data.item.fanart);
+        backstretchImage = (data.item.fanart === undefined ? '' : data.item.fanart);
       }
 
       // Add Backstretch if image
-      if($('.backstretch').length == 0){
+      if($('.backstretch').length === 0){
         var fa = app.parseImage(backstretchImage, 'fanart');
         $.backstretch(fa);
       }
@@ -314,7 +314,7 @@ app.Router = Backbone.Router.extend({
     app.cached.albumView = new app.AlbumView({"model": model, "type":"album"});
 
     // only render if not on album page already
-    if($('.album-page').length == 0){
+    if($('.album-page').length === 0){
     $('#content').html(app.cached.albumView.render().el);
     } else {
       //just call render, don't update content
@@ -461,7 +461,7 @@ app.Router = Backbone.Router.extend({
 
   thumbsup: function(){
 
-    var $content = $('#content')
+    var $content = $('#content'),
       $sidebar = app.helpers.getFirstSidebarContent();
 
     // so we get things in the correct order, we have lots of sub wrappers for the different lists
@@ -525,10 +525,9 @@ app.Router = Backbone.Router.extend({
       page = 'page';
 
     // init pager
-    if($results.length == 0){
+    if($results.length === 0){
       // empty page
-      if(typeof page == 'undefined'){
-        var page = 'page', num = 0;
+      if(num === 0){
         app.moviePageNum = 0;
       }
       // Loading
@@ -546,7 +545,7 @@ app.Router = Backbone.Router.extend({
       // appending to page no other setup required
       app.moviePageNum++;
       // force a page via url
-      if(page && num > 0){
+      if(num !== undefined){
         app.moviePageNum = num;
       }
     }
@@ -558,14 +557,14 @@ app.Router = Backbone.Router.extend({
       // get the view of results
       app.cached.movieListView = new app.MovieListView({model: collection});
       // do we append or replace
-      if(app.moviePageNum == 0 || fullRange === true){
+      if(app.moviePageNum === 0 || fullRange === true){
         $content.html(app.cached.movieListView.render().$el);
 
         // scroll to top
         $(window).scrollTo(0);
 
         // back from a movie, scrollto that movie
-        if(fullRange == true && typeof app.vars.backHash != 'undefined'){
+        if(fullRange === true && typeof app.vars.backHash != 'undefined'){
           var parts = app.vars.backHash.split('/');
           if(parts[0] == '#movie'){
             $(window).scrollTo( $('.movie-row-' + parts[1]) , 0, {offset: -200});
@@ -584,7 +583,7 @@ app.Router = Backbone.Router.extend({
         // if last page was empty, dont change hash
         // or render
         var $lastList = $('.video-list').last();
-        if($lastList.find('li').length == 0){
+        if($lastList.find('li').length === 0){
           // dont render
           $lastList.remove();
         } else {
