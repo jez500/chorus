@@ -1,0 +1,222 @@
+/* Track listing */
+.playlist-song-list,
+.song-list {
+  padding: 0 0px;
+  position: relative;
+  .list-actions {
+    position: absolute;
+    z-index: 50;
+    top: -42px;
+    right: 260px;
+    .btn {
+      padding: 6px 13px;
+      margin-right: 3px;
+      display: inline-block;
+      font-size: 150%;
+      border-radius: 3px;
+      color: #CDD2D6;
+      float: right;
+      &:hover {
+        color: #fff;
+      }
+      &:focus {
+        background: none;
+      }
+      i {
+        color: #a6abaf;
+        font-size: 90%;
+        padding-right: 2px;
+      }
+    }
+  }
+  li.song-row {
+    position: relative;
+    .song-actions-wrapper {
+      display: none;
+      .btn {
+        position: absolute;
+        top: 3px;
+
+        background: #f1f1f1;
+        z-index: 5;
+        color: #999;
+        margin: 0;
+        float: left;
+        padding: 6px 12px 6px;
+        margin-right: 2px;
+        @include border-radius(0);
+
+        &:hover {
+          color: #333;
+          //background: rgba(255,255,255,1);
+        }
+        &.song-play {
+          left: -40px;
+          top: 0;
+          width: 40px;
+          height: 40px;
+          text-align: center;
+          @include box-sizing(border-box);
+          //background: #FAFAFA;
+        }
+        &.song-add {
+          right: 19px;
+        }
+        &.song-menu {
+          right: 0px;
+        }
+        &.song-thumbsup {
+          right: 48px;
+        }
+        &.song-remove {
+          right: 80px;
+          &:hover {
+            color: #D22431;
+          }
+        }
+      }
+    }
+    .visible-song-actions-wrapper {
+      padding: 6px 12px 6px;
+      position: absolute;
+      top: 3px;
+      right: 0;
+      font-size: 14.994px;
+      i {
+        display: none;
+        &.fa-thumbs-up {
+          margin-right: 49px;
+        }
+      }
+    }
+
+    &.thumbs-up {
+      .song-actions-wrapper .btn.song-thumbsup {
+        color: $color-dark-xbmc;
+      }
+      .visible-song-actions-wrapper i.fa-thumbs-up {
+        display: inline-block;
+      }
+    }
+    .track {
+      border-bottom: 1px solid #F0F0F0;
+      color: $color-concrete;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.84);
+      margin-right: 0px;
+      padding-left: 40px;
+
+      .track-col {
+        float: left;
+        height: 40px;
+        padding: 5px;
+        width: 5%;
+        line-height: 29px;
+        font-size: 12px;
+        @include box-sizing(border-box);
+        a {
+          color: $color-concrete;
+          &:hover {
+            color: $color-dark-xbmc;
+          }
+        }
+        &.song-tracknum {
+          width: 40px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 40px;
+          text-align: center;
+          font-size: 110%;
+
+        }
+        &.song-thumb {
+          padding: 0;
+          margin-right: 10px;
+          overflow: hidden;
+          img { width: 40px; }
+        }
+        &.song-duration {
+          width: 6%;
+        }
+        &.song-title {
+          @include user-select(none);
+          width: 83%;
+          overflow: hidden;
+          color: $color-darkest-xbmc;
+          font-size: 13px;
+        }
+        &.song-artist {
+          width: 24%;
+          overflow: hidden;
+          color: $color-darkest-xbmc;
+          font-size: 12px;
+          display: none;
+        }
+        //below toggles artist
+        &.song-artist {
+          display: block;
+        }
+        &.song-title {
+          width: 59%;
+          cursor: pointer;
+        }
+      }
+
+      &.playing-row,
+      &.active-row,
+      &:hover {
+        background: #f1f1f1;
+        .song-actions-wrapper {
+          display: block;
+        }
+
+      }
+      &.playing-row {
+        .song-actions-wrapper {
+          .song-play {
+            display: none;
+          }
+        }
+      }
+
+      &.playlist-item {
+        .track-col.song-title {
+          padding-left: 15px;
+        }
+
+        .song-actions-wrapper .btn.song-play {
+          background-color: rgba(0,0,0,0.6);
+          color: #fff;
+          font-size: 12px;
+        }
+      }
+
+    }
+    &:last-child .track {
+      border-bottom: 0;
+      margin-bottom: 8px;
+    }
+
+    &.playlist-item-placeholder {
+      height: 40px;
+      background-color: $color-concrete
+    }
+    ul.dropdown-menu {
+      width: auto;
+      position: absolute;
+      right: 5px;
+      top: 35px;
+      left: auto;
+      a {
+        &:hover {
+          color: $color-dark-xbmc;
+        }
+      }
+    }
+  }
+}
+
+.playlist-song-list {
+  padding: 10px;
+}

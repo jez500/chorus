@@ -1,0 +1,17 @@
+
+/**
+ * Include media queries (to be moved to breakpoint)
+ */
+
+// $width-small
+@media only screen and (min-width: $width-small){
+  @import "small";
+}
+
+
+/**
+ * Grids
+ */
+$grids: 4;
+//$grids: add-grid(8 at 40em);
+

@@ -1,3 +1,9 @@
+Version 0.2.3:
+- Project folder restructure, see "src" for development source and "dist" for compiled
+- webinterface.chorus.zip is the "dist" folder renamed to "webinterface.chorus" and archived during build
+- Enable jsLint checking on build and fixed 100+ warnings
+
+
 Version 0.2.2:
 - Framework for xbmc video integration
 - Integrated XBMC video playback and video playlists into the UI

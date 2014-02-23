@@ -10,36 +10,37 @@ module.exports = function(grunt) {
         src: [
 
           // jQuery
-          'dev/lib/required/jquery-1.10.2.js',
+          'src/lib/required/jquery-1.10.2.js',
 
           // underscore
-          'dev/lib/required/underscore-min.js',
+          'src/lib/required/underscore-min.js',
 
           // backbone
-          'dev/lib/required/backbone.dev.js',
-          'dev/lib/required/backbone.rpc.min.js',
+          'src/lib/required/backbone.dev.js',
+          'src/lib/required/backbone.rpc.min.js',
 
           // All our enabled js
-          'dev/lib/enabled/*.js',
+          'src/lib/enabled/*.js',
 
           // application js
-          'dev/js/utils.js',
-          'dev/js/app.js',
+          'src/js/utils.js',
+          'src/js/app.js',
 
           // application models
-          'dev/js/models/*.js',
+          'src/js/models/*.js',
 
           // application controllers
-          'dev/js/controllers/*.js',
+          'src/js/controllers/*.js',
 
           // application collections - need to be loaded in order
-          'dev/js/collections/xbmc.js',
-          'dev/js/collections/audio.js',
-          'dev/js/collections/files.js',
-          'dev/js/collections/video.js',
+          'src/js/collections/xbmc.js',
+          'src/js/collections/video.js',
+          'src/js/collections/audio.js',
+          'src/js/collections/files.js',
+
 
           // application views
-          'dev/js/views/*.js'
+          'src/js/views/*.js'
 
         ],
         dest: 'dist/<%= pkg.name %>.js'
@@ -56,7 +57,7 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      files: ['Gruntfile.js', 'dev/js/*.js', 'dev/js/*/*.js'],
+      files: ['Gruntfile.js', 'src/js/*.js', 'src/js/*/*.js'],
       options: {
         // options here to override JSHint defaults
         globals: {

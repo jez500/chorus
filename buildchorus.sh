@@ -2,8 +2,8 @@
 
 echo "Running compass"
 echo "=============================================="
-compass clean ./dev/theme
-compass compile ./dev/theme -e production
+compass clean ./src/theme
+compass compile ./src/theme -e production
 
 echo "Running Grunt"
 echo "=============================================="

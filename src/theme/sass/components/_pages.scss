@@ -1,0 +1,485 @@
+
+//Homepage
+#home {
+  #playing {
+    position: absolute;
+    top: 0px;
+    left: 50px;
+    padding: 10px 20px;
+    z-index: 50;
+    display: none;
+    h1 {
+      margin: 0;
+      padding: 15px 0 5px;
+      color: rgba(53, 53, 53, 0.3);
+      font-weight: normal;
+      font-size: 30px;
+    }
+    h2 {
+      margin: 0px 0 0px;
+      color: $color-darkest-xbmc;
+      font-size: 23px;
+      float: left;
+    }
+    h3 {
+      font-size: 18px;
+      color: rgba(46, 46, 46, 0.54);
+      margin: 3px 0 0 10px;
+      float: left;
+      a {
+        color: rgba(46, 46, 46, 0.54);
+      }
+    }
+  }
+}
+
+// Files
+#content .files-list,
+.files-music {
+  padding: 10px;
+  li.file-row {
+    // overflow: hidden;
+    height: 40px;
+    line-height: 40px;
+    margin: 1px 0;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    .file-actions .file-play,
+    .thumb {
+      width: 38px;
+      height: 38px;
+      float: left;
+      margin-right: 15px;
+    }
+    .file-actions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      font-size: 13px;
+      display: none;
+      .file-play {
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: rgba(0,0,0,0.6);
+        padding: 0;
+        opacity: 0;
+        &:hover {
+          opacity: 1;
+        }
+
+      }
+      .file-menu,
+      .file-add {
+        position: absolute;
+        right: 0;
+        color: $color-concrete;
+        &:hover {
+          color: $color-dark-xbmc;
+        }
+      }
+      .file-add {
+        right: 20px;
+      }
+      .dropdown-menu {
+        width: auto;
+        position: absolute;
+        right: 0;
+        left: auto;
+        top: 35px;
+      }
+    }
+    &:hover {
+      .file-actions {
+        display: block;
+      }
+    }
+  }
+}
+
+// Search
+#search-songs {
+  margin-top: 0px;
+  clear: both;
+}
+
+#search-addons {
+  .files-list {
+    clear: both;
+  }
+}
+h3.search-heading {
+  background: #eee;
+  padding: 10px;
+  height: 70px;
+  position: relative;
+  color: #B9B9B9;
+  span {
+    display: block;
+    font-size: 27px;
+    line-height: 39px;
+    color: $color-dark-xbmc;
+  }
+  img {
+    float: left;
+    width: 70px;
+    height: 70px;
+    padding-right: 15px;
+  }
+  &:after {
+    content: "";
+    width: 0;
+    height: 0;
+    border: 8px solid rgba(0, 0, 0, 0);
+    border-top: 8px solid #EEE;
+    position: absolute;
+    bottom: -15px;
+    left: 22px;
+  }
+}
+
+// search result card (no freewall)
+.album-generic-list {
+  li {
+    //@include card('small');
+    width: $card-small-width;
+    height: $card-small-width + 50;
+    margin: 5px 15px 10px 15px;
+  }
+}
+
+// search section
+.addon-box,
+.noresult-box {
+  min-height: 90px;
+  padding: 10px 10px;
+  border: 0;
+  background: rgba(241, 241, 241, 0.41);
+  font-size: 120%;
+  color: #797272;
+  margin: 10px 0;
+  display: block;
+  &.empty img {
+    opacity: 0.5;
+  }
+  img {
+    width: 70px;
+    height: 70px;
+    margin-right: 15px;
+    float: left;
+  }
+  span {
+    padding-top: 10px;
+    line-height: 25px;
+    display: block;
+  }
+}
+.addon-box {
+  cursor: pointer;
+  &:hover {
+    background: #eee;
+    color: #534c4c;
+  }
+}
+.section-title {
+  margin: 2px;
+  background: #fff;
+  padding: 10px;
+}
+
+
+.album-small-row {
+  position: relative;
+}
+
+// landing pages
+.landing-page {
+  padding-top: 5px;
+  padding-left: 5px;
+}
+
+// xbmc pages
+.xbmc-page {
+  padding: 10px;
+  #result {
+    max-height: 500px;
+    background: #eee;
+    padding: 15px;
+    overflow-y: auto;
+    &.error {
+      border-color: firebrick;
+      background: #fff0eb;
+    }
+  }
+  #description {
+    padding: 10px;
+    margin: 18px 0 18px;
+    background: #eee;
+    font-size: 120%;
+    position: relative;
+    &:before {
+      content: "";
+      width: 0;
+      height: 0;
+      border: 15px solid rgba(0, 0, 0, 0);
+      border-bottom: 15px solid #EEE;
+      position: absolute;
+      top: -25px;
+      left: 69px;
+    }
+  }
+  #params {
+    overflow: hidden;
+    display: block;
+  }
+  #method-name {
+    font-size: 115%;
+    padding-left: 15px;
+    color: #999;
+  }
+  .btn {
+    background: $color-dark-xbmc;
+    @include border-radius(3px);
+
+  }
+  .param {
+    float: left;
+    margin-right: 10px;
+    width: 270px;
+    &.actions {
+      width: auto;
+      margin: 22px 0 30px 10px;
+    }
+    pre {
+      font-size: 11px;
+      line-height: 15px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    select,
+    input {
+      width: 96%;
+    }
+    &.required {
+      label {
+        font-weight: bold;
+      }
+      input {
+        border: 1px solid #111;
+      }
+    }
+  }
+  &.changelog {
+    padding: 15px;
+    background: #F7F7F7;
+  }
+}
+
+// artist/movie/tv
+.content-tabs {
+
+  background: $color-concrete;
+  padding: 0 0 0;
+  position: relative;
+  ul {
+    border-bottom: none;
+    margin-bottom: 5px;
+  }
+  .nav-tabs > li > a {
+    color: #f6f6f6;
+    border-radius: 0;
+    border: none;
+    font-size: 110%;
+    padding: 11px 20px;
+    @include border-radius(0);
+
+    opacity: 0.9;
+    &:hover {
+      background: $color-asbestos;
+      opacity: 1;
+      border: none;
+    }
+  }
+  li {
+    margin: 0;
+    @include border-radius(0);
+    &.active {
+      a {
+        border: none;
+        color: $color-darkest-xbmc;
+        font-weight: bold;
+        opacity: 1;
+        background: #fff !important;
+        padding-bottom: 12px;
+        &:hover {
+          background: #fff;
+          border-bottom-color: #fff;
+        }
+      }
+    }
+  }
+
+}
+
+.tab-content {
+  .buttons {
+    margin: 30px 0 20px;
+    .btn {
+      background: $color-trans-light;
+      color: rgba(68, 68, 68, 0.71);
+      padding: 8px 17px;
+      margin-right: 5px;
+      margin-bottom: 10px;
+      &:hover {
+        background: #ccc;
+        color: rgba(68, 68, 68, 0.9);
+      }
+      &.cta {
+        background: $playing-xbmc;
+        color: #fff;
+        font-weight: bold;
+        &:hover {
+          background: rgba(230, 126, 34, 1);
+        }
+//        font-size: 20px;
+//        padding: 15px 25px;
+      }
+      i {
+        font-size: 14px;
+        opacity: 0.3;
+        padding-right: 8px;
+      }
+    }
+  }
+}
+
+// artist/movie/tv
+.content-actions {
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  .btn {
+    background: none;
+    padding: 10px 13px;
+    @include border-radius(0);
+    float: left;
+    color: #f6f6f6;
+    &:focus,
+    &:hover {
+      background: transparent;
+      color: $color-dark-xbmc;
+    }
+  }
+  &.thumbs-up {
+    .fa-thumbs-up {
+      color: $color-carrot;
+    }
+  }
+}
+
+// artist/movie/tv
+.content-fanart {
+  overflow: hidden;
+  height: 342px;
+  margin-top: -#{$height-header + 5};
+  cursor: pointer;
+  img {
+    cursor: pointer;
+    width: 100%;
+    margin-top: -5%;
+    min-width: 600px;
+  }
+  &.full-size {
+    height: auto;
+    margin-top: 0;
+  }
+}
+
+
+.genres {
+  margin: 20px 0 0;
+  border-bottom: $line-dotted;
+  padding-bottom: 30px;
+  a {
+    display: inline-block;
+    padding: 5px 8px;
+    margin-right: 5px;
+    background: $color-trans-light;
+    color: rgba(52, 73, 94, 0.55);
+    font-size: 13px;
+  }
+}
+
+// Body overrides
+body {
+
+  // Homepage
+  &.home {
+    #header {
+      bottom: auto;
+      padding-bottom: 10px;
+    }
+    .playlist {
+      div.playlist-item {
+        &.playing-row {
+          height: 120px;
+          .playlist-song-actions-wrapper,
+          .thumb {
+            width: 120px;
+            height: 120px;
+          }
+          .playlist-play {
+            font-size: 130%;
+            line-height: 25px;
+            max-height: 64px;
+
+          }
+          .playlist-meta {
+            font-size: 115%;
+            color: $color-concrete;
+            a {
+              font-size: 110%;
+            }
+          }
+        }
+      }
+    }
+    #page-header {
+      background-color: transparent !important;
+    }
+  }
+
+  // Landings
+  &.section-movies,
+  &.section-artists,
+  &.section-albums {
+    background: #DFDFDF;
+    #content {
+      background: #DFDFDF;
+    }
+  }
+
+  // Files
+  &.section-files {
+    #page-header {
+      h1 a {
+        width: $width-sidebar-first;
+      }
+    }
+    #sidebar-first {
+      width: $width-sidebar-first;
+    }
+    #main {
+      margin-left: $width-sidebar-first+ $width-header;
+    }
+  }
+
+  // thumbs up, hide remove as the thumbs button does that
+  &.section-thumbsup {
+    .playlist-song-list li .song-actions-wrapper .btn.song-remove {
+      display: none !important;
+    }
+  }
+
+}

@@ -1,0 +1,112 @@
+// Artists
+#artist-tabs {
+  margin-top: -38px;
+  .artist-actions {
+  }
+}
+
+// Fanart
+.artist-fanart {
+
+}
+
+.artist-detail {
+  padding: 8px 0;
+  p {
+    margin: 0;
+
+  }
+  p.description {
+    padding: 10px 20px;
+    line-height: 1.5;
+    font-size: 110%;
+    color: #666;
+  }
+  &.full {
+    p.description {
+      height: auto;
+    }
+    .artist-image {
+      height: auto;
+    }
+  }
+  .sub-title {
+    padding-left: 20px;
+  }
+  .right-col {
+    float: right;
+    width: 100%;
+    max-width: 360px;
+    margin: 5px 10px 10px 15px;
+    img {
+      width: 100%;
+    }
+  }
+}
+
+.has-fanart {
+  #artist-tabs {
+    background: none;
+
+    z-index: 10;
+    ul {
+      margin-left: 15px;
+      a {
+        background: rgba(255, 255, 255, 0.65);
+        color: #646464;
+        &:hover {
+          background: rgba(255, 255, 255, 0.9);
+        }
+      }
+    }
+  }
+}
+
+// Teaser
+.artist-teaser {
+  .artist-header {
+    display: block;
+    max-height: 170px;
+    min-height: 100px;
+    overflow: hidden;
+    background: $color-concrete;
+    position: relative;
+    img {
+      width: 100%;
+    }
+    .artist-name {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      padding: 10px;
+      font-weight: normal;
+      color: #eee;
+      background: rgba(0,0,0,0.3);
+    }
+  }
+
+}
+
+// artists landing
+$height-offset: 90;
+.rand-list {
+  margin-right: 2px;
+  li.card.card-large {
+    height: $card-large-image-height - $height-offset;
+    .image {
+      background-repeat: cover;
+      height: $card-small-image-height + 35;
+    }
+    .details {
+      position: absolute;
+    }
+    .actions-wrapper .play {
+      bottom: 25px;
+    }
+    &:nth-child(4n+4),{
+      //height: $card-large-image-height - $height-offset;
+      width: $card-small-width + 100;
+    }
+  }
+}
