@@ -2214,7 +2214,7 @@ body.playing #header #logo {
 }
 /* line 236, ../../../theme/sass/components/_player.scss */
 body.playing #progress-bar.ui-slider .ui-slider-range {
-  border-top: 13px solid #f39c12;
+  border-top: 3px solid #f39c12;
 }
 /* line 246, ../../../theme/sass/components/_player.scss */
 body.paused .playing-row .song-tracknum {
@@ -2304,7 +2304,7 @@ body.browser-playing #header #logo {
 }
 /* line 361, ../../../theme/sass/components/_player.scss */
 body.browser-playing #browser-progress-bar.ui-slider .ui-slider-range {
-  border-top: 13px solid #2ba5cc;
+  border-top: 3px solid #2ba5cc;
 }
 /* line 368, ../../../theme/sass/components/_player.scss */
 body.bp-random-on #browser-player-footer .footer-right .browser-player-random {

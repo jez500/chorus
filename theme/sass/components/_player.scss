@@ -234,7 +234,7 @@ body {
     #progress-bar {
       &.ui-slider {
         .ui-slider-range {
-          border-top: 13px solid $color-orange;
+          border-top: 3px solid $color-orange;
         }
       }
     }
@@ -359,7 +359,7 @@ body {
       border-bottom-color: $playing-local;
     }
     #browser-progress-bar.ui-slider .ui-slider-range {
-      border-top: 13px solid $playing-local;
+      border-top: 3px solid $playing-local;
     }
   }
 

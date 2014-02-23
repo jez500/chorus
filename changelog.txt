@@ -1,1 +1,83 @@
-dist/changelog.txt
+Version 0.2.2:
+- Framework for xbmc video integration
+- Integrated XBMC video playback and video playlists into the UI
+- Created full page view of a movie with navigation, vital statistics, cast and more.
+- Ability to browse all movies with infinite scroll, url pagination, back button support and lazy loaded images
+- Browse movies with a genre filter
+- Upgraded to latest font-awesome and updated a few icons
+- Lots of playlist fixes including empty lists if the items are not in the library
+- Added the awesome breakpoint and singularitygs gems as a requirement for build
+- Used breakpoint and singularity to start making things much more responsive (work in progress)
+- many more general fixes (and maybe a few new bugs)
+
+
+Version 0.2.1:
+- Significant refactor of js and css
+- Lots of playlist updates and refinements
+- Improved song search
+- Contextual menus now available on songs, artists, albums and files adding playlist tasks and a place for future functionality
+- Better indications that something is playing (title, logo, tab icon)
+
+
+Version 0.2.0:
+- Implemented browser audio streaming from XBMC library
+- Updated template to suit streaming
+- Loads of style refinements, added some colour. Orange = XBMC, Blue = Local
+- Added throttling of requests to XBMC if a lost connection is detected
+
+
+Version 0.1.8:
+- Increased max album count to 15000
+- Increased max artist count to 10000
+
+
+Version 0.1.7:
+- Major update
+- Integrated browser streaming, you can now play songs directly in your browser
+- Many ui updates to accommodate the new functionality
+- Logo gets some colour when playing via xbmc / browser
+- lots more
+
+
+Version 0.1.7:
+- Heaps of fixes/updates to v0.1.6 landing pages
+- Minor ui style updates
+- logo gets angry when not connected
+- throttle requests when not connected (every 20sec rather than every 5sec)
+- loading box style
+
+
+Version 0.1.6:
+- Recreated landing pages for artist and albums, implemented freewall
+- Context options added for new views
+- Lots of styles, optimisations and bug fixes.
+
+
+Version 0.1.5:
+- fixed play button style bug on album
+- fixed jsonRPC path so it now works via /addons/webinterface.chorus
+- added changelog to Lab
+
+
+Version 0.1.4:
+- Code cleanup / refactor
+- About dialog
+- template loading on the fly
+
+
+Version 0.1.3:
+- Fixed song search
+- Added ability to thumbs up, download or custom playlist the currently playing song
+
+
+Version 0.1.2:
+- Changed context options for album to be over artwork
+- Clear playlist before adding a song if nothing is playing
+- Local dump dev page
+- removed context menus not in use
+- fixed bug with thumbs up songs not showing
+
+
+Version 0.1.0:
+Initial release Jan 2014
+- First release of Chorus
