@@ -555,6 +555,7 @@ app.Router = Backbone.Router.extend({
     // fetch results
     app.cached.movieCollection.fetch({"fullRange": fullRange, "success": function(collection){
       // get the view of results
+      collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
       // do we append or replace
       if(app.moviePageNum === 0 || fullRange === true){
@@ -580,7 +581,7 @@ app.Router = Backbone.Router.extend({
         app.helpers.triggerContentLazy();
 
       } else {
-        // if last page was empty, dont change hash
+        // if last page was empty, don't change hash
         // or render
         var $lastList = $('.video-list').last();
         if($lastList.find('li').length === 0){
@@ -589,6 +590,7 @@ app.Router = Backbone.Router.extend({
         } else {
           // chnage the hash without triggering the router (for back action)
           app.router.navigate('movies/page/' + app.moviePageNum);
+          // append new content
           $content.append(app.cached.movieListView.render().$el);
         }
 

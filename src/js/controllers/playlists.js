@@ -83,11 +83,10 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       break;
 
     case 'movie':
-// returns model not collection
-//      plCollection = new app.Movie({id: parseInt(delta)});
-//      plCollection.fetch({"success": function(data){
-//        callback(data);
-//      }});
+      plCollection = new app.CustomSongCollection();
+      plCollection.fetch({items: delta, success: function(res){
+        callback(res);
+      }});
       break;
 
     case 'list': // local playlist id = delta

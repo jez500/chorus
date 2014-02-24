@@ -125,3 +125,19 @@ app.VideoController.removePlaylistPosition = function(position, callback ){
 app.VideoController.playlistSwap = function(pos1, pos2, callback){
   app.playlists.playlistSwap(app.VideoController.playlistId, 'movieid', pos1, pos2, callback);
 };
+
+
+/**
+ * Load an array of video ids
+ * @TODO merge with audio version of this
+ *
+ * @param items
+ *  an array of movieid's or objects with a file property
+ * @param callback
+ *  returns loaded items
+ * @returns {Array}
+ */
+app.VideoController.movieLoadMultiple = function(items, callback){
+  app.xbmcController.entityLoadMultiple('movie', items, callback);
+};
+

@@ -92,25 +92,35 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 app.MovieFitleredCollection = Backbone.Collection.extend({
   model: app.Movie,
 
-  cached: [],
-  fullyLoaded: false,
-
   sync: function(method, model, options) {
 
-    var sort = {"sort": {"method": "title"}},
-      opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter];
-    console.log('result from ', opt);
-
-    for(var k in options.filter){
-      var key = k + ':' + options.filter[k];
+    // init cache
+    if(app.stores.moviesFiltered === undefined){
+      app.stores.moviesFiltered = {};
     }
 
-    app.xbmcController.command('VideoLibrary.GetMovies', opt, function(data){
-      console.log('result from ', opt);
-      console.log('data ', data);
+    var sort = {"sort": {"method": "title"}},
+      opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter],
+      key = 'movies:key:filter';
 
-      options.success(data.result.movies);
-    });
+    // cache
+    for(var k in options.filter){
+      key = 'movies:' + k + ':' + options.filter[k];
+    }
+
+    // if cache use that
+    if(app.stores.moviesFiltered[key] !== undefined){
+      // return from cache
+      options.success(app.stores.moviesFiltered[key]);
+    } else {
+      // else lookup
+      app.xbmcController.command('VideoLibrary.GetMovies', opt, function(data){
+        // save cache
+        app.stores.moviesFiltered[key] = data.result.movies;
+        // return
+        options.success(data.result.movies);
+      });
+    }
 
   }
 
@@ -123,15 +133,14 @@ app.MovieFitleredCollection = Backbone.Collection.extend({
 app.MovieAllCollection = Backbone.Collection.extend({
   model: app.Movie,
 
-  cached: [],
-  fullyLoaded: false,
-
   sync: function(method, model, options) {
 
     if(typeof app.stores.allMovies == 'undefined'){
+      console.log('nocachehere');
       // no cache, do a lookup
       var allMovies = new app.AllMovieXbmcCollection();
       allMovies.fetch({"success": function(data){
+        console.log('fetcged');
         // Sort
         data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
         // Cache
@@ -139,6 +148,7 @@ app.MovieAllCollection = Backbone.Collection.extend({
         // Return
         options.success(data.models);
       }});
+      $(window).trigger('allMoviesCached');
     } else {
       // else return cache;
       options.success(app.stores.allMovies);
@@ -147,4 +157,23 @@ app.MovieAllCollection = Backbone.Collection.extend({
   }
 
 });
+
+
+/**
+* A collection of movies based on a custom array of movie ids
+* requires an a property of items[] in options
+*/
+app.CustomMovieCollection = Backbone.Collection.extend({
+  model: app.Movie,
+
+  sync: function(method, model, options) {
+
+    app.xbmcController.entityLoadMultiple('movie', options.items, function(movies){
+      options.success(movies);
+    });
+
+  }
+
+});
+
 

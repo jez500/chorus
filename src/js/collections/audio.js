@@ -131,7 +131,7 @@ app.PlaylistCustomListSongCollection = Backbone.Collection.extend({
 
       var list = app.playlists.getCustomPlaylist(options.name);
 
-      app.AudioController.songLoadMultiple(list.items, function(songs){
+      app.xbmcController.entityLoadMultiple('song', list.items, function(songs){
         options.success(songs);
       });
 
@@ -141,6 +141,12 @@ app.PlaylistCustomListSongCollection = Backbone.Collection.extend({
 });
 
 
+/**
+ * Get thumbs up collections
+ * @todo - move out of audio collection
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.ThumbsUpCollection = Backbone.Collection.extend({
 
   model: app.PlaylistCustomListItemSong,
@@ -159,7 +165,7 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
 
         case 'song':
           // lookup songs
-          app.AudioController.songLoadMultiple(list.items, function(songs){
+          app.xbmcController.entityLoadMultiple('song', list.items, function(songs){
             options.success(songs);
           });
           break;
@@ -175,6 +181,13 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
           // get albums from cache
           app.store.multipleAlbums(list.items, function(data){
             options.success(data);
+          });
+          break;
+
+        case 'movie':
+          // lookup movies
+          app.xbmcController.entityLoadMultiple('movie', list.items, function(movies){
+            options.success(movies);
           });
           break;
 
@@ -197,7 +210,7 @@ app.CustomSongCollection = Backbone.Collection.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
-      app.AudioController.songLoadMultiple(options.items, function(songs){
+      app.xbmcController.entityLoadMultiple('song', options.items, function(songs){
         options.success(songs);
       });
     }

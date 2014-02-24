@@ -27,6 +27,16 @@ ul.video-list {
 }
 
 
+/** SEARCH *******************/
+
+#search-movies {
+  overflow: hidden;
+  .card {
+    @include card('poster');
+    float: left;
+    margin: 0 8px 8px 0;
+  }
+}
 
 
 

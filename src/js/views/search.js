@@ -11,6 +11,8 @@ app.searchView = Backbone.View.extend({
 
   },
 
+  songsLoaded: false,
+
   /**
    * Render based on key in the model
    * this is all a bit messy and could be refined
@@ -22,8 +24,8 @@ app.searchView = Backbone.View.extend({
       self = this;
 
     if(key.length > 1){
-      //set url
-      document.location.hash = '#search/' + key;
+      //set url without re-render
+      app.router.navigate('#search/' + key);
 
       //set searching
       app.shellView.selectMenuItem('search', 'sidebar');
@@ -36,10 +38,11 @@ app.searchView = Backbone.View.extend({
 
       $el.append('<div id="search-albums"></div>')
         .append('<div id="search-songs"></div>')
+        .append('<div id="search-movies"></div>')
         .append('<div id="search-addons"></div>');
 
       $content.empty().html($el);
-      $title.html('<a href="#artists">Artists </a>Albums');
+      $title.html('<a href="#">Search </a>' + key);
 
       // get artists list (sidebar)
       app.cached.SearchArtistsList = new app.ArtistCollection();
@@ -102,16 +105,38 @@ app.searchView = Backbone.View.extend({
       });
 
 
-      // searrch songs
+      // search songs
       self.searchSongs(key);
+
+      // search songs
+      self.searchMovies(key);
 
     }
 
   },
 
-  // Get a generic logo/icon
-  getLogo: function(type){
-    return '<img src="theme/images/icons/icon-' + type + '.png" />';
+
+  /**
+   * Init movie search
+   * @param key
+   */
+  searchMovies: function(key){
+
+    // vars
+    var sel = '#search-movies',
+      $el = $(sel),
+      self = this;
+
+    // Loading
+    $el.html('<div class="addon-box">' + self.getLogo('movie') + '<span>Loading Movies</span></div>');
+    var self = this;
+
+    var allMovies = new app.MovieAllCollection();
+    allMovies.fetch({"success": function(data){
+      self.searchSectionRender(key, 'movie', 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
+
+    }});
+
   },
 
 
@@ -127,48 +152,104 @@ app.searchView = Backbone.View.extend({
     // bind to songs ready
     $songs.html('<div class="addon-box">' + self.getLogo('song') + '<span>Loading Songs</span></div>');
 
-    app.store.indexSongs(function(){
+    if(self.songsLoaded === true){
+      self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+    } else {
+      app.store.libraryCall(function(){
+        self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+        self.songsLoaded = true;
+      }, 'songsReady');
+    }
 
-      app.cached.SearchsongList = new app.SongCollection();
-      app.cached.SearchsongList.fetch({success: function(data){
-
-        var songsIds = [];
-        $songs.empty();
-
-        // filter based on string match
-        var songs = data.models.filter(function (element) {
-          var label = element.attributes.label;
-          return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
-        });
-
-        // get array of ids for multi-load
-        _.each(songs, function(song){
-          songsIds.push(song.attributes.songid);
-        });
-
-        // Get a list of fully loaded models from id
-        if(songsIds.length > 0){
-          app.cached.SearchsongListFiltered = new app.CustomSongCollection();
-          app.cached.SearchsongListFiltered.fetch({items: songsIds, success: function(data){
-
-            // heading
-            $songs.append('<h3 class="search-heading">' + self.getLogo('song') + 'Songs search for:<span>' + key + '</span></h3>');
-
-            // add to content
-            app.cached.SearchsongList = new app.SongListView({model: data.models, className: 'song-search-list song-list'});
-            $songs.append(app.cached.SearchsongList.render().el);
-
-          }});
-        } else {
-          // no res
-          $songs.html('<div class="noresult-box empty">' + self.getLogo('song') + '<span>No Songs found</span></div>');
-        }
+  },
 
 
-      }});
 
-    });
 
+  ///////////////////////////////////////////////
+  // Helpers
+  ///////////////////////////////////////////////
+
+
+  // Get a generic logo/icon
+  getLogo: function(type){
+    return '<img src="theme/images/icons/icon-' + type + '.png" />';
+  },
+
+
+  /**
+   * Called when filtering a search key against a model label
+   * @param element
+   * @returns {boolean}
+   */
+  stringMatchFilter: function (element, key) {
+    var label = element.attributes.label;
+    return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
+  },
+
+
+  /**
+   * Render a dynamic search section
+   *
+   * @param key
+   * @param type
+   * @param allCollectionName
+   * @param collectionName
+   * @param viewName
+   */
+  searchSectionRender: function(key, type, allCollectionName, collectionName, viewName){
+
+    var $el = $('#search-' + type + 's'),
+      self = this,
+      ids = [],
+      idKey = type + 'id',
+      heading = '<h3 class="search-heading">' + self.getLogo(type) + type + ' search for:<span>' + key + '</span></h3>',
+      noRes = '<div class="noresult-box empty">' + self.getLogo(type) + '<span>No ' + type + 's found</span></div>';
+
+    // Get ALL movies to filter
+    app.cached['search' + allCollectionName] = new app[allCollectionName]();
+    app.cached['search' + allCollectionName].fetch({success: function(data){
+
+      // empty container
+      $el.empty();
+
+      // filter based on string match
+      var items = data.models.filter(function (element) {
+        return self.stringMatchFilter(element, key);
+      });
+
+      // get array of ids for multi-load
+      _.each(items, function(item){
+        ids.push(item.attributes[idKey]);
+      });
+
+      // Get a list of fully loaded models from id
+      if(ids.length > 0){
+
+        // lget a loaded collection to view
+        var c = new app[collectionName]();
+        c.fetch({items: ids, success: function(d){
+          // heading
+          $el.append(heading);
+
+          // render view to content
+          var v =  new app[viewName]({model: d, className: type + '-search-list ' + type + '-list'});
+          $el.append(v.render().$el);
+          // lazy load force
+          $el.find('img').each(function(i,d){
+            if($(this).data('original')){
+              $(this).attr('src', $(this).data('original'));
+            }
+
+          });
+        }});
+
+      } else {
+        // no results
+        $el.html(noRes);
+      }
+
+    }});
 
   }
 

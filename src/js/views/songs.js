@@ -10,8 +10,8 @@ app.SongListView = Backbone.View.extend({
 
   render:function () {
     this.$el.empty();
-    _.each(this.model, function (song) {
-      this.$el.append(new app.SongView({model:song}).render().el);
+    _.each(this.model.models, function (song) {
+      this.$el.append(new app.SongView({model:song}).render().$el);
     }, this);
     return this;
   }

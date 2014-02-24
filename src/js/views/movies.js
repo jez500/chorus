@@ -45,20 +45,24 @@ app.MovieListView = Backbone.View.extend({
       this.$el.append(new app.MovieListItemView({model:movie}).render().el);
     }, this);
 
-    // append the next btn
-    if(this.model.length > 0){
-      var $next = $('<li class="next-page">More...</li>');
-      this.$el.append($next);
+    // Show next button and bind auto click with bum smack
+    if(this.model.showNext !== undefined && this.model.showNext === true){
+
+      // append the next btn
+      if(this.model.models.length > 0){
+        var $next = $('<li class="next-page">More...</li>');
+        this.$el.append($next);
+      }
+
+      // Infinate scroll trigger (scroll)
+      $(window).smack({ threshold: 0.8 })
+        .then(function () {
+          $('ul.movie-list').find('.next-page').trigger('click');
+        });
+
+      // add row class (for scrolling to page)
+      this.$el.addClass('page-' + app.moviePageNum);
     }
-
-    // Infinate scroll trigger (scroll)
-    $(window).smack({ threshold: 0.8 })
-      .then(function () {
-        $('ul.movie-list').find('.next-page').trigger('click');
-      });
-
-    // add row class (for scrolling to page)
-    this.$el.addClass('page-' + app.moviePageNum);
 
     return this;
 

@@ -52,7 +52,7 @@ app.AlbumItemView = Backbone.View.extend({
     $('.album-info', this.$el).html(new app.AlbumItemSmallView({model: this.model}).render().$el);
 
     // songs
-    $(".tracks", this.$el).html(new app.SongListView({"model":this.model.attributes.songs}).render().el);
+    $(".tracks", this.$el).html(new app.SongListView({"model":{models: this.model.attributes.songs}}).render().el);
 
     return this;
   }
