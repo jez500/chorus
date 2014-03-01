@@ -13866,6 +13866,7 @@ $(document).ready(function(){
    * error object
   */
   app.helpers.errorHandler = function(type, error){
+    console.log(error);
     if(typeof error[0] != 'undefined' && error[0].error == "Internal server error"){
       // no connection
     } else {
@@ -14230,14 +14231,7 @@ $(document).ready(function(){
    * Trigger lazyload
    */
   app.helpers.triggerContentLazy = function(){
-    // trigger lazyload
-    $("img.lazy").lazyload({
-      //  effect : "fadeIn",
-      threshold : 200
-    });
-    // show visible
     $(window).trigger('scroll');
-
   };
 
 
@@ -14303,6 +14297,26 @@ $(document).ready(function(){
   /********************************************************************************
    * Pagination
    ********************************************************************************/
+
+  /**
+   * Give it a pagenumber and it will build return a range object suitable for a API request
+   *
+   * @param pageNum
+   * @returns {{start: number, end: number}}
+   */
+  app.helpers.createPaginationRange = function(pageNum, fullRange){
+    // Do some maths
+    var page = (pageNum !== undefined ? parseInt(pageNum) : 0),
+      start = (page * app.itemsPerPage),
+      end = (start + app.itemsPerPage);
+    // override if fullRange
+    if(fullRange && fullRange === true){
+      start = 0;
+    }
+    // Return the range
+    return {'end': end, 'start': start};
+  };
+
 
   /**
    * Give it a pagenumber and it will build return a range object suitable for a API request
@@ -15181,7 +15195,7 @@ app.Router = Backbone.Router.extend({
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
-    "movies/page/:num":     "movies",
+    "movies/page/:num":     "moviesPage",
     "movies/genre/:genre":  "moviesGenre",
     "movies":               "moviesLanding",
     "movie/:id":            "movie",
@@ -15518,40 +15532,51 @@ app.Router = Backbone.Router.extend({
    * Browse all movies
    * uses lazyload, infinite scroll and intelligent back button
    *
+   * @param num
+   *  page number to show
+   * @param append
+   *  if set to true will append only next page of contents
    */
-  movies: function(num){
+  movies: function(num, append){
 
     // vars
     var $content = $('#content'),
-      $results = $('ul.movie-list',$content),
+      $results = $('ul.movie-page-list',$content),
       fullRange = false,
       scrolled = false,
-      self = this,
-      page = 'page';
+      lastPageNum = app.moviePageNum,
+      $window = $(window);
 
-    // init pager
+    // do we append?
+    append = (append !== undefined && append === true);
+    fullRange = (append !== true);
+
+    // force a page via url
+    app.moviePageNum = parseInt(num);
+
+    // chnage the hash without triggering the router (for back action)
+    app.router.navigate('movies/page/' + num);
+
+    // We have no content on the page so init pager
     if($results.length === 0){
-      // empty page
-      if(num === 0){
-        app.moviePageNum = 0;
-      }
+
       // Loading
       $content.html('<div class="loading-box">Loading Movies</div>');
+
       // set title and add some tabs
       app.helpers.setTitle('All Movies', { addATag:'#movies/page/0', tabs: {'#movies': 'Recently Added'}, activeTab: 1});
+
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
-      // direct to this page
-      if(page && num){
-        app.moviePageNum = num;
-        fullRange = true;
-      }
+
+      // we always want fullrange with a fresh page
+      fullRange = true;
     } else {
-      // appending to page no other setup required
-      app.moviePageNum++;
-      // force a page via url
-      if(num !== undefined){
-        app.moviePageNum = num;
+      if(app.moviePageNum === 0){
+        // scroll to top
+        $window.scrollTo(0);
+        app.moviePageNum = lastPageNum;
+        return;
       }
     }
 
@@ -15559,42 +15584,43 @@ app.Router = Backbone.Router.extend({
     app.cached.movieCollection = new app.MovieCollection();
     // fetch results
     app.cached.movieCollection.fetch({"fullRange": fullRange, "success": function(collection){
+
       // get the view of results
       collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
-      // do we append or replace
-      if(app.moviePageNum === 0 || fullRange === true){
+
+      if(app.moviePageNum === 0 || append !== true){ // Replace content //
+
+        // Render view
         $content.html(app.cached.movieListView.render().$el);
 
         // scroll to top
-        $(window).scrollTo(0);
+        $window.scrollTo(0);
 
-        // back from a movie, scrollto that movie
-        if(fullRange === true && typeof app.vars.backHash != 'undefined'){
-          var parts = app.vars.backHash.split('/');
-          if(parts[0] == '#movie'){
-            $(window).scrollTo( $('.movie-row-' + parts[1]) , 0, {offset: -200});
-            scrolled = true;
-          }
-        }
+        // back from a movie, scrollTo that movie
+        app.cached.movieListView.backFromMovie(fullRange, scrolled);
 
-        // scroll to page number
+        // scrollTo page number
         if(fullRange === true && scrolled !== true && app.moviePageNum > 1){
-          $(window).scrollTo( '85%' );
+          $window.scrollTo( '85%' );
+          scrolled = true;
         }
 
-        app.helpers.triggerContentLazy();
+        // trigger scroll for lazyLoad
+        if(scrolled === false){
+          app.helpers.triggerContentLazy();
+        }
 
-      } else {
-        // if last page was empty, don't change hash
-        // or render
+      } else { // Append to the current content //
+
+        // if last page was empty, don't change hash or render
         var $lastList = $('.video-list').last();
         if($lastList.find('li').length === 0){
-          // dont render
+
+          // dont render, remove the element
           $lastList.remove();
         } else {
-          // chnage the hash without triggering the router (for back action)
-          app.router.navigate('movies/page/' + app.moviePageNum);
+
           // append new content
           $content.append(app.cached.movieListView.render().$el);
         }
@@ -15603,9 +15629,18 @@ app.Router = Backbone.Router.extend({
 
       app.helpers.triggerContentLazy();
 
-
     }}); // end get collection
 
+  },
+
+
+  /**
+   * Page callback
+   *
+   * @param num
+   */
+  moviesPage: function(num){
+    this.movies(num, false);
   },
 
 
@@ -15647,7 +15682,7 @@ app.Router = Backbone.Router.extend({
    * Movie landing page
    */
   moviesGenre: function (genre) {
-    console.log(genre);
+
 
     var self = this;
     app.helpers.setTitle(genre, {
@@ -15772,6 +15807,94 @@ $(document).on("ready", function () {
   },'songsReady');
 
 });
+;/**
+ * Helper functionality for creating paginated pages
+ */
+
+app.pager = {
+
+  type: 'movie',
+
+  map: {
+    movie: {
+      allCollection: 'MovieAllCollection',
+      collection: 'CustomMovieCollection',
+      view: 'MovieListView'
+    }
+  },
+
+
+  /**
+   * Set model type
+   *
+   * @param type
+   * @returns {pager}
+   */
+  setType: function(type){
+    this.type = type;
+    return this;
+  },
+
+
+  /**
+   * Called during .render() on a list view
+   *
+   * @param $el
+   * @param type
+   * @returns {*}
+   *  jquery $el
+   */
+  viewHelpers: function($el, type){
+
+    var self = this;
+    self.type = (type !== undefined ? type : this.type);
+    self.$el = $el;
+
+    // append the next btn if there are results
+    if($el.find('li').length > 0){
+      var $next = $('<li class="next-page">More...</li>');
+      self.$el.append($next);
+    }
+
+    // Infinate scroll trigger (scroll)
+    $(window).smack({ threshold: '200px' })
+      .done(function () {
+        $('ul.' + self.type + '-page-list').find('.next-page').trigger('click');
+      });
+
+    // add row class (for scrolling to page)
+    self.$el.addClass('page-' + app[self.type + 'PageNum']);
+
+    self.$el.find('img').lazyload({threshold : 200});
+
+    return self.$el;
+  },
+
+
+  /**
+   * Go to the next page
+   *
+   * @param $el
+   * @param type
+   * @returns {}
+   *  jquery $el
+   */
+  nextPage: function($el, type){
+
+    this.type = (type !== undefined ? type : this.type);
+
+    // remove the next button
+    $el.remove();
+    // render fetch and render next page
+    app.router[this.type + 's']( (app[this.type + 'PageNum'] + 1), true ); // append next page of results
+
+    return $el;
+  }
+
+
+
+};
+
 ;
 /**
  * Artist
@@ -16166,7 +16289,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
   clickDir: function(record){
     if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
       if(record.title == 'Search'){
-        console.log(record);
+
         app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
       }
     }
@@ -16202,9 +16325,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
           app.cached.fileCollection = new app.FileCollection();
           app.cached.fileCollection.fetch({"name":dir, "success": function(res){
             // render page
-            console.log(res);
             app.cached.filesSearchView = new app.FilesView({"model":res}).render();
-            //$('#files-container').html(app.cached.filesSearchView.$el);
           }});
 
         });
@@ -16317,7 +16438,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
     // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
     window.setTimeout(function(){
       app.xbmcController.command('Input.SendText', [query], function(res){
-        console.log(res);
+
       });
     }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
 
@@ -17074,7 +17195,6 @@ app.audioStreaming = {
     if(app.audioStreaming.playList === undefined){
       // no current playlist extists so just replace
       collection = newCollection;
-      console.log(collection);
     } else {
       // append new models to original collection
       collection = app.audioStreaming.playList.items;
@@ -17766,11 +17886,9 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
       case 'local':
 
         if(op == 'append'){
-          console.log('append', collection);
           app.audioStreaming.appendPlaylistItems(collection, callback);
         } else {
           // replace and play
-          console.log('replace', collection);
           app.audioStreaming.replacePlaylistItems(collection, callback);
         }
 
@@ -17864,7 +17982,7 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
       changed = {from: $thisItem.data('path'), to: i};
     }
   });
-  console.log(changed);
+
   //if an item has changed position, swap its position in xbmc
   if(changed.from !== undefined && changed.from !== changed.to){
     app.AudioController.playlistSwap(changed.from, changed.to, function(res){
@@ -17980,7 +18098,6 @@ app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
 
   if(source == 'xbmc'){
 
-    console.log(app.cached.xbmcPlaylist);
     _.each(app.cached.xbmcPlaylist, function(d){
       if(d.id == 'file'){
         // let addons tinker
@@ -18518,13 +18635,13 @@ app.VideoController = {
  *  result
  */
 app.VideoController.playVideoId = function(id, type, callback){
-  console.log(type);
+
   // clear playlist
   app.VideoController.playlistClear(function(){
-    console.log('cleard');
+
     // Add video to playlist based on type/id
     app.VideoController.addToPlaylist(id, type, 'add', function(data){
-      console.log(data);
+
       app.VideoController.playPlaylistPosition(0, function(play){
         callback(data.result);
       });
@@ -19115,51 +19232,103 @@ app.MovieCollection = Backbone.Collection.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
+
+      // Get a paginated
       var self = this,
-        fullRange = (typeof options.fullRange != 'undefined' && options.fullRange === true),
-        page = app.moviePageNum;
+        fullRange = (typeof options.fullRange != 'undefined' && options.fullRange === true);
 
-      // model for params
-      var args = {
-        range: app.helpers.createPaginationRange(app.moviePageNum, fullRange)
-      };
 
-      // CACHE GET
-      // empty cache if first load
-      if(app.moviePageNum === 0){
-        app.stores.movies = [];
-      }
-      // prep empty cache
-      if(typeof app.stores.movies == 'undefined'){
-        app.stores.movies = [];
-      }
-      // if fullrange called and cache exists
-      if(fullRange && app.stores.movies.length > 0){
-        // we always return cache
-        // Could do some more checking for edge cases but is a simple solution
-        options.success(app.stores.movies);
-        return;
-      }
+      // load up a full cache for pagination
+      app.cached.moviesPage = new app.MovieAllCollection();
+      app.cached.moviesPage.fetch({"success": function(model){
 
-      // init the xbmc collection
-      app.cached.movieXbmcCollection = new app.MovieXbmcCollection(args);
-      // fetch results
-      app.cached.movieXbmcCollection.fetch({"success": function(data){
-        // add models to cache
-        $.each(data.models,function(i,d){
-          app.stores.movies.push(d);
-        });
 
-        // if models less than ipp then must be the end
-        if(data.models.length > app.itemsPerPage){
-          self.fullyLoaded = true;
+        // return pagination from cache if exists
+        var cache = self.cachedPagination(app.moviePageNum, fullRange);
+        if(cache !== false){
+          options.success(cache);
+          return;
         }
-        // return callback
-        options.success(data.models);
+
+        // model for params
+        var args = {
+          range: app.helpers.createPaginationRange(app.moviePageNum, fullRange)
+        };
+
+        // prep empty cache
+        if(typeof app.stores.movies == 'undefined'){
+          app.stores.movies = {};
+        }
+        // set the container
+        app.stores.movies[app.moviePageNum] = [];
+
+        // init the xbmc collection
+        app.cached.movieXbmcCollection = new app.MovieXbmcCollection(args);
+        // fetch results
+        app.cached.movieXbmcCollection.fetch({"success": function(data){
+
+          if(!fullRange || app.moviePageNum === 0){
+            // add models to cache if not a fullRange
+            $.each(data.models,function(i,d){
+              app.stores.movies[app.moviePageNum].push(d);
+            });
+          }
+
+          // if models less than ipp then must be the end
+          if(data.models.length > app.itemsPerPage){
+            self.fullyLoaded = true;
+          }
+          // return callback
+          options.success(data.models);
+          return data.models;
+        }});
+
+
+
+
       }});
 
+      //return this
+
     }
+  },
+
+
+  /**
+   * Returns a set of results if in cache or false if a lookup is required
+   * @param pageNum
+   * @param fullRange
+   */
+  cachedPagination: function(pageNum, fullRange){
+
+
+    // always lookup if no cache
+    if(app.stores.movies === undefined ||
+      app.stores.movies[pageNum] === undefined ||
+      app.stores.movies[pageNum].length === 0){
+        return false;
+    }
+
+    var cache = app.stores.movies[pageNum],
+      full = [];
+
+    // full range requires us to loop over each and append to a full array
+    if(fullRange){
+      for(i = 0; i <= pageNum; i++){
+        // we are missing a page, lookup again
+        if(app.stores.movies[i] === undefined){
+          return false;
+        }
+        for(var n in app.stores.movies[i]){
+          full.push(app.stores.movies[i][n]);
+        }
+      }
+      cache = full;
+    }
+
+    return cache;
   }
+
 });
 
 
@@ -19176,7 +19345,6 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 
     var opt = [app.movieFields, {'end': 100, 'start': 0}];
     app.xbmcController.command('VideoLibrary.GetRecentlyAddedMovies', opt, function(data){
-      console.log(data);
       options.success(data.result.movies);
     });
 
@@ -19235,19 +19403,28 @@ app.MovieAllCollection = Backbone.Collection.extend({
   sync: function(method, model, options) {
 
     if(typeof app.stores.allMovies == 'undefined'){
-      console.log('nocachehere');
+
       // no cache, do a lookup
       var allMovies = new app.AllMovieXbmcCollection();
       allMovies.fetch({"success": function(data){
-        console.log('fetcged');
         // Sort
         data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+
+        // Make a dictionary and flag as not loaded
+        app.stores.allMoviesLookup = {};
+        for(var i in data.models){
+          var m = data.models[i].attributes;
+          m.loaded = false;
+          app.stores.allMoviesLookup[m.movieid] = m;
+          data.models[i].attributes = m;
+        }
         // Cache
         app.stores.allMovies = data.models;
         // Return
         options.success(data.models);
+        // trigger
+        $(window).trigger('allMoviesCached');
       }});
-      $(window).trigger('allMoviesCached');
     } else {
       // else return cache;
       options.success(app.stores.allMovies);
@@ -20054,8 +20231,6 @@ app.AlbumArtistView = Backbone.View.extend({
 
   initialize:function () {
 
-    console.log(this.model.attributes);
-
     this.artistModel = new app.Artist({"id": this.model.attributes.artistid, "fields":app.artistFields});
     this.artistAlbums = {};
   },
@@ -20821,7 +20996,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
           var item = self.list.items[$(d).data('pos')];
           list.push(item);
         });
-        console.log(list, listId);
+
         // Update the playlist order in storage
         app.playlists.replaceCustomPlayList(listId, list);
 
@@ -20839,7 +21014,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     e.preventDefault();
     // add list
     var list = app.playlists.getCustomPlaylist(this.list.id);
-    console.log(list.items);
+
     this.addCustomListToPlaylist(list.items);
     app.notification('Playlist updated');
   },
@@ -21054,7 +21229,6 @@ app.CustomPlaylistSongView = Backbone.View.extend({
   render:function () {
 
     if(typeof this.model.attributes.position == 'undefined'){
-      console.log('no position');
       return this;
     }
 
@@ -21140,7 +21314,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
       key = app.helpers.getSongKey(song),
     // if file, gets the whole object
       id = (key.type == 'file' ? song : song.songid);
-    console.log(id);
+
     app.playlists.saveCustomPlayListsDialog(key.type, [id]);
   }
 
@@ -21287,7 +21461,6 @@ app.FileView = Backbone.View.extend({
       var el = new app.FilesView({"model":res}).render().$el;
 
       // dont append if already appended
-      //console.log(self.$el);
       if(self.$el.find('ul.files-list').length === 0){
         self.$el.append(el);
       }
@@ -21403,9 +21576,17 @@ app.MovieListView = Backbone.View.extend({
 
   tagName:'ul',
 
-  className:'video-list movie-list',
+  className:'video-list movie-page-list',
 
   initialize:function () {
+
+    var self = this;
+
+    this.model.on("reset", this.render, this);
+    this.model.on("add", function (movie) {
+      self.$el.append(new app.MovieListItemView({model:movie}).render().el);
+    });
+
 
   },
 
@@ -21413,31 +21594,18 @@ app.MovieListView = Backbone.View.extend({
     "click .next-page": "nextPage"
   },
 
-  render:function () {
+  render: function () {
+
+    this.$el.empty();
 
     // append results
-    this.$el.empty();
     _.each(this.model.models, function (movie) {
       this.$el.append(new app.MovieListItemView({model:movie}).render().el);
     }, this);
 
     // Show next button and bind auto click with bum smack
     if(this.model.showNext !== undefined && this.model.showNext === true){
-
-      // append the next btn
-      if(this.model.models.length > 0){
-        var $next = $('<li class="next-page">More...</li>');
-        this.$el.append($next);
-      }
-
-      // Infinate scroll trigger (scroll)
-      $(window).smack({ threshold: 0.8 })
-        .then(function () {
-          $('ul.movie-list').find('.next-page').trigger('click');
-        });
-
-      // add row class (for scrolling to page)
-      this.$el.addClass('page-' + app.moviePageNum);
+      this.$el = app.pager.viewHelpers(this.$el, 'movie');
     }
 
     return this;
@@ -21445,11 +21613,20 @@ app.MovieListView = Backbone.View.extend({
   },
 
   nextPage: function(e){
-    // remove the next button
-    $(e.target).remove();
-    // render fetch and render next page
-    app.router.movies();
+    app.pager.nextPage($(e.target), 'movie');
+  },
 
+
+  backFromMovie: function(fullRange, scrolled){
+    var $window = $(window);
+    if(fullRange === true && typeof app.vars.backHash != 'undefined'){
+      var parts = app.vars.backHash.split('/');
+      if(parts[0] == '#movie'){
+        $window.scrollTo( $('.movie-row-' + parts[1]) , 0, {offset: -200});
+        scrolled = true;
+      }
+    }
+    return scrolled;
   }
 
 
@@ -21489,9 +21666,13 @@ app.MovieListItemView = Backbone.View.extend({
   render:function () {
 
     var model = this.model.attributes;
+    if(!model.label){
+      return this;
+    }
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     this.$el.html(this.template(model));
+
     return this;
   },
 
@@ -21593,6 +21774,7 @@ app.MovieView = Backbone.View.extend({
     "click .movie-play": "playMovie",
     "click .movie-add": "addMovie",
     "click .movie-thumbsup": "thumbsUp",
+    "click .movie-stream": "stream",
     "click .movie-menu": "menu"
   },
 
@@ -21718,8 +21900,19 @@ app.MovieView = Backbone.View.extend({
       app.VideoController.playlistRender();
     });
 
-  }
+  },
 
+  stream: function(e){
+    e.preventDefault();
+    var player = $(e.target).data('player');
+
+    var win = window.open("videoPlayer.html?player=" + player, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
+
+    app.AudioController.downloadFile(this.model.attributes.file, function(url){
+      win.location = "videoPlayer.html?player=" + player + "&src=" + encodeURIComponent(url);
+    });
+
+  }
 
 });;/**
  * Handles all the updates to the dom in regard to the player state
@@ -22351,78 +22544,25 @@ app.searchView = Backbone.View.extend({
 
       //empty content as we append
       var $content = $('#content'),
-        $title = $('#title'),
-        notfoundartist = '<div class="noresult-box">No Artists found</div>',
         $el = $('<div class="search-results-content"></div>');
 
+      // Build containers for various search types
       $el.append('<div id="search-albums"></div>')
         .append('<div id="search-songs"></div>')
         .append('<div id="search-movies"></div>')
         .append('<div id="search-addons"></div>');
 
+      // Render container to #content
       $content.empty().html($el);
-      $title.html('<a href="#">Search </a>' + key);
 
-      // get artists list (sidebar)
-      app.cached.SearchArtistsList = new app.ArtistCollection();
-      app.cached.SearchArtistsList.fetch({success: function(data){
-        // filter based on string match
-        var artists = data.models.filter(function (element) {
-          var label = element.attributes.artist;
-          return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
-        });
-        // update model with new collection
-        data.models = artists;
-        //if result
-        if(data.models.length > 0){
-          // add the sidebar view
-          app.cached.artistsListSearch = new app.AristsListView({model: data, className: 'artist-search-list'});
-          app.helpers.setFirstSidebarContent(app.cached.artistsListSearch.render().el);
-        } else {
-          app.helpers.setFirstSidebarContent(notfoundartist);
-        }
+      // Title
+      app.helpers.setTitle('<a href="#">Search </a>' + key);
 
-      }});
+      // search Artists
+      self.searchArtists(key);
 
-
-      //get albums
-      var $albums = $('#search-albums'),
-        loading = '<div class="noresult-box">' + self.getLogo('album') + '<span>Loading Albums</span></div>',
-        notfoundalb = '<div class="noresult-box empty">' + self.getLogo('album') + '<span>No Albums found with "'+key+'" in the title<span></div>';
-
-      $albums.html(loading);
-
-      app.cached.SearchAlbumList = new app.AlbumsCollection();
-      app.cached.SearchAlbumList.fetch({success: function(data){
-        $albums.empty();
-        // filter based on string match
-        var albums = data.models.filter(function (element) {
-          var label = element.attributes.label;
-          return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
-        });
-        // update model with new collection
-        data.models = albums;
-        //if result
-        if(data.models.length > 0){
-          // add to content
-          app.cached.SearchAlbumListSmall = new app.SmallAlbumsList({model: data, className: 'album-generic-list'});
-          $albums.append(app.cached.SearchAlbumListSmall.render().el);
-          $albums.prepend('<h3 class="search-heading">' + self.getLogo('album') + 'Album search for:<span>' + key + '</span></h3>');
-        } else {
-          //no results
-          $albums.html(notfoundalb);
-        }
-
-      }});
-
-
-      // get addons
-      var $addons = $('#search-addons');
-      $addons.empty();
-      app.addOns.ready(function(){
-        $addons = app.addOns.invokeAll('searchAddons', $addons, key);
-      });
-
+      // search Albums
+      self.searchAlbums(key);
 
       // search songs
       self.searchSongs(key);
@@ -22430,7 +22570,81 @@ app.searchView = Backbone.View.extend({
       // search songs
       self.searchMovies(key);
 
+      // invoke Addons
+      self.searchAddOns(key);
+
     }
+
+  },
+
+  /**
+   * Init artist search
+   * @param key
+   */
+  searchAddOns: function(key){
+
+    // get addons
+    var $addons = $('#search-addons');
+    $addons.empty();
+    app.addOns.ready(function(){
+      $addons = app.addOns.invokeAll('searchAddons', $addons, key);
+    });
+
+  },
+
+
+  /**
+   * Init artist search
+   * @param key
+   */
+  searchArtists: function(key){
+
+    // vars
+    var self = this,
+      items = [],
+      notfoundartist = '<div class="noresult-box">No Artists found</div>';
+
+    // get artists list (sidebar)
+    app.cached.SearchArtistsList = new app.ArtistCollection();
+    app.cached.SearchArtistsList.fetch({success: function(data){
+
+      // filter based on string match
+      items = data.models.filter(function (element) {
+        return self.stringMatchFilter(element, key);
+      });
+
+      // update model with new collection
+      data.models = items;
+
+      //if result
+      if(data.models.length > 0){
+        // add the sidebar view
+        app.cached.artistsListSearch = new app.AristsListView({model: data, className: 'artist-search-list'});
+        app.helpers.setFirstSidebarContent(app.cached.artistsListSearch.render().el);
+      } else {
+        app.helpers.setFirstSidebarContent(notfoundartist);
+      }
+
+    }});
+
+  },
+
+
+  /**
+   * Init album search
+   * @param key
+   */
+  searchAlbums: function(key){
+
+    // vars
+    var self = this,
+      type = 'album';
+
+    // Add Loading
+    self.loadingRender(type);
+
+    // render result
+    self.searchSectionPreLoadRender(key, type, 'AlbumsCollection', 'SmallAlbumsList');
 
   },
 
@@ -22442,16 +22656,15 @@ app.searchView = Backbone.View.extend({
   searchMovies: function(key){
 
     // vars
-    var sel = '#search-movies',
-      $el = $(sel),
-      self = this;
+    var self = this,
+      type = 'movie';
 
-    // Loading
-    $el.html('<div class="addon-box">' + self.getLogo('movie') + '<span>Loading Movies</span></div>');
+    // Add Loading
+    self.loadingRender(type);
 
     var allMovies = new app.MovieAllCollection();
     allMovies.fetch({"success": function(data){
-      self.searchSectionRender(key, 'movie', 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
+      self.searchSectionRender(key, type, 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
 
     }});
 
@@ -22464,17 +22677,17 @@ app.searchView = Backbone.View.extend({
    */
   searchSongs: function(key){
 
-    var $songs = $('#search-songs'),
-      self = this;
+    var self = this,
+      type = 'song';
 
-    // bind to songs ready
-    $songs.html('<div class="addon-box">' + self.getLogo('song') + '<span>Loading Songs</span></div>');
+    // Add Loading
+    self.loadingRender(type);
 
     if(self.songsLoaded === true){
-      self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+      self.searchSectionRender(key, type, 'SongCollection', 'CustomSongCollection', 'SongListView');
     } else {
       app.store.libraryCall(function(){
-        self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+        self.searchSectionRender(key, type, 'SongCollection', 'CustomSongCollection', 'SongListView');
         self.songsLoaded = true;
       }, 'songsReady');
     }
@@ -22494,6 +22707,20 @@ app.searchView = Backbone.View.extend({
     return '<img src="theme/images/icons/icon-' + type + '.png" />';
   },
 
+  // Get a generic logo/icon
+  loadingRender: function(type){
+    $('#search-' + type + 's').html('<div class="addon-box">' + this.getLogo(type) + '<span>Loading ' + type + 's</span></div>');
+  },
+
+  // Get a generic logo/icon
+  headingHtml: function(type, key){
+    return '<h3 class="search-heading">' + this.getLogo(type) + type + ' search for:<span>' + key + '</span></h3>';
+  },
+
+  // Get a generic logo/icon
+  noResultsHtml: function(type){
+    return '<div class="noresult-box empty">' + this.getLogo(type) + '<span>No ' + type + 's found</span></div>';
+  },
 
   /**
    * Called when filtering a search key against a model label
@@ -22505,24 +22732,39 @@ app.searchView = Backbone.View.extend({
     return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
   },
 
+  /**
+   * Force Lazy loading images
+   */
+  lazyLoadImages: function($el){
+    $('img.content-lazy').each(function(i,d){
+      $d = $(d);
+      if($d.data('original') !== ''){
+        $d.attr('src', $d.data('original'));
+      }
+    });
+  },
+
 
   /**
-   * Render a dynamic search section
+   * Render a dynamic search section, this also does an extra lookup to fully populate the models
    *
    * @param key
+   *  the search string
    * @param type
+   *  eg. song, movie
    * @param allCollectionName
+   *  All results from this collection, search is done via string match using .filter()
    * @param collectionName
+   *  collection that populates each model
    * @param viewName
+   *  how the collection is outputted
    */
   searchSectionRender: function(key, type, allCollectionName, collectionName, viewName){
 
     var $el = $('#search-' + type + 's'),
       self = this,
       ids = [],
-      idKey = type + 'id',
-      heading = '<h3 class="search-heading">' + self.getLogo(type) + type + ' search for:<span>' + key + '</span></h3>',
-      noRes = '<div class="noresult-box empty">' + self.getLogo(type) + '<span>No ' + type + 's found</span></div>';
+      idKey = type + 'id';
 
     // Get ALL movies to filter
     app.cached['search' + allCollectionName] = new app[allCollectionName]();
@@ -22548,29 +22790,81 @@ app.searchView = Backbone.View.extend({
         var c = new app[collectionName]();
         c.fetch({items: ids, success: function(d){
           // heading
-          $el.append(heading);
+          $el.append( self.headingHtml(type, key) );
 
           // render view to content
           var v =  new app[viewName]({model: d, className: type + '-search-list ' + type + '-list'});
-          $el.append(v.render().$el);
-          // lazy load force
-          $el.find('img').each(function(i,d){
-            if($(this).data('original')){
-              $(this).attr('src', $(this).data('original'));
-            }
+          $el.append( v.render().$el );
 
-          });
+          // lazy load force
+          self.lazyLoadImages($el);
         }});
 
       } else {
         // no results
-        $el.html(noRes);
+        $el.html( self.noResultsHtml(type) );
+      }
+
+    }});
+
+  },
+
+
+  /**
+   * Render a dynamic search section, assumes models will be returned fully loaded
+   *
+   * @param key
+   *  the search string
+   * @param type
+   *  eg. song, movie
+   * @param collectionName
+   *  collection that populates each model
+   * @param viewName
+   *  how the collection is outputted
+   */
+  searchSectionPreLoadRender: function(key, type, collectionName, viewName){
+
+    var $el = $('#search-' + type + 's'),
+      self = this,
+      items = [];
+
+    // Get ALL movies to filter
+    app.cached['search' + collectionName] = new app[collectionName]();
+    app.cached['search' + collectionName].fetch({success: function(data){
+
+      // empty container
+      $el.empty();
+
+
+      // filter based on string match
+      items = data.models.filter(function (element) {
+        return self.stringMatchFilter(element, key);
+      });
+
+      // update model with new collection
+      data.models = items;
+
+      //if result
+      if(data.models.length > 0){
+
+        // heading
+        $el.append( self.headingHtml(type, key) );
+
+        // render view to content
+        var v =  new app[viewName]({model: data, className: type + '-search-list ' + type + '-list'});
+        $el.append(v.render().$el);
+
+        // lazy load force
+        //self.lazyLoadImages($el);
+
+      } else {
+        // no results
+        $el.html( self.noResultsHtml(type) );
       }
 
     }});
 
   }
-
 
 });;app.ShellView = Backbone.View.extend({
 
@@ -22651,6 +22945,12 @@ app.searchView = Backbone.View.extend({
         app.AudioController.setVolume(ui.value);
       }
     });
+
+    // Init lazyload and add a trigger
+    $("img.content-lazy").lazyload({
+      event : "contentLazy"
+    });
+
 
     // Init player state cycle
     setInterval(app.AudioController.updatePlayerState, 5000);
@@ -22745,7 +23045,7 @@ app.searchView = Backbone.View.extend({
     // to press another before render.
 
     // the time we wait from key up, and this
-    var keyDelay = 500, self = this;
+    var keyDelay = 200, self = this;
 
     // set and clear timeout to leave a gap
     $('#search').keyup(function () {
@@ -23146,8 +23446,6 @@ app.XbmcView = Backbone.View.extend({
 
 
   render:function () {
-
-    console.log(this.model);
 
     var pages = {
         'jsonrpc': 'An interface to deal directly with the xbmc jsonrpc',

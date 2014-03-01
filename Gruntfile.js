@@ -27,7 +27,7 @@ module.exports = function(grunt) {
           'src/js/app.js',
 
           // helpers
-          'src/helpers/*.js',
+          'src/js/helpers/*.js',
 
           // application models
           'src/js/models/*.js',

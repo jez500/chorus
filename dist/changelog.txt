@@ -1,3 +1,10 @@
+Version 0.2.5:
+- Added local video streaming to movies.  Very experimental!
+- Added movies to search
+- Refactored most of the search view to be more generic
+- Bug fixes to movie listings with infinite scroll and caching
+
+
 Version 0.2.4:
 - Bugfixes
 

@@ -31,7 +31,7 @@ app.searchView = Backbone.View.extend({
       app.shellView.selectMenuItem('search', 'sidebar');
 
       //empty content as we append
-      var $content = $('#content')
+      var $content = $('#content'),
         $el = $('<div class="search-results-content"></div>');
 
       // Build containers for various search types
@@ -227,7 +227,7 @@ app.searchView = Backbone.View.extend({
     $('img.content-lazy').each(function(i,d){
       $d = $(d);
       if($d.data('original') !== ''){
-        $d.attr('src', $d.data('original'))
+        $d.attr('src', $d.data('original'));
       }
     });
   },
