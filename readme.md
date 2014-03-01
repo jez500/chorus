@@ -73,6 +73,11 @@ click Play on a track when in Local mode, it will play through the browser, like
 sent to XBMC.  You can also add media to other playlists by clicking the menu buttons (three dots vertical) on most media items.
 
 
+## Video streaming
+Video streaming via HTML5 "sort of" works, it really depends on the codec used. An embedded VLC player is also available with better codec support.
+This looks like the best we can get until XBMC supports transcoding. Look for the "stream" tab on a movie.
+
+
 ## Supported xbmc addons
 - Soundcloud
 
