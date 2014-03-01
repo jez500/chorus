@@ -72,6 +72,7 @@ $(document).ready(function(){
    * error object
   */
   app.helpers.errorHandler = function(type, error){
+    console.log(error);
     if(typeof error[0] != 'undefined' && error[0].error == "Internal server error"){
       // no connection
     } else {
@@ -436,14 +437,7 @@ $(document).ready(function(){
    * Trigger lazyload
    */
   app.helpers.triggerContentLazy = function(){
-    // trigger lazyload
-    $("img.lazy").lazyload({
-      //  effect : "fadeIn",
-      threshold : 200
-    });
-    // show visible
     $(window).trigger('scroll');
-
   };
 
 
@@ -509,6 +503,26 @@ $(document).ready(function(){
   /********************************************************************************
    * Pagination
    ********************************************************************************/
+
+  /**
+   * Give it a pagenumber and it will build return a range object suitable for a API request
+   *
+   * @param pageNum
+   * @returns {{start: number, end: number}}
+   */
+  app.helpers.createPaginationRange = function(pageNum, fullRange){
+    // Do some maths
+    var page = (pageNum !== undefined ? parseInt(pageNum) : 0),
+      start = (page * app.itemsPerPage),
+      end = (start + app.itemsPerPage);
+    // override if fullRange
+    if(fullRange && fullRange === true){
+      start = 0;
+    }
+    // Return the range
+    return {'end': end, 'start': start};
+  };
+
 
   /**
    * Give it a pagenumber and it will build return a range object suitable for a API request

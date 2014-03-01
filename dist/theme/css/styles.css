@@ -2495,10 +2495,10 @@ h3.search-heading:after {
 }
 
 /* line 144, ../../../src/theme/sass/components/_pages.scss */
-.album-generic-list li {
+.album-search-list li {
   width: 170px;
   height: 220px;
-  margin: 5px 15px 10px 15px;
+  margin: 5px 6px 10px 6px;
 }
 
 /* line 153, ../../../src/theme/sass/components/_pages.scss */
@@ -2866,11 +2866,6 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   display: none !important;
 }
 
-/* line 2, ../../../src/theme/sass/components/_artists.scss */
-#artist-tabs {
-  margin-top: -38px;
-}
-
 /* line 13, ../../../src/theme/sass/components/_artists.scss */
 .artist-detail {
   padding: 8px 0;
@@ -2913,6 +2908,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 /* line 48, ../../../src/theme/sass/components/_artists.scss */
 .has-fanart #artist-tabs {
   background: none;
+  margin-top: -38px;
   z-index: 10;
 }
 /* line 52, ../../../src/theme/sass/components/_artists.scss */
@@ -4455,12 +4451,20 @@ ul.video-list li.next-page {
   color: #eee;
 }
 
-/* line 287, ../../../src/theme/sass/components/_video.scss */
+/* line 285, ../../../src/theme/sass/components/_video.scss */
+#movie-watch p {
+  font-size: 14px;
+  color: #777;
+}
+
+/* line 295, ../../../src/theme/sass/components/_video.scss */
+#movie-watch .col-1,
 #movie-detail .col-1 {
   margin-bottom: 20px;
 }
 @media (min-width: 800px) {
-  /* line 287, ../../../src/theme/sass/components/_video.scss */
+  /* line 295, ../../../src/theme/sass/components/_video.scss */
+  #movie-watch .col-1,
   #movie-detail .col-1 {
     width: 65.51724%;
     float: left;
@@ -4470,7 +4474,8 @@ ul.video-list li.next-page {
   }
 }
 @media (min-width: 800px) {
-  /* line 295, ../../../src/theme/sass/components/_video.scss */
+  /* line 303, ../../../src/theme/sass/components/_video.scss */
+  #movie-watch .col-2,
   #movie-detail .col-2 {
     width: 31.03448%;
     float: right;
@@ -4479,13 +4484,16 @@ ul.video-list li.next-page {
     clear: none;
   }
 }
-/* line 302, ../../../src/theme/sass/components/_video.scss */
+/* line 310, ../../../src/theme/sass/components/_video.scss */
+#movie-watch .col-2 .rating,
 #movie-detail .col-2 .rating {
   margin-bottom: 30px;
   overflow: hidden;
   height: 70px;
 }
-/* line 306, ../../../src/theme/sass/components/_video.scss */
+/* line 314, ../../../src/theme/sass/components/_video.scss */
+#movie-watch .col-2 .rating .fa-star,
+#movie-watch .col-2 .rating .value,
 #movie-detail .col-2 .rating .fa-star,
 #movie-detail .col-2 .rating .value {
   font-size: 60px;
@@ -4494,42 +4502,45 @@ ul.video-list li.next-page {
   color: rgba(43, 47, 48, 0.56);
   float: right;
 }
-/* line 314, ../../../src/theme/sass/components/_video.scss */
+/* line 322, ../../../src/theme/sass/components/_video.scss */
+#movie-watch .col-2 .rating .fa-star,
 #movie-detail .col-2 .rating .fa-star {
   font-size: 50px;
   color: rgba(43, 47, 48, 0.3);
 }
-/* line 318, ../../../src/theme/sass/components/_video.scss */
+/* line 326, ../../../src/theme/sass/components/_video.scss */
+#movie-watch .col-2 .rating .votes,
 #movie-detail .col-2 .rating .votes {
   clear: both;
   color: rgba(46, 46, 46, 0.34);
   font-size: 13px;
   margin: 5px 0;
 }
-/* line 325, ../../../src/theme/sass/components/_video.scss */
+/* line 333, ../../../src/theme/sass/components/_video.scss */
+#movie-watch .col-2 h4,
 #movie-detail .col-2 h4 {
   text-align: right;
   margin-right: 10px;
   padding-right: 7px;
 }
 
-/* line 339, ../../../src/theme/sass/components/_video.scss */
+/* line 347, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul {
   padding-right: 15px;
   text-align: right;
   padding-bottom: 6px;
 }
-/* line 343, ../../../src/theme/sass/components/_video.scss */
+/* line 351, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul li {
   font-size: 14px;
   color: rgba(70, 70, 70, 0.8);
 }
-/* line 346, ../../../src/theme/sass/components/_video.scss */
+/* line 354, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul li strong {
   text-transform: uppercase;
   padding-left: 9px;
 }
-/* line 350, ../../../src/theme/sass/components/_video.scss */
+/* line 358, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul li small {
   font-size: 12px;
   color: rgba(68, 68, 68, 0.36);

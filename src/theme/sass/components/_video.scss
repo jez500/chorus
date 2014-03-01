@@ -281,6 +281,14 @@ ul.video-list {
   }
 }
 
+#movie-watch {
+  p {
+    font-size: 14px;
+    color: #777;
+  }
+}
+
+#movie-watch,
 #movie-detail {
   $grids: 8;
   $gutters: 0.8em;

@@ -31,79 +31,26 @@ app.searchView = Backbone.View.extend({
       app.shellView.selectMenuItem('search', 'sidebar');
 
       //empty content as we append
-      var $content = $('#content'),
-        $title = $('#title'),
-        notfoundartist = '<div class="noresult-box">No Artists found</div>',
+      var $content = $('#content')
         $el = $('<div class="search-results-content"></div>');
 
+      // Build containers for various search types
       $el.append('<div id="search-albums"></div>')
         .append('<div id="search-songs"></div>')
         .append('<div id="search-movies"></div>')
         .append('<div id="search-addons"></div>');
 
+      // Render container to #content
       $content.empty().html($el);
-      $title.html('<a href="#">Search </a>' + key);
 
-      // get artists list (sidebar)
-      app.cached.SearchArtistsList = new app.ArtistCollection();
-      app.cached.SearchArtistsList.fetch({success: function(data){
-        // filter based on string match
-        var artists = data.models.filter(function (element) {
-          var label = element.attributes.artist;
-          return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
-        });
-        // update model with new collection
-        data.models = artists;
-        //if result
-        if(data.models.length > 0){
-          // add the sidebar view
-          app.cached.artistsListSearch = new app.AristsListView({model: data, className: 'artist-search-list'});
-          app.helpers.setFirstSidebarContent(app.cached.artistsListSearch.render().el);
-        } else {
-          app.helpers.setFirstSidebarContent(notfoundartist);
-        }
+      // Title
+      app.helpers.setTitle('<a href="#">Search </a>' + key);
 
-      }});
+      // search Artists
+      self.searchArtists(key);
 
-
-      //get albums
-      var $albums = $('#search-albums'),
-        loading = '<div class="noresult-box">' + self.getLogo('album') + '<span>Loading Albums</span></div>',
-        notfoundalb = '<div class="noresult-box empty">' + self.getLogo('album') + '<span>No Albums found with "'+key+'" in the title<span></div>';
-
-      $albums.html(loading);
-
-      app.cached.SearchAlbumList = new app.AlbumsCollection();
-      app.cached.SearchAlbumList.fetch({success: function(data){
-        $albums.empty();
-        // filter based on string match
-        var albums = data.models.filter(function (element) {
-          var label = element.attributes.label;
-          return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
-        });
-        // update model with new collection
-        data.models = albums;
-        //if result
-        if(data.models.length > 0){
-          // add to content
-          app.cached.SearchAlbumListSmall = new app.SmallAlbumsList({model: data, className: 'album-generic-list'});
-          $albums.append(app.cached.SearchAlbumListSmall.render().el);
-          $albums.prepend('<h3 class="search-heading">' + self.getLogo('album') + 'Album search for:<span>' + key + '</span></h3>');
-        } else {
-          //no results
-          $albums.html(notfoundalb);
-        }
-
-      }});
-
-
-      // get addons
-      var $addons = $('#search-addons');
-      $addons.empty();
-      app.addOns.ready(function(){
-        $addons = app.addOns.invokeAll('searchAddons', $addons, key);
-      });
-
+      // search Albums
+      self.searchAlbums(key);
 
       // search songs
       self.searchSongs(key);
@@ -111,7 +58,81 @@ app.searchView = Backbone.View.extend({
       // search songs
       self.searchMovies(key);
 
+      // invoke Addons
+      self.searchAddOns(key);
+
     }
+
+  },
+
+  /**
+   * Init artist search
+   * @param key
+   */
+  searchAddOns: function(key){
+
+    // get addons
+    var $addons = $('#search-addons');
+    $addons.empty();
+    app.addOns.ready(function(){
+      $addons = app.addOns.invokeAll('searchAddons', $addons, key);
+    });
+
+  },
+
+
+  /**
+   * Init artist search
+   * @param key
+   */
+  searchArtists: function(key){
+
+    // vars
+    var self = this,
+      items = [],
+      notfoundartist = '<div class="noresult-box">No Artists found</div>';
+
+    // get artists list (sidebar)
+    app.cached.SearchArtistsList = new app.ArtistCollection();
+    app.cached.SearchArtistsList.fetch({success: function(data){
+
+      // filter based on string match
+      items = data.models.filter(function (element) {
+        return self.stringMatchFilter(element, key);
+      });
+
+      // update model with new collection
+      data.models = items;
+
+      //if result
+      if(data.models.length > 0){
+        // add the sidebar view
+        app.cached.artistsListSearch = new app.AristsListView({model: data, className: 'artist-search-list'});
+        app.helpers.setFirstSidebarContent(app.cached.artistsListSearch.render().el);
+      } else {
+        app.helpers.setFirstSidebarContent(notfoundartist);
+      }
+
+    }});
+
+  },
+
+
+  /**
+   * Init album search
+   * @param key
+   */
+  searchAlbums: function(key){
+
+    // vars
+    var self = this,
+      type = 'album';
+
+    // Add Loading
+    self.loadingRender(type);
+
+    // render result
+    self.searchSectionPreLoadRender(key, type, 'AlbumsCollection', 'SmallAlbumsList');
 
   },
 
@@ -123,17 +144,15 @@ app.searchView = Backbone.View.extend({
   searchMovies: function(key){
 
     // vars
-    var sel = '#search-movies',
-      $el = $(sel),
-      self = this;
+    var self = this,
+      type = 'movie';
 
-    // Loading
-    $el.html('<div class="addon-box">' + self.getLogo('movie') + '<span>Loading Movies</span></div>');
-    var self = this;
+    // Add Loading
+    self.loadingRender(type);
 
     var allMovies = new app.MovieAllCollection();
     allMovies.fetch({"success": function(data){
-      self.searchSectionRender(key, 'movie', 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
+      self.searchSectionRender(key, type, 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
 
     }});
 
@@ -146,17 +165,17 @@ app.searchView = Backbone.View.extend({
    */
   searchSongs: function(key){
 
-    var $songs = $('#search-songs'),
-      self = this;
+    var self = this,
+      type = 'song';
 
-    // bind to songs ready
-    $songs.html('<div class="addon-box">' + self.getLogo('song') + '<span>Loading Songs</span></div>');
+    // Add Loading
+    self.loadingRender(type);
 
     if(self.songsLoaded === true){
-      self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+      self.searchSectionRender(key, type, 'SongCollection', 'CustomSongCollection', 'SongListView');
     } else {
       app.store.libraryCall(function(){
-        self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+        self.searchSectionRender(key, type, 'SongCollection', 'CustomSongCollection', 'SongListView');
         self.songsLoaded = true;
       }, 'songsReady');
     }
@@ -176,6 +195,20 @@ app.searchView = Backbone.View.extend({
     return '<img src="theme/images/icons/icon-' + type + '.png" />';
   },
 
+  // Get a generic logo/icon
+  loadingRender: function(type){
+    $('#search-' + type + 's').html('<div class="addon-box">' + this.getLogo(type) + '<span>Loading ' + type + 's</span></div>');
+  },
+
+  // Get a generic logo/icon
+  headingHtml: function(type, key){
+    return '<h3 class="search-heading">' + this.getLogo(type) + type + ' search for:<span>' + key + '</span></h3>';
+  },
+
+  // Get a generic logo/icon
+  noResultsHtml: function(type){
+    return '<div class="noresult-box empty">' + this.getLogo(type) + '<span>No ' + type + 's found</span></div>';
+  },
 
   /**
    * Called when filtering a search key against a model label
@@ -187,24 +220,39 @@ app.searchView = Backbone.View.extend({
     return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
   },
 
+  /**
+   * Force Lazy loading images
+   */
+  lazyLoadImages: function($el){
+    $('img.content-lazy').each(function(i,d){
+      $d = $(d);
+      if($d.data('original') !== ''){
+        $d.attr('src', $d.data('original'))
+      }
+    });
+  },
+
 
   /**
-   * Render a dynamic search section
+   * Render a dynamic search section, this also does an extra lookup to fully populate the models
    *
    * @param key
+   *  the search string
    * @param type
+   *  eg. song, movie
    * @param allCollectionName
+   *  All results from this collection, search is done via string match using .filter()
    * @param collectionName
+   *  collection that populates each model
    * @param viewName
+   *  how the collection is outputted
    */
   searchSectionRender: function(key, type, allCollectionName, collectionName, viewName){
 
     var $el = $('#search-' + type + 's'),
       self = this,
       ids = [],
-      idKey = type + 'id',
-      heading = '<h3 class="search-heading">' + self.getLogo(type) + type + ' search for:<span>' + key + '</span></h3>',
-      noRes = '<div class="noresult-box empty">' + self.getLogo(type) + '<span>No ' + type + 's found</span></div>';
+      idKey = type + 'id';
 
     // Get ALL movies to filter
     app.cached['search' + allCollectionName] = new app[allCollectionName]();
@@ -230,28 +278,80 @@ app.searchView = Backbone.View.extend({
         var c = new app[collectionName]();
         c.fetch({items: ids, success: function(d){
           // heading
-          $el.append(heading);
+          $el.append( self.headingHtml(type, key) );
 
           // render view to content
           var v =  new app[viewName]({model: d, className: type + '-search-list ' + type + '-list'});
-          $el.append(v.render().$el);
-          // lazy load force
-          $el.find('img').each(function(i,d){
-            if($(this).data('original')){
-              $(this).attr('src', $(this).data('original'));
-            }
+          $el.append( v.render().$el );
 
-          });
+          // lazy load force
+          self.lazyLoadImages($el);
         }});
 
       } else {
         // no results
-        $el.html(noRes);
+        $el.html( self.noResultsHtml(type) );
+      }
+
+    }});
+
+  },
+
+
+  /**
+   * Render a dynamic search section, assumes models will be returned fully loaded
+   *
+   * @param key
+   *  the search string
+   * @param type
+   *  eg. song, movie
+   * @param collectionName
+   *  collection that populates each model
+   * @param viewName
+   *  how the collection is outputted
+   */
+  searchSectionPreLoadRender: function(key, type, collectionName, viewName){
+
+    var $el = $('#search-' + type + 's'),
+      self = this,
+      items = [];
+
+    // Get ALL movies to filter
+    app.cached['search' + collectionName] = new app[collectionName]();
+    app.cached['search' + collectionName].fetch({success: function(data){
+
+      // empty container
+      $el.empty();
+
+
+      // filter based on string match
+      items = data.models.filter(function (element) {
+        return self.stringMatchFilter(element, key);
+      });
+
+      // update model with new collection
+      data.models = items;
+
+      //if result
+      if(data.models.length > 0){
+
+        // heading
+        $el.append( self.headingHtml(type, key) );
+
+        // render view to content
+        var v =  new app[viewName]({model: data, className: type + '-search-list ' + type + '-list'});
+        $el.append(v.render().$el);
+
+        // lazy load force
+        //self.lazyLoadImages($el);
+
+      } else {
+        // no results
+        $el.html( self.noResultsHtml(type) );
       }
 
     }});
 
   }
-
 
 });

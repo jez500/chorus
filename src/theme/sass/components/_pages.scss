@@ -140,12 +140,12 @@ h3.search-heading {
 }
 
 // search result card (no freewall)
-.album-generic-list {
+.album-search-list {
   li {
     //@include card('small');
     width: $card-small-width;
     height: $card-small-width + 50;
-    margin: 5px 15px 10px 15px;
+    margin: 5px 6px 10px 6px;
   }
 }
 

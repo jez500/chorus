@@ -176,7 +176,7 @@ app.Router = Backbone.Router.extend({
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
-    "movies/page/:num":     "movies",
+    "movies/page/:num":     "moviesPage",
     "movies/genre/:genre":  "moviesGenre",
     "movies":               "moviesLanding",
     "movie/:id":            "movie",
@@ -513,40 +513,51 @@ app.Router = Backbone.Router.extend({
    * Browse all movies
    * uses lazyload, infinite scroll and intelligent back button
    *
+   * @param num
+   *  page number to show
+   * @param append
+   *  if set to true will append only next page of contents
    */
-  movies: function(num){
+  movies: function(num, append){
 
     // vars
     var $content = $('#content'),
-      $results = $('ul.movie-list',$content),
+      $results = $('ul.movie-page-list',$content),
       fullRange = false,
       scrolled = false,
-      self = this,
-      page = 'page';
+      lastPageNum = app.moviePageNum,
+      $window = $(window);
 
-    // init pager
+    // do we append?
+    append = (append !== undefined && append === true);
+    fullRange = (append !== true);
+
+    // force a page via url
+    app.moviePageNum = parseInt(num);
+
+    // chnage the hash without triggering the router (for back action)
+    app.router.navigate('movies/page/' + num);
+
+    // We have no content on the page so init pager
     if($results.length === 0){
-      // empty page
-      if(num === 0){
-        app.moviePageNum = 0;
-      }
+
       // Loading
       $content.html('<div class="loading-box">Loading Movies</div>');
+
       // set title and add some tabs
       app.helpers.setTitle('All Movies', { addATag:'#movies/page/0', tabs: {'#movies': 'Recently Added'}, activeTab: 1});
+
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
-      // direct to this page
-      if(page && num){
-        app.moviePageNum = num;
-        fullRange = true;
-      }
+
+      // we always want fullrange with a fresh page
+      fullRange = true;
     } else {
-      // appending to page no other setup required
-      app.moviePageNum++;
-      // force a page via url
-      if(num !== undefined){
-        app.moviePageNum = num;
+      if(app.moviePageNum === 0){
+        // scroll to top
+        $window.scrollTo(0);
+        app.moviePageNum = lastPageNum;
+        return;
       }
     }
 
@@ -554,42 +565,43 @@ app.Router = Backbone.Router.extend({
     app.cached.movieCollection = new app.MovieCollection();
     // fetch results
     app.cached.movieCollection.fetch({"fullRange": fullRange, "success": function(collection){
+
       // get the view of results
       collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
-      // do we append or replace
-      if(app.moviePageNum === 0 || fullRange === true){
+
+      if(app.moviePageNum === 0 || append !== true){ // Replace content //
+
+        // Render view
         $content.html(app.cached.movieListView.render().$el);
 
         // scroll to top
-        $(window).scrollTo(0);
+        $window.scrollTo(0);
 
-        // back from a movie, scrollto that movie
-        if(fullRange === true && typeof app.vars.backHash != 'undefined'){
-          var parts = app.vars.backHash.split('/');
-          if(parts[0] == '#movie'){
-            $(window).scrollTo( $('.movie-row-' + parts[1]) , 0, {offset: -200});
-            scrolled = true;
-          }
-        }
+        // back from a movie, scrollTo that movie
+        app.cached.movieListView.backFromMovie(fullRange, scrolled);
 
-        // scroll to page number
+        // scrollTo page number
         if(fullRange === true && scrolled !== true && app.moviePageNum > 1){
-          $(window).scrollTo( '85%' );
+          $window.scrollTo( '85%' );
+          scrolled = true;
         }
 
-        app.helpers.triggerContentLazy();
+        // trigger scroll for lazyLoad
+        if(scrolled === false){
+          app.helpers.triggerContentLazy();
+        }
 
-      } else {
-        // if last page was empty, don't change hash
-        // or render
+      } else { // Append to the current content //
+
+        // if last page was empty, don't change hash or render
         var $lastList = $('.video-list').last();
         if($lastList.find('li').length === 0){
-          // dont render
+
+          // dont render, remove the element
           $lastList.remove();
         } else {
-          // chnage the hash without triggering the router (for back action)
-          app.router.navigate('movies/page/' + app.moviePageNum);
+
           // append new content
           $content.append(app.cached.movieListView.render().$el);
         }
@@ -598,9 +610,18 @@ app.Router = Backbone.Router.extend({
 
       app.helpers.triggerContentLazy();
 
-
     }}); // end get collection
 
+  },
+
+
+  /**
+   * Page callback
+   *
+   * @param num
+   */
+  moviesPage: function(num){
+    this.movies(num, false);
   },
 
 

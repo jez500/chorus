@@ -1,6 +1,6 @@
 <div class="card movie-row movie-row-<%= movieid %> clearfix" data-id="<%= movieid %>">
     <a class="image-wrapper" href="#movie/<%= movieid %>" title="<%= label %>">
-        <img class="image lazy" src="<%= app.parseImage('', 'space') %>" data-original="<%= app.parseImage(thumbnail) %>" />
+        <img class="image content-lazy" src="<%= app.parseImage('', 'space') %>" data-original="<%= app.parseImage(thumbnail) %>" />
     </a>
     <div class="actions-wrapper movie-actions-wrapper">
         <div class="actions movie-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= movieid %>">

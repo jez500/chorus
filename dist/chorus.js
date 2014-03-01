@@ -15560,6 +15560,7 @@ app.Router = Backbone.Router.extend({
     // fetch results
     app.cached.movieCollection.fetch({"fullRange": fullRange, "success": function(collection){
       // get the view of results
+      collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
       // do we append or replace
       if(app.moviePageNum === 0 || fullRange === true){
@@ -15585,7 +15586,7 @@ app.Router = Backbone.Router.extend({
         app.helpers.triggerContentLazy();
 
       } else {
-        // if last page was empty, dont change hash
+        // if last page was empty, don't change hash
         // or render
         var $lastList = $('.video-list').last();
         if($lastList.find('li').length === 0){
@@ -15594,6 +15595,7 @@ app.Router = Backbone.Router.extend({
         } else {
           // chnage the hash without triggering the router (for back action)
           app.router.navigate('movies/page/' + app.moviePageNum);
+          // append new content
           $content.append(app.cached.movieListView.render().$el);
         }
 
@@ -16568,85 +16570,6 @@ app.AudioController.insertAndPlaySong = function(type, id, callback){
 
 };
 
-
-
-app.AudioController.songLoadMultiple = function(songids, callback){
-
-    // vars
-    var commands = [];
-
-    // create commands
-    for(var n in songids){
-      var sid = songids[n];
-      if(typeof sid == 'number'){
-        // it is a song and sid should be a songid
-        commands.push({
-          method: 'AudioLibrary.GetSongDetails',
-          params: [sid, app.songFields ]
-        });
-      } else {
-
-        // for a file add defaults
-        var defaults = {
-            position: n,
-            songid: 'file',
-            album: '',
-            artist: '',
-            duration: 0
-          },
-          item = $.extend(defaults, songids[n]);
-        item.id = songids[n].file;
-
-        songids[n] = item;
-      }
-
-    }
-
-    //if songs to get
-    if(commands.length > 0){
-
-      // load all song data
-      app.xbmcController.multipleCommand(commands, function(res){
-
-        // parse each result into an array of song objects (models)
-        var dict = {}, payload = [];
-        _.each(res, function(r){
-          if(typeof r.result != 'undefined'){
-            dict[r.result.songdetails.songid] = r.result.songdetails;
-          }
-        });
-
-        // add songs back in their correct order using a dictionary
-        for(var s in songids){
-          var sid = songids[s];
-          if(typeof sid == 'number' && typeof dict[sid] != 'undefined'){
-            songids[s] = dict[sid];
-          }
-        }
-
-        // lastly, we clean up the output and ensure every item is an object
-        // we also assign final position in the list
-        var p = 0;
-        for(var n in songids){
-          var item = songids[n];
-          if(typeof item == 'object'){
-            item.position = p;
-            payload.push(item);
-            p++;
-          }
-        }
-
-        // callback
-        callback(payload);
-      });
-
-    } else {
-      // all files
-      callback(songids);
-    }
-
-
-};
 
 /**
  * Gets a download url for a file
@@ -17728,11 +17651,10 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       break;
 
     case 'movie':
-// returns model not collection
-//      plCollection = new app.Movie({id: parseInt(delta)});
-//      plCollection.fetch({"success": function(data){
-//        callback(data);
-//      }});
+      plCollection = new app.CustomSongCollection();
+      plCollection.fetch({items: delta, success: function(res){
+        callback(res);
+      }});
       break;
 
     case 'list': // local playlist id = delta
@@ -18704,6 +18626,22 @@ app.VideoController.removePlaylistPosition = function(position, callback ){
 app.VideoController.playlistSwap = function(pos1, pos2, callback){
   app.playlists.playlistSwap(app.VideoController.playlistId, 'movieid', pos1, pos2, callback);
 };
+
+
+/**
+ * Load an array of video ids
+ * @TODO merge with audio version of this
+ *
+ * @param items
+ *  an array of movieid's or objects with a file property
+ * @param callback
+ *  returns loaded items
+ * @returns {Array}
+ */
+app.VideoController.movieLoadMultiple = function(items, callback){
+  app.xbmcController.entityLoadMultiple('movie', items, callback);
+};
+
 ;
 
 /********************************************************************************
@@ -18766,11 +18704,156 @@ app.xbmcController.multipleCommand = function(commands, callback){
     },
     error: function(result) {
       // suppress errors unless required
-      //app.helpers.errorHandler('xbmc multiple command call', [result, commands]);
+     // app.helpers.errorHandler('xbmc multiple command call', [result, commands]);
     }
   });
 
 };
+
+
+
+/**
+ * Generic command to get multiple items of a particular type based on their id and type
+ *
+ * All the api mapping should be done in this function so only a type is required when calling
+ * It should always return robust results that exist in the library, however this may also
+ * cache mismatch with local playlists so length might not always match
+ *
+ * @param type
+ *  entity type, eg. song, movie
+ * @param items
+ *  an array of ids or objects with a file property
+ * @param callback
+ *  gets passed the return output
+ */
+app.xbmcController.entityLoadMultiple = function(type, items, callback){
+
+
+  // this maps a generic model to associated namespaces
+  var vars = {
+    song: {
+      method: 'AudioLibrary.GetSongDetails',
+      id: 'songid',
+      returnKey: 'songdetails',
+      fields: app.songFields
+    },
+    movie: {
+      method: 'VideoLibrary.GetMovieDetails',
+      id: 'movieid',
+      returnKey: 'moviedetails',
+      fields: app.movieFields
+    }
+  };
+
+
+  //////////////////////////////////////////////
+  // No entity type specific stuff happens below
+  //////////////////////////////////////////////
+
+  // no matching map or no items, exit
+  if(vars[type] === undefined || items === undefined){
+    return [];
+  }
+
+  // Commence parsing...
+  var commands = [],
+    map = vars[type],
+    defaults = {};
+
+  // Create commands
+  for(var n in items){
+    var rowData = items[n];
+
+    // Check if numeric
+    if(typeof rowData == 'number'){
+      // Is a model.. hopefully
+
+      // it has an id, add it as a command
+      commands.push({
+        method: map.method,
+        params: [rowData, map.fields ]
+      });
+
+    } else {
+      // Is a FILE
+
+      // for a file add defaults
+      defaults = {
+          position: n,
+          albumid: 'file', // we don't ever have this as a type
+          artistid: 'file', // we don't ever have this as a type
+          album: '',
+          artist: '',
+          duration: 0
+        };
+
+      // extend defaults with model
+      item = $.extend(defaults, rowData);
+
+      // add the file as an id
+      item.id = rowData.file;
+
+      // add unique id
+      item[map.id] = 'file';
+
+      // Update the items array with parsed item
+      items[n] = item;
+    }
+  }
+
+
+  //////////////////////////////////////////////
+  // Hit up xbmc for some loaded models
+  //////////////////////////////////////////////
+
+  //if items to get
+  if(commands.length > 0){
+
+    // load all song data
+    app.xbmcController.multipleCommand(commands, function(res){
+      var dict = {}, payload = [];
+
+      // parse each result into an array of song objects (models)
+      _.each(res, function(r){
+        if(typeof r.result != 'undefined'){
+          // save to a local dictionary
+          var m = r.result[map.returnKey];
+          dict[m[map.id]] = m;
+        }
+      });
+
+      // add songs back in their correct order using a dictionary
+      for(var s in items){
+        var sid = items[s];
+        if(typeof sid == 'number' && typeof dict[sid] != 'undefined'){
+          items[s] = dict[sid];
+        }
+      }
+
+      // lastly, we clean up the output and ensure every item is an object
+      // we also assign final position in the list
+      var p = 0;
+      for(var n in items){
+        var item = items[n];
+        if(typeof item == 'object'){
+          item.position = p;
+          payload.push(item);
+          p++;
+        }
+      }
+      // callback
+      callback(payload);
+    });
+
+  } else {
+
+    // No lookup required (all files)
+    callback(items);
+  }
+
+  return items;
+};
+
 
 
 ;/****************************************************************************
@@ -19108,25 +19191,35 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 app.MovieFitleredCollection = Backbone.Collection.extend({
   model: app.Movie,
 
-  cached: [],
-  fullyLoaded: false,
-
   sync: function(method, model, options) {
 
-    var sort = {"sort": {"method": "title"}},
-      opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter];
-    console.log('result from ', opt);
-
-    for(var k in options.filter){
-      var key = k + ':' + options.filter[k];
+    // init cache
+    if(app.stores.moviesFiltered === undefined){
+      app.stores.moviesFiltered = {};
     }
 
-    app.xbmcController.command('VideoLibrary.GetMovies', opt, function(data){
-      console.log('result from ', opt);
-      console.log('data ', data);
+    var sort = {"sort": {"method": "title"}},
+      opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter],
+      key = 'movies:key:filter';
 
-      options.success(data.result.movies);
-    });
+    // cache
+    for(var k in options.filter){
+      key = 'movies:' + k + ':' + options.filter[k];
+    }
+
+    // if cache use that
+    if(app.stores.moviesFiltered[key] !== undefined){
+      // return from cache
+      options.success(app.stores.moviesFiltered[key]);
+    } else {
+      // else lookup
+      app.xbmcController.command('VideoLibrary.GetMovies', opt, function(data){
+        // save cache
+        app.stores.moviesFiltered[key] = data.result.movies;
+        // return
+        options.success(data.result.movies);
+      });
+    }
 
   }
 
@@ -19139,15 +19232,14 @@ app.MovieFitleredCollection = Backbone.Collection.extend({
 app.MovieAllCollection = Backbone.Collection.extend({
   model: app.Movie,
 
-  cached: [],
-  fullyLoaded: false,
-
   sync: function(method, model, options) {
 
     if(typeof app.stores.allMovies == 'undefined'){
+      console.log('nocachehere');
       // no cache, do a lookup
       var allMovies = new app.AllMovieXbmcCollection();
       allMovies.fetch({"success": function(data){
+        console.log('fetcged');
         // Sort
         data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
         // Cache
@@ -19155,6 +19247,7 @@ app.MovieAllCollection = Backbone.Collection.extend({
         // Return
         options.success(data.models);
       }});
+      $(window).trigger('allMoviesCached');
     } else {
       // else return cache;
       options.success(app.stores.allMovies);
@@ -19163,6 +19256,25 @@ app.MovieAllCollection = Backbone.Collection.extend({
   }
 
 });
+
+
+/**
+* A collection of movies based on a custom array of movie ids
+* requires an a property of items[] in options
+*/
+app.CustomMovieCollection = Backbone.Collection.extend({
+  model: app.Movie,
+
+  sync: function(method, model, options) {
+
+    app.xbmcController.entityLoadMultiple('movie', options.items, function(movies){
+      options.success(movies);
+    });
+
+  }
+
+});
+
 
 ;
 /**
@@ -19297,7 +19409,7 @@ app.PlaylistCustomListSongCollection = Backbone.Collection.extend({
 
       var list = app.playlists.getCustomPlaylist(options.name);
 
-      app.AudioController.songLoadMultiple(list.items, function(songs){
+      app.xbmcController.entityLoadMultiple('song', list.items, function(songs){
         options.success(songs);
       });
 
@@ -19307,6 +19419,12 @@ app.PlaylistCustomListSongCollection = Backbone.Collection.extend({
 });
 
 
+/**
+ * Get thumbs up collections
+ * @todo - move out of audio collection
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
 app.ThumbsUpCollection = Backbone.Collection.extend({
 
   model: app.PlaylistCustomListItemSong,
@@ -19325,7 +19443,7 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
 
         case 'song':
           // lookup songs
-          app.AudioController.songLoadMultiple(list.items, function(songs){
+          app.xbmcController.entityLoadMultiple('song', list.items, function(songs){
             options.success(songs);
           });
           break;
@@ -19341,6 +19459,13 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
           // get albums from cache
           app.store.multipleAlbums(list.items, function(data){
             options.success(data);
+          });
+          break;
+
+        case 'movie':
+          // lookup movies
+          app.xbmcController.entityLoadMultiple('movie', list.items, function(movies){
+            options.success(movies);
           });
           break;
 
@@ -19363,7 +19488,7 @@ app.CustomSongCollection = Backbone.Collection.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
-      app.AudioController.songLoadMultiple(options.items, function(songs){
+      app.xbmcController.entityLoadMultiple('song', options.items, function(songs){
         options.success(songs);
       });
     }
@@ -20015,7 +20140,7 @@ app.AlbumItemView = Backbone.View.extend({
     $('.album-info', this.$el).html(new app.AlbumItemSmallView({model: this.model}).render().$el);
 
     // songs
-    $(".tracks", this.$el).html(new app.SongListView({"model":this.model.attributes.songs}).render().el);
+    $(".tracks", this.$el).html(new app.SongListView({"model":{models: this.model.attributes.songs}}).render().el);
 
     return this;
   }
@@ -21296,20 +21421,24 @@ app.MovieListView = Backbone.View.extend({
       this.$el.append(new app.MovieListItemView({model:movie}).render().el);
     }, this);
 
-    // append the next btn
-    if(this.model.length > 0){
-      var $next = $('<li class="next-page">More...</li>');
-      this.$el.append($next);
+    // Show next button and bind auto click with bum smack
+    if(this.model.showNext !== undefined && this.model.showNext === true){
+
+      // append the next btn
+      if(this.model.models.length > 0){
+        var $next = $('<li class="next-page">More...</li>');
+        this.$el.append($next);
+      }
+
+      // Infinate scroll trigger (scroll)
+      $(window).smack({ threshold: 0.8 })
+        .then(function () {
+          $('ul.movie-list').find('.next-page').trigger('click');
+        });
+
+      // add row class (for scrolling to page)
+      this.$el.addClass('page-' + app.moviePageNum);
     }
-
-    // Infinate scroll trigger (scroll)
-    $(window).smack({ threshold: 0.8 })
-      .then(function () {
-        $('ul.movie-list').find('.next-page').trigger('click');
-      });
-
-    // add row class (for scrolling to page)
-    this.$el.addClass('page-' + app.moviePageNum);
 
     return this;
 
@@ -22201,6 +22330,8 @@ app.searchView = Backbone.View.extend({
 
   },
 
+  songsLoaded: false,
+
   /**
    * Render based on key in the model
    * this is all a bit messy and could be refined
@@ -22212,8 +22343,8 @@ app.searchView = Backbone.View.extend({
       self = this;
 
     if(key.length > 1){
-      //set url
-      document.location.hash = '#search/' + key;
+      //set url without re-render
+      app.router.navigate('#search/' + key);
 
       //set searching
       app.shellView.selectMenuItem('search', 'sidebar');
@@ -22226,10 +22357,11 @@ app.searchView = Backbone.View.extend({
 
       $el.append('<div id="search-albums"></div>')
         .append('<div id="search-songs"></div>')
+        .append('<div id="search-movies"></div>')
         .append('<div id="search-addons"></div>');
 
       $content.empty().html($el);
-      $title.html('<a href="#artists">Artists </a>Albums');
+      $title.html('<a href="#">Search </a>' + key);
 
       // get artists list (sidebar)
       app.cached.SearchArtistsList = new app.ArtistCollection();
@@ -22292,16 +22424,37 @@ app.searchView = Backbone.View.extend({
       });
 
 
-      // searrch songs
+      // search songs
       self.searchSongs(key);
+
+      // search songs
+      self.searchMovies(key);
 
     }
 
   },
 
-  // Get a generic logo/icon
-  getLogo: function(type){
-    return '<img src="theme/images/icons/icon-' + type + '.png" />';
+
+  /**
+   * Init movie search
+   * @param key
+   */
+  searchMovies: function(key){
+
+    // vars
+    var sel = '#search-movies',
+      $el = $(sel),
+      self = this;
+
+    // Loading
+    $el.html('<div class="addon-box">' + self.getLogo('movie') + '<span>Loading Movies</span></div>');
+
+    var allMovies = new app.MovieAllCollection();
+    allMovies.fetch({"success": function(data){
+      self.searchSectionRender(key, 'movie', 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
+
+    }});
+
   },
 
 
@@ -22317,48 +22470,104 @@ app.searchView = Backbone.View.extend({
     // bind to songs ready
     $songs.html('<div class="addon-box">' + self.getLogo('song') + '<span>Loading Songs</span></div>');
 
-    app.store.indexSongs(function(){
+    if(self.songsLoaded === true){
+      self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+    } else {
+      app.store.libraryCall(function(){
+        self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
+        self.songsLoaded = true;
+      }, 'songsReady');
+    }
 
-      app.cached.SearchsongList = new app.SongCollection();
-      app.cached.SearchsongList.fetch({success: function(data){
-
-        var songsIds = [];
-        $songs.empty();
-
-        // filter based on string match
-        var songs = data.models.filter(function (element) {
-          var label = element.attributes.label;
-          return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
-        });
-
-        // get array of ids for multi-load
-        _.each(songs, function(song){
-          songsIds.push(song.attributes.songid);
-        });
-
-        // Get a list of fully loaded models from id
-        if(songsIds.length > 0){
-          app.cached.SearchsongListFiltered = new app.CustomSongCollection();
-          app.cached.SearchsongListFiltered.fetch({items: songsIds, success: function(data){
-
-            // heading
-            $songs.append('<h3 class="search-heading">' + self.getLogo('song') + 'Songs search for:<span>' + key + '</span></h3>');
-
-            // add to content
-            app.cached.SearchsongList = new app.SongListView({model: data.models, className: 'song-search-list song-list'});
-            $songs.append(app.cached.SearchsongList.render().el);
-
-          }});
-        } else {
-          // no res
-          $songs.html('<div class="noresult-box empty">' + self.getLogo('song') + '<span>No Songs found</span></div>');
-        }
+  },
 
 
-      }});
 
-    });
 
+  ///////////////////////////////////////////////
+  // Helpers
+  ///////////////////////////////////////////////
+
+
+  // Get a generic logo/icon
+  getLogo: function(type){
+    return '<img src="theme/images/icons/icon-' + type + '.png" />';
+  },
+
+
+  /**
+   * Called when filtering a search key against a model label
+   * @param element
+   * @returns {boolean}
+   */
+  stringMatchFilter: function (element, key) {
+    var label = element.attributes.label;
+    return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
+  },
+
+
+  /**
+   * Render a dynamic search section
+   *
+   * @param key
+   * @param type
+   * @param allCollectionName
+   * @param collectionName
+   * @param viewName
+   */
+  searchSectionRender: function(key, type, allCollectionName, collectionName, viewName){
+
+    var $el = $('#search-' + type + 's'),
+      self = this,
+      ids = [],
+      idKey = type + 'id',
+      heading = '<h3 class="search-heading">' + self.getLogo(type) + type + ' search for:<span>' + key + '</span></h3>',
+      noRes = '<div class="noresult-box empty">' + self.getLogo(type) + '<span>No ' + type + 's found</span></div>';
+
+    // Get ALL movies to filter
+    app.cached['search' + allCollectionName] = new app[allCollectionName]();
+    app.cached['search' + allCollectionName].fetch({success: function(data){
+
+      // empty container
+      $el.empty();
+
+      // filter based on string match
+      var items = data.models.filter(function (element) {
+        return self.stringMatchFilter(element, key);
+      });
+
+      // get array of ids for multi-load
+      _.each(items, function(item){
+        ids.push(item.attributes[idKey]);
+      });
+
+      // Get a list of fully loaded models from id
+      if(ids.length > 0){
+
+        // lget a loaded collection to view
+        var c = new app[collectionName]();
+        c.fetch({items: ids, success: function(d){
+          // heading
+          $el.append(heading);
+
+          // render view to content
+          var v =  new app[viewName]({model: d, className: type + '-search-list ' + type + '-list'});
+          $el.append(v.render().$el);
+          // lazy load force
+          $el.find('img').each(function(i,d){
+            if($(this).data('original')){
+              $(this).attr('src', $(this).data('original'));
+            }
+
+          });
+        }});
+
+      } else {
+        // no results
+        $el.html(noRes);
+      }
+
+    }});
 
   }
 
@@ -22542,7 +22751,7 @@ app.searchView = Backbone.View.extend({
     $('#search').keyup(function () {
       clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
       app.cached.keyupTimeout = setTimeout(function(){
-        self.search();
+        document.location = '#search/' + $('#search').val();
       }, keyDelay);
     });
 
@@ -22810,8 +23019,8 @@ app.searchView = Backbone.View.extend({
 
   render:function () {
     this.$el.empty();
-    _.each(this.model, function (song) {
-      this.$el.append(new app.SongView({model:song}).render().el);
+    _.each(this.model.models, function (song) {
+      this.$el.append(new app.SongView({model:song}).render().$el);
     }, this);
     return this;
   }

@@ -27,6 +27,9 @@
                     <% if(cast.length > 0){ %>
                         <li data-id="about"><a href="#movie-cast" title="<%=cast.length%> cast members found" data-toggle="tab">Cast</a></li>
                     <% } %>
+                    <% if(file.indexOf('stack://') == -1){ %>
+                        <li><a href="#movie-watch" data-toggle="tab">Stream</a></li>
+                    <% } %>
                 </ul>
             </div>
 
@@ -99,6 +102,61 @@
                       }
                     } %>
                 </div>
+
+                <div id="movie-watch" class="tab-pane">
+
+                    <div class="col-1">
+                        <h2>HTML5 player</h2>
+                        <p>Codec support is very <a href="https://developer.mozilla.org/en-US/docs/HTML/Supported_media_formats" target="_blank">limited in the browser</a>.
+                            H.264 video generally works but only with 2 channel audio
+                            (6 channel results in no sound). Works best in Chrome, may crash browser and/or XBMC!</p>
+                        <div class="buttons">
+                            <a href="#" class="movie-stream btn" data-player="html5">Launch HTML5 player</a>
+                        </div>
+                        <br />
+                        <h2>VLC player</h2>
+                        <p><a href="http://www.videolan.org/vlc/index.html" target="_blank">VLC Player</a> provides an
+                            embeddable video player, it will play most videos, but does require you to
+                            <a href="http://www.videolan.org/vlc/index.html" target="_blank">download and install</a> extra software.
+                            Works well in Chrome and Firefox.</p>
+                        <div class="buttons">
+                            <a href="#" data-player="vlc" class="movie-stream btn">Launch VLC player</a>
+                        </div>
+                    </div>
+
+                    <div class="col-2">
+
+                        <div class="quality sub-block">
+                            <h4>Streams</h4>
+                            <ul>
+                                <% for(i in streamdetails.video){
+                                var s = streamdetails.video[i];
+                                %>
+                                <li><%=s.width%> x <%=s.height%> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                            <ul>
+                                <% for(i in streamdetails.audio){
+                                var s = streamdetails.audio[i];
+                                %>
+                                <li><%=s.channels%> channels <% if(s.language != ''){ %><small>(<%=s.language%>)</small><% } %> <strong><%=s.codec%></strong></li>
+                                <% } %>
+                            </ul>
+                        </div>
+
+                        <div class="sub-block">
+                            <h4>Note</h4>
+                            <p style="text-align: right">
+                                For best results, use Chrome<br />
+                                Playback might not work at all<br />
+                                Seeking doesn't work<br />
+                                Stacked videos don't work
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </div>

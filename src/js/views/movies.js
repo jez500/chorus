@@ -27,9 +27,20 @@ app.MovieListView = Backbone.View.extend({
 
   tagName:'ul',
 
-  className:'video-list movie-list',
+  className:'video-list movie-page-list',
 
   initialize:function () {
+
+    var _thisView = this;
+
+    console.log(this.model);
+    var self = this;
+
+    this.model.on("reset", this.render, this);
+    this.model.on("add", function (movie) {
+      self.$el.append(new app.MovieListItemView({model:movie}).render().el);
+    });
+
 
   },
 
@@ -37,31 +48,18 @@ app.MovieListView = Backbone.View.extend({
     "click .next-page": "nextPage"
   },
 
-  render:function () {
+  render: function () {
+
+    this.$el.empty();
 
     // append results
-    this.$el.empty();
     _.each(this.model.models, function (movie) {
       this.$el.append(new app.MovieListItemView({model:movie}).render().el);
     }, this);
 
     // Show next button and bind auto click with bum smack
     if(this.model.showNext !== undefined && this.model.showNext === true){
-
-      // append the next btn
-      if(this.model.models.length > 0){
-        var $next = $('<li class="next-page">More...</li>');
-        this.$el.append($next);
-      }
-
-      // Infinate scroll trigger (scroll)
-      $(window).smack({ threshold: 0.8 })
-        .then(function () {
-          $('ul.movie-list').find('.next-page').trigger('click');
-        });
-
-      // add row class (for scrolling to page)
-      this.$el.addClass('page-' + app.moviePageNum);
+      this.$el = app.pager.viewHelpers(this.$el, 'movie');
     }
 
     return this;
@@ -69,11 +67,21 @@ app.MovieListView = Backbone.View.extend({
   },
 
   nextPage: function(e){
-    // remove the next button
-    $(e.target).remove();
-    // render fetch and render next page
-    app.router.movies();
+    console.log('nextaaa');
+    app.pager.nextPage($(e.target), 'movie');
+  },
 
+
+  backFromMovie: function(fullRange, scrolled){
+    var $window = $(window);
+    if(fullRange === true && typeof app.vars.backHash != 'undefined'){
+      var parts = app.vars.backHash.split('/');
+      if(parts[0] == '#movie'){
+        $window.scrollTo( $('.movie-row-' + parts[1]) , 0, {offset: -200});
+        scrolled = true;
+      }
+    }
+    return scrolled;
   }
 
 
@@ -113,9 +121,13 @@ app.MovieListItemView = Backbone.View.extend({
   render:function () {
 
     var model = this.model.attributes;
+    if(!model.label){
+      return this;
+    }
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     this.$el.html(this.template(model));
+
     return this;
   },
 
@@ -217,6 +229,7 @@ app.MovieView = Backbone.View.extend({
     "click .movie-play": "playMovie",
     "click .movie-add": "addMovie",
     "click .movie-thumbsup": "thumbsUp",
+    "click .movie-stream": "stream",
     "click .movie-menu": "menu"
   },
 
@@ -342,7 +355,19 @@ app.MovieView = Backbone.View.extend({
       app.VideoController.playlistRender();
     });
 
-  }
+  },
 
+  stream: function(e){
+    e.preventDefault();
+    var player = $(e.target).data('player');
+
+    var win = window.open("videoPlayer.html?player=" + player, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
+
+    app.AudioController.downloadFile(this.model.attributes.file, function(url){
+      console.log(url);
+      win.location = "videoPlayer.html?player=" + player + "&src=" + encodeURIComponent(url);
+    });
+
+  }
 
 });

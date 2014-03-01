@@ -78,6 +78,12 @@ app.ShellView = Backbone.View.extend({
       }
     });
 
+    // Init lazyload and add a trigger
+    $("img.content-lazy").lazyload({
+      event : "contentLazy"
+    });
+
+
     // Init player state cycle
     setInterval(app.AudioController.updatePlayerState, 5000);
 
@@ -171,7 +177,7 @@ app.ShellView = Backbone.View.extend({
     // to press another before render.
 
     // the time we wait from key up, and this
-    var keyDelay = 500, self = this;
+    var keyDelay = 200, self = this;
 
     // set and clear timeout to leave a gap
     $('#search').keyup(function () {
