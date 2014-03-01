@@ -141,7 +141,6 @@ app.FileView = Backbone.View.extend({
       var el = new app.FilesView({"model":res}).render().$el;
 
       // dont append if already appended
-      //console.log(self.$el);
       if(self.$el.find('ul.files-list').length === 0){
         self.$el.append(el);
       }

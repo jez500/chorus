@@ -198,11 +198,9 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
       case 'local':
 
         if(op == 'append'){
-          console.log('append', collection);
           app.audioStreaming.appendPlaylistItems(collection, callback);
         } else {
           // replace and play
-          console.log('replace', collection);
           app.audioStreaming.replacePlaylistItems(collection, callback);
         }
 
@@ -296,7 +294,7 @@ app.playlists.changeCustomPlaylistPosition = function( event, ui ) {
       changed = {from: $thisItem.data('path'), to: i};
     }
   });
-  console.log(changed);
+
   //if an item has changed position, swap its position in xbmc
   if(changed.from !== undefined && changed.from !== changed.to){
     app.AudioController.playlistSwap(changed.from, changed.to, function(res){
@@ -412,7 +410,6 @@ app.playlists.saveCustomPlayLists = function(op, id, source, newItems){
 
   if(source == 'xbmc'){
 
-    console.log(app.cached.xbmcPlaylist);
     _.each(app.cached.xbmcPlaylist, function(d){
       if(d.id == 'file'){
         // let addons tinker

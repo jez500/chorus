@@ -17,13 +17,13 @@ app.VideoController = {
  *  result
  */
 app.VideoController.playVideoId = function(id, type, callback){
-  console.log(type);
+
   // clear playlist
   app.VideoController.playlistClear(function(){
-    console.log('cleard');
+
     // Add video to playlist based on type/id
     app.VideoController.addToPlaylist(id, type, 'add', function(data){
-      console.log(data);
+
       app.VideoController.playPlaylistPosition(0, function(play){
         callback(data.result);
       });

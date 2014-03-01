@@ -23,8 +23,6 @@ app.XbmcView = Backbone.View.extend({
 
   render:function () {
 
-    console.log(this.model);
-
     var pages = {
         'jsonrpc': 'An interface to deal directly with the xbmc jsonrpc',
         'storage': 'Local Storage Data Dump',

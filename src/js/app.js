@@ -663,7 +663,7 @@ app.Router = Backbone.Router.extend({
    * Movie landing page
    */
   moviesGenre: function (genre) {
-    console.log(genre);
+
 
     var self = this;
     app.helpers.setTitle(genre, {

@@ -31,9 +31,6 @@ app.MovieListView = Backbone.View.extend({
 
   initialize:function () {
 
-    var _thisView = this;
-
-    console.log(this.model);
     var self = this;
 
     this.model.on("reset", this.render, this);
@@ -67,7 +64,6 @@ app.MovieListView = Backbone.View.extend({
   },
 
   nextPage: function(e){
-    console.log('nextaaa');
     app.pager.nextPage($(e.target), 'movie');
   },
 
@@ -364,7 +360,6 @@ app.MovieView = Backbone.View.extend({
     var win = window.open("videoPlayer.html?player=" + player, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
 
     app.AudioController.downloadFile(this.model.attributes.file, function(url){
-      console.log(url);
       win.location = "videoPlayer.html?player=" + player + "&src=" + encodeURIComponent(url);
     });
 

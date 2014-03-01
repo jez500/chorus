@@ -77,7 +77,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
           var item = self.list.items[$(d).data('pos')];
           list.push(item);
         });
-        console.log(list, listId);
+
         // Update the playlist order in storage
         app.playlists.replaceCustomPlayList(listId, list);
 
@@ -95,7 +95,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     e.preventDefault();
     // add list
     var list = app.playlists.getCustomPlaylist(this.list.id);
-    console.log(list.items);
+
     this.addCustomListToPlaylist(list.items);
     app.notification('Playlist updated');
   },
@@ -310,7 +310,6 @@ app.CustomPlaylistSongView = Backbone.View.extend({
   render:function () {
 
     if(typeof this.model.attributes.position == 'undefined'){
-      console.log('no position');
       return this;
     }
 
@@ -396,7 +395,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
       key = app.helpers.getSongKey(song),
     // if file, gets the whole object
       id = (key.type == 'file' ? song : song.songid);
-    console.log(id);
+
     app.playlists.saveCustomPlayListsDialog(key.type, [id]);
   }
 

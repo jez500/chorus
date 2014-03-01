@@ -246,7 +246,6 @@ app.audioStreaming = {
     if(app.audioStreaming.playList === undefined){
       // no current playlist extists so just replace
       collection = newCollection;
-      console.log(collection);
     } else {
       // append new models to original collection
       collection = app.audioStreaming.playList.items;

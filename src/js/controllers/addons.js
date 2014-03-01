@@ -185,7 +185,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
   clickDir: function(record){
     if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
       if(record.title == 'Search'){
-        console.log(record);
+
         app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
       }
     }
@@ -221,9 +221,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
           app.cached.fileCollection = new app.FileCollection();
           app.cached.fileCollection.fetch({"name":dir, "success": function(res){
             // render page
-            console.log(res);
             app.cached.filesSearchView = new app.FilesView({"model":res}).render();
-            //$('#files-container').html(app.cached.filesSearchView.$el);
           }});
 
         });
@@ -336,7 +334,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
     // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
     window.setTimeout(function(){
       app.xbmcController.command('Input.SendText', [query], function(res){
-        console.log(res);
+
       });
     }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
 

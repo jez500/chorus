@@ -34,19 +34,11 @@ app.MovieCollection = Backbone.Collection.extend({
           return;
         }
 
-        // else lookup from xbmc
-        console.log(app.moviePageNum);
-
         // model for params
         var args = {
           range: app.helpers.createPaginationRange(app.moviePageNum, fullRange)
         };
 
-        // CACHE GET
-//        // empty cache if first load
-//        if(app.moviePageNum === 0){
-//          app.stores.movies = [];
-//        }
         // prep empty cache
         if(typeof app.stores.movies == 'undefined'){
           app.stores.movies = {};
@@ -54,21 +46,12 @@ app.MovieCollection = Backbone.Collection.extend({
         // set the container
         app.stores.movies[app.moviePageNum] = [];
 
-//        // if fullrange called and cache exists
-//        if(fullRange && app.stores.movies.length > 0){
-//          // we always return cache
-//          // Could do some more checking for edge cases but is a simple solution
-//          options.success(app.stores.movies);
-//          return;
-//        }
-
         // init the xbmc collection
         app.cached.movieXbmcCollection = new app.MovieXbmcCollection(args);
         // fetch results
         app.cached.movieXbmcCollection.fetch({"success": function(data){
 
           if(!fullRange || app.moviePageNum === 0){
-            console.log('caching');
             // add models to cache if not a fullRange
             $.each(data.models,function(i,d){
               app.stores.movies[app.moviePageNum].push(d);
@@ -107,13 +90,11 @@ app.MovieCollection = Backbone.Collection.extend({
     if(app.stores.movies === undefined ||
       app.stores.movies[pageNum] === undefined ||
       app.stores.movies[pageNum].length === 0){
-      console.log('nocache');
         return false;
     }
 
     var cache = app.stores.movies[pageNum],
       full = [];
-    console.log('cachehit', fullRange);
 
     // full range requires us to loop over each and append to a full array
     if(fullRange){
@@ -122,7 +103,6 @@ app.MovieCollection = Backbone.Collection.extend({
         if(app.stores.movies[i] === undefined){
           return false;
         }
-        console.log('cachehit', app.stores.movies[i]);
         for(var n in app.stores.movies[i]){
           full.push(app.stores.movies[i][n]);
         }
@@ -131,33 +111,6 @@ app.MovieCollection = Backbone.Collection.extend({
     }
 
     return cache;
-
-//
-//    // at least one page is in cache
-//    var cacheOK = false,
-//      range = app.helpers.createPaginationRange(pageNum, fullRange);
-//
-//    if( app.stores.allMovies.length == app.stores.movies.length || app.stores.movies.length == range.end ){
-//      // Full cache
-//      cacheOK = true;
-//    }
-//
-//    // build cache based on range
-//    if(cacheOK){
-//      var returnCache = [];
-//      for(var i in app.stores.movies){
-//        if(i >= range.start && i <= range.end){
-//          returnCache.push(app.stores.movies[i]);
-//        }
-//      }
-//
-//      //return cache
-//      return returnCache;
-//    } else {
-//      // nocache found
-//      return false;
-//    }
-
   }
 
 });
@@ -176,7 +129,6 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 
     var opt = [app.movieFields, {'end': 100, 'start': 0}];
     app.xbmcController.command('VideoLibrary.GetRecentlyAddedMovies', opt, function(data){
-      console.log(data);
       options.success(data.result.movies);
     });
 
@@ -239,7 +191,6 @@ app.MovieAllCollection = Backbone.Collection.extend({
       // no cache, do a lookup
       var allMovies = new app.AllMovieXbmcCollection();
       allMovies.fetch({"success": function(data){
-        console.log('all');
         // Sort
         data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
 
