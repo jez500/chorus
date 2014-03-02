@@ -80,8 +80,49 @@ app.pager = {
     app.router[this.type + 's']( (app[this.type + 'PageNum'] + 1), true ); // append next page of results
 
     return $el;
-  }
+  },
 
+
+
+  /**
+   * Returns next and previous items in library
+   *
+   * @param type
+   *  movie, tvshow
+   * @param id
+   *  the id to match against
+   * @param models
+   */
+  libraryNav: function(type, id, models){
+
+    // next tvshow in cache
+    var next = false,
+      nextId = 0,
+      last = 0,
+      lastId = 0;
+
+    // loop over all tvshows
+    $.each(models, function(i,d){
+      var model = d.attributes,
+        idType = type + 'id';
+      // current was last
+      if(next === true){
+        nextId = parseInt(model[idType]);
+        next = false;
+      }
+      if(model[idType] == id){
+        next = true;
+        lastId = last;
+      }
+      last = id;
+    });
+
+    return {
+      'next': nextId,
+      'prev': lastId
+    }
+
+  }
 
 
 };

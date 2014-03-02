@@ -122,9 +122,138 @@ var app = {
     "art"
   ],
 
+  tvshowFields: [
+    "title",
+    "genre",
+    "year",
+    "rating",
+    "plot",
+    "studio",
+    "mpaa",
+    "cast",
+    "playcount",
+    "episode",
+    "imdbnumber",
+    "premiered",
+    "votes",
+    "lastplayed",
+   // "fanart",
+    "thumbnail",
+    "file",
+    "originaltitle",
+    "sorttitle",
+    "episodeguide",
+    "season",
+    "watchedepisodes",
+    "dateadded",
+    "tag",
+    "art"
+  ],
+
+  tvepisodeFields: [
+    "title",
+    "plot",
+    "votes",
+    "rating",
+    "writer",
+    "firstaired",
+    "playcount",
+    "runtime",
+    "director",
+    "productioncode",
+    "season",
+    "episode",
+    "originaltitle",
+    "showtitle",
+    "cast",
+    "streamdetails",
+    "lastplayed",
+    "fanart",
+    "thumbnail",
+    "file",
+    "resume",
+    "tvshowid",
+    "dateadded",
+    "uniqueid",
+    "art"
+  ],
+
+  tvseasonFields: [
+    "season",
+    "showtitle",
+    "playcount",
+    "episode",
+    "fanart",
+    "thumbnail",
+    "tvshowid",
+    "watchedepisodes",
+    "art"
+  ],
+
   fileFields: [
     'title', 'size', 'mimetype', 'file', 'dateadded', 'thumbnail', 'artistid', 'albumid', 'uniqueid'
   ],
+
+  playlistItemFields: [
+    "title",
+    "artist",
+    "albumartist",
+    "genre",
+    "year",
+    "rating",
+    "album",
+    "track",
+    "duration",
+    "playcount",
+    "director",
+    "tagline",
+    "plotoutline",
+    "originaltitle",
+    "lastplayed",
+    "mpaa",
+    "cast",
+    "country",
+    "imdbnumber",
+    "premiered",
+    "runtime",
+    "showlink",
+    "streamdetails",
+    "votes",
+    "firstaired",
+    "season",
+    "episode",
+    "showtitle",
+    "thumbnail",
+    "file",
+    "resume",
+    "artistid",
+    "albumid",
+    "tvshowid",
+    "setid",
+    "watchedepisodes",
+    "disc",
+    "tag",
+    "art",
+    "genreid",
+    "displayartist",
+    "albumartistid",
+    "description",
+    "theme",
+    "mood",
+    "style",
+    "albumlabel",
+    "sorttitle",
+    "uniqueid",
+    "dateadded",
+    "channel",
+    "channeltype",
+    "hidden",
+    "locked",
+    "channelnumber",
+    "starttime",
+    "endtime"
+  ],
+
 
   // filters
   albumFilters: [],
@@ -152,7 +281,10 @@ var app = {
     "FilesView",
     "FileView",
     "MovieListItemView",
-    "MovieView"
+    "MovieView",
+    "TvshowListItemView",
+    "TvSeasonListItemView",
+    "TvshowView"
   ],
 
   tpl: {} // for templates that are lazy loaded
@@ -180,6 +312,10 @@ app.Router = Backbone.Router.extend({
     "movies/genre/:genre":  "moviesGenre",
     "movies":               "moviesLanding",
     "movie/:id":            "movie",
+    "tvshows":              "tvshows",
+    "tvshow/:id":           "tvshow",
+    "tvshow/:tvid/:seas":   "season",
+    "tvshow/:tv/:s/:e":     "episode",
     "xbmc/:op":             "xbmc"
   },
 
@@ -716,6 +852,7 @@ app.Router = Backbone.Router.extend({
 
         // set menu
         app.shellView.selectMenuItem('movie', 'sidebar');
+
       }
     });
 
@@ -726,6 +863,144 @@ app.Router = Backbone.Router.extend({
 
 
 
+  /**
+   * A tvshow collection (no pager)
+   */
+  tvshows: function () {
+
+    var $content = $('#content');
+
+    // set menu
+    app.shellView.selectMenuItem('tvshows', 'no-sidebar');
+    $content.html('<div class="loading-box">Loading TV Shows</div>');
+    app.helpers.setTitle('TVShows', { addATag:'#tvshows'});
+
+    // init the collection
+    app.cached.tvCollection = new app.TvshowAllCollection();
+
+    // fetch results
+    app.cached.tvCollection.fetch({"success": function(collection){
+
+      // render collection
+      app.cached.tvshowListView = new app.TvshowListView({model: collection});
+      $content.html(app.cached.tvshowListView.render().$el);
+
+      // lazyload
+      app.helpers.triggerContentLazy();
+
+      console.log(collection);
+    }});
+
+  },
+
+
+  /**
+   * A single tvshow
+   * @param id
+   */
+  tvshow: function (id) {
+
+    var tv = new app.TVShow({"id": parseInt(id)}),
+      self = this;
+
+    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+
+    tv.fetch({
+      success: function (data) {
+
+        console.log(data);
+        // render content
+        self.$content.html(new app.TvshowView({model: data}).render().el);
+        app.helpers.setTitle( data.attributes.label);
+
+        // set menu
+        app.shellView.selectMenuItem('tvshow', 'sidebar');
+
+      }
+    });
+
+  },
+
+
+
+  /**
+   * A season of a tv show
+   * @param id
+   */
+  season: function (tvshowid, season) {
+
+    var tv = new app.TVShow({"id": parseInt(tvshowid)}),
+      self = this;
+
+    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+
+    tv.fetch({
+      success: function (data) {
+
+        console.log(season, data);
+
+        // force season view
+        data.attributes.type = 'season';
+        data.attributes.season = season;
+
+        // Update image from cache
+        var sc = app.stores.TvSeasons, key = 'seasons:' + tvshowid;
+        if(sc != undefined && sc[key] != undefined && sc[key].length > 0){
+          $.each(sc[key], function(i,d){
+            if(d.season == season && d.thumbnail != ''){
+              data.attributes.thumbnail = d.thumbnail;
+            }
+          });
+        }
+
+        // render content
+        self.$content.html(new app.TvshowView({model: data}).render().el);
+        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.label + '</a>Season ' + season);
+
+        // set menu
+        app.shellView.selectMenuItem('tvshow', 'sidebar');
+
+      }
+    });
+
+  },
+
+
+  /**
+   * A season of a tv show episode
+   * @param id
+   */
+  episode: function (tvshowid, season, episodeid) {
+
+    var tv = new app.TVEpisode({"id": parseInt(episodeid)}),
+      self = this;
+
+    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+
+    tv.fetch({
+      success: function (data) {
+
+        console.log(season, data);
+
+        // force ep view
+        data.attributes.type = 'episode';
+        data.attributes.tvshowid = tvshowid;
+        data.attributes.season = season;
+
+        // render content
+        self.$content.html(new app.TvshowView({model: data}).render().el);
+
+        // title
+        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.showtitle + '  Season ' + season + '</a>' +
+          'E' + data.attributes.episode + '. ' + data.attributes.label);
+
+        // set menu
+        app.shellView.selectMenuItem('tvshow', 'sidebar');
+
+      }
+    });
+
+  },
 
   /**
    * Scan for music

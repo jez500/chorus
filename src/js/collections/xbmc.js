@@ -197,7 +197,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   //rpc deets
   url: app.jsonRpcUrl,
   rpc: new Backbone.Rpc({
-    errorHandler: function(error){app.helpers.errorHandler('xbmc artist call',error);},
+    errorHandler: function(error){app.helpers.errorHandler('xbmc movie call',error);},
     namespaceDelimiter: ''
   }),
   //model
@@ -225,7 +225,7 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   //rpc deets
   url: app.jsonRpcUrl,
   rpc: new Backbone.Rpc({
-    errorHandler: function(error){app.helpers.errorHandler('xbmc artist call',error);},
+    errorHandler: function(error){app.helpers.errorHandler('xbmc movie call',error);},
     namespaceDelimiter: ''
   }),
   //model
@@ -237,5 +237,62 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   //return the artists key from the result
   parse:  function(resp, xhr){
     return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
+  }
+});
+
+
+
+/**
+ * Get TV Collection (all tvshows)
+ */
+app.AllTvshowXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc tv call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.TVShow,
+  //collection params
+  arg1: app.tvshowFields, //properties
+  arg2: {"start": 0, "end": 10000}, //count
+  //arg4: {"sort": {"method": "label"}},
+  //method/params
+  methods: {
+    read:  ['VideoLibrary.GetTVShows', 'arg1', 'arg2']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    return app.helpers.buildUrls(resp.tvshows, 'tvshow', 'tvshowid');
+  }
+});
+
+
+
+/**
+ * Get Movie collection (all movies)
+ */
+app.TvSeasonXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc movie call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.TVShow,
+  //collection params
+  arg1: ['year', 'thumbnail', 'season'], //properties
+  arg2: function(){
+    return this.models[0].attributes.season;
+  },
+  //method/params
+  methods: {
+    read:  ['VideoLibrary.GetSeasons', 'arg1', 'arg2']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    return app.helpers.buildUrls(resp.seasons, 'tvshow', 'tvshowid');
   }
 });

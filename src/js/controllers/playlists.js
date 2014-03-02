@@ -83,7 +83,14 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       break;
 
     case 'movie':
-      plCollection = new app.CustomSongCollection();
+      plCollection = new app.CustomMovieCollection();
+      plCollection.fetch({items: delta, success: function(res){
+        callback(res);
+      }});
+      break;
+
+    case 'tvshow':
+      plCollection = new app.CustomMovieCollection();
       plCollection.fetch({items: delta, success: function(res){
         callback(res);
       }});
@@ -793,7 +800,7 @@ app.playlists.getXbmcPlaylist = function(playlistId, callback){
   app.xbmcController.command('Playlist.GetItems',
     [
       playlistId,
-      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
+      app.playlistItemFields
     ], function(result){
       var res = result.result;
       // set playlistId on models and collection

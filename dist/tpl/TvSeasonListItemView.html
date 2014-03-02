@@ -1,0 +1,22 @@
+<div class="card tvseason-row clearfix" data-id="">
+    <a class="image-wrapper" href="<%=url%>" title="<%= label %>">
+        <img class="image content-lazy" src="<%= app.parseImage(thumbnail) %>" />
+    </a>
+
+    <div class="actions-wrapper tvseason-actions-wrapper">
+        <div class="actions tvseason-actions" data-id="">
+            <button class="tv-play btn" title="Replace the playlist with this tvseason and start playing"><i class="fa fa-play"></i></button>
+            <button class="tv-add btn" title="Add this tvseason to the playlist"><i class="fa fa-plus"></i></button>
+            <!--<button class="tvseason-menu btn" title="More tvseason options"><i class="fa fa-ellipsis-v"></i></button>-->
+        </div>
+    </div>
+    <div class="details">
+        <p class="item-title" title="<%= label %>">
+            <a class="image-wrapper" href="<%=url%>"><span><%= label %></span></a>
+        </p>
+        <p class="item-sub-title">
+            <span><%=episode%> episodes</span>
+        </p>
+
+    </div>
+</div>

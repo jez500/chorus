@@ -220,7 +220,8 @@ app.ShellView = Backbone.View.extend({
 
       // ensure backstretch is gone
       if($('.backstretch').length > 0){
-        $.backstretch("destroy", false);
+        $('.backstretch').remove();
+        //$.backstretch("destroy", false);
       }
       $body.removeClass('home');
 

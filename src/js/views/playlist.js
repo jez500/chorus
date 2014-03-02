@@ -190,7 +190,7 @@ app.PlaylistItemView = Backbone.View.extend({
    * @param model
    */
   buildSubLink: function(model){
-
+    console.log(model);
     var url, text, title;
 
     if(model.type == 'song'){
@@ -209,10 +209,15 @@ app.PlaylistItemView = Backbone.View.extend({
         return '';
       }
 
-    } else if (model.type == 'movie' || model.type == 'tvshow' || model.type == 'episode') {
+    } else if (model.type == 'movie') {
       text = model.year;
       url = '#movies/year/' + model.year;
       title = 'More movies from ' + text;
+
+    } else if (model.type == 'episode') {
+      text = 'S' + model.season + ' E' + model.episode + ' - ' + model.showtitle;
+      url = '#tvshow/' + model.tvshowid + '/' + model.season;
+      title = 'More episodes from season' + model.season;
     } else {
       return '';
     }

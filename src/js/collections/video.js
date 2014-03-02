@@ -237,3 +237,163 @@ app.CustomMovieCollection = Backbone.Collection.extend({
 });
 
 
+
+/************************************
+ * TV
+ ***********************************/
+
+/**
+ * A lightweight collection of all movies (cached).
+ */
+app.TvshowAllCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    if(typeof app.stores.allTvshows == 'undefined'){
+
+      // no cache, do a lookup
+      var allTv = new app.AllTvshowXbmcCollection();
+      allTv.fetch({"success": function(data){
+        // Sort
+        data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+
+        // Make a dictionary and flag as not loaded
+        app.stores.allTvshowsLookup = {};
+        for(var i in data.models){
+          var m = data.models[i].attributes;
+          m.loaded = false;
+          app.stores.allTvshowsLookup[m.movieid] = m;
+          data.models[i].attributes = m;
+        }
+        // Cache
+        app.stores.allTvshows = data.models;
+        // Return
+        options.success(data.models);
+        // trigger
+        $(window).trigger('allTvshowsCached');
+      }});
+    } else {
+      // else return cache;
+      options.success(app.stores.allTvshows);
+    }
+
+  }
+
+});
+
+
+
+/**
+ * A collection of movies matching a filter
+ */
+app.TvseasonCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    // init cache
+    if(app.stores.TvSeasons === undefined){
+      app.stores.TvSeasons = {};
+    }
+
+    var sort = {"sort": {"method": "title"}},
+      opt = [options.tvshowid, [ "season", "playcount", "watchedepisodes","episode",  "thumbnail", "tvshowid"]],
+      key = 'seasons:' + options.tvshowid
+
+
+    // if cache use that
+    if(app.stores.TvSeasons[key] !== undefined){
+      // return from cache
+      options.success(app.stores.TvSeasons[key]);
+    } else {
+      // else lookup
+      app.xbmcController.command('VideoLibrary.GetSeasons', opt, function(data){
+
+        // add url
+        for(i in data.result.seasons){
+          data.result.seasons[i].url = '#tvshow/' + options.tvshowid + '/' + data.result.seasons[i].season;
+        }
+
+        // save cache
+        app.stores.TvSeasons[key] = data.result.seasons;
+        // return
+        options.success(data.result.seasons);
+      });
+    }
+
+  }
+
+});
+
+
+
+/**
+ * A collection of movies matching a filter
+ */
+app.TvepisodeCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    // init cache
+    if(app.stores.TvEpisodes === undefined){
+      app.stores.TvEpisodes = {};
+    }
+
+
+    var sort = {"sort": {"method": "title"}},
+      opt = [parseInt(options.tvshowid), parseInt(options.season), ["title",
+        "plot",
+        "votes",
+        "rating",
+        "writer",
+        "firstaired",
+        "playcount",
+        "runtime",
+        "director",
+        "productioncode",
+        "season",
+        "episode",
+        "originaltitle",
+        "showtitle",
+        "cast",
+        "streamdetails",
+        "lastplayed",
+        "fanart",
+        "thumbnail",
+        "file",
+        "resume",
+        "tvshowid",
+        "dateadded",
+        "uniqueid",
+        "art"]],
+      key = 'episodes:' + options.tvshowid + ':' + options.season;
+
+
+    // if cache use that
+    if(app.stores.TvEpisodes[key] !== undefined){
+      // return from cache
+      options.success(app.stores.TvEpisodes[key]);
+    } else {
+      // else lookup
+      app.xbmcController.command('VideoLibrary.GetEpisodes', opt, function(data){
+
+        // add url
+        for(i in data.result.episodes){
+          data.result.episodes[i].url = '#tvshow/' + options.tvshowid + '/' + options.season + '/' + data.result.episodes[i].episodeid;
+        }
+
+        // save cache
+        app.stores.TvEpisodes[key] = data.result.episodes;
+
+        // return
+        options.success(data.result.episodes);
+      });
+    }
+
+  }
+
+});
+
+

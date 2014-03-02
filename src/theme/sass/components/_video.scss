@@ -41,8 +41,12 @@ ul.video-list {
 
 
 /** MOVIE *******************/
-
+.section-tvshow,
 .section-movie {
+  #page-header h1 a {
+    width: auto;
+    padding-right: 17px;
+  }
   #sidebar-first {
     display: none;
   }
@@ -216,7 +220,7 @@ ul.video-list {
     .tab-wrapper {
       background: $color-trans-white;
       position: relative;
-      min-height: 343px;
+      //min-height: 343px;
       .content-tabs {
         background: none;
       }
@@ -263,11 +267,13 @@ ul.video-list {
     &.has-fanart {
     }
   }
-  #movie-detail {
+  .tab-pane {
     font-size: 14px;
     line-height: 20px;
   }
-  #movie-tabs {
+
+  .content-tabs {
+    .nav-tabs > li > a,
     a,
     .btn {
       color: #555;
@@ -288,6 +294,8 @@ ul.video-list {
   }
 }
 
+#tv-watch,
+#tvshow-detail,
 #movie-watch,
 #movie-detail {
   $grids: 8;
@@ -363,6 +371,46 @@ ul.video-list {
   }
 }
 
+#seasons {
+  overflow: hidden;
+  clear: both;
+  background: $color-trans-white;
+  padding: 15px;
+  margin-top: 20px;
+  position: relative;
+  @include breakpoint ($width-small){
+    padding: 15px 20px;
+  }
+  h3 {
+    color: rgba(53, 53, 53, 0.28);
+    margin: 0;
+    line-height: 25px;
+    padding: 0 0 6px 5px;
+    font-size: 17px;
+    a {
+      color: rgba(53, 53, 53, 0.45);
+    }
+  }
+  ul.video-list {
+    margin: 0;
+    li {
+      .card {
+       @include card('poster-mini');
+
+      }
+    }
+  }
+  &.episodes {
+    ul.video-list {
+      li {
+        .card {
+          @include card('episode');
+        }
+
+      }
+    }
+  }
+}
 
 
 

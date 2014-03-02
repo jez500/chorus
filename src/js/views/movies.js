@@ -269,29 +269,13 @@ app.MovieView = Backbone.View.extend({
    * @param e
    */
   libraryNext: function(e){
+
     e.preventDefault();
-
-    // next movie in cache
-    var next = false,
-      nextId = 0,
-      self = this;
-
-    // loop over all movies
-    $.each(self.allMovieCache.models, function(i,d){
-      var movie = d.attributes;
-      // current was last
-      if(next === true){
-        nextId = parseInt(movie.movieid);
-        next = false;
-      }
-      if(movie.movieid == self.model.attributes.id){
-        next = true;
-      }
-    });
+    var nav = app.pager.libraryNav('movie', this.model.attributes.id, this.allMovieCache.models);
 
     // next movie id available
-    if(nextId > 0){
-      document.location = '#movie/' + nextId;
+    if(nav.next > 0){
+      document.location = '#movie/' + nav.next;
     }
   },
 

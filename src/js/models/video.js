@@ -32,11 +32,34 @@ app.Movie = Backbone.Model.extend({
 app.TVShow = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
+  defaults: {'tvshowid': '', 'label': '', 'watchedepisodes': '', 'genre': '', 'year': '', 'cast': [], 'rating': 0, url: '#tv', 'episodeid': ''},
 
   sync: function(method, model, options) {
     if (method === "read") {
       // options.success(data);
+
+      // add fanart to full load
+      var fields = app.tvshowFields;
+      if($.inArray('fanart', fields) == -1){
+        fields.push('fanart');
+      }
+
+      // Fetch Show
+      app.xbmcController.command('VideoLibrary.GetTVShowDetails',[parseInt(this.id), fields], function(data){
+        var m = data.result.tvshowdetails;
+        // get thumbsup
+        m.thumbsup = app.playlists.getThumbsUp('tvshow', m.tvshowid);
+        m.url = '#tvshow/' + m.tvshowid;
+
+        // Add seasons
+        app.cached.tvseasonCollection = new app.TvseasonCollection();
+        app.cached.tvseasonCollection.fetch({"tvshowid" : m.tvshowid, "success": function(collection){
+          m.seasons = collection;
+          options.success(m);
+        }});
+
+      });
+
     }
   }
 
@@ -51,11 +74,19 @@ app.TVShow = Backbone.Model.extend({
 app.TVEpisode = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
+  defaults: {'album': '', 'mpaa': '', 'thumbnail': '', 'artist': '', 'genre': [], 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv', 'imdbnumber': ''},
 
   sync: function(method, model, options) {
     if (method === "read") {
       // options.success(data);
+
+      app.xbmcController.command('VideoLibrary.GetEpisodeDetails',[parseInt(this.id), app.tvepisodeFields], function(data){
+        var m = data.result.episodedetails;
+        // get thumbsup
+        m.thumbsup = app.playlists.getThumbsUp('episode', m.episodeid);
+        options.success(m);
+      });
+
     }
   }
 
