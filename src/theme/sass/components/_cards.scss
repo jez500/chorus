@@ -1,4 +1,29 @@
 
+// helper to set the 3 major dimensions on a card
+@mixin card-resize($width, $height, $heightImage){
+  width: $width;
+  min-width: $width;
+  max-width: $width;
+  height: $height;
+  margin: 5px;
+  float: left;
+  .image {
+    height: $heightImage;
+    min-width: $width;
+  }
+  .actions-wrapper {
+    height: $heightImage;
+    min-width: $width;
+    .btn-play {
+      position: absolute;
+      left: 10px;
+      bottom: 9px;
+      font-size: 190%;
+    }
+  }
+}
+
+
 @mixin card($size: 'small') {
 
 
@@ -118,51 +143,15 @@
     }
 
   } @else if $size == 'poster-mini' { // Video overrides //////////////////
-    width: 125px;
-    min-width: 125px;
-    max-width: 189px;
-    height: 236px;
-    margin: 5px;
-    float: left;
-    .image {
-      height: 182px;
-      min-width: 125px;
-    }
-    .actions-wrapper {
-      height:182px;
-      min-width: 125px;
-      .season-play {
-        position: absolute;
-        left: 10px;
-        bottom: 9px;
-        font-size: 190%;
-      }
-    }
+
+    @include card-resize(149px, 280px, 219px);
+    margin: 5px 10px 10px 0;
 
   } @else if $size == 'episode' { // Video overrides //////////////////
-    $card-ep-width: 228px;
-    $card-ep-height: 197px;
-    $card-ep-img-height: 144px;
 
-    width: $card-ep-width;
-    min-width: $card-ep-width;
-    max-width: $card-ep-width;
-    height: $card-ep-height;
-    margin: 5px;
-    float: left;
-    .image {
-      height: $card-ep-img-height;
-      min-width: $card-ep-width;
-    }
-    .actions-wrapper {
-      height:$card-ep-img-height;
-      min-width: $card-ep-width;
-      .episode-play {
-        position: absolute;
-        left: 10px;
-        bottom: 9px;
-        font-size: 190%;
-      }
+    @include card-resize(228px, 197px, 144px);
+    &.active {
+      outline: #D7DCDD solid medium;
     }
 
   } @else { // small (default) //////////////////////

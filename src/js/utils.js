@@ -268,10 +268,13 @@ $(document).ready(function(){
    * Add a url to a collection of models
    * @return float
    */
-  app.helpers.buildUrl = function(type, id){
+  app.helpers.buildUrl = function(type, id, model){
     // songs and files go home
     if(type == 'song' || type == 'file'){
       return '#';
+    }
+    if(type == 'episode'){
+      return '#tvshow/' + model.tvshowid + '/' + model.season + '/' + id;
     }
     // else build
     return '#' + type + '/' + id;

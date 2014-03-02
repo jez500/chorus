@@ -91,6 +91,7 @@ ul.video-list {
           opacity: 1;
         }
       }
+      .tvshow-play,
       .movie-play {
         position: absolute;
         bottom: 15px;
@@ -98,6 +99,7 @@ ul.video-list {
         font-size: 250%;
       }
       .thumbs-up {
+        .tvshow-thumbsup,
         .movie-thumbsup {
           color: $color-carrot;
         }
@@ -372,15 +374,18 @@ ul.video-list {
 }
 
 #seasons {
+//  overflow: hidden;
+//  clear: both;
+//  background: $color-trans-white;
+//  padding: 15px;
+//  margin-top: 20px;
+//  position: relative;
+//  @include breakpoint ($width-small){
+//    padding: 15px 20px;
+//  }
   overflow: hidden;
-  clear: both;
-  background: $color-trans-white;
-  padding: 15px;
-  margin-top: 20px;
-  position: relative;
-  @include breakpoint ($width-small){
-    padding: 15px 20px;
-  }
+  padding-bottom: 20px;
+  margin-right: -10px; // accounts for the extra margin on the end of a row
   h3 {
     color: rgba(53, 53, 53, 0.28);
     margin: 0;
@@ -410,6 +415,10 @@ ul.video-list {
       }
     }
   }
+}
+
+#tvshow-detail {
+  overflow: hidden;
 }
 
 

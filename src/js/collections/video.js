@@ -343,33 +343,15 @@ app.TvepisodeCollection = Backbone.Collection.extend({
 
 
     var sort = {"sort": {"method": "title"}},
-      opt = [parseInt(options.tvshowid), parseInt(options.season), ["title",
-        "plot",
-        "votes",
-        "rating",
-        "writer",
-        "firstaired",
-        "playcount",
-        "runtime",
-        "director",
-        "productioncode",
-        "season",
-        "episode",
-        "originaltitle",
-        "showtitle",
-        "cast",
-        "streamdetails",
-        "lastplayed",
-        "fanart",
-        "thumbnail",
-        "file",
-        "resume",
-        "tvshowid",
-        "dateadded",
-        "uniqueid",
-        "art"]],
+      opt = [],
       key = 'episodes:' + options.tvshowid + ':' + options.season;
 
+    // constuct params
+    opt.push(parseInt(options.tvshowid));
+    if(options.season !== undefined){
+      opt.push(parseInt(options.season));
+      opt.push(app.tvepisodeFields);
+    }
 
     // if cache use that
     if(app.stores.TvEpisodes[key] !== undefined){
@@ -383,6 +365,9 @@ app.TvepisodeCollection = Backbone.Collection.extend({
         for(i in data.result.episodes){
           data.result.episodes[i].url = '#tvshow/' + options.tvshowid + '/' + options.season + '/' + data.result.episodes[i].episodeid;
         }
+
+        // Sort
+        data.result.episodes.sort(function(a,b){ return app.helpers.aphabeticalSort(a.label, b.label);	});
 
         // save cache
         app.stores.TvEpisodes[key] = data.result.episodes;

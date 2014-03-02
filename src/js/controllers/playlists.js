@@ -90,8 +90,17 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       break;
 
     case 'tvshow':
-      plCollection = new app.CustomMovieCollection();
-      plCollection.fetch({items: delta, success: function(res){
+      plCollection = new app.TvepisodeCollection();
+      plCollection.fetch({tvshowid: delta, success: function(res){
+        callback(res);
+      }});
+      break;
+
+    case 'season':
+      plCollection = new app.TvepisodeCollection();
+      // format for delta is tvshowid:season
+      var parts = delta.split(':');
+      plCollection.fetch({tvshowid: parts[0], season: parts[1], success: function(res){
         callback(res);
       }});
       break;

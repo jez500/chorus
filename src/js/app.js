@@ -922,7 +922,6 @@ app.Router = Backbone.Router.extend({
   },
 
 
-
   /**
    * A season of a tv show
    * @param id
@@ -936,8 +935,6 @@ app.Router = Backbone.Router.extend({
 
     tv.fetch({
       success: function (data) {
-
-        console.log(season, data);
 
         // force season view
         data.attributes.type = 'season';

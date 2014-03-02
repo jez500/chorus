@@ -103,7 +103,7 @@ app.PlaylistItemView = Backbone.View.extend({
     model.id = (typeof model.id != 'undefined' ? model.id : 'file');
     model.albumid = (typeof model.albumid != 'undefined' ? model.albumid : 'file');
     model.subLink = this.buildSubLink(model);
-    model.url = (model.albumid != 'file' ? '#album/' + model.albumid : app.helpers.buildUrl(model.type, model.id));
+    model.url = (model.albumid != 'file' ? '#album/' + model.albumid : app.helpers.buildUrl(model.type, model.id, model));
 
     // render
     this.$el.html(this.template(model));
@@ -190,7 +190,7 @@ app.PlaylistItemView = Backbone.View.extend({
    * @param model
    */
   buildSubLink: function(model){
-    console.log(model);
+
     var url, text, title;
 
     if(model.type == 'song'){

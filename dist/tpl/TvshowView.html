@@ -8,7 +8,7 @@
                     <button class="tvshow-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
                     <button class="tvshow-play btn" title="Replace the playlist with this tvshow and start playing"><i class="fa fa-play"></i></button>
                     <button class="tvshow-add btn" title="Add this tvshow to the playlist"><i class="fa fa-plus"></i></button>
-                    <button class="tvshow-menu btn" title="More tvshow options"><i class="fa fa-ellipsis-v"></i></button>
+                    <!--<button class="tvshow-menu btn" title="More tvshow options"><i class="fa fa-ellipsis-v"></i></button>-->
                 </div>
             </div>
         </div>
@@ -23,7 +23,8 @@
                     <a href="#" class="library-next"><i class="fa fa-chevron-right"></i></a>
                 </div>
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tvshow-detail" data-toggle="tab">Overview</a></li>
+                    <li class="active" data-id="tv-season"><a href="#tv-season" title="Tv items" data-toggle="tab">Season<%=(type == 'tvshow' ? 's' : ' ' + season)%></a></li>
+                    <li><a href="#tvshow-detail" data-toggle="tab"><%=(type == 'episode' ? 'Plot' : 'Overview') %></a></li>
                     <% if(cast.length > 0){ %>
                         <li data-id="about"><a href="#tvshow-cast" title="<%=cast.length%> cast members found" data-toggle="tab">Cast</a></li>
                     <% } %>
@@ -34,22 +35,36 @@
             </div>
 
             <div class="tab-content">
-                <div id="tvshow-detail" class="tab-pane active">
-                    <div class="col-1">
 
+                <div id="tv-season" class="tab-pane active">
+                    <div class="buttons">
+                        <a href="#tvshow/<%= tvshowid %>" class="tvshow-play btn cta"><i class="fa fa-play"></i>Play <%=(type == 'episode' ? 'Episode' : 'All')%></a>
+                        <a href="#tvshow/<%= tvshowid %>" class="tvshow-add btn"><i class="fa fa-plus"></i> Queue <%=(type == 'episode' ? 'Episode' : 'All')%></a>
+                        <% if(type == 'tvshow'){ %>
+                            <a href="#tvshow/<%= tvshowid %>" class="library-next btn"><i class="fa fa-chevron-right"></i> Next</a>
+                        <% } %>
+                        <% if(type == 'episode' || type == 'season'){ %>
+                            <a href="#tvshow/<%= tvshowid %>" class="btn"><i class="fa fa-arrow-up"></i>All Seasons</a>
+                        <% } %>
+                    </div>
+                    <div id="seasons"></div>
+                </div>
+
+                <div id="tvshow-detail" class="tab-pane">
+                    <div class="col-1">
+                        <br />
                         <p><%=plot%></p>
+
                         <% if(genre.length > 0){ %>
                         <div class="genres"><% for(i in genre){ %>
                             <% if(genre[i] != ''){ %><a class="genre" href="#tvshows/genre/<%=genre[i]%>"><%=genre[i]%></a><% } %>
                             <% } %></div>
                         <% } %>
+
                         <div class="buttons">
-                            <a href="#tvshow/<%= tvshowid %>" class="tvshow-play btn cta"><i class="fa fa-play"></i>Play <%=type%></a>
-                            <a href="#tvshow/<%= tvshowid %>" class="tvshow-add btn"><i class="fa fa-plus"></i> Queue</a>
                             <% if(imdbnumber != ''){ %>
                                 <a href="http://www.imdb.com/title/<%=imdbnumber%>/" target="_blank" class="imdb btn"><i class="fa fa-film"></i> IMDB</a>
                             <% } %>
-                            <a href="#tvshow/<%= tvshowid %>" class="library-next btn"><i class="fa fa-chevron-right"></i> Next</a>
                         </div>
                     </div>
                     <div class="col-2">
@@ -154,7 +169,7 @@
 
         </div>
 
-        <div id="seasons"></div>
+
 
     </div>
 

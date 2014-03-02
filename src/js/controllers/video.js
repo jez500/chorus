@@ -141,3 +141,118 @@ app.VideoController.movieLoadMultiple = function(items, callback){
   app.xbmcController.entityLoadMultiple('movie', items, callback);
 };
 
+
+/**
+ * Adds multiple movies or episodes to the playlist
+ * @param type
+ *  eg. movieid, episodeid
+ * @param ids
+ *  value of type
+ * @param callback
+ */
+app.VideoController.playlistAddMultiple = function(type, ids, callback){
+
+  var commands = [],  id;
+  for(var n in ids){
+    param = {};
+    id = ids[n];
+
+    // used only for items not in the library
+    if(type == 'mixed'){
+      type = (typeof id == 'number' ? type : 'file');
+    }
+    param[type] = id;
+    commands.push({method: 'Playlist.Add', params: [app.VideoController.playlistId, param]});
+  }
+
+  //add the album to the playlist
+  app.xbmcController.multipleCommand(commands, function(data){
+
+    //get playlist items
+    app.VideoController.getPlaylistItems(function(result){
+
+      //update cache
+      app.VideoController.currentPlaylist = result;
+      console.log('playing xxxx');
+      callback(result);
+
+    });
+  });
+
+};
+
+
+
+
+/**
+ * Append a tvshow, season or episode to the video playlist
+ *
+ * @param model
+ *  must contain the `type` property
+ *  @param callback
+ */
+app.VideoController.tvshowAdd = function(model, callback){
+
+  var opt = {};
+
+  console.log(model);
+
+  // Add single episode, easy
+  if(model.type == 'episode'){
+    app.VideoController.addToPlaylist(model.episodeid, 'episodeid', 'add', callback);
+    return;
+  }
+
+  // otherwise we must get a collection of episode ids to add
+  var collection = new app.TvepisodeCollection(), items = [];
+
+  // always has a tv id
+  opt.tvshowid = parseInt(model.tvshowid);
+
+  // add a season if required
+  if(model.type == 'season'){
+    opt.season = model.season;
+  }
+
+  // success
+  opt.success = function(data){
+    for(i in data.models){
+      items.push(data.models[i].attributes.episodeid)
+    }
+    // Add the array and callback
+    app.VideoController.playlistAddMultiple('episodeid', items, callback);
+  };
+
+  // do it!
+  collection.fetch(opt);
+
+};
+
+
+/**
+ * same as tvshowAdd but clears the playlist first and plays after
+ *
+ * @param model
+ *  must contain the `type` property
+ *  @param callback
+ */
+app.VideoController.tvshowPlay = function(model, callback){
+
+  // clear
+  app.VideoController.playlistClear(function(){
+
+    // Add items
+    app.VideoController.tvshowAdd(model, function(){
+
+      // xbmc player
+      app.playlists.changePlaylistView('xbmc');
+      // play first pos
+      console.log('playing 0');
+      app.VideoController.playPlaylistPosition(0, function(data){
+        //callback
+        callback();
+      });
+    });
+  });
+
+};

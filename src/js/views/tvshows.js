@@ -98,9 +98,9 @@ app.TvshowListItemView = Backbone.View.extend({
   className: 'tvshow-item-content',
 
   events:{
-//    "click .tvshow-play": "playTvshow",
-//    "click .tvshow-add": "addTvshow",
-//    "click .tvshow-thumbsup": "thumbsUp",
+    "click .tvshow-play": "playTvshow",
+    "click .tvshow-add": "add",
+    "click .tvshow-thumbsup": "thumbsUp",
 //    "click .tvshow-menu": "menu",
     "click .actions-wrapper": "view"
   },
@@ -118,7 +118,9 @@ app.TvshowListItemView = Backbone.View.extend({
    */
   render:function () {
 
+    this.model.attributes.type = 'tvshow'; // always rendered as an entire show
     var model = this.model.attributes;
+
     if(!model.label){
       return this;
     }
@@ -135,68 +137,56 @@ app.TvshowListItemView = Backbone.View.extend({
    */
   view: function(){
     document.location = '#tvshow/' + this.model.attributes.tvshowid;
-  }
+  },
 
-//  ,
-//
-//  /**
-//   * Contextual options
-//   * @param e
-//   */
-//  menu: function(e){
-//    e.stopPropagation();
-//    e.preventDefault();
-//    // build the menu template
-//    var menu = app.helpers.menuTemplates('tvshow', this.model.attributes);
-//    // add dialog
-//    app.helpers.menuDialog(menu);
-//  },
-//
-//
-//  /**
-//   * Set as thumbsup
-//   * @param e
-//   */
-//  thumbsUp: function(e){
-//    e.stopPropagation();
-//    e.preventDefault();
-//    var tvshow = this.model.attributes,
-//      op = (app.playlists.isThumbsUp('tvshow', tvshow.tvshowid) ? 'remove' : 'add'),
-//      $el = $(e.target).closest('.tvshow-actions');
-//    app.playlists.setThumbsUp(op, 'tvshow', tvshow.tvshowid);
-//    $el.toggleClass('thumbs-up');
-//
-//  },
-//
-//
-//  /**
-//   * Play it
-//   * @param e
-//   */
-//  playTvshow: function(e){
-//    e.preventDefault();
-//    e.stopPropagation();
-//    app.VideoController.playVideoId(this.model.attributes.tvshowid, 'tvshowid', function(data){
-//      // tvshow should be playing
-//      app.VideoController.playlistRender();
-//    });
-//
-//  },
-//
-//
-//  /**
-//   * Queue it
-//   * @param e
-//   */
-//  addTvshow: function(e){
-//    e.preventDefault();
-//    e.stopPropagation();
-//    app.VideoController.addToPlaylist(this.model.attributes.tvshowid, 'tvshowid', 'add', function(data){
-//      // tvshow should be playing
-//      app.VideoController.playlistRender();
-//    });
-//
-//  }
+
+  /**
+   * Queue it
+   * @param e
+   */
+  add: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Add the model
+    var model = this.model.attributes;
+    app.VideoController.tvshowAdd(model, function(){
+      app.VideoController.playlistRender();
+    })
+
+  },
+
+  /**
+   * Play it
+   * @param e
+   */
+  play: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Add the model
+    var model = this.model.attributes;
+    app.VideoController.tvshowPlay(model, function(){
+      app.VideoController.playlistRender();
+    })
+
+  },
+
+    /**
+   * Set as thumbsup
+   * @param e
+   */
+  thumbsUp: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    var tvshow = this.model.attributes,
+      op = (app.playlists.isThumbsUp('tvshow', tvshow.tvshowid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.tvshow-actions');
+    app.playlists.setThumbsUp(op, 'tvshow', tvshow.tvshowid);
+    $el.toggleClass('thumbs-up');
+
+  }
 
 });
 
@@ -225,8 +215,8 @@ app.TvshowView = Backbone.View.extend({
   events:{
     "click .library-back": "libraryBack",
     "click .library-next": "libraryNext",
-    "click .tvshow-play": "playTvshow",
-    "click .tvshow-add": "addTvshow",
+    "click .tvshow-play": "play",
+    "click .tvshow-add": "add",
     "click .tvshow-thumbsup": "thumbsUp",
     "click .tv-stream": "stream",
     "click .tvshow-menu": "menu"
@@ -256,30 +246,15 @@ app.TvshowView = Backbone.View.extend({
       $fart.backstretch(fart);
     });
 
-
-    console.log(model.type, model.season);
-
     if(model.type == 'tvshow'){
-
-
-      // get season collection
-     // app.cached.tvseasonCollection = new app.TvseasonCollection();
-     // app.cached.tvseasonCollection.fetch({"tvshowid" : model.tvshowid, "success": function(collection){
-
         // if we have a collection, render it
         if(model.seasons.length > 0){
           app.cached.tvSeasonListView = new app.TvSeasonListView({model: model.seasons});
-          $('#seasons', self.$el).html( app.cached.tvSeasonListView.render().$el ).prepend( '<h3>Seasons</h3>' );
+          $('#seasons', self.$el).html( app.cached.tvSeasonListView.render().$el ); //.prepend( '<h3>Seasons</h3>' );
         }
-
-        //console.log(collection);
-      //}});
-
     }
 
     if(model.type == 'season' || model.type == 'episode'){
-
-      console.log(model);
 
       // get season collection
       app.cached.tvepisodeCollection = new app.TvepisodeCollection();
@@ -288,13 +263,18 @@ app.TvshowView = Backbone.View.extend({
         // if we have a collection, render it
         if(collection.length > 0){
           app.cached.tvSeasonListView = new app.TvSeasonListView({model: collection});
-          $('#seasons', self.$el).html( app.cached.tvSeasonListView.render().$el ).prepend( '<h3><a href="#tvshow/' + model.tvshowid + '">Season ' + model.season + '</a> <i class="fa fa-angle-right"></i> Episodes</h3>').addClass('episodes');
+          $('#seasons', self.$el).html( app.cached.tvSeasonListView.render().$el ).addClass('episodes');
+          // active class
+          if(model.type == 'episode'){
+            $('.row-episode-' + model.episodeid, self.$el).addClass('active');
+          }
         }
 
-        console.log(collection);
       }});
 
     }
+
+
 
 
     return this;
@@ -319,7 +299,7 @@ app.TvshowView = Backbone.View.extend({
   libraryNext: function(e){
 
     e.preventDefault();
-    var nav = app.pager.libraryNav('tvshow', this.model.attributes.id, this.allTvshowCache.models);
+    var nav = app.pager.libraryNav('tvshow', this.model.attributes.tvshowid, this.allTvshowCache.models);
 
     // next tvshow id available
     if(nav.next > 0){
@@ -349,6 +329,7 @@ app.TvshowView = Backbone.View.extend({
   thumbsUp: function(e){
     e.stopPropagation();
     e.preventDefault();
+
     var tvshow = this.model.attributes,
       op = (app.playlists.isThumbsUp('tvshow', tvshow.tvshowid) ? 'remove' : 'add'),
       $el = $(e.target).closest('.tvshow-actions');
@@ -362,12 +343,14 @@ app.TvshowView = Backbone.View.extend({
    * Play it
    * @param e
    */
-  playTvshow: function(e){
+  play: function(e){
     e.preventDefault();
-    app.VideoController.playVideoId(this.model.attributes.tvshowid, 'tvshowid', function(data){
-      // tvshow should be playing
+    e.stopPropagation();
+
+    // Play the model
+    app.VideoController.tvshowPlay(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    });
+    })
 
   },
 
@@ -376,21 +359,26 @@ app.TvshowView = Backbone.View.extend({
    * Queue it
    * @param e
    */
-  addTvshow: function(e){
+  add: function(e){
     e.preventDefault();
-    app.VideoController.addToPlaylist(this.model.attributes.tvshowid, 'tvshowid', 'add', function(data){
-      // tvshow should be playing
+    e.stopPropagation();
+
+    // Add the model
+    app.VideoController.tvshowAdd(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    });
+    })
 
   },
+
 
   stream: function(e){
     e.preventDefault();
     var player = $(e.target).data('player');
 
+    // open the window
     var win = window.open("videoPlayer.html?player=" + player, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
 
+    // get the url and send the player window to it
     app.AudioController.downloadFile(this.model.attributes.file, function(url){
       win.location = "videoPlayer.html?player=" + player + "&src=" + encodeURIComponent(url);
     });
@@ -403,17 +391,16 @@ app.TvshowView = Backbone.View.extend({
 
 
 /**
- * List of tvshows
+ * List of seasons or episodes
+ *
+ * @type {*|void|Object|extend|extend|extend}
  */
 app.TvSeasonListView = Backbone.View.extend({
 
   tagName:'ul',
-
   className:'video-list tvseason-page-list',
 
   initialize:function () {
-
-
 
   },
 
@@ -423,32 +410,13 @@ app.TvSeasonListView = Backbone.View.extend({
 
     // append results
     _.each(this.model.models, function (season) {
+      season.attributes.type = (season.attributes.episodeid != '' ? 'episode' : 'season');
       this.$el.append(new app.TvSeasonListItemView({model:season}).render().el);
     }, this);
 
-    this.$el.find('img').lazyload({threshold : 200});
-
     return this;
 
-  },
-
-  nextPage: function(e){
-    app.pager.nextPage($(e.target), 'tvshow');
-  },
-
-
-  backFromTvshow: function(fullRange, scrolled){
-    var $window = $(window);
-    if(fullRange === true && typeof app.vars.backHash != 'undefined'){
-      var parts = app.vars.backHash.split('/');
-      if(parts[0] == '#tvshow'){
-        $window.scrollTo( $('.tvshow-row-' + parts[1]) , 0, {offset: -200});
-        scrolled = true;
-      }
-    }
-    return scrolled;
   }
-
 
 });
 
@@ -482,11 +450,7 @@ app.TvSeasonListItemView = Backbone.View.extend({
    * @returns {TvshowListItemView}
    */
   render:function () {
-
-    var model = this.model.attributes;
-
-    this.$el.html(this.template(model));
-
+    this.$el.html(this.template(this.model.attributes));
     return this;
   },
 
@@ -500,33 +464,35 @@ app.TvSeasonListItemView = Backbone.View.extend({
 
 
   /**
-   * play
+   * Play it
+   * @param e
    */
   play: function(e){
+    e.preventDefault();
     e.stopPropagation();
 
-    app.VideoController.playVideoId(this.model.attributes.episodeid, 'episodeid', function(data){
-      // movie should be playing
+    // Play the model
+    app.VideoController.tvshowPlay(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    });
+    })
 
   },
 
 
   /**
-   * play
+   * Add it
+   * @param e
    */
   add: function(e){
+    e.preventDefault();
     e.stopPropagation();
 
-    app.VideoController.addToPlaylist(this.model.attributes.episodeid, 'episodeid', 'add', function(data){
-      // movie should be playing
+    // Add the model
+    app.VideoController.tvshowAdd(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    });
+    })
 
   }
-
-
 
 
 });
