@@ -1,3 +1,7 @@
+Version 0.2.6:
+- TV functionality
+
+
 Version 0.2.5:
 - Added local video streaming to movies.  Very experimental!
 - Added movies to search

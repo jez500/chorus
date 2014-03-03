@@ -299,7 +299,7 @@ app.TvseasonCollection = Backbone.Collection.extend({
 
     var sort = {"sort": {"method": "title"}},
       opt = [options.tvshowid, [ "season", "playcount", "watchedepisodes","episode",  "thumbnail", "tvshowid"]],
-      key = 'seasons:' + options.tvshowid
+      key = 'seasons:' + options.tvshowid;
 
 
     // if cache use that
@@ -311,7 +311,7 @@ app.TvseasonCollection = Backbone.Collection.extend({
       app.xbmcController.command('VideoLibrary.GetSeasons', opt, function(data){
 
         // add url
-        for(i in data.result.seasons){
+        for(var i in data.result.seasons){
           data.result.seasons[i].url = '#tvshow/' + options.tvshowid + '/' + data.result.seasons[i].season;
         }
 
@@ -362,7 +362,7 @@ app.TvepisodeCollection = Backbone.Collection.extend({
       app.xbmcController.command('VideoLibrary.GetEpisodes', opt, function(data){
 
         // add url
-        for(i in data.result.episodes){
+        for(var i in data.result.episodes){
           data.result.episodes[i].url = '#tvshow/' + options.tvshowid + '/' + options.season + '/' + data.result.episodes[i].episodeid;
         }
 

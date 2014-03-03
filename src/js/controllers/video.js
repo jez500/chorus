@@ -216,8 +216,8 @@ app.VideoController.tvshowAdd = function(model, callback){
 
   // success
   opt.success = function(data){
-    for(i in data.models){
-      items.push(data.models[i].attributes.episodeid)
+    for(var i in data.models){
+      items.push(data.models[i].attributes.episodeid);
     }
     // Add the array and callback
     app.VideoController.playlistAddMultiple('episodeid', items, callback);

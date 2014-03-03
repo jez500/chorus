@@ -152,7 +152,7 @@ app.TvshowListItemView = Backbone.View.extend({
     var model = this.model.attributes;
     app.VideoController.tvshowAdd(model, function(){
       app.VideoController.playlistRender();
-    })
+    });
 
   },
 
@@ -168,7 +168,7 @@ app.TvshowListItemView = Backbone.View.extend({
     var model = this.model.attributes;
     app.VideoController.tvshowPlay(model, function(){
       app.VideoController.playlistRender();
-    })
+    });
 
   },
 
@@ -350,7 +350,7 @@ app.TvshowView = Backbone.View.extend({
     // Play the model
     app.VideoController.tvshowPlay(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    })
+    });
 
   },
 
@@ -366,7 +366,7 @@ app.TvshowView = Backbone.View.extend({
     // Add the model
     app.VideoController.tvshowAdd(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    })
+    });
 
   },
 
@@ -410,7 +410,7 @@ app.TvSeasonListView = Backbone.View.extend({
 
     // append results
     _.each(this.model.models, function (season) {
-      season.attributes.type = (season.attributes.episodeid != '' ? 'episode' : 'season');
+      season.attributes.type = (season.attributes.episodeid !== '' ? 'episode' : 'season');
       this.$el.append(new app.TvSeasonListItemView({model:season}).render().el);
     }, this);
 
@@ -474,7 +474,7 @@ app.TvSeasonListItemView = Backbone.View.extend({
     // Play the model
     app.VideoController.tvshowPlay(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    })
+    });
 
   },
 
@@ -490,7 +490,7 @@ app.TvSeasonListItemView = Backbone.View.extend({
     // Add the model
     app.VideoController.tvshowAdd(this.model.attributes, function(){
       app.VideoController.playlistRender();
-    })
+    });
 
   }
 

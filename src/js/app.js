@@ -942,9 +942,9 @@ app.Router = Backbone.Router.extend({
 
         // Update image from cache
         var sc = app.stores.TvSeasons, key = 'seasons:' + tvshowid;
-        if(sc != undefined && sc[key] != undefined && sc[key].length > 0){
+        if(sc !== undefined && sc[key] !== undefined && sc[key].length > 0){
           $.each(sc[key], function(i,d){
-            if(d.season == season && d.thumbnail != ''){
+            if(d.season == season && d.thumbnail !== ''){
               data.attributes.thumbnail = d.thumbnail;
             }
           });

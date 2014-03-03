@@ -120,7 +120,7 @@ app.pager = {
     return {
       'next': nextId,
       'prev': lastId
-    }
+    };
 
   }
 

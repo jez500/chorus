@@ -14062,10 +14062,13 @@ $(document).ready(function(){
    * Add a url to a collection of models
    * @return float
    */
-  app.helpers.buildUrl = function(type, id){
+  app.helpers.buildUrl = function(type, id, model){
     // songs and files go home
     if(type == 'song' || type == 'file'){
       return '#';
+    }
+    if(type == 'episode'){
+      return '#tvshow/' + model.tvshowid + '/' + model.season + '/' + id;
     }
     // else build
     return '#' + type + '/' + id;
@@ -15141,9 +15144,138 @@ $(document).ready(function(){
     "art"
   ],
 
+  tvshowFields: [
+    "title",
+    "genre",
+    "year",
+    "rating",
+    "plot",
+    "studio",
+    "mpaa",
+    "cast",
+    "playcount",
+    "episode",
+    "imdbnumber",
+    "premiered",
+    "votes",
+    "lastplayed",
+   // "fanart",
+    "thumbnail",
+    "file",
+    "originaltitle",
+    "sorttitle",
+    "episodeguide",
+    "season",
+    "watchedepisodes",
+    "dateadded",
+    "tag",
+    "art"
+  ],
+
+  tvepisodeFields: [
+    "title",
+    "plot",
+    "votes",
+    "rating",
+    "writer",
+    "firstaired",
+    "playcount",
+    "runtime",
+    "director",
+    "productioncode",
+    "season",
+    "episode",
+    "originaltitle",
+    "showtitle",
+    "cast",
+    "streamdetails",
+    "lastplayed",
+    "fanart",
+    "thumbnail",
+    "file",
+    "resume",
+    "tvshowid",
+    "dateadded",
+    "uniqueid",
+    "art"
+  ],
+
+  tvseasonFields: [
+    "season",
+    "showtitle",
+    "playcount",
+    "episode",
+    "fanart",
+    "thumbnail",
+    "tvshowid",
+    "watchedepisodes",
+    "art"
+  ],
+
   fileFields: [
     'title', 'size', 'mimetype', 'file', 'dateadded', 'thumbnail', 'artistid', 'albumid', 'uniqueid'
   ],
+
+  playlistItemFields: [
+    "title",
+    "artist",
+    "albumartist",
+    "genre",
+    "year",
+    "rating",
+    "album",
+    "track",
+    "duration",
+    "playcount",
+    "director",
+    "tagline",
+    "plotoutline",
+    "originaltitle",
+    "lastplayed",
+    "mpaa",
+    "cast",
+    "country",
+    "imdbnumber",
+    "premiered",
+    "runtime",
+    "showlink",
+    "streamdetails",
+    "votes",
+    "firstaired",
+    "season",
+    "episode",
+    "showtitle",
+    "thumbnail",
+    "file",
+    "resume",
+    "artistid",
+    "albumid",
+    "tvshowid",
+    "setid",
+    "watchedepisodes",
+    "disc",
+    "tag",
+    "art",
+    "genreid",
+    "displayartist",
+    "albumartistid",
+    "description",
+    "theme",
+    "mood",
+    "style",
+    "albumlabel",
+    "sorttitle",
+    "uniqueid",
+    "dateadded",
+    "channel",
+    "channeltype",
+    "hidden",
+    "locked",
+    "channelnumber",
+    "starttime",
+    "endtime"
+  ],
+
 
   // filters
   albumFilters: [],
@@ -15171,7 +15303,10 @@ $(document).ready(function(){
     "FilesView",
     "FileView",
     "MovieListItemView",
-    "MovieView"
+    "MovieView",
+    "TvshowListItemView",
+    "TvSeasonListItemView",
+    "TvshowView"
   ],
 
   tpl: {} // for templates that are lazy loaded
@@ -15199,6 +15334,10 @@ app.Router = Backbone.Router.extend({
     "movies/genre/:genre":  "moviesGenre",
     "movies":               "moviesLanding",
     "movie/:id":            "movie",
+    "tvshows":              "tvshows",
+    "tvshow/:id":           "tvshow",
+    "tvshow/:tvid/:seas":   "season",
+    "tvshow/:tv/:s/:e":     "episode",
     "xbmc/:op":             "xbmc"
   },
 
@@ -15735,6 +15874,7 @@ app.Router = Backbone.Router.extend({
 
         // set menu
         app.shellView.selectMenuItem('movie', 'sidebar');
+
       }
     });
 
@@ -15745,6 +15885,141 @@ app.Router = Backbone.Router.extend({
 
 
 
+  /**
+   * A tvshow collection (no pager)
+   */
+  tvshows: function () {
+
+    var $content = $('#content');
+
+    // set menu
+    app.shellView.selectMenuItem('tvshows', 'no-sidebar');
+    $content.html('<div class="loading-box">Loading TV Shows</div>');
+    app.helpers.setTitle('TVShows', { addATag:'#tvshows'});
+
+    // init the collection
+    app.cached.tvCollection = new app.TvshowAllCollection();
+
+    // fetch results
+    app.cached.tvCollection.fetch({"success": function(collection){
+
+      // render collection
+      app.cached.tvshowListView = new app.TvshowListView({model: collection});
+      $content.html(app.cached.tvshowListView.render().$el);
+
+      // lazyload
+      app.helpers.triggerContentLazy();
+
+      console.log(collection);
+    }});
+
+  },
+
+
+  /**
+   * A single tvshow
+   * @param id
+   */
+  tvshow: function (id) {
+
+    var tv = new app.TVShow({"id": parseInt(id)}),
+      self = this;
+
+    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+
+    tv.fetch({
+      success: function (data) {
+
+        console.log(data);
+        // render content
+        self.$content.html(new app.TvshowView({model: data}).render().el);
+        app.helpers.setTitle( data.attributes.label);
+
+        // set menu
+        app.shellView.selectMenuItem('tvshow', 'sidebar');
+
+      }
+    });
+
+  },
+
+
+  /**
+   * A season of a tv show
+   * @param id
+   */
+  season: function (tvshowid, season) {
+
+    var tv = new app.TVShow({"id": parseInt(tvshowid)}),
+      self = this;
+
+    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+
+    tv.fetch({
+      success: function (data) {
+
+        // force season view
+        data.attributes.type = 'season';
+        data.attributes.season = season;
+
+        // Update image from cache
+        var sc = app.stores.TvSeasons, key = 'seasons:' + tvshowid;
+        if(sc !== undefined && sc[key] !== undefined && sc[key].length > 0){
+          $.each(sc[key], function(i,d){
+            if(d.season == season && d.thumbnail !== ''){
+              data.attributes.thumbnail = d.thumbnail;
+            }
+          });
+        }
+
+        // render content
+        self.$content.html(new app.TvshowView({model: data}).render().el);
+        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.label + '</a>Season ' + season);
+
+        // set menu
+        app.shellView.selectMenuItem('tvshow', 'sidebar');
+
+      }
+    });
+
+  },
+
+
+  /**
+   * A season of a tv show episode
+   * @param id
+   */
+  episode: function (tvshowid, season, episodeid) {
+
+    var tv = new app.TVEpisode({"id": parseInt(episodeid)}),
+      self = this;
+
+    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+
+    tv.fetch({
+      success: function (data) {
+
+        console.log(season, data);
+
+        // force ep view
+        data.attributes.type = 'episode';
+        data.attributes.tvshowid = tvshowid;
+        data.attributes.season = season;
+
+        // render content
+        self.$content.html(new app.TvshowView({model: data}).render().el);
+
+        // title
+        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.showtitle + '  Season ' + season + '</a>' +
+          'E' + data.attributes.episode + '. ' + data.attributes.label);
+
+        // set menu
+        app.shellView.selectMenuItem('tvshow', 'sidebar');
+
+      }
+    });
+
+  },
 
   /**
    * Scan for music
@@ -15889,8 +16164,49 @@ app.pager = {
     app.router[this.type + 's']( (app[this.type + 'PageNum'] + 1), true ); // append next page of results
 
     return $el;
-  }
+  },
 
+
+
+  /**
+   * Returns next and previous items in library
+   *
+   * @param type
+   *  movie, tvshow
+   * @param id
+   *  the id to match against
+   * @param models
+   */
+  libraryNav: function(type, id, models){
+
+    // next tvshow in cache
+    var next = false,
+      nextId = 0,
+      last = 0,
+      lastId = 0;
+
+    // loop over all tvshows
+    $.each(models, function(i,d){
+      var model = d.attributes,
+        idType = type + 'id';
+      // current was last
+      if(next === true){
+        nextId = parseInt(model[idType]);
+        next = false;
+      }
+      if(model[idType] == id){
+        next = true;
+        lastId = last;
+      }
+      last = id;
+    });
+
+    return {
+      'next': nextId,
+      'prev': lastId
+    };
+
+  }
 
 
 };
@@ -16056,11 +16372,34 @@ app.Movie = Backbone.Model.extend({
 app.TVShow = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
+  defaults: {'tvshowid': '', 'label': '', 'watchedepisodes': '', 'genre': '', 'year': '', 'cast': [], 'rating': 0, url: '#tv', 'episodeid': ''},
 
   sync: function(method, model, options) {
     if (method === "read") {
       // options.success(data);
+
+      // add fanart to full load
+      var fields = app.tvshowFields;
+      if($.inArray('fanart', fields) == -1){
+        fields.push('fanart');
+      }
+
+      // Fetch Show
+      app.xbmcController.command('VideoLibrary.GetTVShowDetails',[parseInt(this.id), fields], function(data){
+        var m = data.result.tvshowdetails;
+        // get thumbsup
+        m.thumbsup = app.playlists.getThumbsUp('tvshow', m.tvshowid);
+        m.url = '#tvshow/' + m.tvshowid;
+
+        // Add seasons
+        app.cached.tvseasonCollection = new app.TvseasonCollection();
+        app.cached.tvseasonCollection.fetch({"tvshowid" : m.tvshowid, "success": function(collection){
+          m.seasons = collection;
+          options.success(m);
+        }});
+
+      });
+
     }
   }
 
@@ -16075,11 +16414,19 @@ app.TVShow = Backbone.Model.extend({
 app.TVEpisode = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'album': '', 'albumid': '', 'thumbnail': '', 'artist': '', 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv'},
+  defaults: {'album': '', 'mpaa': '', 'thumbnail': '', 'artist': '', 'genre': [], 'artistid': '', 'songs': [], 'albumsitems': [], url: '#tv', 'imdbnumber': ''},
 
   sync: function(method, model, options) {
     if (method === "read") {
       // options.success(data);
+
+      app.xbmcController.command('VideoLibrary.GetEpisodeDetails',[parseInt(this.id), app.tvepisodeFields], function(data){
+        var m = data.result.episodedetails;
+        // get thumbsup
+        m.thumbsup = app.playlists.getThumbsUp('episode', m.episodeid);
+        options.success(m);
+      });
+
     }
   }
 
@@ -17771,8 +18118,24 @@ app.playlists.playlistGetItems = function(type, delta, callback){
       break;
 
     case 'movie':
-      plCollection = new app.CustomSongCollection();
+      plCollection = new app.CustomMovieCollection();
       plCollection.fetch({items: delta, success: function(res){
+        callback(res);
+      }});
+      break;
+
+    case 'tvshow':
+      plCollection = new app.TvepisodeCollection();
+      plCollection.fetch({tvshowid: delta, success: function(res){
+        callback(res);
+      }});
+      break;
+
+    case 'season':
+      plCollection = new app.TvepisodeCollection();
+      // format for delta is tvshowid:season
+      var parts = delta.split(':');
+      plCollection.fetch({tvshowid: parts[0], season: parts[1], success: function(res){
         callback(res);
       }});
       break;
@@ -18481,7 +18844,7 @@ app.playlists.getXbmcPlaylist = function(playlistId, callback){
   app.xbmcController.command('Playlist.GetItems',
     [
       playlistId,
-      ['albumid', 'artist', 'albumartist', 'artistid', 'thumbnail', 'file', 'duration', 'year', 'album', 'track']
+      app.playlistItemFields
     ], function(result){
       var res = result.result;
       // set playlistId on models and collection
@@ -18759,6 +19122,121 @@ app.VideoController.movieLoadMultiple = function(items, callback){
   app.xbmcController.entityLoadMultiple('movie', items, callback);
 };
 
+
+/**
+ * Adds multiple movies or episodes to the playlist
+ * @param type
+ *  eg. movieid, episodeid
+ * @param ids
+ *  value of type
+ * @param callback
+ */
+app.VideoController.playlistAddMultiple = function(type, ids, callback){
+
+  var commands = [],  id;
+  for(var n in ids){
+    param = {};
+    id = ids[n];
+
+    // used only for items not in the library
+    if(type == 'mixed'){
+      type = (typeof id == 'number' ? type : 'file');
+    }
+    param[type] = id;
+    commands.push({method: 'Playlist.Add', params: [app.VideoController.playlistId, param]});
+  }
+
+  //add the album to the playlist
+  app.xbmcController.multipleCommand(commands, function(data){
+
+    //get playlist items
+    app.VideoController.getPlaylistItems(function(result){
+
+      //update cache
+      app.VideoController.currentPlaylist = result;
+      console.log('playing xxxx');
+      callback(result);
+
+    });
+  });
+
+};
+
+
+
+
+/**
+ * Append a tvshow, season or episode to the video playlist
+ *
+ * @param model
+ *  must contain the `type` property
+ *  @param callback
+ */
+app.VideoController.tvshowAdd = function(model, callback){
+
+  var opt = {};
+
+  console.log(model);
+
+  // Add single episode, easy
+  if(model.type == 'episode'){
+    app.VideoController.addToPlaylist(model.episodeid, 'episodeid', 'add', callback);
+    return;
+  }
+
+  // otherwise we must get a collection of episode ids to add
+  var collection = new app.TvepisodeCollection(), items = [];
+
+  // always has a tv id
+  opt.tvshowid = parseInt(model.tvshowid);
+
+  // add a season if required
+  if(model.type == 'season'){
+    opt.season = model.season;
+  }
+
+  // success
+  opt.success = function(data){
+    for(var i in data.models){
+      items.push(data.models[i].attributes.episodeid);
+    }
+    // Add the array and callback
+    app.VideoController.playlistAddMultiple('episodeid', items, callback);
+  };
+
+  // do it!
+  collection.fetch(opt);
+
+};
+
+
+/**
+ * same as tvshowAdd but clears the playlist first and plays after
+ *
+ * @param model
+ *  must contain the `type` property
+ *  @param callback
+ */
+app.VideoController.tvshowPlay = function(model, callback){
+
+  // clear
+  app.VideoController.playlistClear(function(){
+
+    // Add items
+    app.VideoController.tvshowAdd(model, function(){
+
+      // xbmc player
+      app.playlists.changePlaylistView('xbmc');
+      // play first pos
+      console.log('playing 0');
+      app.VideoController.playPlaylistPosition(0, function(data){
+        //callback
+        callback();
+      });
+    });
+  });
+
+};
 ;
 
 /********************************************************************************
@@ -19172,7 +19650,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   //rpc deets
   url: app.jsonRpcUrl,
   rpc: new Backbone.Rpc({
-    errorHandler: function(error){app.helpers.errorHandler('xbmc artist call',error);},
+    errorHandler: function(error){app.helpers.errorHandler('xbmc movie call',error);},
     namespaceDelimiter: ''
   }),
   //model
@@ -19200,7 +19678,7 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   //rpc deets
   url: app.jsonRpcUrl,
   rpc: new Backbone.Rpc({
-    errorHandler: function(error){app.helpers.errorHandler('xbmc artist call',error);},
+    errorHandler: function(error){app.helpers.errorHandler('xbmc movie call',error);},
     namespaceDelimiter: ''
   }),
   //model
@@ -19212,6 +19690,63 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   //return the artists key from the result
   parse:  function(resp, xhr){
     return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
+  }
+});
+
+
+
+/**
+ * Get TV Collection (all tvshows)
+ */
+app.AllTvshowXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc tv call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.TVShow,
+  //collection params
+  arg1: app.tvshowFields, //properties
+  arg2: {"start": 0, "end": 10000}, //count
+  //arg4: {"sort": {"method": "label"}},
+  //method/params
+  methods: {
+    read:  ['VideoLibrary.GetTVShows', 'arg1', 'arg2']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    return app.helpers.buildUrls(resp.tvshows, 'tvshow', 'tvshowid');
+  }
+});
+
+
+
+/**
+ * Get Movie collection (all movies)
+ */
+app.TvSeasonXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc movie call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.TVShow,
+  //collection params
+  arg1: ['year', 'thumbnail', 'season'], //properties
+  arg2: function(){
+    return this.models[0].attributes.season;
+  },
+  //method/params
+  methods: {
+    read:  ['VideoLibrary.GetSeasons', 'arg1', 'arg2']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    return app.helpers.buildUrls(resp.seasons, 'tvshow', 'tvshowid');
   }
 });
 ;
@@ -19447,6 +19982,151 @@ app.CustomMovieCollection = Backbone.Collection.extend({
     app.xbmcController.entityLoadMultiple('movie', options.items, function(movies){
       options.success(movies);
     });
+
+  }
+
+});
+
+
+
+/************************************
+ * TV
+ ***********************************/
+
+/**
+ * A lightweight collection of all movies (cached).
+ */
+app.TvshowAllCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    if(typeof app.stores.allTvshows == 'undefined'){
+
+      // no cache, do a lookup
+      var allTv = new app.AllTvshowXbmcCollection();
+      allTv.fetch({"success": function(data){
+        // Sort
+        data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+
+        // Make a dictionary and flag as not loaded
+        app.stores.allTvshowsLookup = {};
+        for(var i in data.models){
+          var m = data.models[i].attributes;
+          m.loaded = false;
+          app.stores.allTvshowsLookup[m.movieid] = m;
+          data.models[i].attributes = m;
+        }
+        // Cache
+        app.stores.allTvshows = data.models;
+        // Return
+        options.success(data.models);
+        // trigger
+        $(window).trigger('allTvshowsCached');
+      }});
+    } else {
+      // else return cache;
+      options.success(app.stores.allTvshows);
+    }
+
+  }
+
+});
+
+
+
+/**
+ * A collection of movies matching a filter
+ */
+app.TvseasonCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    // init cache
+    if(app.stores.TvSeasons === undefined){
+      app.stores.TvSeasons = {};
+    }
+
+    var sort = {"sort": {"method": "title"}},
+      opt = [options.tvshowid, [ "season", "playcount", "watchedepisodes","episode",  "thumbnail", "tvshowid"]],
+      key = 'seasons:' + options.tvshowid;
+
+
+    // if cache use that
+    if(app.stores.TvSeasons[key] !== undefined){
+      // return from cache
+      options.success(app.stores.TvSeasons[key]);
+    } else {
+      // else lookup
+      app.xbmcController.command('VideoLibrary.GetSeasons', opt, function(data){
+
+        // add url
+        for(var i in data.result.seasons){
+          data.result.seasons[i].url = '#tvshow/' + options.tvshowid + '/' + data.result.seasons[i].season;
+        }
+
+        // save cache
+        app.stores.TvSeasons[key] = data.result.seasons;
+        // return
+        options.success(data.result.seasons);
+      });
+    }
+
+  }
+
+});
+
+
+
+/**
+ * A collection of movies matching a filter
+ */
+app.TvepisodeCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    // init cache
+    if(app.stores.TvEpisodes === undefined){
+      app.stores.TvEpisodes = {};
+    }
+
+
+    var sort = {"sort": {"method": "title"}},
+      opt = [],
+      key = 'episodes:' + options.tvshowid + ':' + options.season;
+
+    // constuct params
+    opt.push(parseInt(options.tvshowid));
+    if(options.season !== undefined){
+      opt.push(parseInt(options.season));
+      opt.push(app.tvepisodeFields);
+    }
+
+    // if cache use that
+    if(app.stores.TvEpisodes[key] !== undefined){
+      // return from cache
+      options.success(app.stores.TvEpisodes[key]);
+    } else {
+      // else lookup
+      app.xbmcController.command('VideoLibrary.GetEpisodes', opt, function(data){
+
+        // add url
+        for(var i in data.result.episodes){
+          data.result.episodes[i].url = '#tvshow/' + options.tvshowid + '/' + options.season + '/' + data.result.episodes[i].episodeid;
+        }
+
+        // Sort
+        data.result.episodes.sort(function(a,b){ return app.helpers.aphabeticalSort(a.label, b.label);	});
+
+        // save cache
+        app.stores.TvEpisodes[key] = data.result.episodes;
+
+        // return
+        options.success(data.result.episodes);
+      });
+    }
 
   }
 
@@ -21818,29 +22498,13 @@ app.MovieView = Backbone.View.extend({
    * @param e
    */
   libraryNext: function(e){
+
     e.preventDefault();
-
-    // next movie in cache
-    var next = false,
-      nextId = 0,
-      self = this;
-
-    // loop over all movies
-    $.each(self.allMovieCache.models, function(i,d){
-      var movie = d.attributes;
-      // current was last
-      if(next === true){
-        nextId = parseInt(movie.movieid);
-        next = false;
-      }
-      if(movie.movieid == self.model.attributes.id){
-        next = true;
-      }
-    });
+    var nav = app.pager.libraryNav('movie', this.model.attributes.id, this.allMovieCache.models);
 
     // next movie id available
-    if(nextId > 0){
-      document.location = '#movie/' + nextId;
+    if(nav.next > 0){
+      document.location = '#movie/' + nav.next;
     }
   },
 
@@ -22307,7 +22971,7 @@ app.PlaylistItemView = Backbone.View.extend({
     model.id = (typeof model.id != 'undefined' ? model.id : 'file');
     model.albumid = (typeof model.albumid != 'undefined' ? model.albumid : 'file');
     model.subLink = this.buildSubLink(model);
-    model.url = (model.albumid != 'file' ? '#album/' + model.albumid : app.helpers.buildUrl(model.type, model.id));
+    model.url = (model.albumid != 'file' ? '#album/' + model.albumid : app.helpers.buildUrl(model.type, model.id, model));
 
     // render
     this.$el.html(this.template(model));
@@ -22413,10 +23077,15 @@ app.PlaylistItemView = Backbone.View.extend({
         return '';
       }
 
-    } else if (model.type == 'movie' || model.type == 'tvshow' || model.type == 'episode') {
+    } else if (model.type == 'movie') {
       text = model.year;
       url = '#movies/year/' + model.year;
       title = 'More movies from ' + text;
+
+    } else if (model.type == 'episode') {
+      text = 'S' + model.season + ' E' + model.episode + ' - ' + model.showtitle;
+      url = '#tvshow/' + model.tvshowid + '/' + model.season;
+      title = 'More episodes from season' + model.season;
     } else {
       return '';
     }
@@ -23088,7 +23757,8 @@ app.searchView = Backbone.View.extend({
 
       // ensure backstretch is gone
       if($('.backstretch').length > 0){
-        $.backstretch("destroy", false);
+        $('.backstretch').remove();
+        //$.backstretch("destroy", false);
       }
       $body.removeClass('home');
 
@@ -23422,7 +24092,509 @@ app.SongView = Backbone.View.extend({
     $el.toggleClass('thumbs-up');
   }
 
-});;/**
+});;
+/**
+ * Full page wrapper for all movies list types
+ */
+app.TvshowsView = Backbone.View.extend({
+
+  initialize:function () {
+
+  },
+
+  render: function () {
+
+    // @TODO: landing page?
+
+    return this;
+  }
+
+
+});
+
+
+
+/**
+ * List of tvshows
+ */
+app.TvshowListView = Backbone.View.extend({
+
+  tagName:'ul',
+
+  className:'video-list tvshow-page-list',
+
+  initialize:function () {
+
+    var self = this;
+
+    this.model.on("reset", this.render, this);
+    this.model.on("add", function (tvshow) {
+      self.$el.append(new app.TvshowListItemView({model:tvshow}).render().el);
+    });
+
+
+  },
+
+  events:{
+    "click .next-page": "nextPage"
+  },
+
+  render: function () {
+
+    this.$el.empty();
+
+    // append results
+    _.each(this.model.models, function (tvshow) {
+      this.$el.append(new app.TvshowListItemView({model:tvshow}).render().el);
+    }, this);
+
+//    // Show next button and bind auto click with bum smack
+//    if(this.model.showNext !== undefined && this.model.showNext === true){
+//      this.$el = app.pager.viewHelpers(this.$el, 'tvshow');
+//    }
+
+    this.$el.find('img').lazyload({threshold : 200});
+
+    return this;
+
+  },
+
+  nextPage: function(e){
+    app.pager.nextPage($(e.target), 'tvshow');
+  },
+
+
+  backFromTvshow: function(fullRange, scrolled){
+    var $window = $(window);
+    if(fullRange === true && typeof app.vars.backHash != 'undefined'){
+      var parts = app.vars.backHash.split('/');
+      if(parts[0] == '#tvshow'){
+        $window.scrollTo( $('.tvshow-row-' + parts[1]) , 0, {offset: -200});
+        scrolled = true;
+      }
+    }
+    return scrolled;
+  }
+
+
+});
+
+
+/**
+ * Single tvshow item
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.TvshowListItemView = Backbone.View.extend({
+
+  tagName:"li",
+
+  className: 'tvshow-item-content',
+
+  events:{
+    "click .tvshow-play": "playTvshow",
+    "click .tvshow-add": "add",
+    "click .tvshow-thumbsup": "thumbsUp",
+//    "click .tvshow-menu": "menu",
+    "click .actions-wrapper": "view"
+  },
+
+
+  initialize:function () {
+    this.model.on("change", this.render, this);
+    this.model.on("destroy", this.close, this);
+  },
+
+
+  /**
+   * Render it
+   * @returns {TvshowListItemView}
+   */
+  render:function () {
+
+    this.model.attributes.type = 'tvshow'; // always rendered as an entire show
+    var model = this.model.attributes;
+
+    if(!model.label){
+      return this;
+    }
+    model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
+
+    this.$el.html(this.template(model));
+
+    return this;
+  },
+
+
+  /**
+   * Nav to tvshow page
+   */
+  view: function(){
+    document.location = '#tvshow/' + this.model.attributes.tvshowid;
+  },
+
+
+  /**
+   * Queue it
+   * @param e
+   */
+  add: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Add the model
+    var model = this.model.attributes;
+    app.VideoController.tvshowAdd(model, function(){
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+  /**
+   * Play it
+   * @param e
+   */
+  play: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Add the model
+    var model = this.model.attributes;
+    app.VideoController.tvshowPlay(model, function(){
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+    /**
+   * Set as thumbsup
+   * @param e
+   */
+  thumbsUp: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    var tvshow = this.model.attributes,
+      op = (app.playlists.isThumbsUp('tvshow', tvshow.tvshowid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.tvshow-actions');
+    app.playlists.setThumbsUp(op, 'tvshow', tvshow.tvshowid);
+    $el.toggleClass('thumbs-up');
+
+  }
+
+});
+
+
+/**
+ * Full page
+ */
+app.TvshowView = Backbone.View.extend({
+
+  allTvshowCache: [],
+
+  initialize:function () {
+    var self = this;
+    // get all tvshows into a cache if required
+    // needed for next button
+    var allTvshows = new app.TvshowAllCollection();
+    allTvshows.fetch({"success": function(data){
+      self.allTvshowCache = data;
+    }});
+  },
+
+
+  /**
+   * Clicks
+   */
+  events:{
+    "click .library-back": "libraryBack",
+    "click .library-next": "libraryNext",
+    "click .tvshow-play": "play",
+    "click .tvshow-add": "add",
+    "click .tvshow-thumbsup": "thumbsUp",
+    "click .tv-stream": "stream",
+    "click .tvshow-menu": "menu"
+  },
+
+
+  /**
+   * Render it
+   * @returns {TvshowView}
+   */
+  render: function () {
+
+    var model = this.model.attributes,
+      self = this;
+
+    model.type = (model.type !== undefined ? model.type : 'tvshow');
+
+    model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
+
+    //main detail
+    this.$el.html(this.template(model));
+
+    // backstretch
+    _.defer(function(){
+      var $fart = $('#fanart-background',this.$el),
+        fart = app.parseImage(model.fanart, 'fanart');
+      $fart.backstretch(fart);
+    });
+
+    if(model.type == 'tvshow'){
+        // if we have a collection, render it
+        if(model.seasons.length > 0){
+          app.cached.tvSeasonListView = new app.TvSeasonListView({model: model.seasons});
+          $('#seasons', self.$el).html( app.cached.tvSeasonListView.render().$el ); //.prepend( '<h3>Seasons</h3>' );
+        }
+    }
+
+    if(model.type == 'season' || model.type == 'episode'){
+
+      // get season collection
+      app.cached.tvepisodeCollection = new app.TvepisodeCollection();
+      app.cached.tvepisodeCollection.fetch({"tvshowid" : model.tvshowid, "season": model.season, "success": function(collection){
+
+        // if we have a collection, render it
+        if(collection.length > 0){
+          app.cached.tvSeasonListView = new app.TvSeasonListView({model: collection});
+          $('#seasons', self.$el).html( app.cached.tvSeasonListView.render().$el ).addClass('episodes');
+          // active class
+          if(model.type == 'episode'){
+            $('.row-episode-' + model.episodeid, self.$el).addClass('active');
+          }
+        }
+
+      }});
+
+    }
+
+
+
+
+    return this;
+  },
+
+
+  /**
+   * Same as click browser back button
+   * @param e
+   */
+  libraryBack: function(e){
+    e.preventDefault();
+    // same as using the back button
+    window.history.back();
+  },
+
+
+  /**
+   * Navigate Next
+   * @param e
+   */
+  libraryNext: function(e){
+
+    e.preventDefault();
+    var nav = app.pager.libraryNav('tvshow', this.model.attributes.tvshowid, this.allTvshowCache.models);
+
+    // next tvshow id available
+    if(nav.next > 0){
+      document.location = '#tvshow/' + nav.next;
+    }
+  },
+
+
+  /**
+   * Contextual options
+   * @param e
+   */
+  menu: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    // build the menu template
+    var menu = app.helpers.menuTemplates('tvshow', this.model.attributes);
+    // add dialog
+    app.helpers.menuDialog(menu);
+  },
+
+
+  /**
+   * Set as thumbsup
+   * @param e
+   */
+  thumbsUp: function(e){
+    e.stopPropagation();
+    e.preventDefault();
+
+    var tvshow = this.model.attributes,
+      op = (app.playlists.isThumbsUp('tvshow', tvshow.tvshowid) ? 'remove' : 'add'),
+      $el = $(e.target).closest('.tvshow-actions');
+    app.playlists.setThumbsUp(op, 'tvshow', tvshow.tvshowid);
+    $el.toggleClass('thumbs-up');
+
+  },
+
+
+  /**
+   * Play it
+   * @param e
+   */
+  play: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Play the model
+    app.VideoController.tvshowPlay(this.model.attributes, function(){
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+
+  /**
+   * Queue it
+   * @param e
+   */
+  add: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Add the model
+    app.VideoController.tvshowAdd(this.model.attributes, function(){
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+
+  stream: function(e){
+    e.preventDefault();
+    var player = $(e.target).data('player');
+
+    // open the window
+    var win = window.open("videoPlayer.html?player=" + player, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
+
+    // get the url and send the player window to it
+    app.AudioController.downloadFile(this.model.attributes.file, function(url){
+      win.location = "videoPlayer.html?player=" + player + "&src=" + encodeURIComponent(url);
+    });
+
+  }
+
+
+});
+
+
+
+/**
+ * List of seasons or episodes
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.TvSeasonListView = Backbone.View.extend({
+
+  tagName:'ul',
+  className:'video-list tvseason-page-list',
+
+  initialize:function () {
+
+  },
+
+  render: function () {
+
+    this.$el.empty();
+
+    // append results
+    _.each(this.model.models, function (season) {
+      season.attributes.type = (season.attributes.episodeid !== '' ? 'episode' : 'season');
+      this.$el.append(new app.TvSeasonListItemView({model:season}).render().el);
+    }, this);
+
+    return this;
+
+  }
+
+});
+
+
+/**
+ * Single tvshow item
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.TvSeasonListItemView = Backbone.View.extend({
+
+  tagName:"li",
+
+  className: 'tv-item-content',
+
+  events:{
+    "click .actions-wrapper": "view",
+    "click .tv-play": "play",
+    "click .tv-add": "add"
+  },
+
+
+  initialize:function () {
+    this.model.on("change", this.render, this);
+    this.model.on("destroy", this.close, this);
+  },
+
+
+  /**
+   * Render it
+   * @returns {TvshowListItemView}
+   */
+  render:function () {
+    this.$el.html(this.template(this.model.attributes));
+    return this;
+  },
+
+
+  /**
+   * Nav to tvshow page
+   */
+  view: function(){
+    document.location = this.model.attributes.url;
+  },
+
+
+  /**
+   * Play it
+   * @param e
+   */
+  play: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Play the model
+    app.VideoController.tvshowPlay(this.model.attributes, function(){
+      app.VideoController.playlistRender();
+    });
+
+  },
+
+
+  /**
+   * Add it
+   * @param e
+   */
+  add: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Add the model
+    app.VideoController.tvshowAdd(this.model.attributes, function(){
+      app.VideoController.playlistRender();
+    });
+
+  }
+
+
+});
+
+
+
+
+;/**
  * A Generic view used as a wrapper for sub pages
  *
  * Why aren't they using to standard backbone router you say?
