@@ -1,6 +1,7 @@
 # Chorus
-A nice web ui for xbmc, focused on user experience
-Currently only for music and movies, but it might support tv and photos in the future.
+A nice web ui for XBMC, focused on user experience.
+Browse your music, movies or tv shows from the comfort of your own web browser.
+You can play media via XBMC or stream it in your browser.
 
 Used by the [Doghouse Media Team](http://dhmedia.com.au) to control the shared office music box
 (an old pc running XBMC with chorus, plugged into an amp and a nas)
@@ -18,16 +19,16 @@ mail@jez500.com
 - A modern web browser, this has been developed and tested in Chrome
 
 ## Installing
-Install webinerface.chorus.zip via the zip, basically:
+All you need is webinerface.chorus.(version).zip unless you plan on doing some development.
 - XBMC > Settings > AddOns > Install from zip
 TODO: Get it in the XBMC repo
 
 ## Updating / Manual install
-Updating via a zip through the ui is proving patchy for me, so if you are updating from an older version or
-have any problems with installing eg. stuck on "loading application" then you should try this:
-- Find your user addons folder. eg ~/.xbmc/addons or %user%/AppData/roaming/XBMC/addons
+You should be able to repeat the install steps with the new zip, however if you need to do it manually then
+these are the general steps:
+- Find your user addons folder. eg ~/.xbmc/addons or %appdata%/roaming/XBMC/addons
 - Delete the addons/webinerface.chorus folder (if exists)
-- Grab the latest webinerface.chorus.zip and extract its contents into your addons folder
+- Grab the latest webinerface.chorus.(version).zip and extract its contents into your addons folder
 - You should now have a addons/webinerface.chorus folder again
 - Restart xbmc and refresh your browser for good measure
 
