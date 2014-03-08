@@ -1,3 +1,5 @@
 .idea
 src/theme/.sass-cache
+/vendor
+/node_modules
 
