@@ -12,13 +12,13 @@
   //logo
   #logo {
     width: $width-header;
-    height: $height-logo;
+    height: 50px;
     position: absolute;
     left: 0;
     top: 0;
     color: #fff;
     display: block;
-    font-size: 20px;
+    font-size: 11px;
     background: $color-dark-xbmc;
     text-decoration: none;
     @include transition(0.3s all linear);
@@ -28,15 +28,26 @@
       -moz-transform:rotate(270deg); /* moz */
       -webkit-transform:rotate(270deg); /* Safari and Chrome */
       transform:rotate(270deg);
-      margin-top: 48px;
+      margin-top: 23px;
+      margin-left: 28px;
       padding-top: 0px;
       display: block;
       font-family: helmet, helvetica, arial, san-serif;
+
+    }
+    @include breakpoint($width-tablet){
+      height: $height-logo;
+      width: $width-header;
+      font-size: 20px;
+      span {
+        margin-top: 48px;
+        margin-left: 0;
+      }
     }
   }
 
   .mainnav {
-    margin-top: $height-logo + 10;
+    margin-top: 50px;
     width: $width-header;
     ul {
       li {
@@ -56,6 +67,9 @@
           }
         }
       }
+    }
+    @include breakpoint($width-tablet){
+      margin-top: $height-logo + 10;
     }
   }
 }
@@ -84,7 +98,7 @@ body.fixed-header {
 // main > content
 #content {
   padding: 0;
-  @include breakpoint($width-mobile){
+  @include breakpoint($width-tablet){
     margin-right: $width-sidebar-second-small;
   }
 }
@@ -108,6 +122,7 @@ body.fixed-header {
     font-size: 22px;
     line-height: $height-header;
     padding-left: 20px;
+    display: none;
     a {
       color: $color-asbestos;
       display: block;
@@ -180,6 +195,11 @@ body.fixed-header {
       &:hover {
         opacity: 1;
       }
+    }
+  }
+  @include breakpoint($width-tablet){
+    h1 {
+      display: block;
     }
   }
 }
@@ -436,7 +456,7 @@ body.fixed-header {
     bottom: 0;
     height: auto;
   }
-  @include breakpoint($width-mobile){
+  @include breakpoint($width-tablet){
     bottom: 0;
     height: auto;
   }

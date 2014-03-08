@@ -1,4 +1,8 @@
 module.exports = function(grunt) {
+  // Sass base
+  var sassPath = 'src/theme',
+    jsPath = 'src',
+    appPath = jsPath + '/js';
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -10,40 +14,40 @@ module.exports = function(grunt) {
         src: [
 
           // jQuery
-          'src/lib/required/jquery-1.10.2.js',
+          jsPath + '/lib/required/jquery-1.10.2.js',
 
           // underscore
-          'src/lib/required/underscore-min.js',
+          jsPath + '/lib/required/underscore-min.js',
 
           // backbone
-          'src/lib/required/backbone.dev.js',
-          'src/lib/required/backbone.rpc.min.js',
+          jsPath + '/lib/required/backbone.dev.js',
+          jsPath + '/lib/required/backbone.rpc.min.js',
 
           // All our enabled js
-          'src/lib/enabled/*.js',
+          jsPath + '/lib/enabled/*.js',
 
           // application js
-          'src/js/utils.js',
-          'src/js/app.js',
+          appPath + '/utils.js',
+          appPath + '/app.js',
 
           // helpers
-          'src/js/helpers/*.js',
+          appPath + '/helpers/*.js',
 
           // application models
-          'src/js/models/*.js',
+          appPath + '/models/*.js',
 
           // application controllers
-          'src/js/controllers/*.js',
+          appPath + '/controllers/*.js',
 
           // application collections - need to be loaded in order
-          'src/js/collections/xbmc.js',
-          'src/js/collections/video.js',
-          'src/js/collections/audio.js',
-          'src/js/collections/files.js',
+          appPath + '/collections/xbmc.js',
+          appPath + '/collections/video.js',
+          appPath + '/collections/audio.js',
+          appPath + '/collections/files.js',
 
 
           // application views
-          'src/js/views/*.js'
+          appPath + '/views/*.js'
 
         ],
         dest: 'dist/<%= pkg.name %>.js'
@@ -60,7 +64,7 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      files: ['Gruntfile.js', 'src/js/*.js', 'src/js/*/*.js'],
+      files: ['Gruntfile.js', appPath + '/*.js', appPath + '/*/*.js'],
       options: {
         // options here to override JSHint defaults
         globals: {
@@ -71,9 +75,32 @@ module.exports = function(grunt) {
         }
       }
     },
+    compass: {
+      dist: {
+        options: {
+          // The path Compass will run from.
+          basePath: sassPath
+          // To use with bundled gems, uncomment below
+          //, bundleExec: true
+        }
+      }
+    },
+    browser_sync: {
+      dev: {
+        bsFiles: {
+          src: 'dist/theme/css/**/*.css'
+        },
+        options: {
+          watchTask: true,
+          injectChanges: true
+        }
+      }
+    },
+
+    // Watch tasks
     watch: {
-      files: ['<%= jshint.files %>'],
-      tasks: ['jshint']
+      files: [sassPath + '/sass/**/*.scss', '<%= jshint.files %>'],
+      tasks: ['compass', 'jshint']
     }
   });
 
@@ -81,9 +108,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-browser-sync');
 
   grunt.registerTask('test', ['jshint']);
 
-  grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+  grunt.registerTask('default', ['browser_sync', 'watch', 'jshint', 'concat', 'uglify']);
 
 };

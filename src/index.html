@@ -103,5 +103,11 @@
   <!--<script src="dist/lib/soundmanager/script/soundmanager2.js"></script>-->
   <script src="../dist/lib/soundmanager/script/soundmanager2-nodebug-jsmin.js"></script>
 
+
+  <!-- Browser Sync (DEV ONLY! Change to match your IP:PORT when running npm test) -->
+  <script src='//192.168.0.5:3000/socket.io/socket.io.js'></script>
+  <script>var ___socket___ = io.connect('http://192.168.0.5:3000');</script>
+  <script src='//192.168.0.5:3001/client/browser-sync-client.0.6.2.js'></script>
+
   </body>
 </html>

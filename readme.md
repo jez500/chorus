@@ -104,7 +104,11 @@ Chorus uses the following open source libraries, creds to all authors:
 
 
 ### Compiling
-Sass and Grunt are used to compile css and js in the dist folder
+Sass and Grunt are used to compile css and js in the dist folder.
+To get your environment setup first install [Bundler](http://bundler.io) and [npm](https://www.npmjs.org/).
+- Install required gems with `bundle install --path vendor/bundle`
+- Install NodeJs packages with `npm install`
+- Run grunt `npm test`
 
 ### Contributing
 If you would like to make this project better I would appreciate any help. Send me your merge requests!

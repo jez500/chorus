@@ -147,7 +147,7 @@ ul.video-list {
     margin: 5px 0;
     height: 80px;
     color: $color-light-slate;
-    @include breakpoint($width-mobile){
+    @include breakpoint($width-tablet){
       float: left;
       margin: 0 2% 5px 0;
       width: 48%;
@@ -198,7 +198,7 @@ ul.video-list {
     right: 0;
     bottom: $height-footer;
     top: 0;
-    @include breakpoint($width-mobile){
+    @include breakpoint($width-tablet){
       right: $width-sidebar-second-small;
     }
     @include breakpoint($width-small){
@@ -304,7 +304,7 @@ ul.video-list {
   $gutters: 0.8em;
   .col-1 {
     margin-bottom: 20px;
-    @include breakpoint($width-mobile) {
+    @include breakpoint($width-tablet) {
       @include  grid-span(4, 1, 6);
     }
 
@@ -312,7 +312,7 @@ ul.video-list {
   }
   .col-2 {
 
-    @include breakpoint($width-mobile) {
+    @include breakpoint($width-tablet) {
       @include  grid-span(2, 5, 6);
     }
 
