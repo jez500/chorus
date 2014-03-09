@@ -4,7 +4,7 @@ var app = {
 
   models: {},
 
-  cached: {}, //for caching views and collections
+  cached: {}, // for caching views and collections
 
   counts: {503: 0, '503total': 0}, // count defaults
 
@@ -399,6 +399,8 @@ app.Router = Backbone.Router.extend({
     if(typeof task == "undefined"){
       task = 'view';
     }
+
+    this.$content.html('<div class="loading-box">Loading Artist</div>');
 
     app.artistsView = new app.ArtistsView();
     app.artistsView.render();

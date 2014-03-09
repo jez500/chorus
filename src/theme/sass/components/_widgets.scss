@@ -199,3 +199,10 @@ input[type="text"] {
     }
   }
 }
+
+.backstretch {
+  zoom: 1.2;
+  @include breakpoint($width-small){
+    zoom: 1;
+  }
+}

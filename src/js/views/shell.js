@@ -122,7 +122,12 @@ app.ShellView = Backbone.View.extend({
     "click .browser-player-next": "localNext",
     "click .browser-player-repeat": "localRepeat",
     "click .browser-player-random": "localRandom",
-    "click .browser-player-mute": "localMute"
+    "click .browser-player-mute": "localMute",
+
+    // Mobile menu
+    "click .toggle-ss": "toggleSidebarSecondVisibility",
+    "click .toggle-vol": "toggleVolumeVisibility",
+    "click .toggle-search": "toggleSearchVisibility"
 
   },
 
@@ -436,8 +441,28 @@ app.ShellView = Backbone.View.extend({
   localMute: function(e){
     e.preventDefault();
     app.audioStreaming.mute();
-  }
+  },
 
+  /**
+   * Toggle sidebar-second visibility
+   */
+  toggleSidebarSecondVisibility: function(){
+    $('body').toggleClass('ss-open');
+  },
+
+  /**
+   * Toggle volume visibility
+   */
+  toggleVolumeVisibility: function(){
+    $('body').toggleClass('vol-open');
+  },
+
+  /**
+   * Toggle search visibility
+   */
+  toggleSearchVisibility: function(){
+    $('body').toggleClass('search-open');
+  }
 
 
 });

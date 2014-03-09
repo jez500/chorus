@@ -1,7 +1,22 @@
 // Artists
 #artist-tabs {
+  .nav-tabs {
+    display: none;
+    @include breakpoint($width-tablet){
+      display: block;
+    }
+  }
 
   .artist-actions {
+  }
+}
+
+.section-artist {
+  .tab-content {
+    padding-top: 38px;
+    @include breakpoint($width-tablet){
+      padding-top: 0px;
+    }
   }
 }
 

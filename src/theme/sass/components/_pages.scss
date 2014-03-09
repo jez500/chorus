@@ -381,14 +381,20 @@ h3.search-heading {
 // artist/movie/tv
 .content-fanart {
   overflow: hidden;
-  height: 342px;
+  height: 210px;
   margin-top: -#{$height-header + 5};
   cursor: pointer;
+  @include breakpoint($width-tablet){
+    height: 342px;
+    img {
+      min-width: 600px;
+    }
+  }
   img {
     cursor: pointer;
     width: 100%;
     margin-top: -5%;
-    min-width: 600px;
+    min-width: 400px;
   }
   &.full-size {
     height: auto;
@@ -419,6 +425,7 @@ body {
     #header {
       bottom: auto;
       padding-bottom: 10px;
+      height: auto;
     }
     .playlist {
       div.playlist-item {

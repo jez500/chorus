@@ -5,23 +5,26 @@
 #footer,
 #browser-player-footer {
   background: $color-slate;
-  height: $height-footer;
+  height: 63px;
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 50;
-  .footer-right,
-  .footer-left {
-    width: $width-sidebar-second-small;
+  @include breakpoint($width-tablet){
     height: $height-footer;
-    float: left;
-    background: $color-light-slate;
+  }
+
+  .footer-left {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    width: 120px;
     .player-button {
       width: 33.33%;
       @include box-sizing(border-box);
       padding: 19px 0;
-      font-size: 1.8em;
+      font-size: 1.4em;
       float: left;
       text-align: center;
       color: #979EA0;
@@ -30,28 +33,61 @@
         color: $color-mist;
       }
       &.player-play {
-        font-size: 2.5em;
+        font-size: 1.9em;
         padding: 14px 0;
+      }
+    }
+    @include breakpoint($width-tablet){
+      float: left;
+      width: $width-sidebar-second-small;
+      height: $height-footer;
+      background: $color-light-slate;
+      position: static;
+      right: auto;
+      bottom: auto;
+      .player-button {
+        font-size: 1.8em;
+        &.player-play {
+          font-size: 2.5em;
+        }
       }
     }
   }
   .footer-right {
-    float: right;
-    width: $width-sidebar-second-small;
+    width: auto;
+    height: 40px;
+    background: $color-light-slate;
+    display: none;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
     .actions-wrapper {
       position: absolute;
       right: 0px;
       top: 25px;
       text-align: right;
       width: $width-sidebar-second-small;
+      display: none;
       .player-button {
         font-size: 2em;
         padding: 3px 0;
         width: 25%;
         float: left;
+        text-align: center;
         .fa-volume-up {
           display: none;
         }
+      }
+    }
+    @include breakpoint($width-tablet){
+      display: block;
+      position: static;
+      float: right;
+      width: $width-sidebar-second-small;
+      height: $height-footer;
+      .actions-wrapper {
+        display: block;
       }
     }
   }
@@ -59,25 +95,36 @@
   .progress-wrapper {
     background: rgba(0,0,0,0.1);
     position: absolute;
-    left: $width-sidebar-second-small + $height-footer;
-    right: $width-sidebar-second-small;
+    left: 0;
+    right: 0;
     top: 0;
     height: 18px;
     overflow: hidden;
+    @include breakpoint($width-tablet){
+      left: $width-sidebar-second-small + $height-footer;
+      right: $width-sidebar-second-small;
+    }
   }
   .volume-wrapper {
-    right: 0;
-    left: auto;
-    width: $width-sidebar-second-small;
+    right: 10px;
+    left: 10px;
+    margin: 10px 0;
+    @include breakpoint($width-tablet){
+      right: 0;
+      left: auto;
+      width: $width-sidebar-second-small;
+      margin: 0;
+    }
   }
   #time,
   #browser-time {
     position: absolute;
     margin-top: 25px;
-    right: $width-sidebar-second-small + 10px;
+    right: 10px;
     top: 0;
     font-weight: bold;
     text-align: right;
+    display: none;
     .time-cur {
       display: block;
       color: #fff;
@@ -87,6 +134,10 @@
     .time-total {
       font-size: 12px;
     }
+    @include breakpoint($width-tablet){
+      right: $width-sidebar-second-small + 10px;
+      display: block;
+    }
   }
 }
 
@@ -94,20 +145,28 @@
 #now-playing,
 #browser-now-playing {
   font-size: 12px;
-  margin-right: $width-sidebar-second-small + 70;
-  margin-left: $width-sidebar-second-small;
+  margin-right: 0;
+  margin-left: 0;
   padding-top: 1px;
   .song-image {
-    width: $height-footer;
-    height: $height-footer;
+    width: 50px;
+    height: 50px;
     margin-right: 10px;
     overflow: hidden;
     float: left;
-    margin-top: -1px;
+    margin-top: 12px;
     background-size: cover;
     img {
-      height: $height-footer;
+      height: 50px;
       display: block;
+    }
+    @include breakpoint($width-tablet){
+      width: $height-footer;
+      margin-top: -1px;
+      height: $height-footer; 
+      img {
+        height: $height-footer;
+      }
     }
   }
   .playing-song-title,
@@ -115,13 +174,22 @@
     color: #fff;
     font-size: 15px;
     display: block;
-    margin-top: 25px;
+    margin-top: 20px;
     height: 20px;
     overflow: hidden;
     white-space: nowrap;
+    margin-right: 130px;
+    @include breakpoint($width-tablet){
+      margin-top: 25px;
+      margin-right: 0px;
+    }
   }
   .song-artist {
     color: #ddd;
+  }
+  @include breakpoint($width-tablet){
+    margin-right: $width-sidebar-second-small + 70;
+    margin-left: $width-sidebar-second-small;
   }
 }
 
@@ -132,7 +200,7 @@
 #browser-progress-bar {
   &.ui-slider {
     @include border-radius(0);
-    height: 20px;
+    height: 12px;
     border: none;
     background: none;
     .ui-slider-range {
@@ -156,6 +224,9 @@
       .ui-slider-handle {
         display: block;
       }
+    }
+    @include breakpoint($width-tablet){
+      height: 20px;
     }
   }
 
@@ -192,7 +263,7 @@ body {
       border-bottom-color: #511e14 !important;
     }
     .track.playing-row {
-      background-image: url(../images/icons/row-pause.png) !important;
+      background-image: image-url('icons/row-pause.png') !important;
     }
   }
   // xbmc player
@@ -206,7 +277,7 @@ body {
       //background: $color-clouds;
       .song-tracknum {
         //eq level display playing
-        background: url(../images/row-playing.gif) 50% 50% no-repeat;
+        background: image-url('row-playing.gif') 50% 50% no-repeat;
         text-indent: -999999px;
       }
     }
@@ -244,12 +315,12 @@ body {
     //eq level display paused (quiet)
     .playing-row {
       .song-tracknum {
-        background: url(../images/icons/row-pause.png) 50% 50% no-repeat;
+        background: image-url('icons/row-pause.png') 50% 50% no-repeat;
       }
     }
     ul.playlist {
       .playing-row {
-        background-image: url(../images/icons/row-pause.png);
+        background-image: image-url('icons/row-pause.png');
       }
     }
   }
@@ -337,7 +408,7 @@ body {
   &.browser-playing {
     // sidebar playing row
     .browser-playlist-song-list div.playlist-item.browser-playing-row {
-      background-image: url(../images/row-playing.gif);
+      background-image: image-url('row-playing.gif');
     }
     // footer play/pause
     #browser-player-footer .footer-left {

@@ -64,6 +64,10 @@ ul.video-list {
     left: 40px;
     width: $width-sidebar-first-small;
     z-index: 20;
+    display: none;
+    @include breakpoint($width-tablet){
+      display: block;
+    }
     .video-thumb {
       padding: 5px;
       background: rgba(255, 255, 255, 0.7);

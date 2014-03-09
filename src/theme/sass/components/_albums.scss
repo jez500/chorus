@@ -20,31 +20,48 @@ $album-margin-right: $album-meta-width + 10;
     @include box-sizing(border-box);
     background: #F8F8F8;
     position: relative;
-    margin-right: $album-margin-right;
+    @include breakpoint($width-tablet){
+      margin-right: $album-margin-right;
+    }
     a {
       color: $color-asbestos;
     }
   }
   .album-info {
-    float: right;
-    width: $album-meta-width;
-    padding-bottom: 10px;
+    background: image-url('loading-box-bg.jpg') 0 bottom repeat-x;
     color: $color-asbestos;
+    border-bottom: 3px solid #eee;
     .image,
     .card {
       display: block;
-      width: $album-meta-width;
-      margin: 0;
+      width: auto;
       padding: 0;
+      margin: 0 auto;
+      height: 169px;
     }
     .details {
       display: none;
+    }
+    @include breakpoint($width-tablet){
+      background: none;
+      float: right;
+      padding-bottom: 10px;
+      width: $album-meta-width;
+      border-bottom: none;
+      .card {
+        margin: 0;
+        height: 205px;
+        width: $album-meta-width;
+        min-width: $album-meta-width;
+      }
     }
   }
   .tracks {
     float: none;
     width: auto;
-    margin-right: $album-margin-right;
+    @include breakpoint($width-tablet){
+      margin-right: $album-margin-right;
+    }
   }
 }
 

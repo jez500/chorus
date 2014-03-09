@@ -4,11 +4,16 @@
   position: fixed;
   left: 0;
   top: 0;
-  bottom: $height-footer;
+  height: 50px;
   width: $width-header;
   background: #FDFDFD;
-  z-index: 5;
-
+  z-index: 501;
+  overflow: hidden;
+  @include breakpoint($width-tablet){
+    z-index: 5;
+    bottom: $height-footer;
+    height: auto;
+  }
   //logo
   #logo {
     width: $width-header;
@@ -28,7 +33,7 @@
       -moz-transform:rotate(270deg); /* moz */
       -webkit-transform:rotate(270deg); /* Safari and Chrome */
       transform:rotate(270deg);
-      margin-top: 23px;
+      margin-top: 24px;
       margin-left: 28px;
       padding-top: 0px;
       display: block;
@@ -47,7 +52,7 @@
   }
 
   .mainnav {
-    margin-top: 50px;
+    margin-top: 60px;
     width: $width-header;
     ul {
       li {
@@ -86,9 +91,12 @@ body.fixed-header {
 
 // main
 #main {
-  margin-left: $width-sidebar-second-small;
+  margin-left: 0;
   margin-top: $height-header;
   padding-bottom: $height-footer;
+  @include breakpoint($width-tablet){
+    margin-left: $width-sidebar-second-small;
+  }
 }
 
 #main-content {
@@ -112,7 +120,7 @@ body.fixed-header {
   left: $width-header;
   top: 0;
   right: 0;
-  z-index: 20;
+  z-index: 500;
   @include transition(all 0.3s linear);
 
   h1 {
@@ -197,22 +205,45 @@ body.fixed-header {
       }
     }
   }
+  .mobile-menu {
+    float: right;
+    li {
+      float: left;
+      width: 50px;
+      height: 50px;
+      color: #ccc;
+      text-align: center;
+      line-height: 49px;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+  }
   @include breakpoint($width-tablet){
+    z-index: 20;
     h1 {
       display: block;
+    }
+    .mobile-menu {
+      display: none;
     }
   }
 }
 
 // First Sidebar (artists)
 #sidebar-first {
-  width: $width-sidebar-second-small - $width-header;
+  right: 0;
   background: #f9f9f9;
   position: fixed;
   top: $height-header;
-  left: $width-header;
+  left: 0;
   bottom: $height-footer;
-  z-index: 0;
+  z-index: 20;
+  @include breakpoint($width-tablet){
+    width: $width-sidebar-second-small - $width-header;
+    left: $width-header;
+    right: 0;
+    z-index: 0;
+  }
   .artist-list {
     position: absolute;
     bottom: 0;
@@ -444,21 +475,27 @@ body.fixed-header {
 
 // Second sidebar (playlists)
 #sidebar-second {
-  width: $width-sidebar-second-small;
+  width: auto;
   background: #f8f8f8;
   position: fixed;
-  top: 0;
+  top: 50px;
   right: 0;
-  bottom: auto;
+  left: 0;
+  bottom: 0;
   z-index: 25;
-  height: $height-header;
-  &:hover {
-    bottom: 0;
-    height: auto;
-  }
+ // height: $height-header;
+  padding-bottom: $height-footer;
+  display: none;
+
   @include breakpoint($width-tablet){
     bottom: 0;
     height: auto;
+    position: fixed;
+    top: 0;
+    left: auto;
+    width: $width-sidebar-second-small;
+    padding-bottom: 0;
+    display: block;
   }
   .sidebar-header {
 
@@ -575,12 +612,14 @@ body.home {
 
 // Search box
 #search-box {
-  position: absolute;
-  top: 0;
-  right: $width-sidebar-second-small;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
   display: none;
-  background-color: rgba(255,255,255,0.78);
+  background-color: #fff;
   @include transition(all 0.3s linear);
+  border-bottom: 3px solid #ccc;
   .fa-search {
     display: inline-block;
     padding: 0;
@@ -599,7 +638,7 @@ body.home {
     padding: 10px 10px 10px 40px;
     font-size: 18px;
     color: $color-mist;
-    width: 130px;
+    width: 80%;
     outline: none;
     background: rgba(255, 255, 255, 0);
     color: $color-asbestos;
@@ -609,11 +648,18 @@ body.home {
       background: rgba(255, 255, 255, 0.47);
     }
   }
-}
-
-// show search when library ready
-.artists-ready #search-box {
-  display: block;
+  @include breakpoint($width-tablet){
+    position: absolute;
+    top: 0;
+    right: $width-sidebar-second-small;
+    left: auto;
+    display: block;
+    background-color: rgba(255,255,255,0.78);
+    border-bottom: none;
+    #search {
+      width: 130px;
+    }
+  }
 }
 
 
@@ -656,9 +702,16 @@ body.home {
 
 // body overrides
 body {
+  zoom: 0.9;
+  @include breakpoint($width-small){
+    zoom: 1;
+  }
   &.no-sidebar {
     #main {
-      margin-left: $width-header;
+      margin-left: 0;
+      @include breakpoint($width-tablet){
+        margin-left: $width-header;
+      }
     }
     #sidebar-first {
       display: none;
@@ -670,4 +723,50 @@ body {
       margin-left: 0;
     }
   }
+
+  // responsive first sidebar
+  &.section-artists {
+    #content {
+      display: none;
+      @include breakpoint($width-tablet){
+        display: block;
+      }
+    }
+  }
+  &.section-album,
+  &.section-artist {
+    #sidebar-first {
+      display: none;
+      @include breakpoint($width-tablet){
+        display: block;
+      }
+    }
+  }
+
+  // mobile-menu toggles
+  &.ss-open {
+    #sidebar-second {
+      display: block;
+    }
+    .toggle-ss {
+      color: #fff !important;
+    }
+  }
+  &.vol-open {
+    #footer .footer-right {
+      display: block;
+    }
+    .toggle-vol {
+      color: #fff !important;
+    }
+  }
+  &.search-open {
+    #search-box {
+      display: block;
+    }
+    .toggle-search {
+      color: #fff !important;
+    }
+  }
+
 }

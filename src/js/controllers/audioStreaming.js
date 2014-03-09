@@ -76,7 +76,7 @@ app.audioStreaming = {
 
       url: 'lib/soundmanager/swf/',
       flashVersion: 9,
-      preferFlash: true, // prefer 100% HTML5 mode, where both supported
+      preferFlash: false, // prefer 100% HTML5 mode, where both supported
       useHTML5Audio: true,
       useFlashBlock: false,
 
