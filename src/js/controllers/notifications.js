@@ -35,6 +35,7 @@ app.notifications = {
         // do an initial update prior to setting sockets to active
         self.getNowPlaying();
         // websockets is working!
+        console.log('Using Websockets');
         app.notifications.wsActive = true;
       };
 
@@ -84,7 +85,6 @@ app.notifications = {
    * @param data
    */
   onMessage: function(data){
-    console.log('socket message', data);
 
     // if we are getting messages, xbmc is reachable
     app.counts[503] = 0;

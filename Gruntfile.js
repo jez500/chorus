@@ -113,6 +113,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', ['jshint']);
 
+  // watch task (uncomment during dev)
   grunt.registerTask('default', ['browser_sync', 'watch', 'jshint', 'concat', 'uglify']);
+
+  // build task (uncomment for build)
+  grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
 
 };

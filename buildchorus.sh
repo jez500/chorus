@@ -5,14 +5,14 @@ if ["$1" == ""]; then
   exit 1
 fi
 
+echo "Running Grunt"
+echo "=============================================="
+grunt build
+
 echo "Running compass"
 echo "=============================================="
 compass clean ./src/theme
 compass compile ./src/theme -e production
-
-echo "Running Grunt"
-echo "=============================================="
-grunt
 
 echo "removing old zip"
 echo "=============================================="

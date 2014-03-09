@@ -15026,7 +15026,7 @@ $(document).ready(function(){
 
   models: {},
 
-  cached: {}, //for caching views and collections
+  cached: {}, // for caching views and collections
 
   counts: {503: 0, '503total': 0}, // count defaults
 
@@ -15365,7 +15365,8 @@ app.Router = Backbone.Router.extend({
    */
   home: function () { //Not in use atm
 
-    var backstretchImage = '';
+    var backstretchImage = '',
+      data = app.cached.nowPlaying;
 
     // empty content
     this.$content.html('');
@@ -15376,25 +15377,22 @@ app.Router = Backbone.Router.extend({
     // menu
     app.shellView.selectMenuItem('home', 'no-sidebar');
 
-    // get now playing
-    app.AudioController.getNowPlayingSong(function(data){
+    // get fanart based on player
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // get the local playing item
+      var browserPlaying = app.audioStreaming.getNowPlayingSong();
+      backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
+    } else {
+      // xbmc playing image
+      backstretchImage = (data === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
+    }
 
-      if(app.audioStreaming.getPlayer() == 'local'){
-        // get the local playing item
-        var browserPlaying = app.audioStreaming.getNowPlayingSong();
-        backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
-      } else {
-        // xbmc playing image
-        backstretchImage = (data.item.fanart === undefined ? '' : data.item.fanart);
-      }
-
-      // Add Backstretch if image
-      if($('.backstretch').length === 0){
-        var fa = app.parseImage(backstretchImage, 'fanart');
-        $.backstretch(fa);
-      }
-
-    });
+    // Add Backstretch it doesnt exist
+    if($('.backstretch').length === 0){
+      // on initial page load this will be empty but if playing, state will be updated onPlay
+      var fa = app.parseImage(backstretchImage, 'fanart');
+      $.backstretch(fa);
+    }
 
   },
 
@@ -15421,6 +15419,8 @@ app.Router = Backbone.Router.extend({
     if(typeof task == "undefined"){
       task = 'view';
     }
+
+    this.$content.html('<div class="loading-box">Loading Artist</div>');
 
     app.artistsView = new app.ArtistsView();
     app.artistsView.render();
@@ -17131,7 +17131,11 @@ app.AudioController.audioLibraryScan = function(){
  * Get now playing
  */
 
-app.AudioController.getNowPlayingSong = function(callback){
+app.AudioController.getNowPlayingSong = function(callback, forceFull){
+
+  if(forceFull === undefined){
+    forceFull = false;
+  }
 
   // this is a rather hefty function that gets called every 5 sec so we throttle with error counts
   // only execute when 0
@@ -17172,30 +17176,35 @@ app.AudioController.getNowPlayingSong = function(callback){
     item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
-  var ret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0}, commands = [];
+  var ret = {'status':'notPlaying'}, rret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0}, commands = [];
 
   // first commands to run
+
   commands = [
-    {method: 'Application.GetProperties', params: [["volume", "muted"]]},
     {method: 'Player.GetActivePlayers', params: []}
   ];
 
-
+  if(forceFull){
+    commands.push({method: 'Application.GetProperties', params: [["volume", "muted"]]});
+  }
 
   // first run
   app.xbmcController.multipleCommand(commands, function(data){
 
-    var properties = data[0], players = data[1];
+    var players = data[0];
 
     // success set count to 0
     app.counts[503] = 0;
     app.counts['503total'] = 0;
+    app.state = 'connected';
 
     // set some values
-    ret.volume = properties.result;
     app.AudioController.activePlayers = players.result;
 
-    app.state = 'connected';
+    if(forceFull){
+      var properties = data[1];
+      ret.volume = properties.result;
+    }
 
     if(players.result.length > 0){
       //something is playing
@@ -17205,24 +17214,32 @@ app.AudioController.getNowPlayingSong = function(callback){
 
       // second run commands
       commands = [
-        {method: 'Player.GetItem', params: [ret.activePlayer, fields.item]},
         {method: 'Player.GetProperties', params: [ret.activePlayer, fields.player]}
       ];
+
+      // get item if full payload
+      if(forceFull){
+        commands.push({method: 'Player.GetItem', params: [ret.activePlayer, fields.item]});
+      }
 
       // run second lot
       app.xbmcController.multipleCommand(commands, function(item){
         // get data
-        ret.item = item[0].result.item;
-        ret.item.list = 'xbmc';
-        ret.player = item[1].result;
         ret.status = 'playing';
+        ret.player = item[0].result;
+
+        // update the item if full payload
+        if(forceFull){
+          ret.item = item[1].result.item;
+          ret.item.list = 'xbmc';
+        }
 
         // set cache
-        app.cached.nowPlaying = ret;
+        app.cached.nowPlaying = $.extend(app.cached.nowPlaying, ret);
 
         // callback
         if(callback){
-          callback(ret);
+          callback(app.cached.nowPlaying);
         }
 
       });
@@ -17230,51 +17247,12 @@ app.AudioController.getNowPlayingSong = function(callback){
     } else {
 
       //nothing playing
-      app.cached.nowPlaying = ret;
-      callback(ret);
+      app.cached.nowPlaying = $.extend(app.cached.nowPlaying, ret);
+      callback(app.cached.nowPlaying);
 
     }
 
   });
-
-
-
-
-
-
-
-  app.xbmcController.command('Application.GetProperties', [["volume", "muted"]], function(properties){
-    //get volume level
-    ret.volume = properties.result;
-    app.xbmcController.command('Player.GetActivePlayers', [], function(players){
-
-      app.AudioController.activePlayers = players.result;
-
-      if(players.result.length > 0){
-        //something is playing
-        ret.activePlayer = players.result[0].playerid;
-        app.xbmcController.command('Player.GetItem', [ret.activePlayer, fields.item], function(item){
-          ret.item = item.result.item;
-          ret.status = 'playing';
-
-          app.xbmcController.command('Player.GetProperties', [ret.activePlayer, fields.player], function(player){
-            ret.player = player.result;
-            app.cached.nowPlaying = ret;
-            callback(ret);
-          });
-
-        });
-      } else {
-        //nothing playing
-        app.cached.nowPlaying = ret;
-        callback(ret);
-      }
-
-    });
-
-  });
-
-
 
 };
 
@@ -17283,17 +17261,19 @@ app.AudioController.getNowPlayingSong = function(callback){
  */
 var stateTimeout = {};
 app.AudioController.updatePlayerState = function(){
-  //clearTimeout(stateTimeout);
+  // apply connected class
   var $b = $('body'), nc = 'notconnected'; //set if connected or not
   if(app.state == nc){
     $b.addClass(nc);
   } else {
     $b.removeClass(nc);
   }
+
+  // Do a lookup, pass websocket state
   app.AudioController.getNowPlayingSong(function(data){
     app.shellView.updateState(data);
-    //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
-  });
+  }, !app.notifications.wsActive);
+
 };;/**
  * Binds
  * =====================================================================
@@ -17372,7 +17352,7 @@ app.audioStreaming = {
 
       url: 'lib/soundmanager/swf/',
       flashVersion: 9,
-      preferFlash: true, // prefer 100% HTML5 mode, where both supported
+      preferFlash: false, // prefer 100% HTML5 mode, where both supported
       useHTML5Audio: true,
       useFlashBlock: false,
 
@@ -18034,6 +18014,226 @@ app.audioStreaming = {
 };
 
 ;/**
+ * Deal with notifications from xbmc using web sockets
+ * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Notifications_2
+ *
+ * NOTE: for this to work You need to "Allow programs on other systems to control XBMC"
+ */
+
+
+app.notifications = {
+
+  // connection - note does not work if using IP when on localhost
+  wsConn: 'ws://' + location.hostname + ':9090/jsonrpc?chorus',
+
+  // other scripts check this to see if web sockets is handling things
+  wsActive: false,
+
+  // playlist add timeout object
+  plTimeout: {},
+
+  /**
+   * Kick off our connection and bind callbacks
+   */
+  init: function(){
+
+    var self = app.notifications;
+
+    // do we have web sockets?
+    if ("WebSocket" in window) {
+
+      // websocket obj
+      var ws = new WebSocket(self.wsConn);
+
+      // open connection
+      ws.onopen = function(e){
+        // do an initial update prior to setting sockets to active
+        self.getNowPlaying();
+        // websockets is working!
+        console.log('Using Websockets');
+        app.notifications.wsActive = true;
+      };
+
+      // bind errors
+      ws.onerror = function(e){
+        console.log('socket error', e);
+      };
+
+      // bind message
+      ws.onmessage = function(e){
+        self.onMessage( self.parseResponse(e) );
+
+      };
+
+      // bind close
+      ws.onclose = function (e) {
+        console.log('socket closed', e);
+      };
+
+    }
+
+  },
+
+
+  /**
+   * Get the data from response
+   * @param response
+   * @returns {*}
+   */
+  parseResponse: function(response){
+    return jQuery.parseJSON(response.data);
+  },
+
+
+  /**
+   * ws connection closed
+   * @param e
+   */
+  onClose: function(e){
+    // websockets not working
+    app.notifications.wsActive = false;
+  },
+
+
+  /**
+   * Deal with messages
+   * @param data
+   */
+  onMessage: function(data){
+
+    // if we are getting messages, xbmc is reachable
+    app.counts[503] = 0;
+    app.counts['503total'] = 0;
+    app.state = 'connected';
+
+    var self = app.notifications,
+      $window = $(window);
+
+    // Action based on method
+    switch (data.method) {
+
+      // playback started
+      case 'Player.OnPlay':
+        self.getNowPlaying();
+        break;
+
+      // playback stopped
+      case 'Player.OnStop':
+        self.getNowPlaying();
+        break;
+
+      // eg. shuffled, repeat, partymode
+      case 'Player.OnPropertyChanged':
+        app.cached.nowPlaying.player = $.extend(app.cached.nowPlaying.player, data.params.data.property);
+        self.updateState();
+        break;
+
+      // playback pause
+      case 'Player.OnPause':
+        app.cached.nowPlaying.player.pause = 0;
+        self.updateState();
+        break;
+
+      // progress changed
+      case 'Player.OnSeek':
+        self.getNowPlaying();
+        break;
+
+      // list cleared
+      case 'Playlist.OnClear':
+      // list add
+      case 'Playlist.OnAdd':
+      // list remove
+      case 'Playlist.OnRemove':
+        self.updatePlaylist(data.params.data.playlistid);
+        break;
+
+      // volume change
+      case 'Application.OnVolumeChanged':
+        console.log(data.params.data);
+        app.cached.nowPlaying.volume = data.params.data;
+        self.updateState();
+        break;
+
+      // Video Library scan
+      case 'VideoLibrary.OnScanStarted':
+        break;
+
+      // Video Library scan end
+      case 'VideoLibrary.OnScanFinished':
+        app.notification('Video Library scan complete');
+        break;
+
+      // Audio Library scan
+      case 'AudioLibrary.OnScanStarted':
+        break;
+
+      // Audio Library scan end
+      case 'AudioLibrary.OnScanFinished':
+        app.notification('Audio Library scan complete');
+        break;
+
+      // input box has opened
+      case 'Input.OnInputRequested':
+        $window.trigger('Input.OnInputRequested');
+        break;
+
+      // input box has closed
+      case 'Input.OnInputFinished':
+        $window.trigger('Input.OnInputFinished');
+        break;
+
+      // xbmc shutdown
+      case 'System.OnQuit':
+        app.notification('XBMC has quit');
+        break;
+    }
+
+  },
+
+
+  /***************************************
+   * Helpers
+   **************************************/
+
+
+  /**
+  * call now a now playing update and state update
+  * does a full load of current state
+  */
+  getNowPlaying: function(){
+    app.AudioController.getNowPlayingSong(function(data){
+      app.shellView.updateState(data);
+    }, true);
+  },
+
+
+  /**
+  * update the player state based ion current app.cached.nowPlaying data
+  */
+  updateState: function(){
+    app.shellView.updateState(app.cached.nowPlaying);
+  },
+
+
+  /**
+  * update a given playlistId
+  */
+  updatePlaylist: function(playlistId){
+    // defer for 1 second in case multiple items are being added
+    clearTimeout(app.notifications.plTimeout);
+    app.notifications.plTimeout = setTimeout(function(){
+      // switch on playlist type
+      if(playlistId === 0){
+        app.AudioController.playlistRender();
+      } else if(playlistId == 1){
+        app.VideoController.playlistRender();
+      }
+    }, 1000);
+  }
+
+
+};;/**
  * The app.playlists object is a collection of methods and properties specifically for
  * custom playlist functionality and helpers
  *
@@ -18881,13 +19081,16 @@ app.playlists.renderXbmcPlaylist = function(playlistId, callback){
     app.playlistView = new app.PlaylistView({model:{playlistId: playlistId, models:result.items}});
     $pl.html(app.playlistView.render().el);
 
-    app.AudioController.getNowPlayingSong(function(data){
+    if(!app.notifications.wsActive){
+      app.AudioController.getNowPlayingSong(function(data){
 
-      //update shell to now playing info
-      app.shellView.updateState(data);
-      //rebind controls to playlist after refresh
-      app.playlistView.playlistBinds(this);
-    });
+        //update shell to now playing info
+        app.shellView.updateState(data);
+        //rebind controls to playlist after refresh
+        app.playlistView.playlistBinds(this);
+      });
+    }
+
 
     if(app.helpers.exists(callback)){
       callback(result);
@@ -22598,7 +22801,7 @@ app.playerStateView = Backbone.View.extend({
   render:function () {
 
     // get model
-    var data = this.model,
+    var data = app.cached.nowPlaying,
       $window = $(window),
       lastPlaying = app.helpers.varGet('lastPlaying', '');
 
@@ -22610,7 +22813,7 @@ app.playerStateView = Backbone.View.extend({
     app.state = data.status;
 
     // resave model
-    this.model = data;
+    app.cached.nowPlaying = data;
 
     // set current as last playing var
     app.helpers.varSet('lastPlaying', data.item.file);
@@ -22628,7 +22831,6 @@ app.playerStateView = Backbone.View.extend({
 
       // if playing has changed
       if(data.playingItemChanged){
-
         this.nowPlayingMajor();
         $window.trigger('playingItemChange', data);
 
@@ -22646,19 +22848,16 @@ app.playerStateView = Backbone.View.extend({
   },
 
 
-
-
   /***************************************
    * Helpers
    **************************************/
-
 
   /**
    * body classes
    */
   bodyClasses:function () {
 
-    var data = this.model;
+    var data = app.cached.nowPlaying;
 
     this.$body
       // remove all old classes and list the options in use
@@ -22690,7 +22889,7 @@ app.playerStateView = Backbone.View.extend({
     // set the title
     this.setTitle();
 
-    var data = this.model,
+    var data = app.cached.nowPlaying,
       // time stuff
       $time = $('#time'),
       cur = 0,
@@ -22728,7 +22927,7 @@ app.playerStateView = Backbone.View.extend({
    */
   nowPlayingMajor:function(){
 
-    var data = this.model;
+    var data = app.cached.nowPlaying;
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
@@ -22770,7 +22969,7 @@ app.playerStateView = Backbone.View.extend({
    */
   tagPlayingRow:function(){
 
-    var data = this.model;
+    var data = app.cached.nowPlaying;
 
     // playing row we should have a loaded item
     this.$songs.each(function(i,d){
@@ -22793,7 +22992,7 @@ app.playerStateView = Backbone.View.extend({
    * Set document title
    */
   setTitle:function () {
-    var data = this.model, title = data.item.label;
+    var data = app.cached.nowPlaying, title = data.item.label;
     if(app.audioStreaming.getPlayer() == 'xbmc'){
       document.title = (data.status == 'playing' ? '▶ ' : '') + (title !== undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
@@ -22801,7 +23000,7 @@ app.playerStateView = Backbone.View.extend({
 
 
   notPlaying:function () {
-    var data = this.model;
+    var data = app.cached.nowPlaying;
     //doc title
     document.title = 'Chorus.';
     //title and artist
@@ -22827,14 +23026,13 @@ app.playerStateView = Backbone.View.extend({
    * Runs every 5 sec
    */
   playerCron:function (){
-    var data = this.model,
+    var data = app.cached.nowPlaying,
       lastState =  app.helpers.varGet('lastState', ''),
       noState = (typeof lastState == 'undefined' || typeof lastState.volume == 'undefined'),
       $t = {}, t = '', n ='';
 
     //set volume, only if we must
-    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active') &&  // is the slider currently being moved?
-      (noState || lastState.volume.volume != data.volume.volume)){
+    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active')){  // is the slider currently being moved?
       app.shellView.$volumeSlider.slider( "value",data.volume.volume );
       //muted class
       if(data.volume.volume === 0){
@@ -23621,8 +23819,14 @@ app.searchView = Backbone.View.extend({
     });
 
 
-    // Init player state cycle
-    setInterval(app.AudioController.updatePlayerState, 5000);
+    // Init player state cycle, load up now playing first
+    app.AudioController.getNowPlayingSong(function(){
+      // init polling
+      setInterval(app.AudioController.updatePlayerState, 5000);
+      // init web sockets
+      app.notifications.init();
+    }, true);
+
 
     return this;
   },
@@ -23659,7 +23863,12 @@ app.searchView = Backbone.View.extend({
     "click .browser-player-next": "localNext",
     "click .browser-player-repeat": "localRepeat",
     "click .browser-player-random": "localRandom",
-    "click .browser-player-mute": "localMute"
+    "click .browser-player-mute": "localMute",
+
+    // Mobile menu
+    "click .toggle-ss": "toggleSidebarSecondVisibility",
+    "click .toggle-vol": "toggleVolumeVisibility",
+    "click .toggle-search": "toggleSearchVisibility"
 
   },
 
@@ -23846,10 +24055,8 @@ app.searchView = Backbone.View.extend({
 
   // update the playing state
   updateState:function(data){
-
     app.cached.playerState = new app.playerStateView({model: data});
     app.cached.playerState.render();
-
   },
 
 
@@ -23973,8 +24180,28 @@ app.searchView = Backbone.View.extend({
   localMute: function(e){
     e.preventDefault();
     app.audioStreaming.mute();
-  }
+  },
 
+  /**
+   * Toggle sidebar-second visibility
+   */
+  toggleSidebarSecondVisibility: function(){
+    $('body').toggleClass('ss-open');
+  },
+
+  /**
+   * Toggle volume visibility
+   */
+  toggleVolumeVisibility: function(){
+    $('body').toggleClass('vol-open');
+  },
+
+  /**
+   * Toggle search visibility
+   */
+  toggleSearchVisibility: function(){
+    $('body').toggleClass('search-open');
+  }
 
 
 });;app.SongListView = Backbone.View.extend({
