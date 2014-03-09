@@ -343,7 +343,8 @@ app.Router = Backbone.Router.extend({
    */
   home: function () { //Not in use atm
 
-    var backstretchImage = '';
+    var backstretchImage = '',
+      data = app.cached.nowPlaying;
 
     // empty content
     this.$content.html('');
@@ -354,25 +355,22 @@ app.Router = Backbone.Router.extend({
     // menu
     app.shellView.selectMenuItem('home', 'no-sidebar');
 
-    // get now playing
-    app.AudioController.getNowPlayingSong(function(data){
+    // get fanart based on player
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // get the local playing item
+      var browserPlaying = app.audioStreaming.getNowPlayingSong();
+      backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
+    } else {
+      // xbmc playing image
+      backstretchImage = (data === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
+    }
 
-      if(app.audioStreaming.getPlayer() == 'local'){
-        // get the local playing item
-        var browserPlaying = app.audioStreaming.getNowPlayingSong();
-        backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
-      } else {
-        // xbmc playing image
-        backstretchImage = (data.item.fanart === undefined ? '' : data.item.fanart);
-      }
-
-      // Add Backstretch if image
-      if($('.backstretch').length === 0){
-        var fa = app.parseImage(backstretchImage, 'fanart');
-        $.backstretch(fa);
-      }
-
-    });
+    // Add Backstretch it doesnt exist
+    if($('.backstretch').length === 0){
+      // on initial page load this will be empty but if playing, state will be updated onPlay
+      var fa = app.parseImage(backstretchImage, 'fanart');
+      $.backstretch(fa);
+    }
 
   },
 

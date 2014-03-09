@@ -84,8 +84,14 @@ app.ShellView = Backbone.View.extend({
     });
 
 
-    // Init player state cycle
-    setInterval(app.AudioController.updatePlayerState, 5000);
+    // Init player state cycle, load up now playing first
+    app.AudioController.getNowPlayingSong(function(){
+      // init polling
+      setInterval(app.AudioController.updatePlayerState, 5000);
+      // init web sockets
+      app.notifications.init();
+    }, true);
+
 
     return this;
   },
@@ -314,10 +320,8 @@ app.ShellView = Backbone.View.extend({
 
   // update the playing state
   updateState:function(data){
-
     app.cached.playerState = new app.playerStateView({model: data});
     app.cached.playerState.render();
-
   },
 
 

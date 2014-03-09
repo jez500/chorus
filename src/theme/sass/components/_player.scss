@@ -75,8 +75,13 @@
         width: 25%;
         float: left;
         text-align: center;
+        cursor: pointer;
+        color: #979EA0;
         .fa-volume-up {
           display: none;
+        }
+        &:hover {
+          color: $color-mist;
         }
       }
     }

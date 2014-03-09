@@ -327,7 +327,11 @@ app.AudioController.audioLibraryScan = function(){
  * Get now playing
  */
 
-app.AudioController.getNowPlayingSong = function(callback){
+app.AudioController.getNowPlayingSong = function(callback, forceFull){
+
+  if(forceFull === undefined){
+    forceFull = false;
+  }
 
   // this is a rather hefty function that gets called every 5 sec so we throttle with error counts
   // only execute when 0
@@ -368,30 +372,35 @@ app.AudioController.getNowPlayingSong = function(callback){
     item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
-  var ret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0}, commands = [];
+  var ret = {'status':'notPlaying'}, rret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0}, commands = [];
 
   // first commands to run
+
   commands = [
-    {method: 'Application.GetProperties', params: [["volume", "muted"]]},
     {method: 'Player.GetActivePlayers', params: []}
   ];
 
-
+  if(forceFull){
+    commands.push({method: 'Application.GetProperties', params: [["volume", "muted"]]});
+  }
 
   // first run
   app.xbmcController.multipleCommand(commands, function(data){
 
-    var properties = data[0], players = data[1];
+    var players = data[0];
 
     // success set count to 0
     app.counts[503] = 0;
     app.counts['503total'] = 0;
+    app.state = 'connected';
 
     // set some values
-    ret.volume = properties.result;
     app.AudioController.activePlayers = players.result;
 
-    app.state = 'connected';
+    if(forceFull){
+      var properties = data[1];
+      ret.volume = properties.result;
+    }
 
     if(players.result.length > 0){
       //something is playing
@@ -401,24 +410,32 @@ app.AudioController.getNowPlayingSong = function(callback){
 
       // second run commands
       commands = [
-        {method: 'Player.GetItem', params: [ret.activePlayer, fields.item]},
         {method: 'Player.GetProperties', params: [ret.activePlayer, fields.player]}
       ];
+
+      // get item if full payload
+      if(forceFull){
+        commands.push({method: 'Player.GetItem', params: [ret.activePlayer, fields.item]});
+      }
 
       // run second lot
       app.xbmcController.multipleCommand(commands, function(item){
         // get data
-        ret.item = item[0].result.item;
-        ret.item.list = 'xbmc';
-        ret.player = item[1].result;
         ret.status = 'playing';
+        ret.player = item[0].result;
+
+        // update the item if full payload
+        if(forceFull){
+          ret.item = item[1].result.item;
+          ret.item.list = 'xbmc';
+        }
 
         // set cache
-        app.cached.nowPlaying = ret;
+        app.cached.nowPlaying = $.extend(app.cached.nowPlaying, ret);
 
         // callback
         if(callback){
-          callback(ret);
+          callback(app.cached.nowPlaying);
         }
 
       });
@@ -426,51 +443,12 @@ app.AudioController.getNowPlayingSong = function(callback){
     } else {
 
       //nothing playing
-      app.cached.nowPlaying = ret;
-      callback(ret);
+      app.cached.nowPlaying = $.extend(app.cached.nowPlaying, ret);
+      callback(app.cached.nowPlaying);
 
     }
 
   });
-
-
-
-
-
-
-
-  app.xbmcController.command('Application.GetProperties', [["volume", "muted"]], function(properties){
-    //get volume level
-    ret.volume = properties.result;
-    app.xbmcController.command('Player.GetActivePlayers', [], function(players){
-
-      app.AudioController.activePlayers = players.result;
-
-      if(players.result.length > 0){
-        //something is playing
-        ret.activePlayer = players.result[0].playerid;
-        app.xbmcController.command('Player.GetItem', [ret.activePlayer, fields.item], function(item){
-          ret.item = item.result.item;
-          ret.status = 'playing';
-
-          app.xbmcController.command('Player.GetProperties', [ret.activePlayer, fields.player], function(player){
-            ret.player = player.result;
-            app.cached.nowPlaying = ret;
-            callback(ret);
-          });
-
-        });
-      } else {
-        //nothing playing
-        app.cached.nowPlaying = ret;
-        callback(ret);
-      }
-
-    });
-
-  });
-
-
 
 };
 
@@ -479,15 +457,17 @@ app.AudioController.getNowPlayingSong = function(callback){
  */
 var stateTimeout = {};
 app.AudioController.updatePlayerState = function(){
-  //clearTimeout(stateTimeout);
+  // apply connected class
   var $b = $('body'), nc = 'notconnected'; //set if connected or not
   if(app.state == nc){
     $b.addClass(nc);
   } else {
     $b.removeClass(nc);
   }
+
+  // Do a lookup, pass websocket state
   app.AudioController.getNowPlayingSong(function(data){
     app.shellView.updateState(data);
-    //stateTimeout = setTimeout(app.AudioController.updatePlayerState, 5000);
-  });
+  }, !app.notifications.wsActive);
+
 };

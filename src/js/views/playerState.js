@@ -18,7 +18,7 @@ app.playerStateView = Backbone.View.extend({
   render:function () {
 
     // get model
-    var data = this.model,
+    var data = app.cached.nowPlaying,
       $window = $(window),
       lastPlaying = app.helpers.varGet('lastPlaying', '');
 
@@ -30,7 +30,7 @@ app.playerStateView = Backbone.View.extend({
     app.state = data.status;
 
     // resave model
-    this.model = data;
+    app.cached.nowPlaying = data;
 
     // set current as last playing var
     app.helpers.varSet('lastPlaying', data.item.file);
@@ -48,7 +48,6 @@ app.playerStateView = Backbone.View.extend({
 
       // if playing has changed
       if(data.playingItemChanged){
-
         this.nowPlayingMajor();
         $window.trigger('playingItemChange', data);
 
@@ -66,19 +65,16 @@ app.playerStateView = Backbone.View.extend({
   },
 
 
-
-
   /***************************************
    * Helpers
    **************************************/
-
 
   /**
    * body classes
    */
   bodyClasses:function () {
 
-    var data = this.model;
+    var data = app.cached.nowPlaying;
 
     this.$body
       // remove all old classes and list the options in use
@@ -110,7 +106,7 @@ app.playerStateView = Backbone.View.extend({
     // set the title
     this.setTitle();
 
-    var data = this.model,
+    var data = app.cached.nowPlaying,
       // time stuff
       $time = $('#time'),
       cur = 0,
@@ -148,7 +144,7 @@ app.playerStateView = Backbone.View.extend({
    */
   nowPlayingMajor:function(){
 
-    var data = this.model;
+    var data = app.cached.nowPlaying;
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
@@ -190,7 +186,7 @@ app.playerStateView = Backbone.View.extend({
    */
   tagPlayingRow:function(){
 
-    var data = this.model;
+    var data = app.cached.nowPlaying;
 
     // playing row we should have a loaded item
     this.$songs.each(function(i,d){
@@ -213,7 +209,7 @@ app.playerStateView = Backbone.View.extend({
    * Set document title
    */
   setTitle:function () {
-    var data = this.model, title = data.item.label;
+    var data = app.cached.nowPlaying, title = data.item.label;
     if(app.audioStreaming.getPlayer() == 'xbmc'){
       document.title = (data.status == 'playing' ? '▶ ' : '') + (title !== undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
@@ -221,7 +217,7 @@ app.playerStateView = Backbone.View.extend({
 
 
   notPlaying:function () {
-    var data = this.model;
+    var data = app.cached.nowPlaying;
     //doc title
     document.title = 'Chorus.';
     //title and artist
@@ -247,14 +243,13 @@ app.playerStateView = Backbone.View.extend({
    * Runs every 5 sec
    */
   playerCron:function (){
-    var data = this.model,
+    var data = app.cached.nowPlaying,
       lastState =  app.helpers.varGet('lastState', ''),
       noState = (typeof lastState == 'undefined' || typeof lastState.volume == 'undefined'),
       $t = {}, t = '', n ='';
 
     //set volume, only if we must
-    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active') &&  // is the slider currently being moved?
-      (noState || lastState.volume.volume != data.volume.volume)){
+    if(!$('a.ui-slider-handle', app.shellView.$volumeSlider).hasClass('.ui-slider-active')){  // is the slider currently being moved?
       app.shellView.$volumeSlider.slider( "value",data.volume.volume );
       //muted class
       if(data.volume.volume === 0){

@@ -846,13 +846,16 @@ app.playlists.renderXbmcPlaylist = function(playlistId, callback){
     app.playlistView = new app.PlaylistView({model:{playlistId: playlistId, models:result.items}});
     $pl.html(app.playlistView.render().el);
 
-    app.AudioController.getNowPlayingSong(function(data){
+    if(!app.notifications.wsActive){
+      app.AudioController.getNowPlayingSong(function(data){
 
-      //update shell to now playing info
-      app.shellView.updateState(data);
-      //rebind controls to playlist after refresh
-      app.playlistView.playlistBinds(this);
-    });
+        //update shell to now playing info
+        app.shellView.updateState(data);
+        //rebind controls to playlist after refresh
+        app.playlistView.playlistBinds(this);
+      });
+    }
+
 
     if(app.helpers.exists(callback)){
       callback(result);
