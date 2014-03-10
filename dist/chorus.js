@@ -17176,7 +17176,9 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
     item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
-  var ret = {'status':'notPlaying'}, rret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0}, commands = [];
+  var ret = {'status':'notPlaying'},
+    notPlayingRet = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0},
+    commands = [];
 
   // first commands to run
 
@@ -17206,9 +17208,9 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
       ret.volume = properties.result;
     }
 
-    if(players.result.length > 0){
-      //something is playing
-      ret.activePlayer = players.result[0].playerid;
+    if(players.result.length > 0 || forceFull){
+      //something is playing or forced
+      ret.activePlayer = (players.result[0] !== undefined ? players.result[0].playerid : 0);
 
       app.state = 'playing';
 
@@ -17229,7 +17231,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
         ret.player = item[0].result;
 
         // update the item if full payload
-        if(forceFull){
+        if(players.result.length > 0 && forceFull){
           ret.item = item[1].result.item;
           ret.item.list = 'xbmc';
         }
@@ -18508,7 +18510,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   var $thisItem = $(ui.item[0]).find('div.playlist-item'),
     changed = {},
     $sortable = $thisItem.closest("ul.playlist"),
-    type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio');
+    type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio'),
+    modelType = $thisItem.data('type');
 
   //loop over each playlist item to see what (if any has changed)
   $sortable.find('div.playlist-item').each(function(i,d){
@@ -18524,7 +18527,7 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     var controller = (type == 'audio' ? app.AudioController : app.VideoController);
     controller.playlistSwap(changed.from, changed.to, function(res){
       controller.playlistRender();
-    });
+    }, modelType);
   }
 };
 
@@ -19083,11 +19086,8 @@ app.playlists.renderXbmcPlaylist = function(playlistId, callback){
 
     if(!app.notifications.wsActive){
       app.AudioController.getNowPlayingSong(function(data){
-
         //update shell to now playing info
         app.shellView.updateState(data);
-        //rebind controls to playlist after refresh
-        app.playlistView.playlistBinds(this);
       });
     }
 
@@ -19306,8 +19306,9 @@ app.VideoController.removePlaylistPosition = function(position, callback ){
  *  new playlist position
  *  @param callback
  */
-app.VideoController.playlistSwap = function(pos1, pos2, callback){
-  app.playlists.playlistSwap(app.VideoController.playlistId, 'movieid', pos1, pos2, callback);
+app.VideoController.playlistSwap = function(pos1, pos2, callback, modelType){
+  var idField = (modelType == 'movie' ? 'movieid' : 'episodeid');
+  app.playlists.playlistSwap(app.VideoController.playlistId, idField, pos1, pos2, callback);
 };
 
 
@@ -20495,7 +20496,7 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
       var list = app.playlists.getThumbsUp(options.name);
 
       // no further parsing if empty
-      if(list === null || list.length === 0){
+      if(list === undefined || list === null || list.length === 0){
         return {items: []};
       }
 
@@ -22094,11 +22095,11 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
   events: {
     "dblclick .song-title": "loadSong",
-    "click .song-play":     "loadSong",
+    "click .song-play":     "playSong",
     "click .song-add":      "addSong",
     "click .song-thumbsup": "thumbsUp",
     "click .song-remove":   "removeSong",
-    "click .song-menu":   "menu",
+    "click .song-menu":   "menu"
   },
 
 
@@ -22132,7 +22133,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
    * @param e
    */
   menu: function(){
-    app.helpers.makeDropdown( app.helpers.menuDialog('song', this.model.attributes ));
+    app.helpers.menuDialog( app.helpers.menuTemplates('song',this.model.attributes));
   },
 
 
@@ -22808,15 +22809,15 @@ app.playerStateView = Backbone.View.extend({
     this.$songs = $('.song');
 
     // enrich
-    data.playingItemChanged = (lastPlaying != data.item.file);
-    data.status = (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status);
+    data.playingItemChanged = (data.item !== undefined && lastPlaying != data.item.file);
+    data.status = (data.player === undefined ? 'stopped' : (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status));
     app.state = data.status;
 
     // resave model
     app.cached.nowPlaying = data;
 
     // set current as last playing var
-    app.helpers.varSet('lastPlaying', data.item.file);
+    app.helpers.varSet('lastPlaying', (data.item !== undefined ? data.item.file : null));
 
     // body classes
     this.bodyClasses();
@@ -22858,6 +22859,14 @@ app.playerStateView = Backbone.View.extend({
   bodyClasses:function () {
 
     var data = app.cached.nowPlaying;
+
+    // player was stopped on page load
+    if(data.player === undefined){
+      data.player = {
+        shuffled: false,
+        repeat: 'off'
+      };
+    }
 
     this.$body
       // remove all old classes and list the options in use
@@ -23019,6 +23028,8 @@ app.playerStateView = Backbone.View.extend({
     var $time = $('#time');
     $time.find('.time-cur').html('0');
     $time.find('.time-total').html('0:00');
+    // ensure volume set
+    app.shellView.$volumeSlider.slider( "value",data.volume.volume );
   },
 
 
@@ -23103,24 +23114,15 @@ app.PlaylistView = Backbone.View.extend({
     // reload thumbsup
     app.playlists.getThumbsUp();
 
-    // bind others
-    $(window).bind('playlistUpdate', this.playlistBinds());
-
     // make and prepend tabs
     $tabs.append('<li class="player-audio' + (plId === 0 ? ' active' : '') + '">Audio</li>');
     $tabs.append('<li class="player-video' + (plId == 1 ? ' active' : '') + '">Video</li>');
 
     this.$el.prepend($tabs);
-
     this.$el.addClass('plid-' + plId);
 
-    return this;
-  },
-
-  playlistBinds:function(){
-
     //sortable
-    $sortable = $( "ul.playlist");
+    $sortable = $( "ul.playlist", this.$el);
     $sortable.sortable({
       placeholder: "playlist-item-placeholder",
       handle: ".playlist-play",
@@ -23131,6 +23133,7 @@ app.PlaylistView = Backbone.View.extend({
       }
     }).disableSelection();
 
+    return this;
   },
 
   viewAudio:function(e){

@@ -1,3 +1,11 @@
+Version 0.2.8:
+- Bug fix: playlist sorting works again
+- Bug fix: video playlist sort switching episodes with movies
+- Bug fix: Custom playlist play and menu buttons work again
+- Bug fix: removed errors when not using websockets and nothing is playing
+- Style fix: when changing songs in a playlist, no more flash of background sprite
+
+
 Version 0.2.7:
 - Commenced mobile responsive styling (still a BIG work in progress)
 - App will now use websockets when available
