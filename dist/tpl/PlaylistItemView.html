@@ -1,7 +1,7 @@
 <%
 var plid = (typeof playlistId != 'undefined' ? playlistId : 0);
 %>
-<div class="playlist-item song playlist-pos-<%= pos %>" data-id="<%= pos %>" data-songid="<%= id %>" data-path="<%= file %>" data-playlistId="<%= plid %>">
+<div class="playlist-item song playlist-pos-<%= pos %>" data-id="<%= pos %>" data-songid="<%= id %>" data-path="<%= file %>" data-playlistId="<%= plid %>" data-type="<%=type%>">
     <i class="repeating icon-repeat" title="this song is on an endless repeat, click to stop repeating"></i>
     <div class="actions">
         <span class="fa fa-play playbtn"></span>

@@ -372,7 +372,9 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
     item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
-  var ret = {'status':'notPlaying'}, rret = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0}, commands = [];
+  var ret = {'status':'notPlaying'},
+    notPlayingRet = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0},
+    commands = [];
 
   // first commands to run
 
@@ -402,9 +404,9 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
       ret.volume = properties.result;
     }
 
-    if(players.result.length > 0){
-      //something is playing
-      ret.activePlayer = players.result[0].playerid;
+    if(players.result.length > 0 || forceFull){
+      //something is playing or forced
+      ret.activePlayer = (players.result[0] !== undefined ? players.result[0].playerid : 0);
 
       app.state = 'playing';
 
@@ -425,7 +427,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
         ret.player = item[0].result;
 
         // update the item if full payload
-        if(forceFull){
+        if(players.result.length > 0 && forceFull){
           ret.item = item[1].result.item;
           ret.item.list = 'xbmc';
         }

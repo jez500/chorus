@@ -122,8 +122,9 @@ app.VideoController.removePlaylistPosition = function(position, callback ){
  *  new playlist position
  *  @param callback
  */
-app.VideoController.playlistSwap = function(pos1, pos2, callback){
-  app.playlists.playlistSwap(app.VideoController.playlistId, 'movieid', pos1, pos2, callback);
+app.VideoController.playlistSwap = function(pos1, pos2, callback, modelType){
+  var idField = (modelType == 'movie' ? 'movieid' : 'episodeid');
+  app.playlists.playlistSwap(app.VideoController.playlistId, idField, pos1, pos2, callback);
 };
 
 

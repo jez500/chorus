@@ -37,24 +37,15 @@ app.PlaylistView = Backbone.View.extend({
     // reload thumbsup
     app.playlists.getThumbsUp();
 
-    // bind others
-    $(window).bind('playlistUpdate', this.playlistBinds());
-
     // make and prepend tabs
     $tabs.append('<li class="player-audio' + (plId === 0 ? ' active' : '') + '">Audio</li>');
     $tabs.append('<li class="player-video' + (plId == 1 ? ' active' : '') + '">Video</li>');
 
     this.$el.prepend($tabs);
-
     this.$el.addClass('plid-' + plId);
 
-    return this;
-  },
-
-  playlistBinds:function(){
-
     //sortable
-    $sortable = $( "ul.playlist");
+    $sortable = $( "ul.playlist", this.$el);
     $sortable.sortable({
       placeholder: "playlist-item-placeholder",
       handle: ".playlist-play",
@@ -65,6 +56,7 @@ app.PlaylistView = Backbone.View.extend({
       }
     }).disableSelection();
 
+    return this;
   },
 
   viewAudio:function(e){

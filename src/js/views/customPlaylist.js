@@ -292,11 +292,11 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
   events: {
     "dblclick .song-title": "loadSong",
-    "click .song-play":     "loadSong",
+    "click .song-play":     "playSong",
     "click .song-add":      "addSong",
     "click .song-thumbsup": "thumbsUp",
     "click .song-remove":   "removeSong",
-    "click .song-menu":   "menu",
+    "click .song-menu":   "menu"
   },
 
 
@@ -330,7 +330,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
    * @param e
    */
   menu: function(){
-    app.helpers.makeDropdown( app.helpers.menuDialog('song', this.model.attributes ));
+    app.helpers.menuDialog( app.helpers.menuTemplates('song',this.model.attributes));
   },
 
 

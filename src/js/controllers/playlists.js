@@ -273,7 +273,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
   var $thisItem = $(ui.item[0]).find('div.playlist-item'),
     changed = {},
     $sortable = $thisItem.closest("ul.playlist"),
-    type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio');
+    type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio'),
+    modelType = $thisItem.data('type');
 
   //loop over each playlist item to see what (if any has changed)
   $sortable.find('div.playlist-item').each(function(i,d){
@@ -289,7 +290,7 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     var controller = (type == 'audio' ? app.AudioController : app.VideoController);
     controller.playlistSwap(changed.from, changed.to, function(res){
       controller.playlistRender();
-    });
+    }, modelType);
   }
 };
 
@@ -848,11 +849,8 @@ app.playlists.renderXbmcPlaylist = function(playlistId, callback){
 
     if(!app.notifications.wsActive){
       app.AudioController.getNowPlayingSong(function(data){
-
         //update shell to now playing info
         app.shellView.updateState(data);
-        //rebind controls to playlist after refresh
-        app.playlistView.playlistBinds(this);
       });
     }
 

@@ -25,15 +25,15 @@ app.playerStateView = Backbone.View.extend({
     this.$songs = $('.song');
 
     // enrich
-    data.playingItemChanged = (lastPlaying != data.item.file);
-    data.status = (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status);
+    data.playingItemChanged = (data.item !== undefined && lastPlaying != data.item.file);
+    data.status = (data.player === undefined ? 'stopped' : (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status));
     app.state = data.status;
 
     // resave model
     app.cached.nowPlaying = data;
 
     // set current as last playing var
-    app.helpers.varSet('lastPlaying', data.item.file);
+    app.helpers.varSet('lastPlaying', (data.item !== undefined ? data.item.file : null));
 
     // body classes
     this.bodyClasses();
@@ -75,6 +75,14 @@ app.playerStateView = Backbone.View.extend({
   bodyClasses:function () {
 
     var data = app.cached.nowPlaying;
+
+    // player was stopped on page load
+    if(data.player === undefined){
+      data.player = {
+        shuffled: false,
+        repeat: 'off'
+      };
+    }
 
     this.$body
       // remove all old classes and list the options in use
@@ -236,6 +244,8 @@ app.playerStateView = Backbone.View.extend({
     var $time = $('#time');
     $time.find('.time-cur').html('0');
     $time.find('.time-total').html('0:00');
+    // ensure volume set
+    app.shellView.$volumeSlider.slider( "value",data.volume.volume );
   },
 
 

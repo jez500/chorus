@@ -157,7 +157,7 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
       var list = app.playlists.getThumbsUp(options.name);
 
       // no further parsing if empty
-      if(list === null || list.length === 0){
+      if(list === undefined || list === null || list.length === 0){
         return {items: []};
       }
 
