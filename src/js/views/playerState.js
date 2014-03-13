@@ -200,7 +200,7 @@ app.playerStateView = Backbone.View.extend({
     this.$songs.each(function(i,d){
       var $d = $(d);
       // correct song id
-      if($d.attr('data-songid') == data.item.id && !$d.hasClass('playlist-item')){
+      if(data.item !== undefined && $d.attr('data-songid') == data.item.id && !$d.hasClass('playlist-item')){
         $d.addClass('playing-row');
       } else if($d.hasClass('playlist-item')){
 

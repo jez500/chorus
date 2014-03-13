@@ -183,7 +183,13 @@ $(document).ready(function(){
    *  Alphabetical sort callback
    */
   app.helpers.aphabeticalSort = function(a,b){
-    var nameA=a.toLowerCase(), nameB=b.toLowerCase();
+    
+    var nameA=a, nameB=b;
+    if(typeof a == 'string'){
+      nameA=a.toLowerCase();
+      nameB=b.toLowerCase();
+    }
+
     if (nameA < nameB){ //sort string ascending
       return -1;
     }

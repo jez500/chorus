@@ -408,6 +408,15 @@ app.TvSeasonListView = Backbone.View.extend({
 
     this.$el.empty();
 
+    // sort by episode or season
+    this.model.models.sort(function(a,b){
+      if(a.attributes.episodeid !== ''){
+        return app.helpers.aphabeticalSort(a.attributes.episode, b.attributes.episode);
+      } else {
+        return app.helpers.aphabeticalSort( a.attributes.season, b.attributes.season);
+      }
+    });
+
     // append results
     _.each(this.model.models, function (season) {
       season.attributes.type = (season.attributes.episodeid !== '' ? 'episode' : 'season');
@@ -450,6 +459,13 @@ app.TvSeasonListItemView = Backbone.View.extend({
    * @returns {TvshowListItemView}
    */
   render:function () {
+    var m = this.model.attributes,
+      isEp = (m.type == 'episode');
+
+    // toggle subtext based on type
+    m.subText = (isEp ? 'Episode ' + m.episode : m.episode + ' Episodes');
+    m.label = (isEp && m.title !== '' ? m.title : m.label);
+    // render
     this.$el.html(this.template(this.model.attributes));
     return this;
   },

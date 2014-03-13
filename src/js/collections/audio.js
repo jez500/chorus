@@ -531,9 +531,15 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
   };
 
-  /*
+
+
+
+  /**
    * Grab artist songs and parse them into albums
    * Will attempt to pull from cache first
+   *
+   *
+   * @TODO: Clean this up!
    */
   this.getAlbums = function(id, type, callback){
     var data = {}, albums = [], self = this, key = type + id, filter = type + 'id', plural = type + 's';

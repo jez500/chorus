@@ -43,10 +43,10 @@
     @include breakpoint($width-tablet){
       height: $height-logo;
       width: $width-header;
-      font-size: 20px;
+      font-size: 18px;
       span {
-        margin-top: 48px;
-        margin-left: 0;
+        margin-top: 59px;
+        margin-left: 14px;
       }
     }
   }

@@ -888,7 +888,6 @@ app.Router = Backbone.Router.extend({
       // lazyload
       app.helpers.triggerContentLazy();
 
-      console.log(collection);
     }});
 
   },
@@ -976,8 +975,6 @@ app.Router = Backbone.Router.extend({
 
     tv.fetch({
       success: function (data) {
-
-        console.log(season, data);
 
         // force ep view
         data.attributes.type = 'episode';
