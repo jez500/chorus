@@ -362,11 +362,12 @@ app.Router = Backbone.Router.extend({
       backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
     } else {
       // xbmc playing image
-      backstretchImage = (data === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
+      backstretchImage = (data === undefined || data.item === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
     }
 
     // Add Backstretch it doesnt exist
     if($('.backstretch').length === 0){
+      console.log(backstretchImage);
       // on initial page load this will be empty but if playing, state will be updated onPlay
       var fa = app.parseImage(backstretchImage, 'fanart');
       $.backstretch(fa);
@@ -907,7 +908,6 @@ app.Router = Backbone.Router.extend({
     tv.fetch({
       success: function (data) {
 
-        console.log(data);
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
         app.helpers.setTitle( data.attributes.label);

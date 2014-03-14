@@ -21,6 +21,10 @@ a {
   text-decoration: none;
   color: $color-midnight-blue;
   color: $color-wet-asphalt;
+  outline: none;
+  &:focus {
+    outline: none;
+  }
 }
 h2, h3, h4 {
   font-weight: normal;

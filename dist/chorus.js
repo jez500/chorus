@@ -13977,7 +13977,13 @@ $(document).ready(function(){
    *  Alphabetical sort callback
    */
   app.helpers.aphabeticalSort = function(a,b){
-    var nameA=a.toLowerCase(), nameB=b.toLowerCase();
+    
+    var nameA=a, nameB=b;
+    if(typeof a == 'string'){
+      nameA=a.toLowerCase();
+      nameB=b.toLowerCase();
+    }
+
     if (nameA < nameB){ //sort string ascending
       return -1;
     }
@@ -15384,11 +15390,12 @@ app.Router = Backbone.Router.extend({
       backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
     } else {
       // xbmc playing image
-      backstretchImage = (data === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
+      backstretchImage = (data === undefined || data.item === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
     }
 
     // Add Backstretch it doesnt exist
     if($('.backstretch').length === 0){
+      console.log(backstretchImage);
       // on initial page load this will be empty but if playing, state will be updated onPlay
       var fa = app.parseImage(backstretchImage, 'fanart');
       $.backstretch(fa);
@@ -15910,7 +15917,6 @@ app.Router = Backbone.Router.extend({
       // lazyload
       app.helpers.triggerContentLazy();
 
-      console.log(collection);
     }});
 
   },
@@ -15930,7 +15936,6 @@ app.Router = Backbone.Router.extend({
     tv.fetch({
       success: function (data) {
 
-        console.log(data);
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
         app.helpers.setTitle( data.attributes.label);
@@ -15998,8 +16003,6 @@ app.Router = Backbone.Router.extend({
 
     tv.fetch({
       success: function (data) {
-
-        console.log(season, data);
 
         // force ep view
         data.attributes.type = 'episode';
@@ -17422,7 +17425,7 @@ app.audioStreaming = {
       app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
       song = app.cached.nowPlaying.item;
-      app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'xbmc');
+      app.helpers.applyBackstretch((song !== undefined && song.fanart !== undefined ? song.fanart : ''), 'xbmc');
     }
 
     // Switch to Local Player
@@ -20870,9 +20873,15 @@ app.MemoryStore = function (successCallback, errorCallback) {
 
   };
 
-  /*
+
+
+
+  /**
    * Grab artist songs and parse them into albums
    * Will attempt to pull from cache first
+   *
+   *
+   * @TODO: Clean this up!
    */
   this.getAlbums = function(id, type, callback){
     var data = {}, albums = [], self = this, key = type + id, filter = type + 'id', plural = type + 's';
@@ -22984,7 +22993,7 @@ app.playerStateView = Backbone.View.extend({
     this.$songs.each(function(i,d){
       var $d = $(d);
       // correct song id
-      if($d.attr('data-songid') == data.item.id && !$d.hasClass('playlist-item')){
+      if(data.item !== undefined && $d.attr('data-songid') == data.item.id && !$d.hasClass('playlist-item')){
         $d.addClass('playing-row');
       } else if($d.hasClass('playlist-item')){
 
@@ -24732,6 +24741,15 @@ app.TvSeasonListView = Backbone.View.extend({
 
     this.$el.empty();
 
+    // sort by episode or season
+    this.model.models.sort(function(a,b){
+      if(a.attributes.episodeid !== ''){
+        return app.helpers.aphabeticalSort(a.attributes.episode, b.attributes.episode);
+      } else {
+        return app.helpers.aphabeticalSort( a.attributes.season, b.attributes.season);
+      }
+    });
+
     // append results
     _.each(this.model.models, function (season) {
       season.attributes.type = (season.attributes.episodeid !== '' ? 'episode' : 'season');
@@ -24774,6 +24792,13 @@ app.TvSeasonListItemView = Backbone.View.extend({
    * @returns {TvshowListItemView}
    */
   render:function () {
+    var m = this.model.attributes,
+      isEp = (m.type == 'episode');
+
+    // toggle subtext based on type
+    m.subText = (isEp ? 'Episode ' + m.episode : m.episode + ' Episodes');
+    m.label = (isEp && m.title !== '' ? m.title : m.label);
+    // render
     this.$el.html(this.template(this.model.attributes));
     return this;
   },

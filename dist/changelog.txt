@@ -1,3 +1,9 @@
+Version 0.3.0
+- Updated icon, added fanart and screenshots
+- Minor style fixes and removed some debugging
+- Updated license.txt and add addon.xml ready for official add-on repo
+
+
 Version 0.2.8:
 - Bug fix: playlist sorting works again
 - Bug fix: video playlist sort switching episodes with movies

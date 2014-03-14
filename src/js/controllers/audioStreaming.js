@@ -144,7 +144,7 @@ app.audioStreaming = {
       app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
       song = app.cached.nowPlaying.item;
-      app.helpers.applyBackstretch((song.fanart !== undefined ? song.fanart : ''), 'xbmc');
+      app.helpers.applyBackstretch((song !== undefined && song.fanart !== undefined ? song.fanart : ''), 'xbmc');
     }
 
     // Switch to Local Player

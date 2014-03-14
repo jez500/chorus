@@ -7,7 +7,7 @@
   height: 50px;
   width: $width-header;
   background: #FDFDFD;
-  z-index: 501;
+  z-index: 10;
   overflow: hidden;
   @include breakpoint($width-tablet){
     z-index: 5;
@@ -41,6 +41,15 @@
 
     }
     @include breakpoint($width-tablet){
+      height: $height-logo;
+      width: $width-header;
+      font-size: 18px;
+      span {
+        margin-top: 62px;
+        margin-left: 18px;
+      }
+    }
+    @include breakpoint($width-small){
       height: $height-logo;
       width: $width-header;
       font-size: 18px;
@@ -576,7 +585,11 @@ body.home {
   #sidebar-second {
     @include transition(0.3s all ease-in);
     background: rgba(255,255,255,0.75);
-    width: $home-sidebar-width;
+    left: $width-header;
+    @include breakpoint($width-tablet){
+      left: auto;
+      width: $home-sidebar-width;
+    }
     .playlist div.playlist-item.playing-row {
       //background-color: $color-mist;
     }
@@ -592,7 +605,11 @@ body.home {
   }
   #search-box {
     @include transition(0.3s all ease-in);
-    right: $home-sidebar-width;
+    left: $width-header;
+    @include breakpoint($width-tablet){
+      left: auto;
+      right: $home-sidebar-width;
+    }
     #search {
       background: rgba(255, 255, 255, 0.5);
       &:hover,
@@ -602,11 +619,16 @@ body.home {
       }
     }
   }
+  #footer .footer-right {
+    left: $width-header;
+  }
   #header {
     background: rgba(235, 236, 236, 0.84);
   }
   #page-header {
-    background: none;
+    @include breakpoint($width-tablet){
+      background: none;
+    }
   }
 }
 
