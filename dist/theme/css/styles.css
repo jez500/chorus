@@ -4892,34 +4892,61 @@ ul.video-list li .card .actions-wrapper .movie-play {
   bottom: 9px;
   font-size: 190%;
 }
-/* line 8, ../../../src/theme/sass/components/_video.scss */
+/* line 66, ../../../src/theme/sass/_mixins.scss */
+ul.video-list li .card.watched-progress .video-progress span,
+ul.video-list li .card.watched-progress .video-progress {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  display: block;
+}
+/* line 72, ../../../src/theme/sass/_mixins.scss */
+ul.video-list li .card.watched-progress .video-progress span span,
+ul.video-list li .card.watched-progress .video-progress span {
+  background: #e67e22;
+}
+/* line 76, ../../../src/theme/sass/_mixins.scss */
+ul.video-list li .card.watched-progress .video-progress {
+  margin-top: -5px;
+  position: relative;
+  z-index: 5;
+}
+/* line 82, ../../../src/theme/sass/_mixins.scss */
+ul.video-list li .card.watched-yes {
+  opacity: 0.5;
+}
+/* line 84, ../../../src/theme/sass/_mixins.scss */
+ul.video-list li .card.watched-yes:hover {
+  opacity: 1;
+}
+/* line 9, ../../../src/theme/sass/components/_video.scss */
 ul.video-list li.next-page {
   display: none;
 }
 
-/* line 15, ../../../src/theme/sass/components/_video.scss */
+/* line 16, ../../../src/theme/sass/components/_video.scss */
 .section-movies #sidebar-first {
   display: none;
 }
-/* line 18, ../../../src/theme/sass/components/_video.scss */
+/* line 19, ../../../src/theme/sass/components/_video.scss */
 .section-movies #main {
   margin-left: 50px;
 }
-/* line 21, ../../../src/theme/sass/components/_video.scss */
+/* line 22, ../../../src/theme/sass/components/_video.scss */
 .section-movies .nav {
   margin-bottom: 0;
 }
-/* line 24, ../../../src/theme/sass/components/_video.scss */
+/* line 25, ../../../src/theme/sass/components/_video.scss */
 .section-movies #content {
   padding-top: 9px;
 }
 
 /** SEARCH *******************/
-/* line 32, ../../../src/theme/sass/components/_video.scss */
+/* line 33, ../../../src/theme/sass/components/_video.scss */
 #search-movies {
   overflow: hidden;
 }
-/* line 34, ../../../src/theme/sass/components/_video.scss */
+/* line 35, ../../../src/theme/sass/components/_video.scss */
 #search-movies .card {
   width: 170px;
   min-width: 170px;
@@ -4947,28 +4974,28 @@ ul.video-list li.next-page {
 }
 
 /** MOVIE *******************/
-/* line 46, ../../../src/theme/sass/components/_video.scss */
+/* line 47, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #page-header h1 a,
 .section-movie #page-header h1 a {
   width: auto;
   padding-right: 17px;
 }
-/* line 50, ../../../src/theme/sass/components/_video.scss */
+/* line 51, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #sidebar-first,
 .section-movie #sidebar-first {
   display: none;
 }
-/* line 53, ../../../src/theme/sass/components/_video.scss */
+/* line 54, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .backstretch,
 .section-movie .backstretch {
   background: #fff;
 }
-/* line 55, ../../../src/theme/sass/components/_video.scss */
+/* line 56, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .backstretch img,
 .section-movie .backstretch img {
   opacity: 0.2;
 }
-/* line 60, ../../../src/theme/sass/components/_video.scss */
+/* line 61, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side,
 .section-movie .video-side {
   padding: 10px;
@@ -4980,26 +5007,26 @@ ul.video-list li.next-page {
   display: none;
 }
 @media (min-width: 800px) {
-  /* line 60, ../../../src/theme/sass/components/_video.scss */
+  /* line 61, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .video-side,
   .section-movie .video-side {
     display: block;
   }
 }
-/* line 71, ../../../src/theme/sass/components/_video.scss */
+/* line 72, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .video-thumb,
 .section-movie .video-side .video-thumb {
   padding: 5px;
   background: rgba(255, 255, 255, 0.7);
   position: relative;
 }
-/* line 75, ../../../src/theme/sass/components/_video.scss */
+/* line 76, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .video-thumb img,
 .section-movie .video-side .video-thumb img {
   width: 100%;
   max-width: 230px;
 }
-/* line 81, ../../../src/theme/sass/components/_video.scss */
+/* line 82, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .actions-wrapper,
 .section-movie .video-side .actions-wrapper {
   position: absolute;
@@ -5028,24 +5055,24 @@ ul.video-list li.next-page {
 .section-movie .video-side .actions-wrapper:hover {
   opacity: 1;
 }
-/* line 87, ../../../src/theme/sass/components/_video.scss */
+/* line 88, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .actions-wrapper .actions,
 .section-movie .video-side .actions-wrapper .actions {
   float: right;
 }
-/* line 90, ../../../src/theme/sass/components/_video.scss */
+/* line 91, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .actions-wrapper .btn,
 .section-movie .video-side .actions-wrapper .btn {
   opacity: 0.7;
 }
-/* line 92, ../../../src/theme/sass/components/_video.scss */
+/* line 93, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .actions-wrapper .btn:focus, .section-tvshow .video-side .actions-wrapper .btn:hover,
 .section-movie .video-side .actions-wrapper .btn:focus,
 .section-movie .video-side .actions-wrapper .btn:hover {
   background: none;
   opacity: 1;
 }
-/* line 98, ../../../src/theme/sass/components/_video.scss */
+/* line 99, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .actions-wrapper .tvshow-play,
 .section-tvshow .video-side .actions-wrapper .movie-play,
 .section-movie .video-side .actions-wrapper .tvshow-play,
@@ -5055,7 +5082,7 @@ ul.video-list li.next-page {
   left: 15px;
   font-size: 250%;
 }
-/* line 106, ../../../src/theme/sass/components/_video.scss */
+/* line 107, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .video-side .actions-wrapper .thumbs-up .tvshow-thumbsup,
 .section-tvshow .video-side .actions-wrapper .thumbs-up .movie-thumbsup,
 .section-movie .video-side .actions-wrapper .thumbs-up .tvshow-thumbsup,
@@ -5063,24 +5090,24 @@ ul.video-list li.next-page {
   color: #e67e22;
 }
 @media (min-width: 1360px) {
-  /* line 60, ../../../src/theme/sass/components/_video.scss */
+  /* line 61, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .video-side,
   .section-movie .video-side {
     top: 51px;
     left: 50px;
     width: 279px;
   }
-  /* line 116, ../../../src/theme/sass/components/_video.scss */
+  /* line 117, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .video-side .video-thumb,
   .section-movie .video-side .video-thumb {
     padding: 10px;
   }
-  /* line 118, ../../../src/theme/sass/components/_video.scss */
+  /* line 119, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .video-side .video-thumb img,
   .section-movie .video-side .video-thumb img {
     max-width: 240px;
   }
-  /* line 122, ../../../src/theme/sass/components/_video.scss */
+  /* line 123, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .video-side .actions-wrapper,
   .section-movie .video-side .actions-wrapper {
     position: absolute;
@@ -5092,35 +5119,35 @@ ul.video-list li.next-page {
   }
 }
 @media (min-width: 1700px) {
-  /* line 60, ../../../src/theme/sass/components/_video.scss */
+  /* line 61, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .video-side,
   .section-movie .video-side {
     width: 400px;
   }
-  /* line 128, ../../../src/theme/sass/components/_video.scss */
+  /* line 129, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .video-side .video-thumb img,
   .section-movie .video-side .video-thumb img {
     max-width: 400px;
   }
 }
-/* line 133, ../../../src/theme/sass/components/_video.scss */
+/* line 134, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .tab-pane,
 .section-movie .tab-pane {
   padding: 15px;
 }
 @media (min-width: 1700px) {
-  /* line 133, ../../../src/theme/sass/components/_video.scss */
+  /* line 134, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .tab-pane,
   .section-movie .tab-pane {
     padding: 15px 25px;
   }
 }
-/* line 145, ../../../src/theme/sass/components/_video.scss */
+/* line 146, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #movie-cast,
 .section-movie #movie-cast {
   overflow: hidden;
 }
-/* line 148, ../../../src/theme/sass/components/_video.scss */
+/* line 149, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .cast-member,
 .section-movie .cast-member {
   background: rgba(255, 255, 255, 0.69);
@@ -5130,7 +5157,7 @@ ul.video-list li.next-page {
   color: #3b3f40;
 }
 @media (min-width: 800px) {
-  /* line 148, ../../../src/theme/sass/components/_video.scss */
+  /* line 149, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .cast-member,
   .section-movie .cast-member {
     float: left;
@@ -5139,7 +5166,7 @@ ul.video-list li.next-page {
   }
 }
 @media (min-width: 1360px) {
-  /* line 148, ../../../src/theme/sass/components/_video.scss */
+  /* line 149, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .cast-member,
   .section-movie .cast-member {
     margin: 0 1% 10px 0;
@@ -5147,14 +5174,14 @@ ul.video-list li.next-page {
   }
 }
 @media (min-width: 1700px) {
-  /* line 148, ../../../src/theme/sass/components/_video.scss */
+  /* line 149, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow .cast-member,
   .section-movie .cast-member {
     margin-right: 1%;
     width: 24%;
   }
 }
-/* line 167, ../../../src/theme/sass/components/_video.scss */
+/* line 168, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .cast-member .image,
 .section-movie .cast-member .image {
   width: 60px;
@@ -5167,7 +5194,7 @@ ul.video-list li.next-page {
   margin-top: 0;
   max-height: none;
 }
-/* line 178, ../../../src/theme/sass/components/_video.scss */
+/* line 179, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .cast-member strong,
 .section-movie .cast-member strong {
   display: block;
@@ -5178,7 +5205,7 @@ ul.video-list li.next-page {
   height: 18px;
   overflow: hidden;
 }
-/* line 187, ../../../src/theme/sass/components/_video.scss */
+/* line 188, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .cast-member span,
 .section-movie .cast-member span {
   font-size: 90%;
@@ -5190,7 +5217,7 @@ ul.video-list li.next-page {
   margin-right: 5px;
   line-height: 15px;
 }
-/* line 199, ../../../src/theme/sass/components/_video.scss */
+/* line 200, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #fanart-background,
 .section-movie #fanart-background {
   position: fixed;
@@ -5200,60 +5227,60 @@ ul.video-list li.next-page {
   top: 0;
 }
 @media (min-width: 800px) {
-  /* line 199, ../../../src/theme/sass/components/_video.scss */
+  /* line 200, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow #fanart-background,
   .section-movie #fanart-background {
     right: 260px;
   }
 }
 @media (min-width: 1360px) {
-  /* line 199, ../../../src/theme/sass/components/_video.scss */
+  /* line 200, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow #fanart-background,
   .section-movie #fanart-background {
     right: 360px;
   }
 }
-/* line 212, ../../../src/theme/sass/components/_video.scss */
+/* line 213, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details,
 .section-movie #details {
   max-width: 1205px;
 }
 @media (min-width: 1700px) {
-  /* line 212, ../../../src/theme/sass/components/_video.scss */
+  /* line 213, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow #details,
   .section-movie #details {
     margin-left: 130px;
   }
 }
-/* line 217, ../../../src/theme/sass/components/_video.scss */
+/* line 218, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .video-tab-wrapper,
 .section-movie #details .video-tab-wrapper {
   margin: 48px 0px 0 0px;
 }
 @media (min-width: 1360px) {
-  /* line 217, ../../../src/theme/sass/components/_video.scss */
+  /* line 218, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow #details .video-tab-wrapper,
   .section-movie #details .video-tab-wrapper {
     margin: 59px 90px 0 0px;
   }
 }
-/* line 223, ../../../src/theme/sass/components/_video.scss */
+/* line 224, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .content-actions,
 .section-movie #details .content-actions {
   top: -41px;
 }
-/* line 226, ../../../src/theme/sass/components/_video.scss */
+/* line 227, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper,
 .section-movie #details .tab-wrapper {
   background: rgba(246, 246, 246, 0.82);
   position: relative;
 }
-/* line 230, ../../../src/theme/sass/components/_video.scss */
+/* line 231, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper .content-tabs,
 .section-movie #details .tab-wrapper .content-tabs {
   background: none;
 }
-/* line 233, ../../../src/theme/sass/components/_video.scss */
+/* line 234, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper .library-pager,
 .section-movie #details .tab-wrapper .library-pager {
   position: absolute;
@@ -5264,27 +5291,27 @@ ul.video-list li.next-page {
   margin: 0px;
 }
 @media (min-width: 1360px) {
-  /* line 233, ../../../src/theme/sass/components/_video.scss */
+  /* line 234, ../../../src/theme/sass/components/_video.scss */
   .section-tvshow #details .tab-wrapper .library-pager,
   .section-movie #details .tab-wrapper .library-pager {
     right: 0;
     top: -52px;
   }
 }
-/* line 244, ../../../src/theme/sass/components/_video.scss */
+/* line 245, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper .library-pager a,
 .section-movie #details .tab-wrapper .library-pager a {
   padding: 8px 0px;
   color: rgba(85, 85, 85, 0.36);
 }
-/* line 249, ../../../src/theme/sass/components/_video.scss */
+/* line 250, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper .nav-tabs,
 .section-movie #details .tab-wrapper .nav-tabs {
   position: absolute;
   margin-top: -48px;
   font-weight: bold;
 }
-/* line 253, ../../../src/theme/sass/components/_video.scss */
+/* line 254, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper .nav-tabs li a,
 .section-movie #details .tab-wrapper .nav-tabs li a {
   border: none;
@@ -5299,7 +5326,7 @@ ul.video-list li.next-page {
   background: rgba(255, 255, 255, 0.3);
   text-align: center;
 }
-/* line 262, ../../../src/theme/sass/components/_video.scss */
+/* line 263, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper .nav-tabs li.active a:hover,
 .section-tvshow #details .tab-wrapper .nav-tabs li.active a,
 .section-movie #details .tab-wrapper .nav-tabs li.active a:hover,
@@ -5307,19 +5334,19 @@ ul.video-list li.next-page {
   background: rgba(246, 246, 246, 0.82) !important;
   font-size: 17px;
 }
-/* line 267, ../../../src/theme/sass/components/_video.scss */
+/* line 268, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow #details .tab-wrapper .nav-tabs li:hover a,
 .section-movie #details .tab-wrapper .nav-tabs li:hover a {
   background: rgba(255, 255, 255, 0.5) !important;
   color: #444;
 }
-/* line 276, ../../../src/theme/sass/components/_video.scss */
+/* line 277, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .tab-pane,
 .section-movie .tab-pane {
   font-size: 14px;
   line-height: 20px;
 }
-/* line 282, ../../../src/theme/sass/components/_video.scss */
+/* line 283, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .content-tabs .nav-tabs > li > a,
 .section-tvshow .content-tabs a,
 .section-tvshow .content-tabs .btn,
@@ -5328,7 +5355,7 @@ ul.video-list li.next-page {
 .section-movie .content-tabs .btn {
   color: #555;
 }
-/* line 286, ../../../src/theme/sass/components/_video.scss */
+/* line 287, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .content-tabs .nav-tabs > li > a:hover,
 .section-tvshow .content-tabs a:hover,
 .section-tvshow .content-tabs .btn:hover,
@@ -5337,19 +5364,19 @@ ul.video-list li.next-page {
 .section-movie .content-tabs .btn:hover {
   color: #999;
 }
-/* line 290, ../../../src/theme/sass/components/_video.scss */
+/* line 291, ../../../src/theme/sass/components/_video.scss */
 .section-tvshow .content-tabs a:hover,
 .section-movie .content-tabs a:hover {
   color: #eee;
 }
 
-/* line 297, ../../../src/theme/sass/components/_video.scss */
+/* line 298, ../../../src/theme/sass/components/_video.scss */
 #movie-watch p {
   font-size: 14px;
   color: #777;
 }
 
-/* line 309, ../../../src/theme/sass/components/_video.scss */
+/* line 310, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-1,
 #tvshow-detail .col-1,
 #movie-watch .col-1,
@@ -5357,7 +5384,7 @@ ul.video-list li.next-page {
   margin-bottom: 20px;
 }
 @media (min-width: 800px) {
-  /* line 309, ../../../src/theme/sass/components/_video.scss */
+  /* line 310, ../../../src/theme/sass/components/_video.scss */
   #tv-watch .col-1,
   #tvshow-detail .col-1,
   #movie-watch .col-1,
@@ -5370,7 +5397,7 @@ ul.video-list li.next-page {
   }
 }
 @media (min-width: 800px) {
-  /* line 317, ../../../src/theme/sass/components/_video.scss */
+  /* line 318, ../../../src/theme/sass/components/_video.scss */
   #tv-watch .col-2,
   #tvshow-detail .col-2,
   #movie-watch .col-2,
@@ -5382,7 +5409,7 @@ ul.video-list li.next-page {
     clear: none;
   }
 }
-/* line 324, ../../../src/theme/sass/components/_video.scss */
+/* line 325, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating,
 #tvshow-detail .col-2 .rating,
 #movie-watch .col-2 .rating,
@@ -5391,7 +5418,7 @@ ul.video-list li.next-page {
   overflow: hidden;
   height: 70px;
 }
-/* line 328, ../../../src/theme/sass/components/_video.scss */
+/* line 329, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating .fa-star,
 #tv-watch .col-2 .rating .value,
 #tvshow-detail .col-2 .rating .fa-star,
@@ -5406,7 +5433,7 @@ ul.video-list li.next-page {
   color: rgba(43, 47, 48, 0.56);
   float: right;
 }
-/* line 336, ../../../src/theme/sass/components/_video.scss */
+/* line 337, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating .fa-star,
 #tvshow-detail .col-2 .rating .fa-star,
 #movie-watch .col-2 .rating .fa-star,
@@ -5414,7 +5441,7 @@ ul.video-list li.next-page {
   font-size: 50px;
   color: rgba(43, 47, 48, 0.3);
 }
-/* line 340, ../../../src/theme/sass/components/_video.scss */
+/* line 341, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating .votes,
 #tvshow-detail .col-2 .rating .votes,
 #movie-watch .col-2 .rating .votes,
@@ -5424,7 +5451,7 @@ ul.video-list li.next-page {
   font-size: 13px;
   margin: 5px 0;
 }
-/* line 347, ../../../src/theme/sass/components/_video.scss */
+/* line 348, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 h4,
 #tvshow-detail .col-2 h4,
 #movie-watch .col-2 h4,
@@ -5434,35 +5461,35 @@ ul.video-list li.next-page {
   padding-right: 7px;
 }
 
-/* line 361, ../../../src/theme/sass/components/_video.scss */
+/* line 362, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul {
   padding-right: 15px;
   text-align: right;
   padding-bottom: 6px;
 }
-/* line 365, ../../../src/theme/sass/components/_video.scss */
+/* line 366, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul li {
   font-size: 14px;
   color: rgba(70, 70, 70, 0.8);
 }
-/* line 368, ../../../src/theme/sass/components/_video.scss */
+/* line 369, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul li strong {
   text-transform: uppercase;
   padding-left: 9px;
 }
-/* line 372, ../../../src/theme/sass/components/_video.scss */
+/* line 373, ../../../src/theme/sass/components/_video.scss */
 .sub-block ul li small {
   font-size: 12px;
   color: rgba(68, 68, 68, 0.36);
 }
 
-/* line 380, ../../../src/theme/sass/components/_video.scss */
+/* line 381, ../../../src/theme/sass/components/_video.scss */
 #seasons {
   overflow: hidden;
   padding-bottom: 20px;
   margin-right: -10px;
 }
-/* line 393, ../../../src/theme/sass/components/_video.scss */
+/* line 394, ../../../src/theme/sass/components/_video.scss */
 #seasons h3 {
   color: rgba(53, 53, 53, 0.28);
   margin: 0;
@@ -5470,15 +5497,15 @@ ul.video-list li.next-page {
   padding: 0 0 6px 5px;
   font-size: 17px;
 }
-/* line 399, ../../../src/theme/sass/components/_video.scss */
+/* line 400, ../../../src/theme/sass/components/_video.scss */
 #seasons h3 a {
   color: rgba(53, 53, 53, 0.45);
 }
-/* line 403, ../../../src/theme/sass/components/_video.scss */
+/* line 404, ../../../src/theme/sass/components/_video.scss */
 #seasons ul.video-list {
   margin: 0;
 }
-/* line 406, ../../../src/theme/sass/components/_video.scss */
+/* line 407, ../../../src/theme/sass/components/_video.scss */
 #seasons ul.video-list li .card {
   width: 149px;
   min-width: 149px;
@@ -5505,7 +5532,34 @@ ul.video-list li.next-page {
   bottom: 9px;
   font-size: 190%;
 }
-/* line 415, ../../../src/theme/sass/components/_video.scss */
+/* line 66, ../../../src/theme/sass/_mixins.scss */
+#seasons ul.video-list li .card.watched-progress .video-progress span,
+#seasons ul.video-list li .card.watched-progress .video-progress {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  display: block;
+}
+/* line 72, ../../../src/theme/sass/_mixins.scss */
+#seasons ul.video-list li .card.watched-progress .video-progress span span,
+#seasons ul.video-list li .card.watched-progress .video-progress span {
+  background: #e67e22;
+}
+/* line 76, ../../../src/theme/sass/_mixins.scss */
+#seasons ul.video-list li .card.watched-progress .video-progress {
+  margin-top: -5px;
+  position: relative;
+  z-index: 5;
+}
+/* line 82, ../../../src/theme/sass/_mixins.scss */
+#seasons ul.video-list li .card.watched-yes {
+  opacity: 0.5;
+}
+/* line 84, ../../../src/theme/sass/_mixins.scss */
+#seasons ul.video-list li .card.watched-yes:hover {
+  opacity: 1;
+}
+/* line 416, ../../../src/theme/sass/components/_video.scss */
 #seasons.episodes ul.video-list li .card {
   width: 228px;
   min-width: 228px;
@@ -5536,7 +5590,7 @@ ul.video-list li.next-page {
   outline: #D7DCDD solid medium;
 }
 
-/* line 424, ../../../src/theme/sass/components/_video.scss */
+/* line 425, ../../../src/theme/sass/components/_video.scss */
 #tvshow-detail {
   overflow: hidden;
 }

@@ -4,6 +4,7 @@ ul.video-list {
     .card {
       @include card('poster');
       float: left;
+      @include watched-style;
     }
     &.next-page {
       display: none;
@@ -404,8 +405,8 @@ ul.video-list {
     margin: 0;
     li {
       .card {
-       @include card('poster-mini');
-
+        @include card('poster-mini');
+        @include watched-style;
       }
     }
   }

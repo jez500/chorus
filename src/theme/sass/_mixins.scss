@@ -60,3 +60,30 @@
   top: $gutter; bottom: $gutter;
   margin: auto;
 }
+
+@mixin watched-style {
+  &.watched-progress {
+    .video-progress span,
+    .video-progress {
+      height: 5px;
+      background: rgba(255,255,255,0.5);
+      width: 100%;
+      display: block;
+      span {
+        background: $color-carrot;
+      }
+    }
+    .video-progress {
+      margin-top: -5px;
+      position: relative;
+      z-index: 5;
+    }
+  }
+  &.watched-yes {
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+}

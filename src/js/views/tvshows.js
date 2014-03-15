@@ -124,8 +124,10 @@ app.TvshowListItemView = Backbone.View.extend({
     if(!model.label){
       return this;
     }
-    model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
 
+    model.watched = app.VideoController.watchedStatus(model);
+    model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
+    console.log(model);
     this.$el.html(this.template(model));
 
     return this;
@@ -462,11 +464,19 @@ app.TvSeasonListItemView = Backbone.View.extend({
     var m = this.model.attributes,
       isEp = (m.type == 'episode');
 
+    m.watched = app.VideoController.watchedStatus(m);
+
+
+    console.log(m);
+
     // toggle subtext based on type
     m.subText = (isEp ? 'Episode ' + m.episode : m.episode + ' Episodes');
     m.label = (isEp && m.title !== '' ? m.title : m.label);
+
+
     // render
-    this.$el.html(this.template(this.model.attributes));
+    this.$el.html(this.template(m));
+
     return this;
   },
 

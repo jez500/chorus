@@ -120,6 +120,9 @@ app.MovieListItemView = Backbone.View.extend({
     if(!model.label){
       return this;
     }
+
+    model.type = 'movie';
+    model.watched = app.VideoController.watchedStatus(model);
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     this.$el.html(this.template(model));

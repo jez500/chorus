@@ -257,3 +257,52 @@ app.VideoController.tvshowPlay = function(model, callback){
   });
 
 };
+
+
+
+
+/**
+ * Gets / Normalises watched status
+ *
+ * @param m
+ *  tvshow or tv season model
+ */
+app.VideoController.watchedStatus = function(m){
+
+  var watched = {
+    status: 'no', // no, yes, progress
+    progress: 0
+  };
+
+  switch(m.type){
+
+    case 'movie':
+    case 'episode':
+      // in progress
+      if(m.resume.position !== 0){
+        watched.status = 'progress';
+        watched.progress = Math.round( ( m.resume.position / m.resume.total ) * 100 );
+      } else {
+        // watched
+        if(m.playcount > 0){
+          watched.status = 'yes';
+        }
+      }
+      break;
+
+    case 'season':
+    case 'tvshow':
+      // season, with watched episodes
+      if(m.watchedepisodes > 0){
+        if(m.watchedepisodes == m.episode){
+          watched.status = 'yes';
+        } else {
+          watched.status = 'progress';
+          watched.progress = Math.round( ( m.watchedepisodes / m.episode ) * 100 );
+        }
+      }
+      break;
+  }
+
+  return watched;
+};
