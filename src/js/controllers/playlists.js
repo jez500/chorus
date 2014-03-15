@@ -912,3 +912,44 @@ app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
 
   });
 };
+
+
+/**
+ * Gets the current now playing cache, will not do a lookup
+ * @param key
+ */
+app.playlists.getNowPlaying = function(key){
+
+  // A empty shell of what should be populated
+  var model = {
+    activePlayer: 0,
+    status: "notPlaying",
+    playingItemChanged: false,
+    volume: {
+      volume: 50,
+      muted: false
+    },
+    player: {
+      repeat: "off",
+      shuffled: false
+    },
+    item: {
+      thumbnail: '', fanart: '', id: 0, label: 'Nothing Playing', songid: 0, episodeid: 0, album: '', albumid: 'file', file: '', duration: 0, type: 'song'
+    }
+  };
+
+  // get cache
+  var data = app.cached.nowPlaying;
+  if(data !== undefined){
+    // update model with cache
+    model = $.extend(model, data);
+  }
+
+  // return key or all
+  if(key !== undefined){
+    return model[key];
+  } else {
+    return model;
+  }
+
+};

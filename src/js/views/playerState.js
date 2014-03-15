@@ -18,15 +18,15 @@ app.playerStateView = Backbone.View.extend({
   render:function () {
 
     // get model
-    var data = app.cached.nowPlaying,
+    var data = app.playlists.getNowPlaying(),
       $window = $(window),
       lastPlaying = app.helpers.varGet('lastPlaying', '');
 
     this.$songs = $('.song');
 
     // enrich
-    data.playingItemChanged = (data.item !== undefined && lastPlaying != data.item.file);
-    data.status = (data.player === undefined ? 'stopped' : (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status));
+    data.playingItemChanged = (lastPlaying != data.item.file);
+    data.status = (data.status == 'notPlaying' ? 'stopped' : (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status));
     app.state = data.status;
 
     // resave model

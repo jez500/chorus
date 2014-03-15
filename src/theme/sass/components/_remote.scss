@@ -39,10 +39,10 @@ $dark-bg: #262b2a;
   z-index: 501;
   @include breakpoint($width-tablet){
     width: $width-sidebar-first;
-    bottom: $height-footer + 14;
+    bottom: $height-footer;
   }
   @include breakpoint($width-small){
-    bottom: $height-footer + 34;
+    bottom: $height-footer;
   }
   .fa {
     background: $dark-bg;

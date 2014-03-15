@@ -109,7 +109,7 @@ app.notifications = {
 
       // eg. shuffled, repeat, partymode
       case 'Player.OnPropertyChanged':
-        app.cached.nowPlaying.player = $.extend(app.cached.nowPlaying.player, data.params.data.property);
+        app.cached.nowPlaying.player = $.extend(app.playlists.getNowPlaying('player'), data.params.data.property);
         self.updateState();
         break;
 
@@ -135,7 +135,6 @@ app.notifications = {
 
       // volume change
       case 'Application.OnVolumeChanged':
-        console.log(data.params.data);
         app.cached.nowPlaying.volume = data.params.data;
         self.updateState();
         break;
@@ -197,7 +196,7 @@ app.notifications = {
   * update the player state based ion current app.cached.nowPlaying data
   */
   updateState: function(){
-    app.shellView.updateState(app.cached.nowPlaying);
+    app.shellView.updateState( app.playlists.getNowPlaying() );
   },
 
 
