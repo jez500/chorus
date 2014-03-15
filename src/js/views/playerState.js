@@ -156,15 +156,15 @@ app.playerStateView = Backbone.View.extend({
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')")
-      .attr('title', data.item.album)
-      .attr('href', '#album/' + data.item.albumid);
+      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')");
 
     if(app.cached.nowPlaying.activePlayer == 1){
-      this.$nowPlaying.find('#playing-thumb').attr('href', '#' + data.item.type + '/' + data.item.albumid);
+      this.$nowPlaying.find('#playing-thumb').attr("#remote"); //('href', '#' + data.item.type + '/' + data.item.albumid);
     }
     // set title
-    $('.playing-song-title').html(data.item.label); //now playing
+    $('.playing-song-title').html(data.item.label)
+      .attr('title', data.item.album)
+      .attr('href', '#album/' + data.item.albumid); //now playing
 
 
     // Backstretch
@@ -179,6 +179,8 @@ app.playerStateView = Backbone.View.extend({
         $.backstretch(newImg);
       }
     }
+
+    $('.playing-fanart').css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
 
     // refresh playlist
     if(app.cached.nowPlaying.activePlayer === 0){

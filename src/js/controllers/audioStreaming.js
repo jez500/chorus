@@ -249,6 +249,9 @@ app.audioStreaming = {
     } else {
       // append new models to original collection
       collection = app.audioStreaming.playList.items;
+      if(collection.models === undefined){
+        collection.models = [];
+      }
       $.each(newCollection.models, function(i,d){
         collection.models.push(d);
       });

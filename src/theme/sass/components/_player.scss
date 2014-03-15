@@ -165,10 +165,25 @@
       height: 50px;
       display: block;
     }
+    .fa {
+      background: rgba(0, 0, 0, 0.5);
+      width: 70px;
+      height: 70px;
+      line-height: 70px;
+      text-align: center;
+      color: #DDD;
+      font-size: 24px;
+      display: none;
+    }
     @include breakpoint($width-tablet){
       width: $height-footer;
       margin-top: -1px;
-      height: $height-footer; 
+      height: $height-footer;
+      &:hover {
+        .fa {
+          display: block;
+        }
+      }
       img {
         height: $height-footer;
       }
@@ -463,6 +478,16 @@ body {
       .fa-volume-up {
         display: inline;
         color: #eee;
+      }
+    }
+  }
+
+  &.section-remote {
+    #footer {
+      #now-playing .song-image {
+        .fa-chevron-up {
+          display: none;
+        }
       }
     }
   }

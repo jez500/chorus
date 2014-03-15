@@ -66,7 +66,7 @@
     ul {
       li {
         text-align: center;
-        font-size: 19px;
+        font-size: 16px;
         a {
           color: $color-asbestos;
           display: block;
@@ -84,6 +84,13 @@
     }
     @include breakpoint($width-tablet){
       margin-top: $height-logo + 10;
+    }
+    @include breakpoint($width-small){
+      ul {
+        li {
+          font-size: 19px;
+        }
+      }
     }
   }
 }
@@ -225,6 +232,12 @@ body.fixed-header {
       line-height: 49px;
       font-size: 1.5em;
       cursor: pointer;
+      a {
+        color: #ccc;
+        &:hover {
+          color: #fff;
+        }
+      }
     }
   }
   @include breakpoint($width-tablet){
@@ -766,7 +779,7 @@ body {
   }
 
   // mobile-menu toggles
-  &.ss-open {
+  &.section-playlists {
     #sidebar-second {
       display: block;
     }
@@ -782,12 +795,24 @@ body {
       color: #fff !important;
     }
   }
-  &.search-open {
+  &.section-search {
     #search-box {
       display: block;
     }
     .toggle-search {
       color: #fff !important;
+    }
+    #content {
+      padding-top: 52px;
+      @include breakpoint($width-tablet){
+        padding-top: 0;
+      }
+    }
+    #sidebar-first {
+      top: 102px;
+      @include breakpoint($width-tablet){
+        top: 50px;
+      }
     }
   }
 

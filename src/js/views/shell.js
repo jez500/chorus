@@ -92,6 +92,8 @@ app.ShellView = Backbone.View.extend({
       app.notifications.init();
     }, true);
 
+    // render remote
+    this.$el.append(new app.RemoteView().render().$el);
 
     return this;
   },
@@ -110,6 +112,7 @@ app.ShellView = Backbone.View.extend({
     "click .player-mute": "playerMute",
     "click .player-repeat": "playerRepeat",
     "click .player-random": "playerRandom",
+    "click .song-image": "remoteControl",
     // tabs
     "click .playlist-primary-tab": "primaryTabClick",
     // menu
@@ -291,7 +294,16 @@ app.ShellView = Backbone.View.extend({
     app.AudioController.sendPlayerCommand('Player.SetShuffle', 'toggle');
   },
 
-
+  // toggle remote
+  remoteControl: function(e){
+    if(app.helpers.arg(0) == 'remote'){
+      e.preventDefault();
+      // same as using the back button
+      window.history.back();
+    } else {
+      document.location = '#remote';
+    }
+  },
 
   //mute
   playerMute:function(){

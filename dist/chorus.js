@@ -15312,7 +15312,8 @@ $(document).ready(function(){
     "MovieView",
     "TvshowListItemView",
     "TvSeasonListItemView",
-    "TvshowView"
+    "TvshowView",
+    "RemoteView"
   ],
 
   tpl: {} // for templates that are lazy loaded
@@ -15333,6 +15334,7 @@ app.Router = Backbone.Router.extend({
     "albums":               "albums",
     "playlist/:id":         "playlist",
     "search/:q":            "search",
+    "search":               "searchLanding",
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
@@ -15344,7 +15346,9 @@ app.Router = Backbone.Router.extend({
     "tvshow/:id":           "tvshow",
     "tvshow/:tvid/:seas":   "season",
     "tvshow/:tv/:s/:e":     "episode",
-    "xbmc/:op":             "xbmc"
+    "xbmc/:op":             "xbmc",
+    "remote":               "remoteControl",
+    "playlists":            "playlists"
   },
 
 
@@ -15413,6 +15417,18 @@ app.Router = Backbone.Router.extend({
    $('#search').val(q);
    app.shellView.search(q);
   },
+
+
+
+  /**
+   * Start Search
+   * @param q
+   */
+  searchLanding: function (q) {
+    this.$content.html('<div class="loading-box">Type to search</div>');
+    app.shellView.selectMenuItem('search', 'no-sidebar');
+  },
+
 
 
   /**
@@ -15623,7 +15639,20 @@ app.Router = Backbone.Router.extend({
   },
 
 
+  /**
+   * playlists
+   * @param type
+   */
+  playlists: function(id){
+    app.helpers.setTitle('Playlists');
+    // set menu
+    app.shellView.selectMenuItem('playlists', 'no-sidebar');
+  },
 
+
+  /**
+   * Thumbs up page
+   */
   thumbsup: function(){
 
     var $content = $('#content'),
@@ -16023,6 +16052,16 @@ app.Router = Backbone.Router.extend({
     });
 
   },
+
+
+  remoteControl: function(){
+    // set title
+    app.helpers.setTitle('Remote');
+    // set menu
+    app.shellView.selectMenuItem('remote', 'no-sidebar');
+
+  },
+
 
   /**
    * Scan for music
@@ -17530,6 +17569,9 @@ app.audioStreaming = {
     } else {
       // append new models to original collection
       collection = app.audioStreaming.playList.items;
+      if(collection.models === undefined){
+        collection.models = [];
+      }
       $.each(newCollection.models, function(i,d){
         collection.models.push(d);
       });
@@ -19466,8 +19508,7 @@ app.xbmcController = {};
  */
 app.xbmcController.command = function(command, options, callback, errorCallback){
 
-  $.jsonRPC.request(command, {
-    params: options,
+  var settings = {
     success: function(result) {
       if(callback){
         callback(result);
@@ -19479,8 +19520,27 @@ app.xbmcController.command = function(command, options, callback, errorCallback)
         errorCallback([result, options]);
       }
     }
-  });
+  };
 
+  if(options !== undefined && options.length > 0){
+    settings.params = options;
+  }
+
+  $.jsonRPC.request(command, settings);
+
+};
+
+
+/**
+ * Call an input command
+ * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Input
+ *
+ * @param type
+ * @param callback
+ * @param errorCallback
+ */
+app.xbmcController.input = function(type, callback, errorCallback){
+  app.xbmcController.command('Input.'+ type, [], callback, errorCallback);
 };
 
 
@@ -22949,15 +23009,15 @@ app.playerStateView = Backbone.View.extend({
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')")
-      .attr('title', data.item.album)
-      .attr('href', '#album/' + data.item.albumid);
+      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')");
 
     if(app.cached.nowPlaying.activePlayer == 1){
-      this.$nowPlaying.find('#playing-thumb').attr('href', '#' + data.item.type + '/' + data.item.albumid);
+      this.$nowPlaying.find('#playing-thumb').attr("#remote"); //('href', '#' + data.item.type + '/' + data.item.albumid);
     }
     // set title
-    $('.playing-song-title').html(data.item.label); //now playing
+    $('.playing-song-title').html(data.item.label)
+      .attr('title', data.item.album)
+      .attr('href', '#album/' + data.item.albumid); //now playing
 
 
     // Backstretch
@@ -22972,6 +23032,8 @@ app.playerStateView = Backbone.View.extend({
         $.backstretch(newImg);
       }
     }
+
+    $('.playing-fanart').css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
 
     // refresh playlist
     if(app.cached.nowPlaying.activePlayer === 0){
@@ -23389,7 +23451,67 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
 
 
 
-;/**
+;app.RemoteView = Backbone.View.extend({
+
+  tagName:'div',
+
+  className:'xbmc-remote-wrapper',
+
+  initialize:function () {
+
+  },
+
+  events: {
+    "click .input-button": "inputButton",
+    "click .player-button": "playerButton"
+  },
+
+  render:function () {
+
+    var vars = {
+      playing: false,
+      item: {}
+    };
+    this.$el.html(this.template(vars));
+
+    var data = app.cached.nowPlaying;
+    if(data !== undefined && data.item !== undefined  && data.item.fanart !== undefined){
+      $('.playing-fanart', this.$el).css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
+    }
+
+    $('.fa', this.$el).disableSelection();
+
+    return this;
+  },
+
+
+  /**
+   * Send Input based on the 'type' data attribute
+   * @param e
+   */
+  inputButton:function (e) {
+    var $el = $(e.target),
+      type = $el.data('type');
+    app.xbmcController.input(type);
+  },
+
+  /**
+   * Send PlayerCommand based on the 'type' data attribute
+   * @param e
+   */
+  playerButton:function (e) {
+    var $el = $(e.target),
+      type = $el.data('type');
+
+    switch(type){
+      case 'Stop':
+        app.xbmcController.command('Player.Stop', [app.cached.nowPlaying.activePlayer]);
+        break;
+    }
+
+  }
+
+});;/**
  * Search view
  *
  * @type {*|void|Object|extend|extend|extend}
@@ -23839,6 +23961,8 @@ app.searchView = Backbone.View.extend({
       app.notifications.init();
     }, true);
 
+    // render remote
+    this.$el.append(new app.RemoteView().render().$el);
 
     return this;
   },
@@ -23857,6 +23981,7 @@ app.searchView = Backbone.View.extend({
     "click .player-mute": "playerMute",
     "click .player-repeat": "playerRepeat",
     "click .player-random": "playerRandom",
+    "click .song-image": "remoteControl",
     // tabs
     "click .playlist-primary-tab": "primaryTabClick",
     // menu
@@ -24038,7 +24163,16 @@ app.searchView = Backbone.View.extend({
     app.AudioController.sendPlayerCommand('Player.SetShuffle', 'toggle');
   },
 
-
+  // toggle remote
+  remoteControl: function(e){
+    if(app.helpers.arg(0) == 'remote'){
+      e.preventDefault();
+      // same as using the back button
+      window.history.back();
+    } else {
+      document.location = '#remote';
+    }
+  },
 
   //mute
   playerMute:function(){

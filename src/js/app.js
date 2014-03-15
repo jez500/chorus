@@ -284,7 +284,8 @@ var app = {
     "MovieView",
     "TvshowListItemView",
     "TvSeasonListItemView",
-    "TvshowView"
+    "TvshowView",
+    "RemoteView"
   ],
 
   tpl: {} // for templates that are lazy loaded
@@ -305,6 +306,7 @@ app.Router = Backbone.Router.extend({
     "albums":               "albums",
     "playlist/:id":         "playlist",
     "search/:q":            "search",
+    "search":               "searchLanding",
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
@@ -316,7 +318,9 @@ app.Router = Backbone.Router.extend({
     "tvshow/:id":           "tvshow",
     "tvshow/:tvid/:seas":   "season",
     "tvshow/:tv/:s/:e":     "episode",
-    "xbmc/:op":             "xbmc"
+    "xbmc/:op":             "xbmc",
+    "remote":               "remoteControl",
+    "playlists":            "playlists"
   },
 
 
@@ -385,6 +389,18 @@ app.Router = Backbone.Router.extend({
    $('#search').val(q);
    app.shellView.search(q);
   },
+
+
+
+  /**
+   * Start Search
+   * @param q
+   */
+  searchLanding: function (q) {
+    this.$content.html('<div class="loading-box">Type to search</div>');
+    app.shellView.selectMenuItem('search', 'no-sidebar');
+  },
+
 
 
   /**
@@ -595,7 +611,20 @@ app.Router = Backbone.Router.extend({
   },
 
 
+  /**
+   * playlists
+   * @param type
+   */
+  playlists: function(id){
+    app.helpers.setTitle('Playlists');
+    // set menu
+    app.shellView.selectMenuItem('playlists', 'no-sidebar');
+  },
 
+
+  /**
+   * Thumbs up page
+   */
   thumbsup: function(){
 
     var $content = $('#content'),
@@ -995,6 +1024,16 @@ app.Router = Backbone.Router.extend({
     });
 
   },
+
+
+  remoteControl: function(){
+    // set title
+    app.helpers.setTitle('Remote');
+    // set menu
+    app.shellView.selectMenuItem('remote', 'no-sidebar');
+
+  },
+
 
   /**
    * Scan for music
