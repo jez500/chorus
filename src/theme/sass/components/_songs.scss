@@ -6,8 +6,8 @@
   .list-actions {
     position: absolute;
     z-index: 50;
-    top: -42px;
-    right: 260px;
+    top: -52px;
+    right: 10px;
     .btn {
       padding: 6px 13px;
       margin-right: 3px;
@@ -38,7 +38,7 @@
         top: 3px;
 
         background: #f1f1f1;
-        z-index: 5;
+        z-index: 0;
         color: #999;
         margin: 0;
         float: left;

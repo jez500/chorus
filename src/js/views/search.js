@@ -22,8 +22,6 @@ app.searchView = Backbone.View.extend({
 
   /**
    * Render based on key in the model
-   * this is all a bit messy and could be refined
-   *
    */
   render:function () {
 

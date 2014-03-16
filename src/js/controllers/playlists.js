@@ -798,6 +798,14 @@ app.playlists.isThumbsUp = function(type, id){
 };
 
 
+/**
+ * Is there any thumbsup?
+ * @returns {boolean}
+ */
+app.playlists.isAnyThumbsUp = function(){
+  var tu = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
+  return (tu !== null);
+};
 
 /**
  * XBMC Playlist

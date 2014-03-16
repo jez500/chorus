@@ -412,7 +412,7 @@ $(document).ready(function(){
     var wall = new freewall(selector);
     wall.reset({
       selector: 'li',
-      animate: true,
+      animate: false,
       cellW: 170,
       cellH: '230',
       onResize: function() {
@@ -431,7 +431,7 @@ $(document).ready(function(){
     var wall = new freewall(selector);
     wall.reset({
       selector: 'li',
-      animate: true,
+      animate: false,
       cellW: 170,
       cellH: '305',
       onResize: function() {

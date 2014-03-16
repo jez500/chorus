@@ -116,7 +116,14 @@ app.xbmcController.entityLoadMultiple = function(type, items, callback){
       id: 'movieid',
       returnKey: 'moviedetails',
       fields: app.movieFields
+    },
+    tvshow: {
+      method: 'VideoLibrary.GetTVShowDetails',
+      id: 'tvshowid',
+      returnKey: 'tvshowdetails',
+      fields: app.tvshowFields
     }
+
   };
 
 

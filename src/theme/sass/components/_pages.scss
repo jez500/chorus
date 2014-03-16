@@ -110,10 +110,6 @@
   }
 }
 
-.search-results-content {
-  padding: 5px 10px $height-footer;
-}
-
 .album-small-row {
   position: relative;
 }
@@ -122,6 +118,13 @@
 .landing-page {
   padding-top: 5px;
   padding-left: 5px;
+}
+
+.help-page {
+  padding: 50px 40px;
+  .entity-heading {
+    height: auto;
+  }
 }
 
 // xbmc pages

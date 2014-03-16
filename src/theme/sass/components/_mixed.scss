@@ -13,6 +13,7 @@ $mixed-poster-h: 252px;
 $mixed-poster-base-h: 55px;
 
 .mixed-wrapper {
+  padding: 5px 10px $height-footer;
   .card.card-large,
   .card {
     @include card-resize($mixed-item-w, ($mixed-item-h + $mixed-item-base-h), $mixed-item-h);
@@ -22,6 +23,14 @@ $mixed-poster-base-h: 55px;
     .card {
       @include card('poster');
     }
+  }
+  .song-list {
+    padding: 5px;
+  }
+  &:after {
+    content: "";
+    clear: both;
+    display: block;
   }
 }
 
