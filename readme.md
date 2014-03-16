@@ -1,7 +1,7 @@
 # Chorus
-A nice web ui for XBMC, focused on user experience.
-Browse your music, movies or tv shows from the comfort of your own web browser.
-You can play media via XBMC or stream it in your browser.
+A nice Web UI for your XBMC. Browse your Music, Movies or TV Shows from the comfort of your
+own web browser. You can play media via XBMC or stream it in your browser. Works best with Chrome
+but plays well with most modern browsers.
 
 Used by the [Doghouse Media Team](http://dhmedia.com.au) to control the shared office music box
 (an old pc running XBMC with chorus, plugged into an amp and a nas)
@@ -53,8 +53,8 @@ If you have a large library (20000+ songs), some things get a bit sluggish, espe
 if either client or server are low power (eg. not a pc).
 
 ## Target Device
-This is really tailored for a fairly large screen, it downsizes nicely to about 1200px wide.
-Mobile it is useless at the moment, but a possibility for the future.
+Chorus resizes nicely to fit on almost any screen. This is still a work in progress and some functionality is not
+yet responsive.
 
 
 ## Stream music from your XBMC library into your browser ##

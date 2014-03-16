@@ -247,11 +247,17 @@ app.VideoController.tvshowPlay = function(model, callback){
 
       // xbmc player
       app.playlists.changePlaylistView('xbmc');
+
       // play first pos
-      console.log('playing 0');
       app.VideoController.playPlaylistPosition(0, function(data){
-        //callback
-        callback();
+
+        // if in progress, seek to that position
+        if(model.resume !== undefined && model.resume.position > 0){
+          app.VideoController.seek( Math.round((model.resume.position / model.resume.total) * 100), callback );
+        } else {
+          //callback - play, no seek
+          callback();
+        }
       });
     });
   });
@@ -259,6 +265,16 @@ app.VideoController.tvshowPlay = function(model, callback){
 };
 
 
+/**
+ * Seek curently playing to a percentage
+ */
+app.VideoController.seek = function(position, callback ){
+  app.xbmcController.command('Player.Seek', [app.VideoController.playlistId, position], function(result){
+    if(app.helpers.exists(callback)){
+      callback(result.result); // return items
+    }
+  });
+};
 
 
 /**

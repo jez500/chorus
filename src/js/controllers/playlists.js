@@ -617,12 +617,12 @@ app.playlists.replaceCustomPlayList = function(listId, items){
   // thumbs up - only songs are sortable
   if(listId == 'thumbsup'){
 
-    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
-
-    lists.song = {items: items};
-
-    // Save
-    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
+//    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
+//
+//    lists.song = {items: items};
+//
+//    // Save
+//    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
 
     return;
   }

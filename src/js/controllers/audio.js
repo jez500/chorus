@@ -369,7 +369,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
 
   // fields to get
   var fields = {
-    item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
+    item: app.playlistItemFields,
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
   var ret = {'status':'notPlaying'},

@@ -144,6 +144,19 @@ app.playerStateView = Backbone.View.extend({
     $time.find('.time-cur').html(cur);
     $time.find('.time-total').html(dur);
 
+    // If episode is playing, remove cache so watched status is updated
+    if(data.item.type == 'episode'){
+      var key;
+      key = 'episodes:' + data.item.tvshowid + ':' + data.item.season;
+      if(app.stores.TvEpisodes !== undefined && app.stores.TvEpisodes[key] !== undefined){
+        delete app.stores.TvEpisodes[key];
+      }
+      key = 'seasons:' + data.item.tvshowid;
+      if(app.stores.TvSeasons !== undefined && app.stores.TvSeasons[key] !== undefined){
+        delete app.stores.TvSeasons[key];
+      }
+    }
+
   },
 
 
