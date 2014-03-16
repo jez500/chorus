@@ -49,8 +49,6 @@ app.TvshowListView = Backbone.View.extend({
 
     this.$el.empty();
 
-    console.log(this.model);
-
     // append results
     _.each(this.model.models, function (tvshow) {
       this.$el.append(new app.TvshowListItemView({model:tvshow}).render().el);
@@ -129,7 +127,7 @@ app.TvshowListItemView = Backbone.View.extend({
 
     model.watched = app.VideoController.watchedStatus(model);
     model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
-    console.log(model);
+
     this.$el.html(this.template(model));
 
     return this;

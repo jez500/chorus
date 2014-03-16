@@ -58,8 +58,15 @@ app.searchView = Backbone.View.extend({
         movie: function(){
         // search movies
           self.searchMovies(key);
+        },
+        addon: function(){
+          // search movies
+          self.searchAddOns(key);
         }
       };
+
+      // update view
+      self.mixedView.addEntity('addon');
 
       // update view
       self.mixedView.setCallbacks(callbacks);
@@ -67,8 +74,6 @@ app.searchView = Backbone.View.extend({
       //empty content as we append
       var $content = $('#content'),
         $el = this.mixedView.render().$el ;
-
-      $el.find('.search-results-content').append('<div id="search-addons"></div>');
 
       // Render view
       $content.html( $el );
