@@ -60,7 +60,8 @@ app.searchView = Backbone.View.extend({
           self.searchMovies(key);
         },
         addon: function(){
-          // search movies
+          // search addons
+          $('#search-addons').empty();
           self.searchAddOns(key);
         }
       };
