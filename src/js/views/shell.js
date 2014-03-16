@@ -197,7 +197,7 @@ app.ShellView = Backbone.View.extend({
     $('#search').keyup(function () {
       clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
       app.cached.keyupTimeout = setTimeout(function(){
-        document.location = '#search/' + $('#search').val();
+        document.location = '#search/' + encodeURIComponent( $('#search').val() );
       }, keyDelay);
     });
 

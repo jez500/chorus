@@ -182,6 +182,7 @@
   position: relative;
   font-weight: 300;
   cursor: default;
+  @include watched-style;
 
   .image {
     display: block;

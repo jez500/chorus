@@ -1,0 +1,81 @@
+/**
+ * Targeted towards the MixedView that displays multiple entities.
+ */
+
+// square image
+$mixed-item-w: 170px;
+$mixed-item-h: 170px;
+$mixed-item-base-h: 55px;
+
+// poster image
+$mixed-poster-w: 170px;
+$mixed-poster-h: 252px;
+$mixed-poster-base-h: 55px;
+
+.mixed-wrapper {
+  .card.card-large,
+  .card {
+    @include card-resize($mixed-item-w, ($mixed-item-h + $mixed-item-base-h), $mixed-item-h);
+  }
+  .movie-list,
+  .tvshow-list {
+    .card {
+      @include card('poster');
+    }
+  }
+}
+
+.entity-heading {
+  background: #eee;
+  padding: 10px;
+  height: 35px;
+  line-height: 35px;
+  position: relative;
+  color: #777;
+  clear: both;
+  text-transform: capitalize;
+  margin: 5px 0 10px;
+  span {
+    color: $color-dark-xbmc;
+  }
+  &.can-click {
+    cursor: pointer;
+    &:hover {
+      background: #ddd;
+    }
+  }
+  &.has-results {
+    &:after {
+      content: "";
+      width: 0;
+      height: 0;
+      border: 8px solid rgba(0, 0, 0, 0);
+      border-top: 8px solid #EEE;
+      position: absolute;
+      bottom: -15px;
+      left: 19px;
+    }
+  }
+  &.no-result {
+    opacity: 0.5;
+  }
+  &.loading {
+    background: #FAFAFA image-url('loading-box-bg.jpg') 0 bottom repeat-x;
+    animation: wave 16s infinite linear;
+    -webkit-animation: wave 16s infinite linear;
+  }
+}
+
+.entity-icon {
+  float: left;
+  width: 45px;
+  line-height: 45px;
+  height: 45px;
+  text-align: center;
+  background: $color-light-slate;
+  color: $color-mist;
+  margin: -5px 10px -5px -5px;
+  font-size: 20px;
+  display: block;
+  padding: 0;
+}

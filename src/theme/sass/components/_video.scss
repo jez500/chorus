@@ -4,7 +4,7 @@ ul.video-list {
     .card {
       @include card('poster');
       float: left;
-      @include watched-style;
+
     }
     &.next-page {
       display: none;
@@ -26,19 +26,6 @@ ul.video-list {
     padding-top: 9px;
   }
 }
-
-
-/** SEARCH *******************/
-
-#search-movies {
-  overflow: hidden;
-  .card {
-    @include card('poster');
-    float: left;
-    margin: 0 8px 8px 0;
-  }
-}
-
 
 
 /** MOVIE *******************/

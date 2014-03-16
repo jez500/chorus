@@ -49,6 +49,8 @@ app.TvshowListView = Backbone.View.extend({
 
     this.$el.empty();
 
+    console.log(this.model);
+
     // append results
     _.each(this.model.models, function (tvshow) {
       this.$el.append(new app.TvshowListItemView({model:tvshow}).render().el);

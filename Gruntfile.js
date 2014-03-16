@@ -45,9 +45,11 @@ module.exports = function(grunt) {
           appPath + '/collections/audio.js',
           appPath + '/collections/files.js',
 
-
           // application views
-          appPath + '/views/*.js'
+          appPath + '/views/*.js',
+
+          // addons
+          appPath + '/addons/*.js'
 
         ],
         dest: 'dist/<%= pkg.name %>.js'
