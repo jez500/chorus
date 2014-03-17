@@ -224,6 +224,7 @@ var app = {
     "episode",
     "showtitle",
     "thumbnail",
+    "fanart",
     "file",
     "resume",
     "artistid",
@@ -371,7 +372,6 @@ app.Router = Backbone.Router.extend({
 
     // Add Backstretch it doesnt exist
     if($('.backstretch').length === 0){
-      console.log(backstretchImage);
       // on initial page load this will be empty but if playing, state will be updated onPlay
       var fa = app.parseImage(backstretchImage, 'fanart');
       $.backstretch(fa);

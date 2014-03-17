@@ -617,31 +617,32 @@ app.playlists.replaceCustomPlayList = function(listId, items){
   // thumbs up - only songs are sortable
   if(listId == 'thumbsup'){
 
-//    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
-//
-//    lists.song = {items: items};
-//
-//    // Save
-//    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
+    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
 
-    return;
-  }
+    lists.song = {items: items};
 
-  // Get a full list then update our specific list
-  listId = parseInt(listId);
-  lists = app.playlists.getCustomPlaylist();
+    // Save
+    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
 
-  if(items.length > 0){
-    for(var i in lists){
-      // if matching list, update
-      if(lists[i].id == listId){
-        lists[i].items = items;
+  } else {
+
+    // Get a full list then update our specific list
+    listId = parseInt(listId);
+    lists = app.playlists.getCustomPlaylist();
+
+    if(items.length > 0){
+      for(var i in lists){
+        // if matching list, update
+        if(lists[i].id == listId){
+          lists[i].items = items;
+        }
       }
     }
-  }
 
-  // Save
-  app.storageController.setStorage(app.playlists.storageKeyLists, lists);
+    // Save
+    app.storageController.setStorage(app.playlists.storageKeyLists, lists);
+
+  }
 
 };
 
@@ -675,7 +676,8 @@ app.playlists.getDropdown = function(){
 
   return app.helpers.makeDropdown({
     key: type,
-    items: items
+    items: items,
+    pull: 'right'
   });
 
 };

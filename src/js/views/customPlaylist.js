@@ -70,7 +70,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
       update: function( event, ui ) {
         var list = [],
           listId = app.helpers.arg(0) == 'thumbsup' ? 'thumbsup' : app.helpers.arg(1),
-          $container = $('ul.playlist-song-list');
+          $container = $('ul.playlist-song-list, ul.song-thumbsup-list');
 
         // recreate the list using the original list + pos to rebuild
         $container.find('div.playlist-item').each(function(i,d){

@@ -14206,7 +14206,7 @@ $(document).ready(function(){
     var wall = new freewall(selector);
     wall.reset({
       selector: 'li',
-      animate: true,
+      animate: false,
       cellW: 170,
       cellH: '230',
       onResize: function() {
@@ -14225,7 +14225,7 @@ $(document).ready(function(){
     var wall = new freewall(selector);
     wall.reset({
       selector: 'li',
-      animate: true,
+      animate: false,
       cellW: 170,
       cellH: '305',
       onResize: function() {
@@ -15252,6 +15252,7 @@ $(document).ready(function(){
     "episode",
     "showtitle",
     "thumbnail",
+    "fanart",
     "file",
     "resume",
     "artistid",
@@ -15376,7 +15377,7 @@ app.Router = Backbone.Router.extend({
   home: function () { //Not in use atm
 
     var backstretchImage = '',
-      data = app.cached.nowPlaying;
+      data = app.playlists.getNowPlaying();
 
     // empty content
     this.$content.html('');
@@ -15399,7 +15400,6 @@ app.Router = Backbone.Router.extend({
 
     // Add Backstretch it doesnt exist
     if($('.backstretch').length === 0){
-      console.log(backstretchImage);
       // on initial page load this will be empty but if playing, state will be updated onPlay
       var fa = app.parseImage(backstretchImage, 'fanart');
       $.backstretch(fa);
@@ -15427,6 +15427,7 @@ app.Router = Backbone.Router.extend({
   searchLanding: function (q) {
     this.$content.html('<div class="loading-box">Type to search</div>');
     app.shellView.selectMenuItem('search', 'no-sidebar');
+    $('#search').focus();
   },
 
 
@@ -15641,9 +15642,8 @@ app.Router = Backbone.Router.extend({
 
   /**
    * playlists
-   * @param type
    */
-  playlists: function(id){
+  playlists: function(){
     app.helpers.setTitle('Playlists');
     // set menu
     app.shellView.selectMenuItem('playlists', 'no-sidebar');
@@ -15655,52 +15655,10 @@ app.Router = Backbone.Router.extend({
    */
   thumbsup: function(){
 
-    var $content = $('#content'),
-      $sidebar = app.helpers.getFirstSidebarContent();
+    app.cached.thumbsUpPage = new app.ThumbsupView();
+    this.$content.html( app.cached.thumbsUpPage.render().$el );
 
-    // so we get things in the correct order, we have lots of sub wrappers for the different lists
-    $content.html('<div id="thumbs-up-page"><div id="tu-songs"></div></div>');
-    app.helpers.setFirstSidebarContent('<div id="tu-artists"></div><div id="tu-albums"></div>');
-
-    // set title
-    app.helpers.setTitle('<a href="#artists">Artists</a>Thumbs Up');
-
-    // set menu
-    app.shellView.selectMenuItem('thumbsup', 'sidebar');
-
-    // Song
-    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
-    app.cached.thumbsUpCollection.fetch({"name": 'song', "success": function(res){
-
-      // render
-      app.cached.customPlaylistSongListView = new app.CustomPlaylistSongListView({"model":res});
-      $('#tu-songs', $content).html(app.cached.customPlaylistSongListView.render().el);
-
-    }});
-
-    // Artist
-    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
-    app.cached.thumbsUpCollection.fetch({"name": 'artist', "success": function(res){
-
-      // add the sidebar view
-      app.cached.thumbsupArtists = new app.AristsListView({model: res, className: 'artist-thumbs-up'});
-      $('#tu-artists',$sidebar).html(app.cached.thumbsupArtists.render().el);
-      app.helpers.firstSidebarBinds();
-    }});
-
-    // Album
-    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
-    app.cached.thumbsUpCollection.fetch({"name": 'album', "success": function(res){
-
-      // render
-      app.cached.thumbsupAlbums = new app.SmallAlbumsList({model: res});
-      $('#tu-albums',$sidebar).html(app.cached.thumbsupAlbums.render().el)
-        .prepend('<h2 class="sidebar-title"><a href="#albums">Albums</a></h2>');
-      app.helpers.firstSidebarBinds();
-    }});
   },
-
-
 
 
   /**
@@ -16494,6 +16452,11 @@ app.Video = Backbone.Model.extend({
 ;/**
  * Framework for including functionality for addons
  * eg. soundcloud
+ *
+ * To include support for a new addon, copy ../addons/plugin.audio.soundcloud.js to ../addons/[your addon name].js
+ * and edit to suit your addon, it will get auto compiled but dev requires you add it to src/index.html manually
+ *
+ *
  * @type {{}}
  */
 
@@ -16612,239 +16575,7 @@ app.addOns.slug = function(addonObj){
  return addonObj.addonid.split('.').join('');
 };
 
-
-
-
-
-
-
-
-/*****************************************************************************
- * ADDONS BELOW
- * @TODO move to files
- ****************************************************************************/
-
-
-
-
-
-
-/***********************************************
- * Soundcloud
- ***********************************************/
-app.addOns.addon.pluginaudiosoundcloud = {
-
-  // the time to wait before sending keyboard commands
-  waitTime: 4000,
-
-  getAddon: function(){
-    return app.addOns.getAddon('pluginaudiosoundcloud');
-  },
-
-  getSearchPath: function(){
-    return 'plugin://plugin.audio.soundcloud/SearchTracks?url=plugin%3A%2F%2Fmusic%2FSoundCloud%2Ftracks%2Fsearch&oauth_token=&mode=13';
-  },
-
-  /**
-   * Parses a file record
-   * @param record
-   * @returns {*}
-   */
-  parseFileRecord: function(record){
-    // is a soundcloud url
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
-      // rewrite the url to contain the label
-      record.file = record.file.replace(
-        'plugin://plugin.audio.soundcloud/',
-        'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label)
-      );
-
-      /* // add an icon if none - doesn't look much better than default icons
-      if(typeof record.thumbnail == 'undefined' || record.thumbnail == ''){
-        var sc = app.addOns.getAddon('pluginaudiosoundcloud');
-        record.thumbnail = sc.thumbnail;
-      } */
-
-    }
-
-    return record;
-  },
-
-  /**
-   * Hook into file dir click
-   * @param record
-   * @returns {*}
-   */
-  clickDir: function(record){
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
-      if(record.title == 'Search'){
-
-        app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
-      }
-    }
-    return record;
-  },
-
-
-  /**
-   * Hook into post file row creation
-   * @param $el
-   * @param file
-   * @returns {*}
-   */
-  postProcessFileView: function($el, file){
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(file)){
-      var sc = app.addOns.addon.pluginaudiosoundcloud.getAddon();
-
-      // if root item for addon
-      if(file.file == sc.file){
-        var $actions = $('.file-actions', $el);
-
-        // replace play and add with search
-        $actions.html('<button class="btn" id="soundcloudSearch"><i class="icon-search"></i></button>');
-
-        // Bind
-        $('#soundcloudSearch', $actions).on('click', function(e){
-          e.stopPropagation();
-
-          // trigger search
-          app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
-          var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
-
-          app.cached.fileCollection = new app.FileCollection();
-          app.cached.fileCollection.fetch({"name":dir, "success": function(res){
-            // render page
-            app.cached.filesSearchView = new app.FilesView({"model":res}).render();
-          }});
-
-        });
-
-        // add class to show actions
-        $el.find('.file-item').addClass('show-actions');
-
-      }
-    }
-    return $el;
-  },
-
-  /**
-   * This adds soundcloud to the search page
-   * @param $el
-   * @param key
-   * @returns {*}
-   */
-  searchAddons: function($el, key){
-
-    var $nores = $('<div>', {class: 'addon-box', id: 'sc-search'}),
-      sc = app.addOns.addon.pluginaudiosoundcloud.getAddon(),
-      logo = '<img src="' + app.parseImage(sc.thumbnail) + '">',
-      $heading = $('<h3 class="search-heading">' + logo + 'SoundCloud search for: <span>' + key + '</span></h3>'),
-      cache = app.addOns.addon.pluginaudiosoundcloud.cache('get', key, false);
-
-    // add logo to heading
-
-    // if cache
-    if(cache !== false){
-      // just set results from cached view
-      $el.html(cache.render().$el);
-      $el.prepend($heading);
-    } else {
-      // no cache, do the search
-      $nores.append(logo + '<span>search soundcloud for: <strong>' + key + '</strong></span>');
-      $el.append($nores);
-
-      // click/search action
-      $('#sc-search', $el).on('click', function(){
-        // Loading
-        $el.html($('<strong>', {class: 'addon-box', text: 'Searching SoundCloud for ' + key}).prepend($(logo)));
-        // Callback
-        app.addOns.addon.pluginaudiosoundcloud.getSearchResults(key, function(view){
-          $el.html(view.render().$el);
-          // add heading
-          $el.prepend($heading);
-          // set cache
-          app.addOns.addon.pluginaudiosoundcloud.cache('set', key, view);
-        });
-      });
-    }
-
-    return $el;
-  },
-
-  /**
-   * Get and set cache, when get, data is default
-   * @param op
-   * @param key
-   * @param data
-   * @returns {*}
-   */
-  cache:function(op, key, data){
-    if(typeof app.cached.soundCloudSearch == 'undefined'){
-      app.cached.soundCloudSearch = {};
-    }
-    switch (op){
-      case 'get':
-        return (typeof app.cached.soundCloudSearch[key] == 'undefined' ? data : app.cached.soundCloudSearch[key]);
-      case 'set':
-        app.cached.soundCloudSearch[key] = data;
-        return app.cached.soundCloudSearch[key];
-    }
-  },
-
-
-  /**
-   * Search dialog
-   */
-  doSearchDialog: function(){
-    app.helpers.prompt('What do you want to search for?', function(text){
-      app.xbmcController.command('Input.SendText', [text], function(res){
-        // set title and notify
-        $('#folder-name').html('Search for "' + text + '"');
-        var msg = 'Searching for ' + text;
-        // set content while loading
-        $('#files-container').html('<div class="loading-box">'+msg+'</div>');
-      });
-    });
-  },
-
-
-  /**
-   * Get a soundcloud search result view
-   * @param query
-   */
-  getSearchResults: function(query, callback){
-
-    // get search directory
-    var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
-    app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":dir, "success": function(result){
-      // success only after text input complete which is flaky!
-      // return view
-      app.cached.fileListView = new app.FilesListView({model: result});
-      callback(app.cached.fileListView);
-    }});
-
-    // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
-    window.setTimeout(function(){
-      app.xbmcController.command('Input.SendText', [query], function(res){
-
-      });
-    }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
-
-  },
-
-
-  /**
-   * If soundcloud file record
-   * @param record
-   * @returns {*}
-   */
-  isSoundCloud: function(record){
-    return (record.file.indexOf('plugin.audio.soundcloud') != -1);
-  }
-
-
-};;
+;
 app.AudioController = {
 
   // playlist defaults
@@ -17045,7 +16776,7 @@ app.AudioController.playSongById = function(songid, type, id, clearList){
  */
 app.AudioController.insertAndPlaySong = function(type, id, callback){
 
-  var player = app.cached.nowPlaying.player,
+  var player = app.playlists.getNowPlaying('player'),
       playingPos = (typeof player.position != 'undefined' ? player.position : 0),
       pos = playingPos + 1,
       insert = {};
@@ -17053,7 +16784,7 @@ app.AudioController.insertAndPlaySong = function(type, id, callback){
   insert[type] = id;
 
   // if nothing is playing, we will clear the playlist first
-  if(app.cached.nowPlaying.status == 'notPlaying'){
+  if(app.playlists.getNowPlaying('status') == 'notPlaying'){
     // clear
     app.AudioController.playlistClear(function(){
       // insert
@@ -17099,7 +16830,7 @@ app.AudioController.downloadFile = function(file, callback){
  * Generic player command with to callback required
  */
 app.AudioController.sendPlayerCommand = function(command, param){
-  app.xbmcController.command(command, [ app.cached.nowPlaying.activePlayer, param], function(result){
+  app.xbmcController.command(command, [ app.playlists.getNowPlaying('activePlayer'), param], function(result){
     app.AudioController.updatePlayerState();
   });
 };
@@ -17129,7 +16860,7 @@ app.AudioController.removePlaylistPosition = function(position, callback ){
  * Seek curently playing to a percentage
  */
 app.AudioController.seek = function(position, callback ){
-  app.xbmcController.command('Player.Seek', [app.cached.nowPlaying.activePlayer, position], function(result){
+  app.xbmcController.command('Player.Seek', [app.playlists.getNowPlaying('activePlayer'), position], function(result){
     if(app.helpers.exists(callback)){
       callback(result.result); // return items
     }
@@ -17215,7 +16946,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
 
   // fields to get
   var fields = {
-    item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
+    item: app.playlistItemFields,
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
   var ret = {'status':'notPlaying'},
@@ -17283,7 +17014,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
 
         // callback
         if(callback){
-          callback(app.cached.nowPlaying);
+          callback( app.playlists.getNowPlaying() );
         }
 
       });
@@ -17292,7 +17023,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
 
       //nothing playing
       app.cached.nowPlaying = $.extend(app.cached.nowPlaying, ret);
-      callback(app.cached.nowPlaying);
+      callback( app.playlists.getNowPlaying() );
 
     }
 
@@ -17463,8 +17194,8 @@ app.audioStreaming = {
     if(player == 'xbmc'){
       app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
-      song = app.cached.nowPlaying.item;
-      app.helpers.applyBackstretch((song !== undefined && song.fanart !== undefined ? song.fanart : ''), 'xbmc');
+      song = app.playlists.getNowPlaying('item');
+      app.helpers.applyBackstretch(song.fanart, 'xbmc');
     }
 
     // Switch to Local Player
@@ -18171,7 +17902,7 @@ app.notifications = {
 
       // eg. shuffled, repeat, partymode
       case 'Player.OnPropertyChanged':
-        app.cached.nowPlaying.player = $.extend(app.cached.nowPlaying.player, data.params.data.property);
+        app.cached.nowPlaying.player = $.extend(app.playlists.getNowPlaying('player'), data.params.data.property);
         self.updateState();
         break;
 
@@ -18197,7 +17928,6 @@ app.notifications = {
 
       // volume change
       case 'Application.OnVolumeChanged':
-        console.log(data.params.data);
         app.cached.nowPlaying.volume = data.params.data;
         self.updateState();
         break;
@@ -18259,7 +17989,7 @@ app.notifications = {
   * update the player state based ion current app.cached.nowPlaying data
   */
   updateState: function(){
-    app.shellView.updateState(app.cached.nowPlaying);
+    app.shellView.updateState( app.playlists.getNowPlaying() );
   },
 
 
@@ -18899,12 +18629,12 @@ app.playlists.replaceCustomPlayList = function(listId, items){
   // thumbs up - only songs are sortable
   if(listId == 'thumbsup'){
 
-    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
-
-    lists.song = {items: items};
-
-    // Save
-    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
+//    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
+//
+//    lists.song = {items: items};
+//
+//    // Save
+//    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
 
     return;
   }
@@ -19080,6 +18810,14 @@ app.playlists.isThumbsUp = function(type, id){
 };
 
 
+/**
+ * Is there any thumbsup?
+ * @returns {boolean}
+ */
+app.playlists.isAnyThumbsUp = function(){
+  var tu = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
+  return (tu !== null);
+};
 
 /**
  * XBMC Playlist
@@ -19193,6 +18931,47 @@ app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
     });
 
   });
+};
+
+
+/**
+ * Gets the current now playing cache, will not do a lookup
+ * @param key
+ */
+app.playlists.getNowPlaying = function(key){
+
+  // A empty shell of what should be populated
+  var model = {
+    activePlayer: 0,
+    status: "notPlaying",
+    playingItemChanged: false,
+    volume: {
+      volume: 50,
+      muted: false
+    },
+    player: {
+      repeat: "off",
+      shuffled: false
+    },
+    item: {
+      thumbnail: '', fanart: '', id: 0, label: 'Nothing Playing', songid: 0, episodeid: 0, album: '', albumid: 'file', file: '', duration: 0, type: 'song'
+    }
+  };
+
+  // get cache
+  var data = app.cached.nowPlaying;
+  if(data !== undefined){
+    // update model with cache
+    model = $.extend(model, data);
+  }
+
+  // return key or all
+  if(key !== undefined){
+    return model[key];
+  } else {
+    return model;
+  }
+
 };
 ;app.storageController = {
   nameSpace: 'chorusStorage:'
@@ -19476,17 +19255,81 @@ app.VideoController.tvshowPlay = function(model, callback){
 
       // xbmc player
       app.playlists.changePlaylistView('xbmc');
+
       // play first pos
-      console.log('playing 0');
       app.VideoController.playPlaylistPosition(0, function(data){
-        //callback
-        callback();
+
+        // if in progress, seek to that position
+        if(model.resume !== undefined && model.resume.position > 0){
+          app.VideoController.seek( Math.round((model.resume.position / model.resume.total) * 100), callback );
+        } else {
+          //callback - play, no seek
+          callback();
+        }
       });
     });
   });
 
 };
-;
+
+
+/**
+ * Seek curently playing to a percentage
+ */
+app.VideoController.seek = function(position, callback ){
+  app.xbmcController.command('Player.Seek', [app.VideoController.playlistId, position], function(result){
+    if(app.helpers.exists(callback)){
+      callback(result.result); // return items
+    }
+  });
+};
+
+
+/**
+ * Gets / Normalises watched status
+ *
+ * @param m
+ *  tvshow or tv season model
+ */
+app.VideoController.watchedStatus = function(m){
+
+  var watched = {
+    status: 'no', // no, yes, progress
+    progress: 0
+  };
+
+  switch(m.type){
+
+    case 'movie':
+    case 'episode':
+      // in progress
+      if(m.resume.position !== 0){
+        watched.status = 'progress';
+        watched.progress = Math.round( ( m.resume.position / m.resume.total ) * 100 );
+      } else {
+        // watched
+        if(m.playcount > 0){
+          watched.status = 'yes';
+        }
+      }
+      break;
+
+    case 'season':
+    case 'tvshow':
+      // season, with watched episodes
+      if(m.watchedepisodes > 0){
+        if(m.watchedepisodes == m.episode){
+          watched.status = 'yes';
+        } else {
+          watched.status = 'progress';
+          watched.progress = Math.round( ( m.watchedepisodes / m.episode ) * 100 );
+        }
+      }
+      break;
+  }
+
+  return watched;
+};;
 
 /********************************************************************************
  * Handles all non library calls to xbmc
@@ -19604,7 +19447,14 @@ app.xbmcController.entityLoadMultiple = function(type, items, callback){
       id: 'movieid',
       returnKey: 'moviedetails',
       fields: app.movieFields
+    },
+    tvshow: {
+      method: 'VideoLibrary.GetTVShowDetails',
+      id: 'tvshowid',
+      returnKey: 'tvshowdetails',
+      fields: app.tvshowFields
     }
+
   };
 
 
@@ -19923,7 +19773,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Movie,
   //collection params
-  arg1: ['year', 'thumbnail'], //properties
+  arg1: ['year', 'thumbnail', 'resume', 'playcount'], //properties
   arg2: function(){
     return this.models[0].attributes.range;
   },
@@ -20560,6 +20410,7 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
 
       // no further parsing if empty
       if(list === undefined || list === null || list.length === 0){
+        options.success([]);
         return {items: []};
       }
 
@@ -20593,6 +20444,12 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
           });
           break;
 
+        case 'tvshow':
+          // lookup movies
+          app.xbmcController.entityLoadMultiple('tvshow', list.items, function(tvshows){
+            options.success(tvshows);
+          });
+          break;
       }
 
     }
@@ -22500,6 +22357,170 @@ app.FileView = Backbone.View.extend({
 
     }
 
+});;/**
+ * A mixed view lists collections of different entities.
+ * it is used in search results and thumbs up
+ *
+ * @type {*|void|extend|Object|extend|extend}
+ */
+
+
+app.MixedView = Backbone.View.extend({
+
+  tagName:'div',
+
+  className:'mixed-wrapper',
+
+  entities: ['artist', 'album', 'song', 'movie', 'tvshow'],
+
+  icons: {
+    song: 'fa-music',
+    artist: 'fa-microphone',
+    album: 'fa-th-large',
+    tvshow: 'fa-desktop',
+    movie: 'fa-film'
+  },
+
+  initialize:function () {
+
+  },
+
+  events: {
+
+  },
+
+  render:function () {
+
+    var self = this,
+      key = self.model.key,
+      $page = $('<div class="' + key + '-page mixed-page ' + key + '-results-content"></div>'),
+      pane = '';
+
+    // add a pane fore each entity
+    $.each(this.entities, function(i,type){
+
+      // don't add a pane if no callback
+      if(self.model.callbacks[type] !== undefined){
+
+        // create pane and add loading heading
+        pane = '<div class="mixed-pane mixed-pane-' + i + '" id="' + key + '-' + type + 's">' +
+          self.getHeading(type, 'Looking for ' + type + 's', 'loading') + '</div>';
+
+        // append to page
+        $page.append( pane );
+
+        // kick off callback
+        var callback = self.model.callbacks[type];
+        callback();
+      }
+
+    });
+
+    // this is where we move no-results
+    $page.append( '<div id="' + key + '-bottom"></div>' );
+
+    this.$el.html($page);
+
+    return this;
+  },
+
+  /**
+   * Wrapper to set callbacks
+   * @param callbacks
+   */
+  setCallbacks: function(callbacks){
+    this.model.callbacks = callbacks;
+  },
+
+  addEntity: function(entity){
+    this.entities.push(entity);
+  },
+
+  /**
+   * Render a single pane
+   *
+   * @param type
+   * @param collection
+   * @param viewName
+   */
+  renderPane: function(type, collection, viewName){
+
+    var self = this,
+      key = self.model.key,
+      $el = $('#' + key + '-' + type + 's');
+
+    // empty our pane
+    $el.empty();
+
+    if(collection.models.length === 0){
+
+      // no result
+      this.noResult(type);
+
+    } else {
+
+      // heading
+      $el.html( this.getHeading(type, type + 's', 'has-results') );
+
+      // render view to content
+      var v =  new app[viewName]({model: collection, className: type + '-' + key + '-list ' + type + '-list'});
+      $el.append( v.render().$el );
+
+      // lazy load force
+      this.lazyLoadImages($el);
+
+    }
+
+  },
+
+
+  /**
+   * No results
+   * @param type
+   */
+  noResult: function(type){
+   // add no results to bottom pane
+    $('#' + this.model.key + '-bottom')
+      .append( this.getHeading(type, 'No ' + type + ' matches', 'no-result') );
+    // empty top result
+    $('#' + this.model.key + '-' + type + 's').empty();
+  },
+
+
+  /**
+   * Heading creator
+   * @param type
+   * @param text
+   * @param classes
+   * @returns {string}
+   */
+  getHeading: function(type, text, classes){
+    return '<h3 class="' + this.model.key + '-heading entity-heading ' + classes + '">' + this.getLogo(type) + text + '</h3>';
+  },
+
+
+  /**
+   * Get a generic logo/icon
+   * @param type
+   * @returns {string}
+   */
+  getLogo: function(type){
+    return '<i class="fa ' + (this.icons[type] !== undefined ? this.icons[type] : 'fa-cloud') + ' entity-icon"></i>';
+  },
+
+  /**
+   * Force Lazy loading images
+   */
+  lazyLoadImages: function($el){
+    $('img.content-lazy').each(function(i,d){
+      $d = $(d);
+      if($d.data('original') !== ''){
+        $d.attr('src', $d.data('original'));
+      }
+    });
+  }
+
+
 });;
 /**
  * Full page wrapper for all movies list types
@@ -22622,6 +22643,9 @@ app.MovieListItemView = Backbone.View.extend({
     if(!model.label){
       return this;
     }
+
+    model.type = 'movie';
+    model.watched = app.VideoController.watchedStatus(model);
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     this.$el.html(this.template(model));
@@ -22871,15 +22895,15 @@ app.playerStateView = Backbone.View.extend({
   render:function () {
 
     // get model
-    var data = app.cached.nowPlaying,
+    var data = app.playlists.getNowPlaying(),
       $window = $(window),
       lastPlaying = app.helpers.varGet('lastPlaying', '');
 
     this.$songs = $('.song');
 
     // enrich
-    data.playingItemChanged = (data.item !== undefined && lastPlaying != data.item.file);
-    data.status = (data.player === undefined ? 'stopped' : (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status));
+    data.playingItemChanged = (lastPlaying != data.item.file);
+    data.status = (data.status == 'notPlaying' ? 'stopped' : (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status));
     app.state = data.status;
 
     // resave model
@@ -22996,6 +23020,19 @@ app.playerStateView = Backbone.View.extend({
     // set time
     $time.find('.time-cur').html(cur);
     $time.find('.time-total').html(dur);
+
+    // If episode is playing, remove cache so watched status is updated
+    if(data.item.type == 'episode'){
+      var key;
+      key = 'episodes:' + data.item.tvshowid + ':' + data.item.season;
+      if(app.stores.TvEpisodes !== undefined && app.stores.TvEpisodes[key] !== undefined){
+        delete app.stores.TvEpisodes[key];
+      }
+      key = 'seasons:' + data.item.tvshowid;
+      if(app.stores.TvSeasons !== undefined && app.stores.TvSeasons[key] !== undefined){
+        delete app.stores.TvSeasons[key];
+      }
+    }
 
   },
 
@@ -23463,7 +23500,8 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
 
   events: {
     "click .input-button": "inputButton",
-    "click .player-button": "playerButton"
+    "click .player-button": "playerButton",
+    "click .power-button": "powerButton"
   },
 
   render:function () {
@@ -23474,10 +23512,8 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
     };
     this.$el.html(this.template(vars));
 
-    var data = app.cached.nowPlaying;
-    if(data !== undefined && data.item !== undefined  && data.item.fanart !== undefined){
-      $('.playing-fanart', this.$el).css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
-    }
+    var data = app.playlists.getNowPlaying();
+    $('.playing-fanart', this.$el).css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
 
     $('.fa', this.$el).disableSelection();
 
@@ -23501,13 +23537,52 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
    */
   playerButton:function (e) {
     var $el = $(e.target),
-      type = $el.data('type');
+      type = $el.data('type'),
+      data = app.playlists.getNowPlaying();
 
     switch(type){
       case 'Stop':
-        app.xbmcController.command('Player.Stop', [app.cached.nowPlaying.activePlayer]);
+        app.xbmcController.command('Player.Stop', [data.activePlayer]);
         break;
     }
+
+  },
+
+  powerButton: function(e){
+
+    app.helpers.menuDialog( this.powerDialogItems() );
+
+  },
+
+  powerDialogItems: function(){
+
+    return {
+      title: 'Power Down',
+      key: 'powerDown',
+      omitwrapper: true,
+      items: [
+        {url: '#', class: 'xbmc-quit', title: 'Quit XBMC', callback: function(){
+          // Quit xbmc
+          app.xbmcController.command('Application.Quit');
+        }},
+        {url: '#', class: 'system-hibernate', title: 'Hibernate', callback: function(){
+          // System Hibernate
+          app.xbmcController.command('System.Hibernate');
+        }},
+        {url: '#', class: 'system-reboot', title: 'Reboot', callback: function(){
+          // System reboot
+          app.xbmcController.command('System.Reboot');
+        }},
+        {url: '#', class: 'system-shutdown', title: 'Shutdown', callback: function(){
+          // System shutdown
+          app.xbmcController.command('System.Shutdown');
+        }},
+        {url: '#', class: 'system-nothing', title: 'None of the above', callback: function(){
+          // System nothing - close dialog
+        }}
+
+      ]
+    };
 
   }
 
@@ -23522,14 +23597,19 @@ app.searchView = Backbone.View.extend({
 
   initialize: function () {
 
+    // create a new mixed view
+    var model = {
+      key: 'search',
+      callbacks: {}
+    };
+    this.mixedView = new app.MixedView({model: model});
+
   },
 
   songsLoaded: false,
 
   /**
    * Render based on key in the model
-   * this is all a bit messy and could be refined
-   *
    */
   render:function () {
 
@@ -23541,35 +23621,52 @@ app.searchView = Backbone.View.extend({
       app.router.navigate('#search/' + key);
 
       //set searching
-      app.shellView.selectMenuItem('search', 'sidebar');
+      app.shellView.selectMenuItem('search', 'no-sidebar');
+
+      // Set mixed view callbacks
+      var callbacks = {
+        song: function(){
+          // search songs
+          self.searchSongs(key);
+        },
+        artist: function(){
+          // search Artists
+          self.searchArtists(key);
+        },
+        album: function(){
+          // search Albums
+          self.searchAlbums(key);
+        },
+        tvshow: function(){
+          // search Albums
+          self.searchTv(key);
+        },
+        movie: function(){
+        // search movies
+          self.searchMovies(key);
+        },
+        addon: function(){
+          // search addons
+          $('#search-addons').empty();
+          self.searchAddOns(key);
+        }
+      };
+
+      // update view
+      self.mixedView.addEntity('addon');
+
+      // update view
+      self.mixedView.setCallbacks(callbacks);
 
       //empty content as we append
       var $content = $('#content'),
-        $el = $('<div class="search-results-content"></div>');
+        $el = this.mixedView.render().$el ;
 
-      // Build containers for various search types
-      $el.append('<div id="search-albums"></div>')
-        .append('<div id="search-songs"></div>')
-        .append('<div id="search-movies"></div>')
-        .append('<div id="search-addons"></div>');
-
-      // Render container to #content
-      $content.empty().html($el);
+      // Render view
+      $content.html( $el );
 
       // Title
-      app.helpers.setTitle('<a href="#">Search </a>' + key);
-
-      // search Artists
-      self.searchArtists(key);
-
-      // search Albums
-      self.searchAlbums(key);
-
-      // search songs
-      self.searchSongs(key);
-
-      // search songs
-      self.searchMovies(key);
+      app.helpers.setTitle('<a href="#search">Search </a>');
 
       // invoke Addons
       self.searchAddOns(key);
@@ -23600,33 +23697,8 @@ app.searchView = Backbone.View.extend({
    */
   searchArtists: function(key){
 
-    // vars
-    var self = this,
-      items = [],
-      notfoundartist = '<div class="noresult-box">No Artists found</div>';
-
-    // get artists list (sidebar)
-    app.cached.SearchArtistsList = new app.ArtistCollection();
-    app.cached.SearchArtistsList.fetch({success: function(data){
-
-      // filter based on string match
-      items = data.models.filter(function (element) {
-        return self.stringMatchFilter(element, key);
-      });
-
-      // update model with new collection
-      data.models = items;
-
-      //if result
-      if(data.models.length > 0){
-        // add the sidebar view
-        app.cached.artistsListSearch = new app.AristsListView({model: data, className: 'artist-search-list'});
-        app.helpers.setFirstSidebarContent(app.cached.artistsListSearch.render().el);
-      } else {
-        app.helpers.setFirstSidebarContent(notfoundartist);
-      }
-
-    }});
+    // render result
+    this.searchSectionPreLoadRender(key, 'artist', 'ArtistCollection', 'AristsRandView');
 
   },
 
@@ -23637,15 +23709,8 @@ app.searchView = Backbone.View.extend({
    */
   searchAlbums: function(key){
 
-    // vars
-    var self = this,
-      type = 'album';
-
-    // Add Loading
-    self.loadingRender(type);
-
     // render result
-    self.searchSectionPreLoadRender(key, type, 'AlbumsCollection', 'SmallAlbumsList');
+    this.searchSectionPreLoadRender(key, 'album', 'AlbumsCollection', 'SmallAlbumsList');
 
   },
 
@@ -23657,20 +23722,27 @@ app.searchView = Backbone.View.extend({
   searchMovies: function(key){
 
     // vars
-    var self = this,
-      type = 'movie';
-
-    // Add Loading
-    self.loadingRender(type);
+    var self = this;
 
     var allMovies = new app.MovieAllCollection();
     allMovies.fetch({"success": function(data){
-      self.searchSectionRender(key, type, 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
+      self.searchSectionRender(key, 'movie', 'MovieAllCollection', 'CustomMovieCollection', 'MovieListView');
 
     }});
 
   },
 
+  /**
+   * Init tv search
+   * @param key
+   */
+  searchTv: function(key){
+
+    // vars
+    var self = this;
+    self.searchSectionPreLoadRender(key, 'tvshow', 'TvshowAllCollection', 'TvshowListView');
+
+  },
 
   /**
    * Init searching songs, could be dealing with lots o data
@@ -23678,17 +23750,13 @@ app.searchView = Backbone.View.extend({
    */
   searchSongs: function(key){
 
-    var self = this,
-      type = 'song';
-
-    // Add Loading
-    self.loadingRender(type);
+    var self = this;
 
     if(self.songsLoaded === true){
-      self.searchSectionRender(key, type, 'SongCollection', 'CustomSongCollection', 'SongListView');
+      self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
     } else {
       app.store.libraryCall(function(){
-        self.searchSectionRender(key, type, 'SongCollection', 'CustomSongCollection', 'SongListView');
+        self.searchSectionRender(key, 'song', 'SongCollection', 'CustomSongCollection', 'SongListView');
         self.songsLoaded = true;
       }, 'songsReady');
     }
@@ -23703,26 +23771,6 @@ app.searchView = Backbone.View.extend({
   ///////////////////////////////////////////////
 
 
-  // Get a generic logo/icon
-  getLogo: function(type){
-    return '<img src="theme/images/icons/icon-' + type + '.png" />';
-  },
-
-  // Get a generic logo/icon
-  loadingRender: function(type){
-    $('#search-' + type + 's').html('<div class="addon-box">' + this.getLogo(type) + '<span>Loading ' + type + 's</span></div>');
-  },
-
-  // Get a generic logo/icon
-  headingHtml: function(type, key){
-    return '<h3 class="search-heading">' + this.getLogo(type) + type + ' search for:<span>' + key + '</span></h3>';
-  },
-
-  // Get a generic logo/icon
-  noResultsHtml: function(type){
-    return '<div class="noresult-box empty">' + this.getLogo(type) + '<span>No ' + type + 's found</span></div>';
-  },
-
   /**
    * Called when filtering a search key against a model label
    * @param element
@@ -23731,18 +23779,6 @@ app.searchView = Backbone.View.extend({
   stringMatchFilter: function (element, key) {
     var label = element.attributes.label;
     return label.toLowerCase().indexOf(key.toLowerCase()) > -1;
-  },
-
-  /**
-   * Force Lazy loading images
-   */
-  lazyLoadImages: function($el){
-    $('img.content-lazy').each(function(i,d){
-      $d = $(d);
-      if($d.data('original') !== ''){
-        $d.attr('src', $d.data('original'));
-      }
-    });
   },
 
 
@@ -23790,20 +23826,21 @@ app.searchView = Backbone.View.extend({
         // lget a loaded collection to view
         var c = new app[collectionName]();
         c.fetch({items: ids, success: function(d){
-          // heading
-          $el.append( self.headingHtml(type, key) );
 
-          // render view to content
-          var v =  new app[viewName]({model: d, className: type + '-search-list ' + type + '-list'});
-          $el.append( v.render().$el );
+          // Render mixed mode with results
+          _.defer(function(){
+            self.mixedView.renderPane(type, d, viewName);
+          });
 
-          // lazy load force
-          self.lazyLoadImages($el);
         }});
 
       } else {
+
         // no results
-        $el.html( self.noResultsHtml(type) );
+        _.defer(function(){
+          self.mixedView.noResult(type);
+        });
+
       }
 
     }});
@@ -23825,7 +23862,7 @@ app.searchView = Backbone.View.extend({
    */
   searchSectionPreLoadRender: function(key, type, collectionName, viewName){
 
-    var $el = $('#search-' + type + 's'),
+    var // $el = $('#search-' + type + 's'),
       self = this,
       items = [];
 
@@ -23834,8 +23871,7 @@ app.searchView = Backbone.View.extend({
     app.cached['search' + collectionName].fetch({success: function(data){
 
       // empty container
-      $el.empty();
-
+    //  $el.empty();
 
       // filter based on string match
       items = data.models.filter(function (element) {
@@ -23845,23 +23881,11 @@ app.searchView = Backbone.View.extend({
       // update model with new collection
       data.models = items;
 
-      //if result
-      if(data.models.length > 0){
+      // render mixed mode results
+      _.defer(function(){
+        self.mixedView.renderPane(type, data, viewName);
+      });
 
-        // heading
-        $el.append( self.headingHtml(type, key) );
-
-        // render view to content
-        var v =  new app[viewName]({model: data, className: type + '-search-list ' + type + '-list'});
-        $el.append(v.render().$el);
-
-        // lazy load force
-        //self.lazyLoadImages($el);
-
-      } else {
-        // no results
-        $el.html( self.noResultsHtml(type) );
-      }
 
     }});
 
@@ -24066,7 +24090,7 @@ app.searchView = Backbone.View.extend({
     $('#search').keyup(function () {
       clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
       app.cached.keyupTimeout = setTimeout(function(){
-        document.location = '#search/' + $('#search').val();
+        document.location = '#search/' + encodeURIComponent( $('#search').val() );
       }, keyDelay);
     });
 
@@ -24465,6 +24489,109 @@ app.SongView = Backbone.View.extend({
     $el.toggleClass('thumbs-up');
   }
 
+});;/**
+ * ThumbsUp view
+ *
+ * @type {*|void|Object|extend|extend|extend}
+ */
+
+
+app.ThumbsupView = Backbone.View.extend({
+
+  initialize: function () {
+
+    // create a new mixed view
+    var model = {
+      key: 'thumbsup',
+      callbacks: {}
+    };
+    this.mixedView = new app.MixedView({model: model});
+
+  },
+
+  songsLoaded: false,
+
+  /**
+   * Render result
+   */
+  render:function () {
+
+    var self = this,
+      anyThumbs = app.playlists.isAnyThumbsUp();
+
+    //set searching
+    app.shellView.selectMenuItem('thumbsup', 'no-sidebar');
+
+    // set title
+    app.helpers.setTitle('Thumbs Up');
+
+    if(!anyThumbs){ // No thumbs
+      // no thumbs
+      var noResults = '<div class="help-page"></h3><h3 class="entity-heading">' +
+        '<i class="fa fa-thumbs-up entity-icon" title="Don\'t click this Thumb! thumbs are on albums, songs, movies, etc."></i> Click a thumb to start</h3></div>';
+      this.$el.html( noResults );
+
+    } else { // some thumbs exists
+
+      // Set mixed view callbacks
+      var callbacks = {
+        song: function(){
+          self.getItems('song', 'CustomPlaylistSongListView');
+        },
+        artist: function(){
+          self.getItems('artist', 'AristsRandView');
+        },
+        album: function(){
+          self.getItems('album', 'SmallAlbumsList');
+        },
+        tvshow: function(){
+          self.getItems('tvshow', 'TvshowListView');
+        },
+        movie: function(){
+          self.getItems('movie', 'MovieListView');
+        }
+      };
+
+      // update view
+      self.mixedView.setCallbacks(callbacks);
+
+      // render page
+      this.$el.html( this.mixedView.render().$el );
+    }
+
+    return this;
+
+  },
+
+
+
+  getItems: function(type, viewName){
+
+    // Song
+    var self = this,
+      thumbs = new app.ThumbsUpCollection();
+
+    thumbs.fetch({"name": type, "success": function(collection){
+
+      _.defer(function(){
+
+      if(collection.models.length === 0){
+        self.mixedView.noResult(type);
+      } else {
+
+        // Render mixed mode with results
+        self.mixedView.renderPane(type, collection, viewName);
+
+      }
+
+    });
+
+
+
+    }});
+
+  }
+
 });;
 /**
  * Full page wrapper for all movies list types
@@ -24591,6 +24718,8 @@ app.TvshowListItemView = Backbone.View.extend({
     if(!model.label){
       return this;
     }
+
+    model.watched = app.VideoController.watchedStatus(model);
     model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
 
     this.$el.html(this.template(model));
@@ -24929,11 +25058,19 @@ app.TvSeasonListItemView = Backbone.View.extend({
     var m = this.model.attributes,
       isEp = (m.type == 'episode');
 
+    m.watched = app.VideoController.watchedStatus(m);
+
+
+    console.log(m);
+
     // toggle subtext based on type
     m.subText = (isEp ? 'Episode ' + m.episode : m.episode + ' Episodes');
     m.label = (isEp && m.title !== '' ? m.title : m.label);
+
+
     // render
-    this.$el.html(this.template(this.model.attributes));
+    this.$el.html(this.template(m));
+
     return this;
   },
 
@@ -25326,4 +25463,226 @@ app.XbmcJSONrpcView = Backbone.View.extend({
     if(param.type.type == 'integer'){ return false; }
     return (!$el.hasClass('select') && text !== '' && (typeof param.type == 'object' || param.type == 'array'));
   }
-});
+});;
+/***********************************************
+ * Soundcloud
+ ***********************************************/
+app.addOns.addon.pluginaudiosoundcloud = {
+
+  // the time to wait before sending keyboard commands
+  waitTime: 4000,
+
+  getAddon: function(){
+    return app.addOns.getAddon('pluginaudiosoundcloud');
+  },
+
+  getSearchPath: function(){
+    return 'plugin://plugin.audio.soundcloud/SearchTracks?url=plugin%3A%2F%2Fmusic%2FSoundCloud%2Ftracks%2Fsearch&oauth_token=&mode=13';
+  },
+
+  /**
+   * Parses a file record
+   * @param record
+   * @returns {*}
+   */
+  parseFileRecord: function(record){
+    // is a soundcloud url
+    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
+      // rewrite the url to contain the label
+      record.file = record.file.replace(
+        'plugin://plugin.audio.soundcloud/',
+        'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label)
+      );
+
+      /* // add an icon if none - doesn't look much better than default icons
+       if(typeof record.thumbnail == 'undefined' || record.thumbnail == ''){
+       var sc = app.addOns.getAddon('pluginaudiosoundcloud');
+       record.thumbnail = sc.thumbnail;
+       } */
+
+    }
+
+    return record;
+  },
+
+  /**
+   * Hook into file dir click
+   * @param record
+   * @returns {*}
+   */
+  clickDir: function(record){
+    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
+      if(record.title == 'Search'){
+
+        app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
+      }
+    }
+    return record;
+  },
+
+
+  /**
+   * Hook into post file row creation
+   * @param $el
+   * @param file
+   * @returns {*}
+   */
+  postProcessFileView: function($el, file){
+    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(file)){
+      var sc = app.addOns.addon.pluginaudiosoundcloud.getAddon();
+
+      // if root item for addon
+      if(file.file == sc.file){
+        var $actions = $('.file-actions', $el);
+
+        // replace play and add with search
+        $actions.html('<button class="btn" id="soundcloudSearch"><i class="icon-search"></i></button>');
+
+        // Bind
+        $('#soundcloudSearch', $actions).on('click', function(e){
+          e.stopPropagation();
+
+          // trigger search
+          app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
+          var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
+
+          app.cached.fileCollection = new app.FileCollection();
+          app.cached.fileCollection.fetch({"name":dir, "success": function(res){
+            // render page
+            app.cached.filesSearchView = new app.FilesView({"model":res}).render();
+          }});
+
+        });
+
+        // add class to show actions
+        $el.find('.file-item').addClass('show-actions');
+
+      }
+    }
+    return $el;
+  },
+
+  /**
+   * This adds soundcloud to the search page
+   * @param $el
+   * @param key
+   * @returns {*}
+   */
+  searchAddons: function($el, key){
+
+    var self = app.addOns.addon.pluginaudiosoundcloud,
+      $nores = $('<div>', {class: 'addon-box', id: 'sc-search'}),
+      sc = self.getAddon(),
+      $heading = $( self.searchHeading('SoundCloud search for: <span>' + key + '</span>', 'soundcloud')),
+      cache = self.cache('get', key, false);
+
+    // add logo to heading
+
+    // if cache
+    if(cache !== false){
+      // just set results from cached view
+      $el.html(cache.render().$el);
+      $el.prepend($heading);
+    } else {
+      // no cache, do the search
+      $nores.append( self.searchHeading('Search SoundCloud for: <span>' + key + '</span>', 'soundcloud can-click') );
+      $el.append($nores);
+
+      // click/search action
+      $('#sc-search', $el).on('click', function(){
+        // Loading
+        $el.html( $(self.searchHeading('Searching SoundCloud for: <span>' + key + '</span>', 'loading')) );
+        // Callback
+        self.getSearchResults(key, function(view){
+          $el.html(view.render().$el);
+          // add heading
+          $el.prepend($heading);
+          // set cache
+          self.cache('set', key, view);
+        });
+      });
+    }
+
+    return $el;
+  },
+
+  // Heading creator
+  searchHeading: function(text, classes){
+    var icon = '<i class="fa fa-cloud entity-icon" style="background-color: #FF4C00"></i>';
+    return '<h3 class="search-heading entity-heading ' + classes + '">' + icon + text + '</h3>';
+  },
+
+  /**
+   * Get and set cache, when get, data is default
+   * @param op
+   * @param key
+   * @param data
+   * @returns {*}
+   */
+  cache:function(op, key, data){
+    if(typeof app.cached.soundCloudSearch == 'undefined'){
+      app.cached.soundCloudSearch = {};
+    }
+    switch (op){
+      case 'get':
+        return (typeof app.cached.soundCloudSearch[key] == 'undefined' ? data : app.cached.soundCloudSearch[key]);
+      case 'set':
+        app.cached.soundCloudSearch[key] = data;
+        return app.cached.soundCloudSearch[key];
+    }
+  },
+
+
+  /**
+   * Search dialog
+   */
+  doSearchDialog: function(){
+    app.helpers.prompt('What do you want to search for?', function(text){
+      app.xbmcController.command('Input.SendText', [text], function(res){
+        // set title and notify
+        $('#folder-name').html('Search for "' + text + '"');
+        var msg = 'Searching for ' + text;
+        // set content while loading
+        $('#files-container').html('<div class="loading-box">'+msg+'</div>');
+      });
+    });
+  },
+
+
+  /**
+   * Get a soundcloud search result view
+   * @param query
+   */
+  getSearchResults: function(query, callback){
+
+    // get search directory
+    var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
+    app.cached.fileCollection = new app.FileCollection();
+    app.cached.fileCollection.fetch({"name":dir, "success": function(result){
+      // success only after text input complete which is flaky!
+      // return view
+      app.cached.fileListView = new app.FilesListView({model: result});
+      callback(app.cached.fileListView);
+    }});
+
+    // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
+    window.setTimeout(function(){
+      app.xbmcController.command('Input.SendText', [query], function(res){
+
+      });
+    }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
+
+  },
+
+
+  /**
+   * If soundcloud file record
+   * @param record
+   * @returns {*}
+   */
+  isSoundCloud: function(record){
+    return (record.file.indexOf('plugin.audio.soundcloud') != -1);
+  }
+
+
+};

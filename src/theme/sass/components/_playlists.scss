@@ -20,14 +20,15 @@
     }
   }
 }
+.playlist-item-placeholder {
+  height: 50px;
+  background: #aaa;
+}
 .playlist,
 .custom-lists,
 .browser-playlist-song-list {
   padding: 2px;
-  .playlist-item-placeholder {
-    height: 50px;
-    background: #aaa;
-  }
+
   li.list-item,
   div.playlist-item {
     border-bottom: 1px solid $color-mist;

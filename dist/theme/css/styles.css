@@ -4088,13 +4088,14 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   -ms-border-radius: 0;
   -o-border-radius: 0;
   border-radius: 0;
+  z-index: 1;
 }
-/* line 49, ../../../src/theme/sass/components/_songs.scss */
+/* line 50, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .song-actions-wrapper .btn:hover,
 .song-list li.song-row .song-actions-wrapper .btn:hover {
   color: #333;
 }
-/* line 53, ../../../src/theme/sass/components/_songs.scss */
+/* line 54, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .song-actions-wrapper .btn.song-play,
 .song-list li.song-row .song-actions-wrapper .btn.song-play {
   left: -40px;
@@ -4108,32 +4109,32 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   -o-box-sizing: border-box;
   box-sizing: border-box;
 }
-/* line 62, ../../../src/theme/sass/components/_songs.scss */
+/* line 63, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .song-actions-wrapper .btn.song-add,
 .song-list li.song-row .song-actions-wrapper .btn.song-add {
   right: 19px;
 }
-/* line 65, ../../../src/theme/sass/components/_songs.scss */
+/* line 66, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .song-actions-wrapper .btn.song-menu,
 .song-list li.song-row .song-actions-wrapper .btn.song-menu {
   right: 0px;
 }
-/* line 68, ../../../src/theme/sass/components/_songs.scss */
+/* line 69, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .song-actions-wrapper .btn.song-thumbsup,
 .song-list li.song-row .song-actions-wrapper .btn.song-thumbsup {
   right: 48px;
 }
-/* line 71, ../../../src/theme/sass/components/_songs.scss */
+/* line 72, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .song-actions-wrapper .btn.song-remove,
 .song-list li.song-row .song-actions-wrapper .btn.song-remove {
   right: 80px;
 }
-/* line 73, ../../../src/theme/sass/components/_songs.scss */
+/* line 74, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .song-actions-wrapper .btn.song-remove:hover,
 .song-list li.song-row .song-actions-wrapper .btn.song-remove:hover {
   color: #D22431;
 }
-/* line 79, ../../../src/theme/sass/components/_songs.scss */
+/* line 80, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .visible-song-actions-wrapper,
 .song-list li.song-row .visible-song-actions-wrapper {
   padding: 6px 12px 6px;
@@ -4142,27 +4143,27 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   right: 0;
   font-size: 14.994px;
 }
-/* line 85, ../../../src/theme/sass/components/_songs.scss */
+/* line 86, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .visible-song-actions-wrapper i,
 .song-list li.song-row .visible-song-actions-wrapper i {
   display: none;
 }
-/* line 87, ../../../src/theme/sass/components/_songs.scss */
+/* line 88, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .visible-song-actions-wrapper i.fa-thumbs-up,
 .song-list li.song-row .visible-song-actions-wrapper i.fa-thumbs-up {
   margin-right: 49px;
 }
-/* line 94, ../../../src/theme/sass/components/_songs.scss */
+/* line 95, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row.thumbs-up .song-actions-wrapper .btn.song-thumbsup,
 .song-list li.song-row.thumbs-up .song-actions-wrapper .btn.song-thumbsup {
   color: #2b2f30;
 }
-/* line 97, ../../../src/theme/sass/components/_songs.scss */
+/* line 98, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row.thumbs-up .visible-song-actions-wrapper i.fa-thumbs-up,
 .song-list li.song-row.thumbs-up .visible-song-actions-wrapper i.fa-thumbs-up {
   display: inline-block;
 }
-/* line 101, ../../../src/theme/sass/components/_songs.scss */
+/* line 102, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track,
 .song-list li.song-row .track {
   border-bottom: 1px solid #F0F0F0;
@@ -4172,7 +4173,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   margin-right: 0px;
   padding-left: 40px;
 }
-/* line 109, ../../../src/theme/sass/components/_songs.scss */
+/* line 110, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col,
 .song-list li.song-row .track .track-col {
   float: left;
@@ -4187,17 +4188,17 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   -o-box-sizing: border-box;
   box-sizing: border-box;
 }
-/* line 117, ../../../src/theme/sass/components/_songs.scss */
+/* line 118, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col a,
 .song-list li.song-row .track .track-col a {
   color: rgba(100, 100, 100, 0.28);
 }
-/* line 119, ../../../src/theme/sass/components/_songs.scss */
+/* line 120, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col a:hover,
 .song-list li.song-row .track .track-col a:hover {
   color: #2b2f30;
 }
-/* line 123, ../../../src/theme/sass/components/_songs.scss */
+/* line 124, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-tracknum,
 .song-list li.song-row .track .track-col.song-tracknum {
   width: 40px;
@@ -4208,24 +4209,24 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   text-align: center;
   font-size: 110%;
 }
-/* line 133, ../../../src/theme/sass/components/_songs.scss */
+/* line 134, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-thumb,
 .song-list li.song-row .track .track-col.song-thumb {
   padding: 0;
   margin-right: 10px;
   overflow: hidden;
 }
-/* line 137, ../../../src/theme/sass/components/_songs.scss */
+/* line 138, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-thumb img,
 .song-list li.song-row .track .track-col.song-thumb img {
   width: 40px;
 }
-/* line 139, ../../../src/theme/sass/components/_songs.scss */
+/* line 140, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-duration,
 .song-list li.song-row .track .track-col.song-duration {
   width: 6%;
 }
-/* line 142, ../../../src/theme/sass/components/_songs.scss */
+/* line 143, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-title,
 .song-list li.song-row .track .track-col.song-title {
   -webkit-user-select: none;
@@ -4238,7 +4239,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   color: #2b2f30;
   font-size: 13px;
 }
-/* line 149, ../../../src/theme/sass/components/_songs.scss */
+/* line 150, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-artist,
 .song-list li.song-row .track .track-col.song-artist {
   width: 24%;
@@ -4247,61 +4248,61 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   font-size: 12px;
   display: none;
 }
-/* line 157, ../../../src/theme/sass/components/_songs.scss */
+/* line 158, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-artist,
 .song-list li.song-row .track .track-col.song-artist {
   display: block;
 }
-/* line 160, ../../../src/theme/sass/components/_songs.scss */
+/* line 161, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track .track-col.song-title,
 .song-list li.song-row .track .track-col.song-title {
   width: 59%;
   cursor: pointer;
 }
-/* line 166, ../../../src/theme/sass/components/_songs.scss */
+/* line 167, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track.playing-row, .playlist-song-list li.song-row .track.active-row, .playlist-song-list li.song-row .track:hover,
 .song-list li.song-row .track.playing-row,
 .song-list li.song-row .track.active-row,
 .song-list li.song-row .track:hover {
   background: #f1f1f1;
 }
-/* line 170, ../../../src/theme/sass/components/_songs.scss */
+/* line 171, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track.playing-row .song-actions-wrapper, .playlist-song-list li.song-row .track.active-row .song-actions-wrapper, .playlist-song-list li.song-row .track:hover .song-actions-wrapper,
 .song-list li.song-row .track.playing-row .song-actions-wrapper,
 .song-list li.song-row .track.active-row .song-actions-wrapper,
 .song-list li.song-row .track:hover .song-actions-wrapper {
   display: block;
 }
-/* line 177, ../../../src/theme/sass/components/_songs.scss */
+/* line 178, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track.playing-row .song-actions-wrapper .song-play,
 .song-list li.song-row .track.playing-row .song-actions-wrapper .song-play {
   display: none;
 }
-/* line 184, ../../../src/theme/sass/components/_songs.scss */
+/* line 185, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track.playlist-item .track-col.song-title,
 .song-list li.song-row .track.playlist-item .track-col.song-title {
   padding-left: 15px;
 }
-/* line 188, ../../../src/theme/sass/components/_songs.scss */
+/* line 189, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row .track.playlist-item .song-actions-wrapper .btn.song-play,
 .song-list li.song-row .track.playlist-item .song-actions-wrapper .btn.song-play {
   background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 12px;
 }
-/* line 196, ../../../src/theme/sass/components/_songs.scss */
+/* line 197, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row:last-child .track,
 .song-list li.song-row:last-child .track {
   border-bottom: 0;
   margin-bottom: 8px;
 }
-/* line 201, ../../../src/theme/sass/components/_songs.scss */
+/* line 202, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row.playlist-item-placeholder,
 .song-list li.song-row.playlist-item-placeholder {
   height: 40px;
   background-color: rgba(100, 100, 100, 0.28);
 }
-/* line 205, ../../../src/theme/sass/components/_songs.scss */
+/* line 206, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row ul.dropdown-menu,
 .song-list li.song-row ul.dropdown-menu {
   width: auto;
@@ -4310,13 +4311,13 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   top: 35px;
   left: auto;
 }
-/* line 212, ../../../src/theme/sass/components/_songs.scss */
+/* line 213, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list li.song-row ul.dropdown-menu a:hover,
 .song-list li.song-row ul.dropdown-menu a:hover {
   color: #2b2f30;
 }
 
-/* line 220, ../../../src/theme/sass/components/_songs.scss */
+/* line 221, ../../../src/theme/sass/components/_songs.scss */
 .playlist-song-list {
   padding: 10px;
 }
@@ -4345,19 +4346,18 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 }
 
 /* line 23, ../../../src/theme/sass/components/_playlists.scss */
+.playlist-item-placeholder {
+  height: 50px;
+  background: #aaa;
+}
+
+/* line 27, ../../../src/theme/sass/components/_playlists.scss */
 .playlist,
 .custom-lists,
 .browser-playlist-song-list {
   padding: 2px;
 }
-/* line 27, ../../../src/theme/sass/components/_playlists.scss */
-.playlist .playlist-item-placeholder,
-.custom-lists .playlist-item-placeholder,
-.browser-playlist-song-list .playlist-item-placeholder {
-  height: 50px;
-  background: #aaa;
-}
-/* line 31, ../../../src/theme/sass/components/_playlists.scss */
+/* line 32, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item,
 .playlist div.playlist-item,
 .custom-lists li.list-item,
@@ -4375,7 +4375,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   -o-transition: all 0.1s linear;
   transition: all 0.1s linear;
 }
-/* line 39, ../../../src/theme/sass/components/_playlists.scss */
+/* line 40, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item a,
 .playlist div.playlist-item a,
 .custom-lists li.list-item a,
@@ -4384,7 +4384,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item a {
   color: #999;
 }
-/* line 42, ../../../src/theme/sass/components/_playlists.scss */
+/* line 43, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .actions,
 .playlist div.playlist-item .actions,
 .custom-lists li.list-item .actions,
@@ -4395,7 +4395,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.8);
   display: none;
 }
-/* line 46, ../../../src/theme/sass/components/_playlists.scss */
+/* line 47, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .actions span,
 .playlist div.playlist-item .actions span,
 .custom-lists li.list-item .actions span,
@@ -4406,7 +4406,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   cursor: pointer;
   z-index: 10;
 }
-/* line 50, ../../../src/theme/sass/components/_playlists.scss */
+/* line 51, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .actions span.playbtn,
 .playlist div.playlist-item .actions span.playbtn,
 .custom-lists li.list-item .actions span.playbtn,
@@ -4437,7 +4437,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item .actions span.playbtn:hover {
   opacity: 1;
 }
-/* line 56, ../../../src/theme/sass/components/_playlists.scss */
+/* line 57, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .actions span.removebtn,
 .playlist div.playlist-item .actions span.removebtn,
 .custom-lists li.list-item .actions span.removebtn,
@@ -4449,7 +4449,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   top: 6px;
   background: none;
 }
-/* line 61, ../../../src/theme/sass/components/_playlists.scss */
+/* line 62, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .actions span.removebtn:hover,
 .playlist div.playlist-item .actions span.removebtn:hover,
 .custom-lists li.list-item .actions span.removebtn:hover,
@@ -4458,7 +4458,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item .actions span.removebtn:hover {
   color: #D22431;
 }
-/* line 67, ../../../src/theme/sass/components/_playlists.scss */
+/* line 68, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .info,
 .playlist div.playlist-item .info,
 .custom-lists li.list-item .info,
@@ -4473,7 +4473,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   font-size: 12px;
   line-height: 10px;
 }
-/* line 76, ../../../src/theme/sass/components/_playlists.scss */
+/* line 77, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .repeating,
 .playlist div.playlist-item .repeating,
 .custom-lists li.list-item .repeating,
@@ -4486,7 +4486,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   cursor: pointer;
   display: none;
 }
-/* line 83, ../../../src/theme/sass/components/_playlists.scss */
+/* line 84, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item:hover,
 .playlist div.playlist-item:hover,
 .custom-lists li.list-item:hover,
@@ -4497,7 +4497,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   color: #111;
   height: 52px;
 }
-/* line 87, ../../../src/theme/sass/components/_playlists.scss */
+/* line 88, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item:hover .actions,
 .playlist div.playlist-item:hover .actions,
 .custom-lists li.list-item:hover .actions,
@@ -4506,7 +4506,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item:hover .actions {
   display: block;
 }
-/* line 90, ../../../src/theme/sass/components/_playlists.scss */
+/* line 91, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item:hover .thumb,
 .playlist div.playlist-item:hover .thumb,
 .custom-lists li.list-item:hover .thumb,
@@ -4515,7 +4515,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item:hover .thumb {
   opacity: 1;
 }
-/* line 94, ../../../src/theme/sass/components/_playlists.scss */
+/* line 95, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item:hover .playlist-play,
 .playlist div.playlist-item:hover .playlist-play,
 .custom-lists li.list-item:hover .playlist-play,
@@ -4525,7 +4525,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   padding-left: 60px;
   line-height: 20px;
 }
-/* line 98, ../../../src/theme/sass/components/_playlists.scss */
+/* line 99, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item:hover .info,
 .playlist div.playlist-item:hover .info,
 .custom-lists li.list-item:hover .info,
@@ -4534,7 +4534,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item:hover .info {
   display: block;
 }
-/* line 104, ../../../src/theme/sass/components/_playlists.scss */
+/* line 105, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .thumb,
 .playlist div.playlist-item .thumb,
 .custom-lists li.list-item .thumb,
@@ -4551,7 +4551,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   z-index: 1;
   background-size: cover;
 }
-/* line 116, ../../../src/theme/sass/components/_playlists.scss */
+/* line 117, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .playlist-song-actions-wrapper,
 .playlist div.playlist-item .playlist-song-actions-wrapper,
 .custom-lists li.list-item .playlist-song-actions-wrapper,
@@ -4560,7 +4560,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item .playlist-song-actions-wrapper {
   display: none;
 }
-/* line 119, ../../../src/theme/sass/components/_playlists.scss */
+/* line 120, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .playlist-play,
 .playlist div.playlist-item .playlist-play,
 .custom-lists li.list-item .playlist-play,
@@ -4589,7 +4589,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
 }
-/* line 134, ../../../src/theme/sass/components/_playlists.scss */
+/* line 135, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .playlist-meta,
 .playlist div.playlist-item .playlist-meta,
 .custom-lists li.list-item .playlist-meta,
@@ -4598,7 +4598,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item .playlist-meta {
   display: none;
 }
-/* line 135, ../../../src/theme/sass/components/_playlists.scss */
+/* line 136, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item .playlist-meta a,
 .playlist div.playlist-item .playlist-meta a,
 .custom-lists li.list-item .playlist-meta a,
@@ -4608,7 +4608,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   font-size: 12px;
   color: #6e7374;
 }
-/* line 141, ../../../src/theme/sass/components/_playlists.scss */
+/* line 142, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row, .playlist li.list-item.browser-playing-row,
 .playlist div.playlist-item.playing-row,
 .playlist div.playlist-item.browser-playing-row,
@@ -4631,7 +4631,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   padding-right: 75px;
   background-color: #eeeeee;
 }
-/* line 149, ../../../src/theme/sass/components/_playlists.scss */
+/* line 150, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .actions, .playlist li.list-item.browser-playing-row .actions,
 .playlist div.playlist-item.playing-row .actions,
 .playlist div.playlist-item.browser-playing-row .actions,
@@ -4645,7 +4645,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .actions {
   display: none;
 }
-/* line 152, ../../../src/theme/sass/components/_playlists.scss */
+/* line 153, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .info, .playlist li.list-item.browser-playing-row .info,
 .playlist div.playlist-item.playing-row .info,
 .playlist div.playlist-item.browser-playing-row .info,
@@ -4662,7 +4662,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   line-height: 15px;
   margin-top: 4px;
 }
-/* line 158, ../../../src/theme/sass/components/_playlists.scss */
+/* line 159, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-play, .playlist li.list-item.browser-playing-row .playlist-play,
 .playlist div.playlist-item.playing-row .playlist-play,
 .playlist div.playlist-item.browser-playing-row .playlist-play,
@@ -4682,7 +4682,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   color: #444;
   cursor: pointer;
 }
-/* line 166, ../../../src/theme/sass/components/_playlists.scss */
+/* line 167, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-play:hover, .playlist li.list-item.browser-playing-row .playlist-play:hover,
 .playlist div.playlist-item.playing-row .playlist-play:hover,
 .playlist div.playlist-item.browser-playing-row .playlist-play:hover,
@@ -4697,7 +4697,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   background: none;
   padding-left: 35px;
 }
-/* line 171, ../../../src/theme/sass/components/_playlists.scss */
+/* line 172, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-meta, .playlist li.list-item.browser-playing-row .playlist-meta,
 .playlist div.playlist-item.playing-row .playlist-meta,
 .playlist div.playlist-item.browser-playing-row .playlist-meta,
@@ -4711,7 +4711,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .playlist-meta {
   padding-left: 35px;
 }
-/* line 174, ../../../src/theme/sass/components/_playlists.scss */
+/* line 175, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .menubtn, .playlist li.list-item.browser-playing-row .menubtn,
 .playlist div.playlist-item.playing-row .menubtn,
 .playlist div.playlist-item.browser-playing-row .menubtn,
@@ -4725,7 +4725,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .menubtn {
   opacity: 0;
 }
-/* line 177, ../../../src/theme/sass/components/_playlists.scss */
+/* line 178, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .removebtn, .playlist li.list-item.browser-playing-row .removebtn,
 .playlist div.playlist-item.playing-row .removebtn,
 .playlist div.playlist-item.browser-playing-row .removebtn,
@@ -4739,7 +4739,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .removebtn {
   display: none;
 }
-/* line 180, ../../../src/theme/sass/components/_playlists.scss */
+/* line 181, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-meta,
 .playlist li.list-item.playing-row .thumb, .playlist li.list-item.browser-playing-row .playlist-meta,
 .playlist li.list-item.browser-playing-row .thumb,
@@ -4765,7 +4765,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .thumb {
   display: block;
 }
-/* line 184, ../../../src/theme/sass/components/_playlists.scss */
+/* line 185, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-song-actions-wrapper,
 .playlist li.list-item.playing-row .thumb, .playlist li.list-item.browser-playing-row .playlist-song-actions-wrapper,
 .playlist li.list-item.browser-playing-row .thumb,
@@ -4796,7 +4796,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   right: 0;
   left: auto;
 }
-/* line 194, ../../../src/theme/sass/components/_playlists.scss */
+/* line 195, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-song-actions-wrapper, .playlist li.list-item.browser-playing-row .playlist-song-actions-wrapper,
 .playlist div.playlist-item.playing-row .playlist-song-actions-wrapper,
 .playlist div.playlist-item.browser-playing-row .playlist-song-actions-wrapper,
@@ -4816,7 +4816,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   opacity: 0;
   text-align: right;
 }
-/* line 202, ../../../src/theme/sass/components/_playlists.scss */
+/* line 203, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-song-actions-wrapper:hover, .playlist li.list-item.browser-playing-row .playlist-song-actions-wrapper:hover,
 .playlist div.playlist-item.playing-row .playlist-song-actions-wrapper:hover,
 .playlist div.playlist-item.browser-playing-row .playlist-song-actions-wrapper:hover,
@@ -4830,7 +4830,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .playlist-song-actions-wrapper:hover {
   opacity: 1;
 }
-/* line 207, ../../../src/theme/sass/components/_playlists.scss */
+/* line 208, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-song-actions-wrapper .btn:focus, .playlist li.list-item.playing-row .playlist-song-actions-wrapper .btn:hover, .playlist li.list-item.browser-playing-row .playlist-song-actions-wrapper .btn:focus, .playlist li.list-item.browser-playing-row .playlist-song-actions-wrapper .btn:hover,
 .playlist div.playlist-item.playing-row .playlist-song-actions-wrapper .btn:focus,
 .playlist div.playlist-item.playing-row .playlist-song-actions-wrapper .btn:hover,
@@ -4854,7 +4854,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .playlist-song-actions-wrapper .btn:hover {
   background: none;
 }
-/* line 211, ../../../src/theme/sass/components/_playlists.scss */
+/* line 212, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup, .playlist li.list-item.browser-playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup,
 .playlist div.playlist-item.playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup,
 .playlist div.playlist-item.browser-playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup,
@@ -4868,7 +4868,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row .playlist-song-actions-wrapper .btn.playlist-song-thumbsup {
   padding: 9px 2px 10px;
 }
-/* line 217, ../../../src/theme/sass/components/_playlists.scss */
+/* line 218, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.list-item.browser-playing-row,
 .playlist div.playlist-item.browser-playing-row,
 .custom-lists li.list-item.browser-playing-row,
@@ -4877,19 +4877,19 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 .browser-playlist-song-list div.playlist-item.browser-playing-row {
   background: #eeeeee url(../images/icons/row-pause.png) 0 0 no-repeat;
 }
-/* line 222, ../../../src/theme/sass/components/_playlists.scss */
+/* line 223, ../../../src/theme/sass/components/_playlists.scss */
 .playlist li.thumbs-up .playlist-song-actions-wrapper .playlist-song-thumbsup,
 .custom-lists li.thumbs-up .playlist-song-actions-wrapper .playlist-song-thumbsup,
 .browser-playlist-song-list li.thumbs-up .playlist-song-actions-wrapper .playlist-song-thumbsup {
   color: #e67e22;
 }
 
-/* line 228, ../../../src/theme/sass/components/_playlists.scss */
+/* line 229, ../../../src/theme/sass/components/_playlists.scss */
 #thumbsup-bottom {
   display: none;
 }
 
-/* line 234, ../../../src/theme/sass/components/_playlists.scss */
+/* line 235, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item .name {
   padding: 5px 10px 5px 15px;
   cursor: pointer;
@@ -4897,23 +4897,23 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   line-height: 30px;
   display: block;
 }
-/* line 241, ../../../src/theme/sass/components/_playlists.scss */
+/* line 242, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item a.name {
   height: 40px;
   color: #2b2f30;
 }
-/* line 245, ../../../src/theme/sass/components/_playlists.scss */
+/* line 246, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item .meta {
   display: none;
   font-size: 80%;
   color: #ddd;
   padding-left: 5px;
 }
-/* line 250, ../../../src/theme/sass/components/_playlists.scss */
+/* line 251, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item .meta .list-actions {
   margin: 0 -10px -10px;
 }
-/* line 252, ../../../src/theme/sass/components/_playlists.scss */
+/* line 253, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item .meta .list-actions .cbutton {
   display: inline-block;
   padding: 6px 12px;
@@ -4922,26 +4922,26 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   color: #FFF;
   cursor: pointer;
 }
-/* line 259, ../../../src/theme/sass/components/_playlists.scss */
+/* line 260, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item .meta .list-actions .cbutton:hover {
   background: #2b2f30;
 }
-/* line 265, ../../../src/theme/sass/components/_playlists.scss */
+/* line 266, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item .del {
   display: none;
 }
-/* line 268, ../../../src/theme/sass/components/_playlists.scss */
+/* line 269, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item.open {
   height: auto;
   background: #6e7374;
 }
-/* line 271, ../../../src/theme/sass/components/_playlists.scss */
+/* line 272, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item.open .name {
   background: rgba(235, 236, 236, 0.4);
   font-weight: bold;
   color: #fff;
 }
-/* line 276, ../../../src/theme/sass/components/_playlists.scss */
+/* line 277, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item.open .del {
   display: block;
   position: absolute;
@@ -4955,11 +4955,11 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   font-size: 15px;
   cursor: pointer;
 }
-/* line 288, ../../../src/theme/sass/components/_playlists.scss */
+/* line 289, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item.open .del:hover {
   color: #eeeeee;
 }
-/* line 292, ../../../src/theme/sass/components/_playlists.scss */
+/* line 293, ../../../src/theme/sass/components/_playlists.scss */
 .custom-lists li.list-item.open .meta {
   display: inline;
 }

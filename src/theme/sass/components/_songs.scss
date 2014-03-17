@@ -45,6 +45,7 @@
         padding: 6px 12px 6px;
         margin-right: 2px;
         @include border-radius(0);
+        z-index: 1;
 
         &:hover {
           color: #333;
