@@ -1759,79 +1759,79 @@ body.fixed-header #search-box {
   display: none;
 }
 /* line 385, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li {
+#sidebar-first .file-lists li {
   position: relative;
 }
 /* line 387, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li .file-item {
+#sidebar-first .file-lists li .file-item {
   padding: 5px 10px;
   border-bottom: 1px solid #ddd;
   color: #777;
   cursor: pointer;
 }
 /* line 392, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li .file-item img {
+#sidebar-first .file-lists li .file-item img {
   float: left;
   width: 30px;
   height: 30px;
   margin: -5px 10px 0 -10px;
 }
 /* line 398, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li .file-item:hover {
+#sidebar-first .file-lists li .file-item:hover {
   color: #444;
 }
 /* line 402, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li.loading {
+#sidebar-first .file-lists li.loading {
   background-image: url('../images/loader.gif?1387808230');
   background-position: 98% 6px;
   background-repeat: no-repeat;
 }
 /* line 408, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li.lowest > .file-item {
+#sidebar-first .file-lists li.lowest > .file-item {
   background-color: #2b2f30;
   color: #fff;
 }
 /* line 411, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li.lowest > .file-item .file-actions {
+#sidebar-first .file-lists li.lowest > .file-item .file-actions {
   display: block;
 }
 /* line 413, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li.lowest > .file-item .file-actions .btn {
+#sidebar-first .file-lists li.lowest > .file-item .file-actions .btn {
   color: #fff !important;
 }
 /* line 419, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li.lowest ul {
+#sidebar-first .file-lists li.lowest ul {
   background-color: #f1f1f1;
 }
 /* line 423, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li ul {
+#sidebar-first .file-lists li ul {
   padding-left: 13px;
 }
 /* line 425, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li ul li {
+#sidebar-first .file-lists li ul li {
   border-left: 2px solid #ddd;
 }
 /* line 430, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li .file-actions {
+#sidebar-first .file-lists li .file-actions {
   position: absolute;
   right: 5px;
   top: 0;
   display: none;
 }
 /* line 435, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li .file-actions .btn {
+#sidebar-first .file-lists li .file-actions .btn {
   height: 30px;
   padding: 0px 7px;
   margin: 0;
   font-size: 12px;
 }
 /* line 443, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li .show-actions .file-actions {
+#sidebar-first .file-lists li .show-actions .file-actions {
   right: 30px;
   display: block;
 }
 /* line 446, ../../../src/theme/sass/components/_regions.scss */
-#sidebar-first ul.files-list li .show-actions .file-actions .btn {
+#sidebar-first .file-lists li .show-actions .file-actions .btn {
   font-size: 110%;
   color: #777;
 }

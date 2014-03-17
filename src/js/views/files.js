@@ -14,38 +14,53 @@ app.FilesView = Backbone.View.extend({
     this.$el.empty();
 
     var $content = $('#content'),
+      self = this,
       $filesContainer = $('#files-container', $content),
       $fc = $('<ul class="files-music"></ul>');
 
+    // if no sidebar render the entire page and sources
     if($filesContainer.length === 0){
+
+      // Init
       $content.html(this.template(this.model));
-    }
+      var $sideContainer = $('<ul class="file-lists"></ul>');
 
-    this.model.models.sort(function(a,b){
-      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
-    });
+      // sources append
+      _.each(this.model.models, function (file) {
+        $sideContainer.append(new app.FileView({model:file}).render().el);
+      });
 
-    _.each(this.model.models, function (file) {
+      app.helpers.setFirstSidebarContent($sideContainer);
 
-      if(file.attributes.filetype === '' || file.attributes.filetype == 'directory'){
-        // is a dir
-        this.$el.append(new app.FileView({model:file}).render().el);
-      } else {
-        // is a file
-        $fc.append(new app.FileView({model:file}).render().el);
-      }
-
-    }, this);
-
-    if($fc.html() !== ''){
-      $filesContainer.html($fc);
     } else {
-      $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
+      // Returning a renderable list
+
+      // Sort
+      self.model.models.sort(function(a,b){
+        return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
+      });
+
+      _.each(this.model.models, function (file) {
+
+        if(file.attributes.filetype === '' || file.attributes.filetype == 'directory'){
+          // is a dir
+          this.$el.append(new app.FileView({model:file}).render().el);
+        } else {
+          // is a file
+          $fc.append(new app.FileView({model:file}).render().el);
+        }
+
+      }, this);
+
+      if($fc.html() !== ''){
+        $filesContainer.html($fc);
+      } else {
+        $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
+      }
     }
 
     return this;
   }
-
 
 });
 
@@ -102,10 +117,13 @@ app.FileView = Backbone.View.extend({
   },
 
   render:function () {
+    var model = this.model.attributes;
+    // title
+    model.title = (model.title === undefined ? model.name : model.title);
     // render
-    this.$el.html(this.template(this.model.attributes));
+    this.$el.html(this.template(model));
     // post process file
-    this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, this.model.attributes);
+    this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, model);
     return this;
   },
 

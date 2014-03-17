@@ -11,7 +11,7 @@ app.FileCollection = Backbone.Collection.extend({
 
       if(options.name == 'sources'){
         // Get Sources
-        this.getSources(options.success);
+        this.getAllSources(options.success);
       } else if(options.name == 'addons'){
         // Get addons
         this.getAddonSources(options.success);
@@ -23,15 +23,28 @@ app.FileCollection = Backbone.Collection.extend({
     }
   },
 
-  getSources: function(callback){
-    var self = this;
+  getAllSources: function(callback){
+    var self = this,
+      commands = [],
+      ret;
 
-    app.xbmcController.command('Files.GetSources', ['music'], function(res){
-      // add a title before return
-      var sources = self.parseData(res.result.sources);
-      callback(sources);
+    // Get Addons First
+    self.getAddonSources(function(addonsResult){
+
+      // Then get sources
+      commands.push({method: 'Files.GetSources', params: ['music']});
+      commands.push({method: 'Files.GetSources', params: ['video']});
+
+      // run second lot
+      app.xbmcController.multipleCommand(commands, function(res){
+        ret = [];
+        ret = ret.concat(self.parseData(res[0].result.sources));
+        ret = ret.concat(self.parseData(res[1].result.sources));
+        ret = ret.concat(self.parseData(addonsResult));
+        callback(ret);
+      });
+
     });
-
   },
 
   //get addon sources
@@ -69,9 +82,6 @@ app.FileCollection = Backbone.Collection.extend({
       }
 
       if(models[i].filetype == 'directory'){
-//        var f = models[i].file.split('/'),
-//          foo = f.pop(),
-//          name = f.pop();
         models[i].title = models[i].label;
       } else {
         models[i].type = 'file';
@@ -91,9 +101,6 @@ app.FileCollection = Backbone.Collection.extend({
 
     return models;
   }
-
-
-
 
 });
 

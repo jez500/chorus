@@ -548,44 +548,28 @@ app.Router = Backbone.Router.extend({
 
   },
 
+
   /**
    * Files page
    */
   files: function(){
 
-
+    // Get collection and Sources
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":'sources', "success": function(sources){
+    app.cached.fileCollection.fetch({'name': 'sources', 'success': function(sources){
 
-      app.cached.fileAddonCollection = new app.FileCollection();
-      app.cached.fileAddonCollection.fetch({"name":'addons', "success": function(addons){
+      // title / menu
+      app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
+      app.shellView.selectMenuItem('files', 'sidebar');
 
-        // set menu
-        app.shellView.selectMenuItem('files', 'sidebar');
-
-        // render page
-        app.cached.filesView = new app.FilesView({"model":sources});
-        var el = app.cached.filesView.render().$el;
-
-        // append addons
-        app.cached.filesAddonsView = new app.FilesView({"model":addons});
-        if(addons.length > 0){
-          el.append('<h3 class="sidebar-title">Addons</h3>');
-          el.append(app.cached.filesAddonsView.render().$el);
-        }
-
-
-        app.helpers.setFirstSidebarContent(el);
-
-        app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
-
-      }});
+      // the view writes to content,
+      app.cached.filesView = new app.FilesView({"model":sources});
+      app.cached.filesView.render();
 
     }});
 
-
-
   },
+
 
   /**
    * playlist

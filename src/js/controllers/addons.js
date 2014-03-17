@@ -20,16 +20,20 @@ app.addOns.getSources = function(callback){
 
     // parse
     for(var i in sources){
-      var item = sources[i];
+      var item = sources[i], defaults = {};
       if(item.enabled){
-        item.file = 'plugin://' + item.addonid + '/';
-        item.title = item.name;
-        item.filetype = 'directory';
-        item.id = item.addonid;
+        // extend
+        defaults = {
+          file: 'plugin://' + item.addonid + '/',
+          title: item.name,
+          filetype: 'directory',
+          id: item.addonid,
+          sourcetype: 'addon'
+        };
+        item = $.extend(item, defaults);
         addons.push(item);
       }
     }
-
     app.cached.addonSources = addons;
 
     if(callback){
