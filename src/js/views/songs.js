@@ -74,7 +74,7 @@ app.SongView = Backbone.View.extend({
       });
     } else {
       app.playlists.changePlaylistView('xbmc');
-      app.AudioController.insertAndPlaySong('songid', song.songid, function(){
+      app.AudioController.insertAndPlay('songid', song.songid, function(){
         app.notification(song.label + ' added to the playlist');
         app.AudioController.playlistRender();
       });

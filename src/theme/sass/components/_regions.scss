@@ -416,14 +416,16 @@ body.fixed-header {
           }
         }
 
-        ul {
+        ul li {
           background-color: #f1f1f1;
         }
       }
       ul {
         padding-left: 13px;
+        background: #ddd;
         li {
-          border-left: 2px solid #ddd;
+          border-left: 0px solid #ddd;
+          background: #f9f9f9;
         }
 
       }

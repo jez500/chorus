@@ -809,6 +809,17 @@ app.playlists.isAnyThumbsUp = function(){
   return (tu !== null);
 };
 
+
+
+
+
+
+/***********************
+ * XBMC Playlist helpers
+ ************************/
+
+
+
 /**
  * XBMC Playlist
  *
@@ -835,6 +846,35 @@ app.playlists.getXbmcPlaylist = function(playlistId, callback){
     });
 
 
+};
+
+/**
+ * Clear a XBMC Playlist
+ *
+ * @param playlistId
+ * @param callback
+ */
+app.playlists.playlistClear = function(playlistId, callback){
+  // clear playlist
+  app.xbmcController.command('Playlist.Clear', [playlistId], function(data){
+    if(callback){
+      callback(data);
+    }
+  });
+};
+
+
+/**
+ * Play an item on a XBMC Playlist
+ *
+ * @param playlistId
+ * @param position
+ * @param callback
+ */
+app.playlists.playlistPlayPosition = function(playlistId, position, callback){
+  app.xbmcController.command('Player.Open', [{"playlistid": playlistId,"position":position}], function(result){
+    callback(result.result); // return items
+  });
 };
 
 
@@ -922,6 +962,53 @@ app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
 
   });
 };
+
+
+/**
+ * Inserts a song in the playlist next and starts playing that song
+ *
+ * @param playlistId
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.playlists.insertAndPlay = function(playlistId, type, id, callback){
+
+  var player = app.playlists.getNowPlaying('player'),
+    playingPos = (typeof player.position != 'undefined' ? player.position : 0),
+    pos = playingPos + 1,
+    insert = {};
+
+  insert[type] = id;
+
+  // if nothing is playing, we will clear the playlist first
+  if(app.playlists.getNowPlaying('status') == 'notPlaying' || app.playlists.getNowPlaying('status') == 'stopped'){
+    // clear
+    app.playlists.playlistClear(playlistId, function(){
+      // insert
+      app.xbmcController.command('Playlist.Insert', [playlistId, pos, insert], function(data){
+        // play
+        app.playlists.playlistPlayPosition(playlistId, pos, function(){
+          if(callback){
+            callback(data);
+          }
+        });
+      });
+    });
+  } else {
+    // playing, insert
+    app.xbmcController.command('Playlist.Insert', [playlistId, pos, insert], function(data){
+      // play
+      app.playlists.playlistPlayPosition(playlistId, pos, function(){
+        if(callback){
+          callback(data);
+        }
+      });
+    });
+  }
+
+};
+
 
 
 /**

@@ -377,13 +377,7 @@ app.TvshowView = Backbone.View.extend({
     e.preventDefault();
     var player = $(e.target).data('player');
 
-    // open the window
-    var win = window.open("videoPlayer.html?player=" + player, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
-
-    // get the url and send the player window to it
-    app.AudioController.downloadFile(this.model.attributes.file, function(url){
-      win.location = "videoPlayer.html?player=" + player + "&src=" + encodeURIComponent(url);
-    });
+    app.VideoController.stream(player, this.model.attributes);
 
   }
 
@@ -465,9 +459,6 @@ app.TvSeasonListItemView = Backbone.View.extend({
       isEp = (m.type == 'episode');
 
     m.watched = app.VideoController.watchedStatus(m);
-
-
-    console.log(m);
 
     // toggle subtext based on type
     m.subText = (isEp ? 'Episode ' + m.episode : m.episode + ' Episodes');

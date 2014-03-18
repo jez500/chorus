@@ -195,43 +195,13 @@ app.AudioController.playSongById = function(songid, type, id, clearList){
 
 
 /**
- * Inserts a song in the playlist next and starts playing that song
+ * Insert and play
+ * @param type
+ * @param id
+ * @param callback
  */
-app.AudioController.insertAndPlaySong = function(type, id, callback){
-
-  var player = app.playlists.getNowPlaying('player'),
-      playingPos = (typeof player.position != 'undefined' ? player.position : 0),
-      pos = playingPos + 1,
-      insert = {};
-
-  insert[type] = id;
-
-  // if nothing is playing, we will clear the playlist first
-  if(app.playlists.getNowPlaying('status') == 'notPlaying'){
-    // clear
-    app.AudioController.playlistClear(function(){
-      // insert
-      app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
-        // play
-        app.AudioController.playPlaylistPosition(pos, function(){
-          if(callback){
-            callback(data);
-          }
-        });
-      });
-    });
-  } else {
-    // playing, insert
-    app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
-      // play
-      app.AudioController.playPlaylistPosition(pos, function(){
-        if(callback){
-          callback(data);
-        }
-      });
-    });
-  }
-
+app.AudioController.insertAndPlay = function(type, id, callback){
+  app.playlists.insertAndPlay(app.AudioController.playlistId, type, id, callback);
 };
 
 

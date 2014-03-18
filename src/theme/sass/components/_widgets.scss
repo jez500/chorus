@@ -127,6 +127,12 @@ input[type="text"] {
         padding: 6px 10px;
         cursor: pointer;
         border-bottom: 1px solid #4a4f50;
+        a {
+          text-decoration: none;
+          padding: 6px 10px;
+          display: block;
+          margin: -6px -10px;
+        }
         &:last-child {
           border-bottom: 0;
         }

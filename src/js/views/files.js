@@ -6,6 +6,13 @@ app.FilesView = Backbone.View.extend({
 
   initialize:function () {
 
+    // get a mixed view for titles and icons
+    this.mixedView = new app.MixedView({model: {key: 'filesPage'}});
+
+  },
+
+  events: {
+    "click .entity-heading": "sidebarToggleContent"
   },
 
 
@@ -16,18 +23,24 @@ app.FilesView = Backbone.View.extend({
     var $content = $('#content'),
       self = this,
       $filesContainer = $('#files-container', $content),
-      $fc = $('<ul class="files-music"></ul>');
+      $fc = $('<ul class="files-music"></ul>'),
+      $sideContainer = $('<ul class="file-lists"></div>');
 
     // if no sidebar render the entire page and sources
     if($filesContainer.length === 0){
 
       // Init
       $content.html(this.template(this.model));
-      var $sideContainer = $('<ul class="file-lists"></ul>');
 
       // sources append
       _.each(this.model.models, function (file) {
-        $sideContainer.append(new app.FileView({model:file}).render().el);
+        // headings
+        if(file.attributes.type == 'heading'){
+          $sideContainer.append(self.mixedView.getHeading(file.attributes.id, file.attributes.id));
+        } else {
+          // sources
+          $sideContainer.append(new app.FileView({model:file}).render().el);
+        }
       });
 
       app.helpers.setFirstSidebarContent($sideContainer);
@@ -55,11 +68,17 @@ app.FilesView = Backbone.View.extend({
       if($fc.html() !== ''){
         $filesContainer.html($fc);
       } else {
-        $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
+        $filesContainer.html('<p class="loading-box">No media found in this folder</p>');
       }
     }
 
     return this;
+  },
+
+
+  sidebarToggleContent: function(e){
+    var $el = $(e.target);
+
   }
 
 });
@@ -130,14 +149,52 @@ app.FileView = Backbone.View.extend({
 
   /**
    * Contextual Menu
+   * @TODO add context menu for video
+   *
    * @param e
    */
   menu: function(e){
-    this.model.attributes.label = this.model.attributes.title;
-    app.helpers.menuDialog( app.helpers.menuTemplates('song', this.model.attributes) );
+
+    e.preventDefault();
+    var file = this.model.attributes,
+      self = this;
+    app.AudioController.downloadFile(file.file, function(url){
+      if(file.sourcetype == 'music'){
+        file.label = file.title;
+        app.helpers.menuDialog( app.helpers.menuTemplates('song', file) );
+      } else {
+          file.downloadUrl = url;
+          app.helpers.menuDialog( self.getVideoDialog(file ));
+      }
+    });
+  },
+
+  getVideoDialog: function(model){
+
+    return {
+      title: model.label,
+      key: 'video',
+      omitwrapper: true,
+      items: [
+        {url: '#', class: 'video-download', title: '<a target="_blank" href="/' + model.url + '">Download</a>', callback: function(){
+          // do nothing, url in a tag
+          // window.location = url;
+        }},
+        {url: '#', class: 'video-stream', title: 'Stream Video', callback: function(){
+          app.VideoController.stream('html5', model);
+
+        }}
+      ]
+    };
+
   },
 
 
+  /**
+   * Dir was clicked
+   *
+   * @param e
+   */
   clickDir:function(e){
     e.stopPropagation();
 
@@ -153,7 +210,7 @@ app.FileView = Backbone.View.extend({
     $this.addClass('loading');
 
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":dir, "success": function(res){
+    app.cached.fileCollection.fetch({"sourcetype": file.sourcetype, "name":dir, "success": function(res){
 
       // render content and get sidebar updated content
       var el = new app.FilesView({"model":res}).render().$el;
@@ -173,22 +230,44 @@ app.FileView = Backbone.View.extend({
   },
 
 
+  /**
+   * If the file has an id
+   * @param file
+   * @returns {{key: string, value: string}}
+   */
+  fileGetTypeId: function(file){
+
+    var ret = {
+      key: 'file',
+      value: file.file
+    };
+
+    if(file.type == 'album' ||
+      file.type == 'artist' ||
+      file.type == 'song' ||
+      file.type == 'movie' ||
+      file.type == 'episode'){
+
+        ret.key = file.type + 'id';
+        ret.value = file.id;
+    }
+
+    return ret;
+  },
+
+
   playDir:function(e){
     e.stopPropagation();
 
     var file = this.model.attributes,
-      key = 'file',
-      value = file.file;
+      controller = app[file.controller],
+      typeid = this.fileGetTypeId(file);
 
-    if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
-      key = file.type + 'id';
-      value = file.id;
-    }
-
-    app.AudioController.insertAndPlaySong(key, value, function(result){
+    controller.insertAndPlay(typeid.key, typeid.value, function(result){
       app.notification(file.label + ' added to the playlist');
-      app.AudioController.playlistRender();
+      controller.playlistRender();
     });
+
   },
 
 
@@ -197,17 +276,12 @@ app.FileView = Backbone.View.extend({
     e.stopPropagation();
 
     var file = this.model.attributes,
-      key = 'file',
-      value = file.file;
+      typeid = this.fileGetTypeId(file),
+      controller = app[file.controller];
 
-    if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
-      key = file.type + 'id';
-      value = file.id;
-    }
-
-    app.AudioController.playlistAdd( key, value, function(result){
+    controller.playlistAdd( typeid.key, typeid.value, function(result){
       app.notification(file.label + ' added to the playlist');
-      app.AudioController.playlistRender();
+      controller.playlistRender();
     });
 
   },

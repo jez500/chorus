@@ -98,6 +98,28 @@
   }
 }
 
+#sidebar-first {
+  h3.entity-heading {
+    height: 40px;
+    line-height: 40px;
+    margin: 0;
+    padding: 0;
+    .entity-icon {
+      background: none;
+      color: #ccc;
+      height: 40px;
+      width: 35px;
+      text-align: left;
+      line-height: 40px;
+      padding: 0 0px 0 5px;
+      margin: 0;
+    }
+  }
+}
+
+
+
+
 // Search
 #search-songs {
   margin-top: 0px;

@@ -15576,44 +15576,28 @@ app.Router = Backbone.Router.extend({
 
   },
 
+
   /**
    * Files page
    */
   files: function(){
 
-
+    // Get collection and Sources
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":'sources', "success": function(sources){
+    app.cached.fileCollection.fetch({'name': 'sources', 'success': function(sources){
 
-      app.cached.fileAddonCollection = new app.FileCollection();
-      app.cached.fileAddonCollection.fetch({"name":'addons', "success": function(addons){
+      // title / menu
+      app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
+      app.shellView.selectMenuItem('files', 'sidebar');
 
-        // set menu
-        app.shellView.selectMenuItem('files', 'sidebar');
-
-        // render page
-        app.cached.filesView = new app.FilesView({"model":sources});
-        var el = app.cached.filesView.render().$el;
-
-        // append addons
-        app.cached.filesAddonsView = new app.FilesView({"model":addons});
-        if(addons.length > 0){
-          el.append('<h3 class="sidebar-title">Addons</h3>');
-          el.append(app.cached.filesAddonsView.render().$el);
-        }
-
-
-        app.helpers.setFirstSidebarContent(el);
-
-        app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
-
-      }});
+      // the view writes to content,
+      app.cached.filesView = new app.FilesView({"model":sources});
+      app.cached.filesView.render();
 
     }});
 
-
-
   },
+
 
   /**
    * playlist
@@ -16471,16 +16455,21 @@ app.addOns.getSources = function(callback){
 
     // parse
     for(var i in sources){
-      var item = sources[i];
+      var item = sources[i], defaults = {};
       if(item.enabled){
-        item.file = 'plugin://' + item.addonid + '/';
-        item.title = item.name;
-        item.filetype = 'directory';
-        item.id = item.addonid;
+        // extend
+        defaults = {
+          file: 'plugin://' + item.addonid + '/',
+          title: item.name,
+          filetype: 'directory',
+          id: item.addonid,
+          sourcetype: 'addons',
+          playlistId: app.AudioController.playlistId
+        };
+        item = $.extend(item, defaults);
         addons.push(item);
       }
     }
-
     app.cached.addonSources = addons;
 
     if(callback){
@@ -18629,31 +18618,32 @@ app.playlists.replaceCustomPlayList = function(listId, items){
   // thumbs up - only songs are sortable
   if(listId == 'thumbsup'){
 
-//    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
-//
-//    lists.song = {items: items};
-//
-//    // Save
-//    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
+    lists = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
 
-    return;
-  }
+    lists.song = {items: items};
 
-  // Get a full list then update our specific list
-  listId = parseInt(listId);
-  lists = app.playlists.getCustomPlaylist();
+    // Save
+    app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
 
-  if(items.length > 0){
-    for(var i in lists){
-      // if matching list, update
-      if(lists[i].id == listId){
-        lists[i].items = items;
+  } else {
+
+    // Get a full list then update our specific list
+    listId = parseInt(listId);
+    lists = app.playlists.getCustomPlaylist();
+
+    if(items.length > 0){
+      for(var i in lists){
+        // if matching list, update
+        if(lists[i].id == listId){
+          lists[i].items = items;
+        }
       }
     }
-  }
 
-  // Save
-  app.storageController.setStorage(app.playlists.storageKeyLists, lists);
+    // Save
+    app.storageController.setStorage(app.playlists.storageKeyLists, lists);
+
+  }
 
 };
 
@@ -18687,7 +18677,8 @@ app.playlists.getDropdown = function(){
 
   return app.helpers.makeDropdown({
     key: type,
-    items: items
+    items: items,
+    pull: 'right'
   });
 
 };
@@ -19077,6 +19068,49 @@ app.VideoController.playPlaylistPosition = function(position, callback ){
     callback(result.result); // return items
   });
 };
+
+
+/**
+ * Inserts a song in the playlist next and starts playing that song
+ * @TODO REFACTOR!
+ */
+app.VideoController.insertAndPlaySong = function(type, id, callback){
+
+  var player = app.playlists.getNowPlaying('player'),
+    playingPos = (typeof player.position != 'undefined' ? player.position : 0),
+    pos = playingPos + 1,
+    insert = {};
+
+  insert[type] = id;
+
+  // if nothing is playing, we will clear the playlist first
+  if(app.playlists.getNowPlaying('status') == 'notPlaying'){
+    // clear
+    app.VideoController.playlistClear(function(){
+      // insert
+      app.xbmcController.command('Playlist.Insert', [app.VideoController.playlistId,pos,insert], function(data){
+        // play
+        app.VideoController.playPlaylistPosition(pos, function(){
+          if(callback){
+            callback(data);
+          }
+        });
+      });
+    });
+  } else {
+    // playing, insert
+    app.xbmcController.command('Playlist.Insert', [app.VideoController.playlistId,pos,insert], function(data){
+      // play
+      app.VideoController.playPlaylistPosition(pos, function(){
+        if(callback){
+          callback(data);
+        }
+      });
+    });
+  }
+
+};
+
 
 
 
@@ -20898,7 +20932,7 @@ app.FileCollection = Backbone.Collection.extend({
 
       if(options.name == 'sources'){
         // Get Sources
-        this.getSources(options.success);
+        this.getAllSources(options.success);
       } else if(options.name == 'addons'){
         // Get addons
         this.getAddonSources(options.success);
@@ -20910,15 +20944,32 @@ app.FileCollection = Backbone.Collection.extend({
     }
   },
 
-  getSources: function(callback){
-    var self = this;
+  getAllSources: function(callback){
+    var self = this,
+      commands = [],
+      ret;
 
-    app.xbmcController.command('Files.GetSources', ['music'], function(res){
-      // add a title before return
-      var sources = self.parseData(res.result.sources);
-      callback(sources);
+    // Get Addons First
+    self.getAddonSources(function(addonsResult){
+
+      // Then get sources
+      commands.push({method: 'Files.GetSources', params: ['music']});
+      commands.push({method: 'Files.GetSources', params: ['video']});
+
+      // execute commands, this is a bit rough as I insert headings as models and
+      // render differently in the view
+      app.xbmcController.multipleCommand(commands, function(res){
+        ret = [];
+        ret = ret.concat([{type: 'heading', id: 'music', filetype: 'heading'}]);
+        ret = ret.concat(self.parseData(res[0].result.sources, 'music'));
+        ret = ret.concat([{type: 'heading', id: 'video', filetype: 'heading'}]);
+        ret = ret.concat(self.parseData(res[1].result.sources, 'video'));
+        ret = ret.concat([{type: 'heading', id: 'addons', filetype: 'heading'}]);
+        ret = ret.concat(addonsResult);
+        callback(ret);
+      });
+
     });
-
   },
 
   //get addon sources
@@ -20944,7 +20995,7 @@ app.FileCollection = Backbone.Collection.extend({
    * @param models
    * @returns {*}
    */
-  parseData: function(models){
+  parseData: function(models, type){
     for(var i in models){
 
       if(typeof models[i].filetype == 'undefined' || models[i].filetype === ''){
@@ -20956,9 +21007,6 @@ app.FileCollection = Backbone.Collection.extend({
       }
 
       if(models[i].filetype == 'directory'){
-//        var f = models[i].file.split('/'),
-//          foo = f.pop(),
-//          name = f.pop();
         models[i].title = models[i].label;
       } else {
         models[i].type = 'file';
@@ -20972,15 +21020,16 @@ app.FileCollection = Backbone.Collection.extend({
         models[i].thumbnail = '';
       }
 
+      // set controller based on type (music/video)
+      models[i].controller = (type == 'music' ? 'AudioController' : 'VideoController');
+      models[i].sourcetype = type;
+
       // let addons tinker
       models[i] = app.addOns.invokeAll('parseFileRecord', models[i]);
     }
 
     return models;
   }
-
-
-
 
 });
 
@@ -21799,7 +21848,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
       update: function( event, ui ) {
         var list = [],
           listId = app.helpers.arg(0) == 'thumbsup' ? 'thumbsup' : app.helpers.arg(1),
-          $container = $('ul.playlist-song-list');
+          $container = $('ul.playlist-song-list, ul.song-thumbsup-list');
 
         // recreate the list using the original list + pos to rebuild
         $container.find('div.playlist-item').each(function(i,d){
@@ -22136,6 +22185,9 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
   initialize:function () {
 
+    // get a mixed view for titles and icons
+    this.mixedView = new app.MixedView({model: {key: 'filesPage'}});
+
   },
 
 
@@ -22144,38 +22196,59 @@ app.CustomPlaylistSongView = Backbone.View.extend({
     this.$el.empty();
 
     var $content = $('#content'),
+      self = this,
       $filesContainer = $('#files-container', $content),
       $fc = $('<ul class="files-music"></ul>');
 
+    // if no sidebar render the entire page and sources
     if($filesContainer.length === 0){
+
+      // Init
       $content.html(this.template(this.model));
-    }
+      var $sideContainer = $('<ul class="file-lists"></ul>');
 
-    this.model.models.sort(function(a,b){
-      return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
-    });
+      // sources append
+      _.each(this.model.models, function (file) {
+        // headings
+        if(file.attributes.type == 'heading'){
+          $sideContainer.append(self.mixedView.getHeading(file.attributes.id, file.attributes.id));
+        } else {
+          // sources
+          $sideContainer.append(new app.FileView({model:file}).render().el);
+        }
+      });
 
-    _.each(this.model.models, function (file) {
+      app.helpers.setFirstSidebarContent($sideContainer);
 
-      if(file.attributes.filetype === '' || file.attributes.filetype == 'directory'){
-        // is a dir
-        this.$el.append(new app.FileView({model:file}).render().el);
-      } else {
-        // is a file
-        $fc.append(new app.FileView({model:file}).render().el);
-      }
-
-    }, this);
-
-    if($fc.html() !== ''){
-      $filesContainer.html($fc);
     } else {
-      $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
+      // Returning a renderable list
+
+      // Sort
+      self.model.models.sort(function(a,b){
+        return app.helpers.aphabeticalSort(a.attributes.title, b.attributes.title);
+      });
+
+      _.each(this.model.models, function (file) {
+
+        if(file.attributes.filetype === '' || file.attributes.filetype == 'directory'){
+          // is a dir
+          this.$el.append(new app.FileView({model:file}).render().el);
+        } else {
+          // is a file
+          $fc.append(new app.FileView({model:file}).render().el);
+        }
+
+      }, this);
+
+      if($fc.html() !== ''){
+        $filesContainer.html($fc);
+      } else {
+        $filesContainer.html('<p class="loading-box">No music found in this folder</p>');
+      }
     }
 
     return this;
   }
-
 
 });
 
@@ -22232,10 +22305,13 @@ app.FileView = Backbone.View.extend({
   },
 
   render:function () {
+    var model = this.model.attributes;
+    // title
+    model.title = (model.title === undefined ? model.name : model.title);
     // render
-    this.$el.html(this.template(this.model.attributes));
+    this.$el.html(this.template(model));
     // post process file
-    this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, this.model.attributes);
+    this.$el = app.addOns.invokeAll('postProcessFileView', this.$el, model);
     return this;
   },
 
@@ -22290,17 +22366,20 @@ app.FileView = Backbone.View.extend({
 
     var file = this.model.attributes,
       key = 'file',
-      value = file.file;
+      value = file.file,
+      controller = app[file.controller];
 
     if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
       key = file.type + 'id';
       value = file.id;
     }
 
-    app.AudioController.insertAndPlaySong(key, value, function(result){
+
+    controller.insertAndPlaySong(key, value, function(result){
       app.notification(file.label + ' added to the playlist');
-      app.AudioController.playlistRender();
+      controller.playlistRender();
     });
+
   },
 
 
@@ -22310,16 +22389,17 @@ app.FileView = Backbone.View.extend({
 
     var file = this.model.attributes,
       key = 'file',
-      value = file.file;
+      value = file.file,
+      controller = app[file.controller];
 
     if(file.type == 'album' || file.type == 'artist' || file.type == 'song'){
       key = file.type + 'id';
       value = file.id;
     }
 
-    app.AudioController.playlistAdd( key, value, function(result){
+    controller.playlistAdd( key, value, function(result){
       app.notification(file.label + ' added to the playlist');
-      app.AudioController.playlistRender();
+      controller.playlistRender();
     });
 
   },
@@ -22374,6 +22454,8 @@ app.MixedView = Backbone.View.extend({
   entities: ['artist', 'album', 'song', 'movie', 'tvshow'],
 
   icons: {
+    music: 'fa-music',
+    video: 'fa-film',
     song: 'fa-music',
     artist: 'fa-microphone',
     album: 'fa-th-large',

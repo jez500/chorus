@@ -13,6 +13,7 @@ app.addOns = {addon: {}};
 
 app.addOns.getSources = function(callback){
 
+  // @TODO make work with video addons
   app.xbmcController.command('Addons.GetAddons', ['xbmc.addon.audio', 'unknown', 'all', ["name", "thumbnail", "enabled"]], function(res){
     // add a title before return
     var sources = res.result.addons,
@@ -28,7 +29,8 @@ app.addOns.getSources = function(callback){
           title: item.name,
           filetype: 'directory',
           id: item.addonid,
-          sourcetype: 'addon'
+          sourcetype: 'music', // @TODO make work with video addons
+          playlistId: app.AudioController.playlistId
         };
         item = $.extend(item, defaults);
         addons.push(item);

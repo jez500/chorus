@@ -17,7 +17,7 @@ app.FileCollection = Backbone.Collection.extend({
         this.getAddonSources(options.success);
       } else {
         // Get Dir
-        this.getDirectory(options.name, options.success);
+        this.getDirectory(options.sourcetype, options.name, options.success);
       }
 
     }
@@ -35,12 +35,16 @@ app.FileCollection = Backbone.Collection.extend({
       commands.push({method: 'Files.GetSources', params: ['music']});
       commands.push({method: 'Files.GetSources', params: ['video']});
 
-      // run second lot
+      // execute commands, this is a bit rough as I insert headings as models and
+      // render differently in the view
       app.xbmcController.multipleCommand(commands, function(res){
         ret = [];
-        ret = ret.concat(self.parseData(res[0].result.sources));
-        ret = ret.concat(self.parseData(res[1].result.sources));
-        ret = ret.concat(self.parseData(addonsResult));
+        ret = ret.concat([{type: 'heading', id: 'music', filetype: 'heading'}]);
+        ret = ret.concat(self.parseData(res[0].result.sources, 'music'));
+        ret = ret.concat([{type: 'heading', id: 'video', filetype: 'heading'}]);
+        ret = ret.concat(self.parseData(res[1].result.sources, 'video'));
+        ret = ret.concat([{type: 'heading', id: 'addons', filetype: 'heading'}]);
+        ret = ret.concat(addonsResult);
         callback(ret);
       });
 
@@ -52,12 +56,12 @@ app.FileCollection = Backbone.Collection.extend({
     app.addOns.getSources(callback);
   },
 
-  getDirectory: function(dir, callback){
+  getDirectory: function(type, dir, callback){
     var self = this;
 
-    app.xbmcController.command('Files.GetDirectory', [dir, 'music', app.fileFields,  {"method": "title", "order": "ascending"}], function(res){
+    app.xbmcController.command('Files.GetDirectory', [dir, type, app.fileFields,  {"method": "title", "order": "ascending"}], function(res){
 
-      var files = self.parseData(res.result.files);
+      var files = self.parseData(res.result.files, type);
 
       callback(files);
 
@@ -70,33 +74,43 @@ app.FileCollection = Backbone.Collection.extend({
    * @param models
    * @returns {*}
    */
-  parseData: function(models){
+  parseData: function(models, type){
     for(var i in models){
+      var m = models[i];
 
-      if(typeof models[i].filetype == 'undefined' || models[i].filetype === ''){
-        models[i].filetype = 'directory';
+      if(typeof m.filetype == 'undefined' || m.filetype === ''){
+        m.filetype = 'directory';
       }
 
-      if(typeof models[i].id == 'undefined' || models[i].id === 0){
-        models[i].id = models[i].file;
+      if(typeof m.id == 'undefined' || m.id === 0){
+        m.id = m.file;
       }
 
-      if(models[i].filetype == 'directory'){
-        models[i].title = models[i].label;
+      // is dir
+      if(m.filetype == 'directory'){
+        m.title = m.label;
       } else {
-        models[i].type = 'file';
+        // is a playable item
+        m[m.type + 'id'] = m.id;
       }
 
-      if(typeof models[i].title == 'undefined' || models[i].title === ''){
-        models[i].title = models[i].label;
+      if(typeof m.title == 'undefined' || m.title === ''){
+        m.title = m.label;
       }
 
-      if(typeof models[i].thumbnail == 'undefined'){
-        models[i].thumbnail = '';
+      // set controller based on type (music/video)
+      m.controller = (type == 'music' ? 'AudioController' : 'VideoController');
+      m.sourcetype = type;
+
+      if(type == 'video' && m.type == 'movie'){
+        m.filetype = 'file';
       }
 
       // let addons tinker
-      models[i] = app.addOns.invokeAll('parseFileRecord', models[i]);
+      m = app.addOns.invokeAll('parseFileRecord', m);
+
+      // set
+      models[i] = m;
     }
 
     return models;

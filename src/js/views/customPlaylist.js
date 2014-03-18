@@ -343,7 +343,7 @@ app.CustomPlaylistSongView = Backbone.View.extend({
      key = app.helpers.getSongKey(song);
 
     app.playlists.changePlaylistView('xbmc');
-    app.AudioController.insertAndPlaySong(key.type, key.id, function(){
+    app.AudioController.insertAndPlay(key.type, key.id, function(){
       app.notification(song.label + ' added to the playlist');
       app.AudioController.playlistRender();
     });

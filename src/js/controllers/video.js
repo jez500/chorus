@@ -59,15 +59,36 @@ app.VideoController.addToPlaylist = function(id, type, position, callback ){
 
 
 /**
+ * Wrapper for addToPlaylist to be interchangeable with AudioController
+ *
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.VideoController.playlistAdd = function(type, id, callback){
+  app.VideoController.addToPlaylist(id, type, 'add', callback);
+};
+
+
+/**
  * Play something from playlist
  *
  * @param position
  * @param callback
  */
 app.VideoController.playPlaylistPosition = function(position, callback ){
-  app.xbmcController.command('Player.Open', [{"playlistid": app.VideoController.playlistId,"position":position}], function(result){
-    callback(result.result); // return items
-  });
+  app.playlists.playlistPlayPosition(app.VideoController.playlistId, position, callback);
+};
+
+
+/**
+ * Insert and play
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.VideoController.insertAndPlay = function(type, id, callback){
+  app.playlists.insertAndPlay(app.VideoController.playlistId, type, id, callback);
 };
 
 
@@ -78,12 +99,7 @@ app.VideoController.playPlaylistPosition = function(position, callback ){
  * @param callback
  */
 app.VideoController.playlistClear = function(callback){
-  // clear playlist
-  app.xbmcController.command('Playlist.Clear', [app.VideoController.playlistId], function(data){
-    if(callback){
-      callback(data);
-    }
-  });
+  app.playlists.playlistClear(app.VideoController.playlistId, callback);
 };
 
 
@@ -195,8 +211,6 @@ app.VideoController.playlistAddMultiple = function(type, ids, callback){
 app.VideoController.tvshowAdd = function(model, callback){
 
   var opt = {};
-
-  console.log(model);
 
   // Add single episode, easy
   if(model.type == 'episode'){
@@ -321,4 +335,28 @@ app.VideoController.watchedStatus = function(m){
   }
 
   return watched;
+};
+
+
+app.VideoController.stream = function(player, model){
+  var winUrl = "videoPlayer.html?player=" + player,
+    loaded = false;
+
+  // if url preloaded
+  if(model.downloadUrl !== undefined && model.downloadUrl !== ''){
+    winUrl = winUrl + "&src=" + encodeURIComponent(model.downloadUrl);
+    loaded = true;
+  }
+
+  // open the window (prevents popup blockers kicking in)
+  var win = window.open(winUrl, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
+
+  // not loaded
+  if(!loaded){
+    // get the url and send the player window to it
+    app.AudioController.downloadFile(model.file, function(url){
+      win.location = winUrl + "&src=" + encodeURIComponent(url);
+    });
+  }
+
 };

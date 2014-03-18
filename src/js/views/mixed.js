@@ -15,6 +15,8 @@ app.MixedView = Backbone.View.extend({
   entities: ['artist', 'album', 'song', 'movie', 'tvshow'],
 
   icons: {
+    music: 'fa-music',
+    video: 'fa-film',
     song: 'fa-music',
     artist: 'fa-microphone',
     album: 'fa-th-large',
