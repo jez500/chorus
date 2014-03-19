@@ -1,7 +1,7 @@
 # Chorus
-A nice web ui for XBMC, focused on user experience.
-Browse your music, movies or tv shows from the comfort of your own web browser.
-You can play media via XBMC or stream it in your browser.
+A nice modern Web UI for your XBMC. Browse your Music, Movies or TV Shows from the comfort of your
+own web browser. You can play media via XBMC or stream it in your browser. Works best with Chrome
+but plays well with most modern browsers.
 
 Used by the [Doghouse Media Team](http://dhmedia.com.au) to control the shared office music box
 (an old pc running XBMC with chorus, plugged into an amp and a nas)
@@ -13,30 +13,23 @@ mail@jez500.com
 ## Web
 - https://github.com/jez500/chorus
 - http://forum.xbmc.org/showthread.php?tid=183451
+- http://addons.xbmc.org/show/webinterface.chorus/
 
 ## Requirements
 - XBMC v12 or 13
 - A modern web browser, this has been developed and tested in Chrome
 
-## Installing
-All you need is webinerface.chorus.(version).zip unless you plan on doing some development.
-- XBMC > Settings > AddOns > Install from zip
-TODO: Get it in the XBMC repo
-
-## Updating / Manual install
-You should be able to repeat the install steps with the new zip, however if you need to do it manually then
-these are the general steps:
-- Find your user addons folder. eg ~/.xbmc/addons or %appdata%/roaming/XBMC/addons
-- Delete the addons/webinerface.chorus folder (if exists)
-- Grab the latest webinerface.chorus.(version).zip and extract its contents into your addons folder
-- You should now have a addons/webinerface.chorus folder again
-- Restart xbmc and refresh your browser for good measure
+## Installing / Updating
+You can download Chorus via the official XBMC repo
+- XBMC > Settings > Services > Web Server > Web Interface > get more
+(or use the zip in this repo)
 
 ## Enabling
 - XBMC > Stystem > Settings > Services > Webserver
 - tick allow access via http
 - select web interface
 - select chorus
+- you should also enable "Allow programs on other systems to control XBMC" (under "Remote Control") to get the best performance
 
 ## Using
 Add your music/movies sources and do a full music/video scan in xbmc.
@@ -53,8 +46,8 @@ If you have a large library (20000+ songs), some things get a bit sluggish, espe
 if either client or server are low power (eg. not a pc).
 
 ## Target Device
-This is really tailored for a fairly large screen, it downsizes nicely to about 1200px wide.
-Mobile it is useless at the moment, but a possibility for the future.
+Chorus resizes nicely to fit on almost any screen. This is still a work in progress and some functionality is not
+yet responsive.
 
 
 ## Stream music from your XBMC library into your browser ##

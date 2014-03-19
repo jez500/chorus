@@ -158,6 +158,7 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
 
       // no further parsing if empty
       if(list === undefined || list === null || list.length === 0){
+        options.success([]);
         return {items: []};
       }
 
@@ -191,6 +192,12 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
           });
           break;
 
+        case 'tvshow':
+          // lookup movies
+          app.xbmcController.entityLoadMultiple('tvshow', list.items, function(tvshows){
+            options.success(tvshows);
+          });
+          break;
       }
 
     }

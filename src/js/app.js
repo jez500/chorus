@@ -224,6 +224,7 @@ var app = {
     "episode",
     "showtitle",
     "thumbnail",
+    "fanart",
     "file",
     "resume",
     "artistid",
@@ -284,7 +285,8 @@ var app = {
     "MovieView",
     "TvshowListItemView",
     "TvSeasonListItemView",
-    "TvshowView"
+    "TvshowView",
+    "RemoteView"
   ],
 
   tpl: {} // for templates that are lazy loaded
@@ -305,6 +307,7 @@ app.Router = Backbone.Router.extend({
     "albums":               "albums",
     "playlist/:id":         "playlist",
     "search/:q":            "search",
+    "search":               "searchLanding",
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
@@ -316,7 +319,9 @@ app.Router = Backbone.Router.extend({
     "tvshow/:id":           "tvshow",
     "tvshow/:tvid/:seas":   "season",
     "tvshow/:tv/:s/:e":     "episode",
-    "xbmc/:op":             "xbmc"
+    "xbmc/:op":             "xbmc",
+    "remote":               "remoteControl",
+    "playlists":            "playlists"
   },
 
 
@@ -344,7 +349,7 @@ app.Router = Backbone.Router.extend({
   home: function () { //Not in use atm
 
     var backstretchImage = '',
-      data = app.cached.nowPlaying;
+      data = app.playlists.getNowPlaying();
 
     // empty content
     this.$content.html('');
@@ -367,7 +372,6 @@ app.Router = Backbone.Router.extend({
 
     // Add Backstretch it doesnt exist
     if($('.backstretch').length === 0){
-      console.log(backstretchImage);
       // on initial page load this will be empty but if playing, state will be updated onPlay
       var fa = app.parseImage(backstretchImage, 'fanart');
       $.backstretch(fa);
@@ -385,6 +389,19 @@ app.Router = Backbone.Router.extend({
    $('#search').val(q);
    app.shellView.search(q);
   },
+
+
+
+  /**
+   * Start Search
+   * @param q
+   */
+  searchLanding: function (q) {
+    this.$content.html('<div class="loading-box">Type to search</div>');
+    app.shellView.selectMenuItem('search', 'no-sidebar');
+    $('#search').focus();
+  },
+
 
 
   /**
@@ -531,44 +548,28 @@ app.Router = Backbone.Router.extend({
 
   },
 
+
   /**
    * Files page
    */
   files: function(){
 
-
+    // Get collection and Sources
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":'sources', "success": function(sources){
+    app.cached.fileCollection.fetch({'name': 'sources', 'success': function(sources){
 
-      app.cached.fileAddonCollection = new app.FileCollection();
-      app.cached.fileAddonCollection.fetch({"name":'addons', "success": function(addons){
+      // title / menu
+      app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
+      app.shellView.selectMenuItem('files', 'sidebar');
 
-        // set menu
-        app.shellView.selectMenuItem('files', 'sidebar');
-
-        // render page
-        app.cached.filesView = new app.FilesView({"model":sources});
-        var el = app.cached.filesView.render().$el;
-
-        // append addons
-        app.cached.filesAddonsView = new app.FilesView({"model":addons});
-        if(addons.length > 0){
-          el.append('<h3 class="sidebar-title">Addons</h3>');
-          el.append(app.cached.filesAddonsView.render().$el);
-        }
-
-
-        app.helpers.setFirstSidebarContent(el);
-
-        app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
-
-      }});
+      // the view writes to content,
+      app.cached.filesView = new app.FilesView({"model":sources});
+      app.cached.filesView.render();
 
     }});
 
-
-
   },
+
 
   /**
    * playlist
@@ -595,55 +596,25 @@ app.Router = Backbone.Router.extend({
   },
 
 
-
-  thumbsup: function(){
-
-    var $content = $('#content'),
-      $sidebar = app.helpers.getFirstSidebarContent();
-
-    // so we get things in the correct order, we have lots of sub wrappers for the different lists
-    $content.html('<div id="thumbs-up-page"><div id="tu-songs"></div></div>');
-    app.helpers.setFirstSidebarContent('<div id="tu-artists"></div><div id="tu-albums"></div>');
-
-    // set title
-    app.helpers.setTitle('<a href="#artists">Artists</a>Thumbs Up');
-
+  /**
+   * playlists
+   */
+  playlists: function(){
+    app.helpers.setTitle('Playlists');
     // set menu
-    app.shellView.selectMenuItem('thumbsup', 'sidebar');
-
-    // Song
-    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
-    app.cached.thumbsUpCollection.fetch({"name": 'song', "success": function(res){
-
-      // render
-      app.cached.customPlaylistSongListView = new app.CustomPlaylistSongListView({"model":res});
-      $('#tu-songs', $content).html(app.cached.customPlaylistSongListView.render().el);
-
-    }});
-
-    // Artist
-    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
-    app.cached.thumbsUpCollection.fetch({"name": 'artist', "success": function(res){
-
-      // add the sidebar view
-      app.cached.thumbsupArtists = new app.AristsListView({model: res, className: 'artist-thumbs-up'});
-      $('#tu-artists',$sidebar).html(app.cached.thumbsupArtists.render().el);
-      app.helpers.firstSidebarBinds();
-    }});
-
-    // Album
-    app.cached.thumbsUpCollection = new app.ThumbsUpCollection();
-    app.cached.thumbsUpCollection.fetch({"name": 'album', "success": function(res){
-
-      // render
-      app.cached.thumbsupAlbums = new app.SmallAlbumsList({model: res});
-      $('#tu-albums',$sidebar).html(app.cached.thumbsupAlbums.render().el)
-        .prepend('<h2 class="sidebar-title"><a href="#albums">Albums</a></h2>');
-      app.helpers.firstSidebarBinds();
-    }});
+    app.shellView.selectMenuItem('playlists', 'no-sidebar');
   },
 
 
+  /**
+   * Thumbs up page
+   */
+  thumbsup: function(){
+
+    app.cached.thumbsUpPage = new app.ThumbsupView();
+    this.$content.html( app.cached.thumbsUpPage.render().$el );
+
+  },
 
 
   /**
@@ -861,9 +832,6 @@ app.Router = Backbone.Router.extend({
 
 
 
-
-
-
   /**
    * A tvshow collection (no pager)
    */
@@ -995,6 +963,20 @@ app.Router = Backbone.Router.extend({
     });
 
   },
+
+
+  /**
+   * Toggle Remote control
+   */
+  remoteControl: function(){
+    // Set Player
+    app.playlists.changePlaylistView('xbmc');
+    // set title
+    app.helpers.setTitle('Remote');
+    // set menu
+    app.shellView.selectMenuItem('remote', 'no-sidebar');
+  },
+
 
   /**
    * Scan for music

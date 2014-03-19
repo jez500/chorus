@@ -59,15 +59,36 @@ app.VideoController.addToPlaylist = function(id, type, position, callback ){
 
 
 /**
+ * Wrapper for addToPlaylist to be interchangeable with AudioController
+ *
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.VideoController.playlistAdd = function(type, id, callback){
+  app.VideoController.addToPlaylist(id, type, 'add', callback);
+};
+
+
+/**
  * Play something from playlist
  *
  * @param position
  * @param callback
  */
 app.VideoController.playPlaylistPosition = function(position, callback ){
-  app.xbmcController.command('Player.Open', [{"playlistid": app.VideoController.playlistId,"position":position}], function(result){
-    callback(result.result); // return items
-  });
+  app.playlists.playlistPlayPosition(app.VideoController.playlistId, position, callback);
+};
+
+
+/**
+ * Insert and play
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.VideoController.insertAndPlay = function(type, id, callback){
+  app.playlists.insertAndPlay(app.VideoController.playlistId, type, id, callback);
 };
 
 
@@ -78,12 +99,7 @@ app.VideoController.playPlaylistPosition = function(position, callback ){
  * @param callback
  */
 app.VideoController.playlistClear = function(callback){
-  // clear playlist
-  app.xbmcController.command('Playlist.Clear', [app.VideoController.playlistId], function(data){
-    if(callback){
-      callback(data);
-    }
-  });
+  app.playlists.playlistClear(app.VideoController.playlistId, callback);
 };
 
 
@@ -196,8 +212,6 @@ app.VideoController.tvshowAdd = function(model, callback){
 
   var opt = {};
 
-  console.log(model);
-
   // Add single episode, easy
   if(model.type == 'episode'){
     app.VideoController.addToPlaylist(model.episodeid, 'episodeid', 'add', callback);
@@ -247,13 +261,102 @@ app.VideoController.tvshowPlay = function(model, callback){
 
       // xbmc player
       app.playlists.changePlaylistView('xbmc');
+
       // play first pos
-      console.log('playing 0');
       app.VideoController.playPlaylistPosition(0, function(data){
-        //callback
-        callback();
+
+        // if in progress, seek to that position
+        if(model.resume !== undefined && model.resume.position > 0){
+          app.VideoController.seek( Math.round((model.resume.position / model.resume.total) * 100), callback );
+        } else {
+          //callback - play, no seek
+          callback();
+        }
       });
     });
   });
+
+};
+
+
+/**
+ * Seek curently playing to a percentage
+ */
+app.VideoController.seek = function(position, callback ){
+  app.xbmcController.command('Player.Seek', [app.VideoController.playlistId, position], function(result){
+    if(app.helpers.exists(callback)){
+      callback(result.result); // return items
+    }
+  });
+};
+
+
+/**
+ * Gets / Normalises watched status
+ *
+ * @param m
+ *  tvshow or tv season model
+ */
+app.VideoController.watchedStatus = function(m){
+
+  var watched = {
+    status: 'no', // no, yes, progress
+    progress: 0
+  };
+
+  switch(m.type){
+
+    case 'movie':
+    case 'episode':
+      // in progress
+      if(m.resume.position !== 0){
+        watched.status = 'progress';
+        watched.progress = Math.round( ( m.resume.position / m.resume.total ) * 100 );
+      } else {
+        // watched
+        if(m.playcount > 0){
+          watched.status = 'yes';
+        }
+      }
+      break;
+
+    case 'season':
+    case 'tvshow':
+      // season, with watched episodes
+      if(m.watchedepisodes > 0){
+        if(m.watchedepisodes == m.episode){
+          watched.status = 'yes';
+        } else {
+          watched.status = 'progress';
+          watched.progress = Math.round( ( m.watchedepisodes / m.episode ) * 100 );
+        }
+      }
+      break;
+  }
+
+  return watched;
+};
+
+
+app.VideoController.stream = function(player, model){
+  var winUrl = "videoPlayer.html?player=" + player,
+    loaded = false;
+
+  // if url preloaded
+  if(model.downloadUrl !== undefined && model.downloadUrl !== ''){
+    winUrl = winUrl + "&src=" + encodeURIComponent(model.downloadUrl);
+    loaded = true;
+  }
+
+  // open the window (prevents popup blockers kicking in)
+  var win = window.open(winUrl, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
+
+  // not loaded
+  if(!loaded){
+    // get the url and send the player window to it
+    app.AudioController.downloadFile(model.file, function(url){
+      win.location = winUrl + "&src=" + encodeURIComponent(url);
+    });
+  }
 
 };

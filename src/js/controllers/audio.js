@@ -195,43 +195,13 @@ app.AudioController.playSongById = function(songid, type, id, clearList){
 
 
 /**
- * Inserts a song in the playlist next and starts playing that song
+ * Insert and play
+ * @param type
+ * @param id
+ * @param callback
  */
-app.AudioController.insertAndPlaySong = function(type, id, callback){
-
-  var player = app.cached.nowPlaying.player,
-      playingPos = (typeof player.position != 'undefined' ? player.position : 0),
-      pos = playingPos + 1,
-      insert = {};
-
-  insert[type] = id;
-
-  // if nothing is playing, we will clear the playlist first
-  if(app.cached.nowPlaying.status == 'notPlaying'){
-    // clear
-    app.AudioController.playlistClear(function(){
-      // insert
-      app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
-        // play
-        app.AudioController.playPlaylistPosition(pos, function(){
-          if(callback){
-            callback(data);
-          }
-        });
-      });
-    });
-  } else {
-    // playing, insert
-    app.xbmcController.command('Playlist.Insert', [app.AudioController.playlistId,pos,insert], function(data){
-      // play
-      app.AudioController.playPlaylistPosition(pos, function(){
-        if(callback){
-          callback(data);
-        }
-      });
-    });
-  }
-
+app.AudioController.insertAndPlay = function(type, id, callback){
+  app.playlists.insertAndPlay(app.AudioController.playlistId, type, id, callback);
 };
 
 
@@ -253,7 +223,7 @@ app.AudioController.downloadFile = function(file, callback){
  * Generic player command with to callback required
  */
 app.AudioController.sendPlayerCommand = function(command, param){
-  app.xbmcController.command(command, [ app.cached.nowPlaying.activePlayer, param], function(result){
+  app.xbmcController.command(command, [ app.playlists.getNowPlaying('activePlayer'), param], function(result){
     app.AudioController.updatePlayerState();
   });
 };
@@ -283,7 +253,7 @@ app.AudioController.removePlaylistPosition = function(position, callback ){
  * Seek curently playing to a percentage
  */
 app.AudioController.seek = function(position, callback ){
-  app.xbmcController.command('Player.Seek', [app.cached.nowPlaying.activePlayer, position], function(result){
+  app.xbmcController.command('Player.Seek', [app.playlists.getNowPlaying('activePlayer'), position], function(result){
     if(app.helpers.exists(callback)){
       callback(result.result); // return items
     }
@@ -369,7 +339,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
 
   // fields to get
   var fields = {
-    item: ["title", "artist", "artistid", "album", "albumid", "genre", "track", "duration", "year", "rating", "playcount", "albumartist", "file", "thumbnail", "fanart"],
+    item: app.playlistItemFields,
     player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
   };
   var ret = {'status':'notPlaying'},
@@ -437,7 +407,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
 
         // callback
         if(callback){
-          callback(app.cached.nowPlaying);
+          callback( app.playlists.getNowPlaying() );
         }
 
       });
@@ -446,7 +416,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
 
       //nothing playing
       app.cached.nowPlaying = $.extend(app.cached.nowPlaying, ret);
-      callback(app.cached.nowPlaying);
+      callback( app.playlists.getNowPlaying() );
 
     }
 

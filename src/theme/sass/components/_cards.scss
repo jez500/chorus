@@ -182,6 +182,12 @@
   position: relative;
   font-weight: 300;
   cursor: default;
+  @include watched-style;
+
+  zoom: 0.8;
+  @include breakpoint($width-mobile){
+    zoom: 1;
+  }
 
   .image {
     display: block;

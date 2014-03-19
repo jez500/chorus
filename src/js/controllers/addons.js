@@ -1,6 +1,11 @@
 /**
  * Framework for including functionality for addons
  * eg. soundcloud
+ *
+ * To include support for a new addon, copy ../addons/plugin.audio.soundcloud.js to ../addons/[your addon name].js
+ * and edit to suit your addon, it will get auto compiled but dev requires you add it to src/index.html manually
+ *
+ *
  * @type {{}}
  */
 
@@ -8,6 +13,7 @@ app.addOns = {addon: {}};
 
 app.addOns.getSources = function(callback){
 
+  // @TODO make work with video addons
   app.xbmcController.command('Addons.GetAddons', ['xbmc.addon.audio', 'unknown', 'all', ["name", "thumbnail", "enabled"]], function(res){
     // add a title before return
     var sources = res.result.addons,
@@ -15,16 +21,21 @@ app.addOns.getSources = function(callback){
 
     // parse
     for(var i in sources){
-      var item = sources[i];
+      var item = sources[i], defaults = {};
       if(item.enabled){
-        item.file = 'plugin://' + item.addonid + '/';
-        item.title = item.name;
-        item.filetype = 'directory';
-        item.id = item.addonid;
+        // extend
+        defaults = {
+          file: 'plugin://' + item.addonid + '/',
+          title: item.name,
+          filetype: 'directory',
+          id: item.addonid,
+          sourcetype: 'music', // @TODO make work with video addons
+          playlistId: app.AudioController.playlistId
+        };
+        item = $.extend(item, defaults);
         addons.push(item);
       }
     }
-
     app.cached.addonSources = addons;
 
     if(callback){
@@ -119,236 +130,3 @@ app.addOns.slug = function(addonObj){
  return addonObj.addonid.split('.').join('');
 };
 
-
-
-
-
-
-
-
-/*****************************************************************************
- * ADDONS BELOW
- * @TODO move to files
- ****************************************************************************/
-
-
-
-
-
-
-/***********************************************
- * Soundcloud
- ***********************************************/
-app.addOns.addon.pluginaudiosoundcloud = {
-
-  // the time to wait before sending keyboard commands
-  waitTime: 4000,
-
-  getAddon: function(){
-    return app.addOns.getAddon('pluginaudiosoundcloud');
-  },
-
-  getSearchPath: function(){
-    return 'plugin://plugin.audio.soundcloud/SearchTracks?url=plugin%3A%2F%2Fmusic%2FSoundCloud%2Ftracks%2Fsearch&oauth_token=&mode=13';
-  },
-
-  /**
-   * Parses a file record
-   * @param record
-   * @returns {*}
-   */
-  parseFileRecord: function(record){
-    // is a soundcloud url
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
-      // rewrite the url to contain the label
-      record.file = record.file.replace(
-        'plugin://plugin.audio.soundcloud/',
-        'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label)
-      );
-
-      /* // add an icon if none - doesn't look much better than default icons
-      if(typeof record.thumbnail == 'undefined' || record.thumbnail == ''){
-        var sc = app.addOns.getAddon('pluginaudiosoundcloud');
-        record.thumbnail = sc.thumbnail;
-      } */
-
-    }
-
-    return record;
-  },
-
-  /**
-   * Hook into file dir click
-   * @param record
-   * @returns {*}
-   */
-  clickDir: function(record){
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(record)){
-      if(record.title == 'Search'){
-
-        app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
-      }
-    }
-    return record;
-  },
-
-
-  /**
-   * Hook into post file row creation
-   * @param $el
-   * @param file
-   * @returns {*}
-   */
-  postProcessFileView: function($el, file){
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(file)){
-      var sc = app.addOns.addon.pluginaudiosoundcloud.getAddon();
-
-      // if root item for addon
-      if(file.file == sc.file){
-        var $actions = $('.file-actions', $el);
-
-        // replace play and add with search
-        $actions.html('<button class="btn" id="soundcloudSearch"><i class="icon-search"></i></button>');
-
-        // Bind
-        $('#soundcloudSearch', $actions).on('click', function(e){
-          e.stopPropagation();
-
-          // trigger search
-          app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
-          var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
-
-          app.cached.fileCollection = new app.FileCollection();
-          app.cached.fileCollection.fetch({"name":dir, "success": function(res){
-            // render page
-            app.cached.filesSearchView = new app.FilesView({"model":res}).render();
-          }});
-
-        });
-
-        // add class to show actions
-        $el.find('.file-item').addClass('show-actions');
-
-      }
-    }
-    return $el;
-  },
-
-  /**
-   * This adds soundcloud to the search page
-   * @param $el
-   * @param key
-   * @returns {*}
-   */
-  searchAddons: function($el, key){
-
-    var $nores = $('<div>', {class: 'addon-box', id: 'sc-search'}),
-      sc = app.addOns.addon.pluginaudiosoundcloud.getAddon(),
-      logo = '<img src="' + app.parseImage(sc.thumbnail) + '">',
-      $heading = $('<h3 class="search-heading">' + logo + 'SoundCloud search for: <span>' + key + '</span></h3>'),
-      cache = app.addOns.addon.pluginaudiosoundcloud.cache('get', key, false);
-
-    // add logo to heading
-
-    // if cache
-    if(cache !== false){
-      // just set results from cached view
-      $el.html(cache.render().$el);
-      $el.prepend($heading);
-    } else {
-      // no cache, do the search
-      $nores.append(logo + '<span>search soundcloud for: <strong>' + key + '</strong></span>');
-      $el.append($nores);
-
-      // click/search action
-      $('#sc-search', $el).on('click', function(){
-        // Loading
-        $el.html($('<strong>', {class: 'addon-box', text: 'Searching SoundCloud for ' + key}).prepend($(logo)));
-        // Callback
-        app.addOns.addon.pluginaudiosoundcloud.getSearchResults(key, function(view){
-          $el.html(view.render().$el);
-          // add heading
-          $el.prepend($heading);
-          // set cache
-          app.addOns.addon.pluginaudiosoundcloud.cache('set', key, view);
-        });
-      });
-    }
-
-    return $el;
-  },
-
-  /**
-   * Get and set cache, when get, data is default
-   * @param op
-   * @param key
-   * @param data
-   * @returns {*}
-   */
-  cache:function(op, key, data){
-    if(typeof app.cached.soundCloudSearch == 'undefined'){
-      app.cached.soundCloudSearch = {};
-    }
-    switch (op){
-      case 'get':
-        return (typeof app.cached.soundCloudSearch[key] == 'undefined' ? data : app.cached.soundCloudSearch[key]);
-      case 'set':
-        app.cached.soundCloudSearch[key] = data;
-        return app.cached.soundCloudSearch[key];
-    }
-  },
-
-
-  /**
-   * Search dialog
-   */
-  doSearchDialog: function(){
-    app.helpers.prompt('What do you want to search for?', function(text){
-      app.xbmcController.command('Input.SendText', [text], function(res){
-        // set title and notify
-        $('#folder-name').html('Search for "' + text + '"');
-        var msg = 'Searching for ' + text;
-        // set content while loading
-        $('#files-container').html('<div class="loading-box">'+msg+'</div>');
-      });
-    });
-  },
-
-
-  /**
-   * Get a soundcloud search result view
-   * @param query
-   */
-  getSearchResults: function(query, callback){
-
-    // get search directory
-    var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
-    app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":dir, "success": function(result){
-      // success only after text input complete which is flaky!
-      // return view
-      app.cached.fileListView = new app.FilesListView({model: result});
-      callback(app.cached.fileListView);
-    }});
-
-    // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
-    window.setTimeout(function(){
-      app.xbmcController.command('Input.SendText', [query], function(res){
-
-      });
-    }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
-
-  },
-
-
-  /**
-   * If soundcloud file record
-   * @param record
-   * @returns {*}
-   */
-  isSoundCloud: function(record){
-    return (record.file.indexOf('plugin.audio.soundcloud') != -1);
-  }
-
-
-};

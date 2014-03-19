@@ -37,7 +37,7 @@ app.pager = {
    */
   viewHelpers: function($el, type){
 
-    var self = this;
+    var self = app.pager;
     self.type = (type !== undefined ? type : this.type);
     self.$el = $el;
 
@@ -50,7 +50,7 @@ app.pager = {
     // Infinate scroll trigger (scroll)
     $(window).smack({ threshold: '200px' })
       .done(function () {
-        $('ul.' + self.type + '-page-list').find('.next-page').trigger('click');
+        $('ul.' + self.type + '-page-list').find('.next-page').last().trigger('click');
       });
 
     // add row class (for scrolling to page)

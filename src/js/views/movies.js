@@ -64,7 +64,8 @@ app.MovieListView = Backbone.View.extend({
   },
 
   nextPage: function(e){
-    app.pager.nextPage($(e.target), 'movie');
+    var $el = $('.next-page').last();
+    app.pager.nextPage($el, 'movie');
   },
 
 
@@ -120,6 +121,9 @@ app.MovieListItemView = Backbone.View.extend({
     if(!model.label){
       return this;
     }
+
+    model.type = 'movie';
+    model.watched = app.VideoController.watchedStatus(model);
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     this.$el.html(this.template(model));
@@ -340,13 +344,7 @@ app.MovieView = Backbone.View.extend({
   stream: function(e){
     e.preventDefault();
     var player = $(e.target).data('player');
-
-    var win = window.open("videoPlayer.html?player=" + player, "_blank", "toolbar=no, scrollbars=no, resizable=yes, width=925, height=545, top=100, left=100");
-
-    app.AudioController.downloadFile(this.model.attributes.file, function(url){
-      win.location = "videoPlayer.html?player=" + player + "&src=" + encodeURIComponent(url);
-    });
-
+    app.VideoController.stream(player, this.model.attributes);
   }
 
 });

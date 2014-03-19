@@ -1,12 +1,21 @@
 ul.video-list {
   margin: 0px 12px 20px 10px;
+  text-align: center;
   li {
+    display: inline-block;
+    text-align: left;
     .card {
       @include card('poster');
       float: left;
+
     }
     &.next-page {
       display: none;
+    }
+    @include breakpoint($width-small){
+      display: block;
+      float: left;
+
     }
   }
 }
@@ -25,19 +34,6 @@ ul.video-list {
     padding-top: 9px;
   }
 }
-
-
-/** SEARCH *******************/
-
-#search-movies {
-  overflow: hidden;
-  .card {
-    @include card('poster');
-    float: left;
-    margin: 0 8px 8px 0;
-  }
-}
-
 
 
 /** MOVIE *******************/
@@ -404,8 +400,8 @@ ul.video-list {
     margin: 0;
     li {
       .card {
-       @include card('poster-mini');
-
+        @include card('poster-mini');
+        @include watched-style;
       }
     }
   }

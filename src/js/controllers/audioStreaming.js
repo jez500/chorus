@@ -143,8 +143,8 @@ app.audioStreaming = {
     if(player == 'xbmc'){
       app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
-      song = app.cached.nowPlaying.item;
-      app.helpers.applyBackstretch((song !== undefined && song.fanart !== undefined ? song.fanart : ''), 'xbmc');
+      song = app.playlists.getNowPlaying('item');
+      app.helpers.applyBackstretch(song.fanart, 'xbmc');
     }
 
     // Switch to Local Player
@@ -249,6 +249,9 @@ app.audioStreaming = {
     } else {
       // append new models to original collection
       collection = app.audioStreaming.playList.items;
+      if(collection.models === undefined){
+        collection.models = [];
+      }
       $.each(newCollection.models, function(i,d){
         collection.models.push(d);
       });
@@ -307,6 +310,25 @@ app.audioStreaming = {
     var browserPlaylistItems = new app.CustomPlaylistSongSmallListView({model: collection}).render();
     $(app.audioStreaming.playlistEl).html(browserPlaylistItems.$el);
 
+  },
+
+
+  /**
+   * Clear playlist
+   */
+  playlistClear: function(callback){
+    var c = {models: []};
+    app.audioStreaming.setPlaylistItems(c);
+    if(callback){
+      callback();
+    }
+  },
+
+  /**
+   * Render Playlist
+   */
+  playlistRender: function(){
+    app.audioStreaming.renderPlaylistItems();
   },
 
 

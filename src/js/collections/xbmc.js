@@ -203,7 +203,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Movie,
   //collection params
-  arg1: ['year', 'thumbnail'], //properties
+  arg1: ['year', 'thumbnail', 'resume', 'playcount'], //properties
   arg2: function(){
     return this.models[0].attributes.range;
   },

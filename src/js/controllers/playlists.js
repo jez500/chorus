@@ -624,24 +624,25 @@ app.playlists.replaceCustomPlayList = function(listId, items){
     // Save
     app.storageController.setStorage(app.playlists.storageKeyThumbsUp, lists);
 
-    return;
-  }
+  } else {
 
-  // Get a full list then update our specific list
-  listId = parseInt(listId);
-  lists = app.playlists.getCustomPlaylist();
+    // Get a full list then update our specific list
+    listId = parseInt(listId);
+    lists = app.playlists.getCustomPlaylist();
 
-  if(items.length > 0){
-    for(var i in lists){
-      // if matching list, update
-      if(lists[i].id == listId){
-        lists[i].items = items;
+    if(items.length > 0){
+      for(var i in lists){
+        // if matching list, update
+        if(lists[i].id == listId){
+          lists[i].items = items;
+        }
       }
     }
-  }
 
-  // Save
-  app.storageController.setStorage(app.playlists.storageKeyLists, lists);
+    // Save
+    app.storageController.setStorage(app.playlists.storageKeyLists, lists);
+
+  }
 
 };
 
@@ -675,7 +676,8 @@ app.playlists.getDropdown = function(){
 
   return app.helpers.makeDropdown({
     key: type,
-    items: items
+    items: items,
+    pull: 'right'
   });
 
 };
@@ -798,6 +800,25 @@ app.playlists.isThumbsUp = function(type, id){
 };
 
 
+/**
+ * Is there any thumbsup?
+ * @returns {boolean}
+ */
+app.playlists.isAnyThumbsUp = function(){
+  var tu = app.storageController.getStorage(app.playlists.storageKeyThumbsUp);
+  return (tu !== null);
+};
+
+
+
+
+
+
+/***********************
+ * XBMC Playlist helpers
+ ************************/
+
+
 
 /**
  * XBMC Playlist
@@ -825,6 +846,35 @@ app.playlists.getXbmcPlaylist = function(playlistId, callback){
     });
 
 
+};
+
+/**
+ * Clear a XBMC Playlist
+ *
+ * @param playlistId
+ * @param callback
+ */
+app.playlists.playlistClear = function(playlistId, callback){
+  // clear playlist
+  app.xbmcController.command('Playlist.Clear', [playlistId], function(data){
+    if(callback){
+      callback(data);
+    }
+  });
+};
+
+
+/**
+ * Play an item on a XBMC Playlist
+ *
+ * @param playlistId
+ * @param position
+ * @param callback
+ */
+app.playlists.playlistPlayPosition = function(playlistId, position, callback){
+  app.xbmcController.command('Player.Open', [{"playlistid": playlistId,"position":position}], function(result){
+    callback(result.result); // return items
+  });
 };
 
 
@@ -911,4 +961,92 @@ app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
     });
 
   });
+};
+
+
+/**
+ * Inserts a song in the playlist next and starts playing that song
+ *
+ * @param playlistId
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.playlists.insertAndPlay = function(playlistId, type, id, callback){
+
+  var player = app.playlists.getNowPlaying('player'),
+    playingPos = (typeof player.position != 'undefined' ? player.position : 0),
+    pos = playingPos + 1,
+    insert = {};
+
+  insert[type] = id;
+
+  // if nothing is playing, we will clear the playlist first
+  if(app.playlists.getNowPlaying('status') == 'notPlaying' || app.playlists.getNowPlaying('status') == 'stopped'){
+    // clear
+    app.playlists.playlistClear(playlistId, function(){
+      // insert
+      app.xbmcController.command('Playlist.Insert', [playlistId, pos, insert], function(data){
+        // play
+        app.playlists.playlistPlayPosition(playlistId, pos, function(){
+          if(callback){
+            callback(data);
+          }
+        });
+      });
+    });
+  } else {
+    // playing, insert
+    app.xbmcController.command('Playlist.Insert', [playlistId, pos, insert], function(data){
+      // play
+      app.playlists.playlistPlayPosition(playlistId, pos, function(){
+        if(callback){
+          callback(data);
+        }
+      });
+    });
+  }
+
+};
+
+
+
+/**
+ * Gets the current now playing cache, will not do a lookup
+ * @param key
+ */
+app.playlists.getNowPlaying = function(key){
+
+  // A empty shell of what should be populated
+  var model = {
+    activePlayer: 0,
+    status: "notPlaying",
+    playingItemChanged: false,
+    volume: {
+      volume: 50,
+      muted: false
+    },
+    player: {
+      repeat: "off",
+      shuffled: false
+    },
+    item: {
+      thumbnail: '', fanart: '', id: 0, label: 'Nothing Playing', songid: 0, episodeid: 0, album: '', albumid: 'file', file: '', duration: 0, type: 'song'
+    }
+  };
+
+  // get cache
+  var data = app.cached.nowPlaying;
+  if(data !== undefined){
+    // update model with cache
+    model = $.extend(model, data);
+  }
+
+  // return key or all
+  if(key !== undefined){
+    return model[key];
+  } else {
+    return model;
+  }
+
 };

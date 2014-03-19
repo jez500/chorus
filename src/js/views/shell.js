@@ -92,6 +92,8 @@ app.ShellView = Backbone.View.extend({
       app.notifications.init();
     }, true);
 
+    // render remote
+    this.$el.append(new app.RemoteView().render().$el);
 
     return this;
   },
@@ -110,6 +112,7 @@ app.ShellView = Backbone.View.extend({
     "click .player-mute": "playerMute",
     "click .player-repeat": "playerRepeat",
     "click .player-random": "playerRandom",
+    "click .song-image": "remoteControl",
     // tabs
     "click .playlist-primary-tab": "primaryTabClick",
     // menu
@@ -194,7 +197,7 @@ app.ShellView = Backbone.View.extend({
     $('#search').keyup(function () {
       clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
       app.cached.keyupTimeout = setTimeout(function(){
-        document.location = '#search/' + $('#search').val();
+        document.location = '#search/' + encodeURIComponent( $('#search').val() );
       }, keyDelay);
     });
 
@@ -291,7 +294,16 @@ app.ShellView = Backbone.View.extend({
     app.AudioController.sendPlayerCommand('Player.SetShuffle', 'toggle');
   },
 
-
+  // toggle remote
+  remoteControl: function(e){
+    if(app.helpers.arg(0) == 'remote'){
+      e.preventDefault();
+      // same as using the back button
+      window.history.back();
+    } else {
+      document.location = '#remote';
+    }
+  },
 
   //mute
   playerMute:function(){
@@ -334,7 +346,7 @@ app.ShellView = Backbone.View.extend({
     e.preventDefault();
     // Save playlist
     app.playlists.saveCustomPlayListsDialog();
-    app.playlists.changePlaylistView('local');
+    app.playlists.changePlaylistView('lists');
   },
 
   /**
@@ -342,7 +354,7 @@ app.ShellView = Backbone.View.extend({
    */
   refreshPlaylist: function(e){
     e.preventDefault();
-    app.AudioController.playlistRender();
+    this.getController().playlistRender();
   },
 
 
@@ -360,10 +372,34 @@ app.ShellView = Backbone.View.extend({
    */
   clearPlaylist: function(e){
     e.preventDefault();
-    // Clear playlist
-    app.AudioController.playlistClear(function(data){
-      app.AudioController.playlistRender();
+    var controller = this.getController();
+    // clear the list for the given collection
+    controller.playlistClear(function(){
+      controller.playlistRender();
     });
+  },
+
+
+  /**
+   * Get controller based on what is visible in the shell
+   * @returns {{}}
+   */
+  getController: function(){
+    var controller = {};
+    // Local Player
+    if(app.audioStreaming.getPlayer() == 'local'){
+      controller = app.audioStreaming;
+    } else {
+      // XBMC Player
+      if($('.plid-1').length > 0){
+        // video playlist
+        controller = app.VideoController;
+      } else {
+        // audio playlist
+        controller = app.AudioController;
+      }
+    }
+    return controller;
   },
 
 

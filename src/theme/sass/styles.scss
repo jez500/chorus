@@ -5,40 +5,46 @@
 @import "mixins";
 
 // css for libraries
-@import "components/_libs";
+@import "components/libs";
 
 // chorus resets
-@import "components/_nomalize";
+@import "components/nomalize";
 
 // generic elements (eg. buttons, boxes)
-@import "components/_widgets";
+@import "components/widgets";
 
 // card view (eg. artist/album landing)
-@import "components/_cards";
+@import "components/cards";
+
+// mixed entity page
+@import "components/mixed";
 
 // generic elements (eg. buttons, boxes)
-@import "components/_regions";
+@import "components/regions";
 
 // player styles
-@import "components/_player";
+@import "components/player";
+
+// gRemote Control
+@import "components/remote";
 
 // page specific styles
-@import "components/_pages";
+@import "components/pages";
 
 // page specific styles
-@import "components/_artists";
+@import "components/artists";
 
 // page specific styles
-@import "components/_albums";
+@import "components/albums";
 
 // page specific styles
-@import "components/_songs";
+@import "components/songs";
 
 // page specific styles
-@import "components/_playlists";
+@import "components/playlists";
 
 // Video specific styles
-@import "components/_video";
+@import "components/video";
 
 // responsive styles
-@import "breakpoints/_responsive";
+@import "breakpoints/responsive";

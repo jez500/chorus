@@ -20,8 +20,7 @@ app.xbmcController = {};
  */
 app.xbmcController.command = function(command, options, callback, errorCallback){
 
-  $.jsonRPC.request(command, {
-    params: options,
+  var settings = {
     success: function(result) {
       if(callback){
         callback(result);
@@ -33,8 +32,27 @@ app.xbmcController.command = function(command, options, callback, errorCallback)
         errorCallback([result, options]);
       }
     }
-  });
+  };
 
+  if(options !== undefined && options.length > 0){
+    settings.params = options;
+  }
+
+  $.jsonRPC.request(command, settings);
+
+};
+
+
+/**
+ * Call an input command
+ * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Input
+ *
+ * @param type
+ * @param callback
+ * @param errorCallback
+ */
+app.xbmcController.input = function(type, callback, errorCallback){
+  app.xbmcController.command('Input.'+ type, [], callback, errorCallback);
 };
 
 
@@ -98,7 +116,14 @@ app.xbmcController.entityLoadMultiple = function(type, items, callback){
       id: 'movieid',
       returnKey: 'moviedetails',
       fields: app.movieFields
+    },
+    tvshow: {
+      method: 'VideoLibrary.GetTVShowDetails',
+      id: 'tvshowid',
+      returnKey: 'tvshowdetails',
+      fields: app.tvshowFields
     }
+
   };
 
 
