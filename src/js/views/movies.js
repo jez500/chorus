@@ -64,7 +64,8 @@ app.MovieListView = Backbone.View.extend({
   },
 
   nextPage: function(e){
-    app.pager.nextPage($(e.target), 'movie');
+    var $el = $('.next-page').last();
+    app.pager.nextPage($el, 'movie');
   },
 
 

@@ -942,6 +942,16 @@ input[type="text"] {
   }
 }
 
+/* line 216, ../../../src/theme/sass/components/_widgets.scss */
+.dropdown-header {
+  display: block;
+  padding: 10px 13px;
+  font-size: 12px;
+  line-height: 1.42857143;
+  color: #999;
+  background: #F4F4F4;
+}
+
 /* line 310, ../../../src/theme/sass/components/_cards.scss */
 .card {
   white-space: nowrap;

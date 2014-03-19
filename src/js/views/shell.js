@@ -346,7 +346,7 @@ app.ShellView = Backbone.View.extend({
     e.preventDefault();
     // Save playlist
     app.playlists.saveCustomPlayListsDialog();
-    app.playlists.changePlaylistView('local');
+    app.playlists.changePlaylistView('lists');
   },
 
   /**
@@ -354,7 +354,7 @@ app.ShellView = Backbone.View.extend({
    */
   refreshPlaylist: function(e){
     e.preventDefault();
-    app.AudioController.playlistRender();
+    this.getController().playlistRender();
   },
 
 
@@ -372,10 +372,34 @@ app.ShellView = Backbone.View.extend({
    */
   clearPlaylist: function(e){
     e.preventDefault();
-    // Clear playlist
-    app.AudioController.playlistClear(function(data){
-      app.AudioController.playlistRender();
+    var controller = this.getController();
+    // clear the list for the given collection
+    controller.playlistClear(function(){
+      controller.playlistRender();
     });
+  },
+
+
+  /**
+   * Get controller based on what is visible in the shell
+   * @returns {{}}
+   */
+  getController: function(){
+    var controller = {};
+    // Local Player
+    if(app.audioStreaming.getPlayer() == 'local'){
+      controller = app.audioStreaming;
+    } else {
+      // XBMC Player
+      if($('.plid-1').length > 0){
+        // video playlist
+        controller = app.VideoController;
+      } else {
+        // audio playlist
+        controller = app.AudioController;
+      }
+    }
+    return controller;
   },
 
 

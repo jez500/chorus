@@ -832,9 +832,6 @@ app.Router = Backbone.Router.extend({
 
 
 
-
-
-
   /**
    * A tvshow collection (no pager)
    */
@@ -968,12 +965,16 @@ app.Router = Backbone.Router.extend({
   },
 
 
+  /**
+   * Toggle Remote control
+   */
   remoteControl: function(){
+    // Set Player
+    app.playlists.changePlaylistView('xbmc');
     // set title
     app.helpers.setTitle('Remote');
     // set menu
     app.shellView.selectMenuItem('remote', 'no-sidebar');
-
   },
 
 

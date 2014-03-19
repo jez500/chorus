@@ -314,6 +314,25 @@ app.audioStreaming = {
 
 
   /**
+   * Clear playlist
+   */
+  playlistClear: function(callback){
+    var c = {models: []};
+    app.audioStreaming.setPlaylistItems(c);
+    if(callback){
+      callback();
+    }
+  },
+
+  /**
+   * Render Playlist
+   */
+  playlistRender: function(){
+    app.audioStreaming.renderPlaylistItems();
+  },
+
+
+  /**
    * Load a song into the browser player (like putting a cd single in the cd player)
    *
    * @param songModel

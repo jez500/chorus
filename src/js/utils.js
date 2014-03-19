@@ -873,7 +873,11 @@ $(document).ready(function(){
     tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
     for(var i in settings.items){
       var item = settings.items[i];
-      tpl += '<li><a href="' + item.url + '" class="' + item.class + '">' + item.title + '</a></li>';
+      if(item.url === undefined){
+        tpl += '<li class="' + item.class + '">' + item.title + '</li>';
+      } else {
+        tpl += '<li><a href="' + item.url + '" class="' + item.class + '">' + item.title + '</a></li>';
+      }
     }
     tpl += '</ul>';
     if(!settings.omitwrapper){
@@ -967,16 +971,6 @@ $(document).ready(function(){
             {url: '#', class: 'movie-download', title: 'Download Movie', callback: function(){
               app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
             }}
-//            ,
-//            {url: '#', class: 'movie-add-xbmc', title: 'Add to XBMC', callback: function(){
-//              app.playlists.playlistAddItems('xbmc', 'append', 'album', model.albumid);
-//            }},
-//            {url: '#', class: 'movie-add-local', title: 'Play in browser', callback: function(){
-//              app.playlists.playlistAddItems('local', 'replace', 'album', model.albumid);
-//            }},
-//            {url: '#', class: 'movie-add-lists', title: 'Save to lists', callback: function(){
-//              app.playlists.playlistAddItems('lists', 'new', 'album', model.albumid)
-//            }}
           ]
         };
         break;
@@ -986,9 +980,11 @@ $(document).ready(function(){
           key: 'playlist',
           pull: 'right',
           items: [
-            {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
+            {class: 'dropdown-header', title: 'Current Playlist'},
             {url: '#', class: 'clear-playlist', title: 'Clear Playlist'},
             {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'},
+            {class: 'dropdown-header', title: 'Audio'},
+            {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
             {url: '#', class: 'new-custom-playlist', title: 'New Browser Playlist'}
           ]
         };
