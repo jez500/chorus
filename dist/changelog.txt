@@ -1,3 +1,14 @@
+Version 0.3.1
+- Added a remote control
+- Watched status on videos
+- Search and ThumbsUp responsive redesign
+- TV and Movies added to Search and ThumbsUp
+- In progress videos resume from correct spot
+- Video sources in files
+- Playlist clear now applies to visible playlist
+- Loads of refactoring, bugfixes and responsive updates
+
+
 Version 0.3.0
 - Updated icon, added fanart and screenshots
 - Minor style fixes and removed some debugging
