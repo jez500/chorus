@@ -37,7 +37,10 @@ app.pager = {
    */
   viewHelpers: function($el, type){
 
-    var self = app.pager;
+    var self = app.pager,
+      isMobile = ($('body').width() < 800),
+      thresholdVal = (isMobile ? '0.8' : '500px'); // px value doesnt work on mobile?
+
     self.type = (type !== undefined ? type : this.type);
     self.$el = $el;
 
@@ -46,11 +49,10 @@ app.pager = {
       var $next = $('<li class="next-page">More...</li>');
       self.$el.append($next);
     }
-    console.log('smacked bind');
+
     // Infinate scroll trigger (scroll)
-    $(window).smack({ threshold: '500px' })
+    $(window).smack({ threshold: thresholdVal })
       .done(function () {
-        console.log('smacked');
         $('ul.' + self.type + '-page-list').find('.next-page').last().trigger('click');
       });
 

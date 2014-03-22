@@ -12,7 +12,7 @@ var app = {
 
   jsonRpcUrl: '/jsonrpc', // JsonRPC endpoint
 
-  itemsPerPage: 50, // Our default pagination amount
+  itemsPerPage: 60, // Our default pagination amount
 
   nextPageLoading: false,
 

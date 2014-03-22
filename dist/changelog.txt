@@ -1,3 +1,9 @@
+Version 0.3.2
+- Bug fix: search issue with repeated addons
+- Bug fix: soundcloud search (broken in last release)
+- Bug fix: Movies only showing first page of results on small screen
+
+
 Version 0.3.1
 - Added a remote control
 - Watched status on videos

@@ -10,7 +10,19 @@ ul.video-list {
 
     }
     &.next-page {
-      display: none;
+      display: block;
+      clear: both;
+      background: #fff;
+      border-bottom: 2px solid #ccc;
+      color: #777;
+      font-size: 15px;
+      padding: 8px;
+      margin: 15px 80px;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        background: #f1f1f1;
+      }
     }
     @include breakpoint($width-small){
       display: block;
@@ -35,6 +47,14 @@ ul.video-list {
   }
 }
 
+.section-tvshows,
+.section-movies {
+  #content {
+    padding-bottom: 20px;
+    overflow: hidden;
+  }
+}
+
 
 /** MOVIE *******************/
 .section-tvshow,
@@ -52,6 +72,7 @@ ul.video-list {
       opacity: 0.2;
     }
   }
+
   // fixed sidebar of movie
   .video-side {
     padding: 10px;
