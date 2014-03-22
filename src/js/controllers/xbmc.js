@@ -102,7 +102,6 @@ app.xbmcController.multipleCommand = function(commands, callback){
  */
 app.xbmcController.entityLoadMultiple = function(type, items, callback){
 
-
   // this maps a generic model to associated namespaces
   var vars = {
     song: {

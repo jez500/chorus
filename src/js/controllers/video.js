@@ -190,7 +190,6 @@ app.VideoController.playlistAddMultiple = function(type, ids, callback){
 
       //update cache
       app.VideoController.currentPlaylist = result;
-      console.log('playing xxxx');
       callback(result);
 
     });

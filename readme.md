@@ -22,7 +22,7 @@ mail@jez500.com
 ## Installing / Updating
 You can download Chorus via the official XBMC repo
 - XBMC > Settings > Services > Web Server > Web Interface > get more
-(or use the zip in this repo)
+- Or use the zip in this repo
 
 ## Enabling
 - XBMC > Stystem > Settings > Services > Webserver
@@ -110,8 +110,7 @@ A few things that are "nice to haves"
 - Backbone, this is my first project using backbone and I am sure I could be doing some things better (refactor)
 - Addons, Make it work with your favourite addon - I attempted google music but failed even using it via the ui
 - Mobile/Tablet App, I would love to reuse a lot of the code as an app, but dont know how
-- Video Support, Movies work, now we need tv
-- Browser streaming audio playback... maybe you want it to work in firefox?
+- Browser streaming audio playback... [maybe you want it to work in firefox](https://github.com/jez500/chorus/issues/5)?
 - Photo library, I wouldn't use it, but you might!
 
 ## Screenshots

@@ -2,6 +2,8 @@ Version 0.3.2
 - Bug fix: search issue with repeated addons
 - Bug fix: soundcloud search (broken in last release)
 - Bug fix: Movies only showing first page of results on small screen
+- Bug fix: Saved lists not playing on correct player
+- Changed to using minified js (~450K lighter on load)
 
 
 Version 0.3.1

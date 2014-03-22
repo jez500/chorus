@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.chorus"
-  version="0.3.1"
+  version="0.3.2"
   name="Chorus"
   provider-name="jez500">
   <requires>
@@ -16,5 +16,7 @@
         with most modern browsers. For more, see github.com/jez500/chorus</description>
     <platform>all</platform>
     <language>en</language>
+    <source>https://github.com/jez500/chorus</source>
+    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
   </extension>
 </addon>

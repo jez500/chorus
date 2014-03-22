@@ -14496,7 +14496,10 @@ $(document).ready(function(){
           var $parent = $(this).parent(),
             $enterButton = $parent.find('.bind-enter'),
             $btn = ($enterButton.length === 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
-          $btn.trigger("click");
+          // if button pane exists
+          if($parent.find('.ui-dialog-buttonpane button').length > 0){
+            $btn.trigger("click");
+          }
         }
       });
     });
@@ -14896,7 +14899,7 @@ $(document).ready(function(){
       }
       return app.helpers.varGet('defaultImage');
     }
-    return '/image/' + encodeURIComponent(rawPath);
+    return 'image/' + encodeURIComponent(rawPath);
   };
 
 
@@ -15037,7 +15040,7 @@ $(document).ready(function(){
 
   jsonRpcUrl: '/jsonrpc', // JsonRPC endpoint
 
-  itemsPerPage: 50, // Our default pagination amount
+  itemsPerPage: 60, // Our default pagination amount
 
   nextPageLoading: false,
 
@@ -16103,7 +16106,10 @@ app.pager = {
    */
   viewHelpers: function($el, type){
 
-    var self = app.pager;
+    var self = app.pager,
+      isMobile = ($('body').width() < 800),
+      thresholdVal = (isMobile ? '0.8' : '500px'); // px value doesnt work on mobile?
+
     self.type = (type !== undefined ? type : this.type);
     self.$el = $el;
 
@@ -16114,7 +16120,7 @@ app.pager = {
     }
 
     // Infinate scroll trigger (scroll)
-    $(window).smack({ threshold: '200px' })
+    $(window).smack({ threshold: thresholdVal })
       .done(function () {
         $('ul.' + self.type + '-page-list').find('.next-page').last().trigger('click');
       });
@@ -18265,6 +18271,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio'),
     modelType = $thisItem.data('type');
 
+
+
   //loop over each playlist item to see what (if any has changed)
   $sortable.find('div.playlist-item').each(function(i,d){
     $d = $(d);
@@ -18279,6 +18287,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     var controller = (type == 'audio' ? app.AudioController : app.VideoController);
     controller.playlistSwap(changed.from, changed.to, function(res){
       controller.playlistRender();
+      // this will get added next poll
+      $thisItem.removeClass('.playing-row');
     }, modelType);
   }
 };
@@ -19264,7 +19274,6 @@ app.VideoController.playlistAddMultiple = function(type, ids, callback){
 
       //update cache
       app.VideoController.currentPlaylist = result;
-      console.log('playing xxxx');
       callback(result);
 
     });
@@ -19536,7 +19545,6 @@ app.xbmcController.multipleCommand = function(commands, callback){
  *  gets passed the return output
  */
 app.xbmcController.entityLoadMultiple = function(type, items, callback){
-
 
   // this maps a generic model to associated namespaces
   var vars = {
@@ -21003,9 +21011,6 @@ app.FileCollection = Backbone.Collection.extend({
       if(options.name == 'sources'){
         // Get Sources
         this.getAllSources(options.success);
-      } else if(options.name == 'addons'){
-        // Get addons
-        this.getAddonSources(options.success);
       } else {
         // Get Dir
         this.getDirectory(options.sourcetype, options.name, options.success);
@@ -22196,20 +22201,35 @@ app.CustomPlaylistSongView = Backbone.View.extend({
    var song = this.model.attributes,
      key = app.helpers.getSongKey(song);
 
-    app.playlists.changePlaylistView('xbmc');
-    app.AudioController.insertAndPlay(key.type, key.id, function(){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRender();
-    });
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // add and play Local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid, function(){
+        // play the last song in the list (what we just added)
+        app.audioStreaming.playPosition((app.audioStreaming.playList.items.models.length - 1));
+      });
+    } else {
+      app.playlists.changePlaylistView('xbmc');
+      app.AudioController.insertAndPlay(key.type, key.id, function(){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRender();
+      });
+    }
+
   },
 
   addSong: function(){
     var song = this.model.attributes,
       key = app.helpers.getSongKey(song);
-    app.AudioController.playlistAdd(key.type, key.id, function(result){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRender();
-    });
+
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // add to local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid, function(){ });
+    } else {
+      app.AudioController.playlistAdd(key.type, key.id, function(result){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRender();
+      });
+    }
   },
 
   /**
@@ -22617,12 +22637,13 @@ app.MixedView = Backbone.View.extend({
 
     // add a pane fore each entity
     $.each(this.entities, function(i,type){
+      var domId = key + '-' + type + 's';
 
-      // don't add a pane if no callback
+      // don't add a pane if no callback or el exists
       if(self.model.callbacks[type] !== undefined){
 
         // create pane and add loading heading
-        pane = '<div class="mixed-pane mixed-pane-' + i + '" id="' + key + '-' + type + 's">' +
+        pane = '<div class="mixed-pane mixed-pane-' + i + '" id="' + domId + '">' +
           self.getHeading(type, 'Looking for ' + type + 's', 'loading') + '</div>';
 
         // append to page
@@ -22651,8 +22672,14 @@ app.MixedView = Backbone.View.extend({
     this.model.callbacks = callbacks;
   },
 
+  /**
+   * Add key if it doesn't exist
+   * @param entity
+   */
   addEntity: function(entity){
-    this.entities.push(entity);
+    if( $.inArray( entity, this.entities ) == -1 ){
+      this.entities.push(entity);
+    }
   },
 
   /**
@@ -23165,7 +23192,7 @@ app.playerStateView = Backbone.View.extend({
    */
   bodyClasses:function () {
 
-    var data = app.cached.nowPlaying;
+    var data = app.playlists.getNowPlaying();
 
     // player was stopped on page load
     if(data.player === undefined){
@@ -23205,7 +23232,7 @@ app.playerStateView = Backbone.View.extend({
     // set the title
     this.setTitle();
 
-    var data = app.cached.nowPlaying,
+    var data = app.playlists.getNowPlaying(),
       // time stuff
       $time = $('#time'),
       cur = 0,
@@ -23256,7 +23283,7 @@ app.playerStateView = Backbone.View.extend({
    */
   nowPlayingMajor:function(){
 
-    var data = app.cached.nowPlaying;
+    var data = app.playlists.getNowPlaying();
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
@@ -23287,11 +23314,18 @@ app.playerStateView = Backbone.View.extend({
     $('.playing-fanart').css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
 
     // refresh playlist
-    if(app.cached.nowPlaying.activePlayer === 0){
-      app.AudioController.playlistRender();
-    } else if(app.cached.nowPlaying.activePlayer == 1){
-      app.VideoController.playlistRender();
+    var controller;
+    if(app.playlists.getNowPlaying('activePlayer') === 0){
+      controller = app.AudioController;
+    } else {
+      controller = app.VideoController;
     }
+    controller.playlistRender(function(){
+      // scroll to playing item
+      $sb = $('#sidebar-second');
+      $('.sidebar-pane', $sb).scrollTo( $('.playing-row'), 1000, {offset: {top:-11}} );
+
+    });
 
   },
 
@@ -23489,7 +23523,8 @@ app.PlaylistItemView = Backbone.View.extend({
 
   render:function () {
     // file fallback
-    var model = this.model;
+    var model = this.model,
+      playing = app.playlists.getNowPlaying();
 
     model.id = (typeof model.id != 'undefined' ? model.id : 'file');
     model.albumid = (typeof model.albumid != 'undefined' ? model.albumid : 'file');
@@ -23498,6 +23533,13 @@ app.PlaylistItemView = Backbone.View.extend({
 
     // render
     this.$el.html(this.template(model));
+
+    // playing row
+    if((playing.status == 'playing' || playing.status == 'paused') &&
+      (playing.player.playlistid == model.playlistId && playing.player.position == model.pos)){
+      // this is the playing row, add class
+      $('.playlist-item', this.$el).addClass('playing-row');
+    }
 
     // if file, add its path
     if(this.model.id == 'file'){
@@ -23861,7 +23903,6 @@ app.searchView = Backbone.View.extend({
         },
         addon: function(){
           // search addons
-          $('#search-addons').empty();
           self.searchAddOns(key);
         }
       };
@@ -23882,7 +23923,7 @@ app.searchView = Backbone.View.extend({
       // Title
       app.helpers.setTitle('<a href="#search">Search </a>');
 
-      // invoke Addons
+      // Search Addons
       self.searchAddOns(key);
 
     }
@@ -23895,11 +23936,10 @@ app.searchView = Backbone.View.extend({
    */
   searchAddOns: function(key){
 
-    // get addons
-    var $addons = $('#search-addons');
-    $addons.empty();
     app.addOns.ready(function(){
-      $addons = app.addOns.invokeAll('searchAddons', $addons, key);
+      // get addons
+      var $addons = $('#search-addons');
+      $addons.html(app.addOns.invokeAll('searchAddons', $addons, key));
     });
 
   },
@@ -25722,13 +25762,6 @@ app.addOns.addon.pluginaudiosoundcloud = {
         'plugin://plugin.audio.soundcloud/',
         'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label)
       );
-
-      /* // add an icon if none - doesn't look much better than default icons
-       if(typeof record.thumbnail == 'undefined' || record.thumbnail == ''){
-       var sc = app.addOns.getAddon('pluginaudiosoundcloud');
-       record.thumbnail = sc.thumbnail;
-       } */
-
     }
 
     return record;
@@ -25757,8 +25790,9 @@ app.addOns.addon.pluginaudiosoundcloud = {
    * @returns {*}
    */
   postProcessFileView: function($el, file){
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(file)){
-      var sc = app.addOns.addon.pluginaudiosoundcloud.getAddon();
+    var self = app.addOns.addon.pluginaudiosoundcloud;
+    if(self.isSoundCloud(file)){
+      var sc = self.getAddon();
 
       // if root item for addon
       if(file.file == sc.file){
@@ -25772,11 +25806,11 @@ app.addOns.addon.pluginaudiosoundcloud = {
           e.stopPropagation();
 
           // trigger search
-          app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
-          var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
+          self.doSearchDialog();
+          var dir = self.getSearchPath();
 
           app.cached.fileCollection = new app.FileCollection();
-          app.cached.fileCollection.fetch({"name":dir, "success": function(res){
+          app.cached.fileCollection.fetch({"sourcetype": 'music', "name":dir, "success": function(res){
             // render page
             app.cached.filesSearchView = new app.FilesView({"model":res}).render();
           }});
@@ -25797,7 +25831,9 @@ app.addOns.addon.pluginaudiosoundcloud = {
    * @param key
    * @returns {*}
    */
-  searchAddons: function($el, key){
+  searchAddons: function($container, key){
+
+    var $el = $('<div></div>');
 
     var self = app.addOns.addon.pluginaudiosoundcloud,
       $nores = $('<div>', {class: 'addon-box', id: 'sc-search'}),
@@ -25885,21 +25921,39 @@ app.addOns.addon.pluginaudiosoundcloud = {
   getSearchResults: function(query, callback){
 
     // get search directory
-    var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
+    var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath(),
+      $window = $(window);
+
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":dir, "success": function(result){
-      // success only after text input complete which is flaky!
+    app.cached.fileCollection.fetch({"sourcetype": 'music', "name":dir, "success": function(result){
+
       // return view
       app.cached.fileListView = new app.FilesListView({model: result});
       callback(app.cached.fileListView);
+
     }});
 
-    // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
-    window.setTimeout(function(){
-      app.xbmcController.command('Input.SendText', [query], function(res){
+    if(!app.notifications.wsActive){
+
+      // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
+      // this is a fallback function that is only used when websockets are not active
+      window.setTimeout(function(){
+        app.xbmcController.command('Input.SendText', [query], function(res){ });
+      }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
+
+    } else {
+
+      // Bind to websockets window open
+      $window.bind('Input.OnInputRequested', function(){
+
+        // send the text input (search)
+        app.xbmcController.command('Input.SendText', [query], function(res){});
+
+        // only run once
+        $window.unbind('Input.OnInputRequested');
 
       });
-    }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
+    }
 
   },
 

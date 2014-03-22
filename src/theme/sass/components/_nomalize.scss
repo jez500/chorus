@@ -18,7 +18,7 @@ body {
   background: #FCFCFC;
 }
 a {
-  text-decoration: none;
+  text-decoration: none !important;
   color: $color-midnight-blue;
   color: $color-wet-asphalt;
   outline: none;

@@ -342,20 +342,35 @@ app.CustomPlaylistSongView = Backbone.View.extend({
    var song = this.model.attributes,
      key = app.helpers.getSongKey(song);
 
-    app.playlists.changePlaylistView('xbmc');
-    app.AudioController.insertAndPlay(key.type, key.id, function(){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRender();
-    });
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // add and play Local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid, function(){
+        // play the last song in the list (what we just added)
+        app.audioStreaming.playPosition((app.audioStreaming.playList.items.models.length - 1));
+      });
+    } else {
+      app.playlists.changePlaylistView('xbmc');
+      app.AudioController.insertAndPlay(key.type, key.id, function(){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRender();
+      });
+    }
+
   },
 
   addSong: function(){
     var song = this.model.attributes,
       key = app.helpers.getSongKey(song);
-    app.AudioController.playlistAdd(key.type, key.id, function(result){
-      app.notification(song.label + ' added to the playlist');
-      app.AudioController.playlistRender();
-    });
+
+    if(app.audioStreaming.getPlayer() == 'local'){
+      // add to local
+      app.playlists.playlistAddItems('local', 'append', 'song', song.songid, function(){ });
+    } else {
+      app.AudioController.playlistAdd(key.type, key.id, function(result){
+        app.notification(song.label + ' added to the playlist');
+        app.AudioController.playlistRender();
+      });
+    }
   },
 
   /**

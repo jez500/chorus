@@ -702,7 +702,10 @@ $(document).ready(function(){
           var $parent = $(this).parent(),
             $enterButton = $parent.find('.bind-enter'),
             $btn = ($enterButton.length === 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
-          $btn.trigger("click");
+          // if button pane exists
+          if($parent.find('.ui-dialog-buttonpane button').length > 0){
+            $btn.trigger("click");
+          }
         }
       });
     });
