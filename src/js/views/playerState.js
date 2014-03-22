@@ -74,7 +74,7 @@ app.playerStateView = Backbone.View.extend({
    */
   bodyClasses:function () {
 
-    var data = app.cached.nowPlaying;
+    var data = app.playlists.getNowPlaying();
 
     // player was stopped on page load
     if(data.player === undefined){
@@ -114,7 +114,7 @@ app.playerStateView = Backbone.View.extend({
     // set the title
     this.setTitle();
 
-    var data = app.cached.nowPlaying,
+    var data = app.playlists.getNowPlaying(),
       // time stuff
       $time = $('#time'),
       cur = 0,
@@ -165,7 +165,7 @@ app.playerStateView = Backbone.View.extend({
    */
   nowPlayingMajor:function(){
 
-    var data = app.cached.nowPlaying;
+    var data = app.playlists.getNowPlaying();
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
@@ -196,11 +196,18 @@ app.playerStateView = Backbone.View.extend({
     $('.playing-fanart').css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
 
     // refresh playlist
-    if(app.cached.nowPlaying.activePlayer === 0){
-      app.AudioController.playlistRender();
-    } else if(app.cached.nowPlaying.activePlayer == 1){
-      app.VideoController.playlistRender();
+    var controller;
+    if(app.playlists.getNowPlaying('activePlayer') === 0){
+      controller = app.AudioController;
+    } else {
+      controller = app.VideoController;
     }
+    controller.playlistRender(function(){
+      // scroll to playing item
+      $sb = $('#sidebar-second');
+      $('.sidebar-pane', $sb).scrollTo( $('.playing-row'), 1000, {offset: {top:-11}} );
+
+    });
 
   },
 

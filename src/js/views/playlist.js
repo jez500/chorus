@@ -90,7 +90,8 @@ app.PlaylistItemView = Backbone.View.extend({
 
   render:function () {
     // file fallback
-    var model = this.model;
+    var model = this.model,
+      playing = app.playlists.getNowPlaying();
 
     model.id = (typeof model.id != 'undefined' ? model.id : 'file');
     model.albumid = (typeof model.albumid != 'undefined' ? model.albumid : 'file');
@@ -99,6 +100,13 @@ app.PlaylistItemView = Backbone.View.extend({
 
     // render
     this.$el.html(this.template(model));
+
+    // playing row
+    if((playing.status == 'playing' || playing.status == 'paused') &&
+      (playing.player.playlistid == model.playlistId && playing.player.position == model.pos)){
+      // this is the playing row, add class
+      $('.playlist-item', this.$el).addClass('playing-row');
+    }
 
     // if file, add its path
     if(this.model.id == 'file'){

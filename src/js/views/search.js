@@ -59,7 +59,6 @@ app.searchView = Backbone.View.extend({
         },
         addon: function(){
           // search addons
-          $('#search-addons').empty();
           self.searchAddOns(key);
         }
       };
@@ -80,7 +79,7 @@ app.searchView = Backbone.View.extend({
       // Title
       app.helpers.setTitle('<a href="#search">Search </a>');
 
-      // invoke Addons
+      // Search Addons
       self.searchAddOns(key);
 
     }
@@ -93,11 +92,10 @@ app.searchView = Backbone.View.extend({
    */
   searchAddOns: function(key){
 
-    // get addons
-    var $addons = $('#search-addons');
-    $addons.empty();
     app.addOns.ready(function(){
-      $addons = app.addOns.invokeAll('searchAddons', $addons, key);
+      // get addons
+      var $addons = $('#search-addons');
+      $addons.html(app.addOns.invokeAll('searchAddons', $addons, key));
     });
 
   },

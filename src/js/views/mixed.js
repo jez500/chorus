@@ -41,12 +41,13 @@ app.MixedView = Backbone.View.extend({
 
     // add a pane fore each entity
     $.each(this.entities, function(i,type){
+      var domId = key + '-' + type + 's';
 
-      // don't add a pane if no callback
+      // don't add a pane if no callback or el exists
       if(self.model.callbacks[type] !== undefined){
 
         // create pane and add loading heading
-        pane = '<div class="mixed-pane mixed-pane-' + i + '" id="' + key + '-' + type + 's">' +
+        pane = '<div class="mixed-pane mixed-pane-' + i + '" id="' + domId + '">' +
           self.getHeading(type, 'Looking for ' + type + 's', 'loading') + '</div>';
 
         // append to page
@@ -75,8 +76,14 @@ app.MixedView = Backbone.View.extend({
     this.model.callbacks = callbacks;
   },
 
+  /**
+   * Add key if it doesn't exist
+   * @param entity
+   */
   addEntity: function(entity){
-    this.entities.push(entity);
+    if( $.inArray( entity, this.entities ) == -1 ){
+      this.entities.push(entity);
+    }
   },
 
   /**

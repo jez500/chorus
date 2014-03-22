@@ -276,6 +276,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     type = ($thisItem.data('playlistId') == 1 ? 'video' : 'audio'),
     modelType = $thisItem.data('type');
 
+
+
   //loop over each playlist item to see what (if any has changed)
   $sortable.find('div.playlist-item').each(function(i,d){
     $d = $(d);
@@ -290,6 +292,8 @@ app.playlists.sortableChangePlaylistPosition = function( event, ui ) {
     var controller = (type == 'audio' ? app.AudioController : app.VideoController);
     controller.playlistSwap(changed.from, changed.to, function(res){
       controller.playlistRender();
+      // this will get added next poll
+      $thisItem.removeClass('.playing-row');
     }, modelType);
   }
 };

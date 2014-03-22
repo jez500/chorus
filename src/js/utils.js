@@ -1102,7 +1102,7 @@ $(document).ready(function(){
       }
       return app.helpers.varGet('defaultImage');
     }
-    return '/image/' + encodeURIComponent(rawPath);
+    return 'image/' + encodeURIComponent(rawPath);
   };
 
 

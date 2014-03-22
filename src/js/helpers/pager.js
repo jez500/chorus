@@ -46,10 +46,11 @@ app.pager = {
       var $next = $('<li class="next-page">More...</li>');
       self.$el.append($next);
     }
-
+    console.log('smacked bind');
     // Infinate scroll trigger (scroll)
-    $(window).smack({ threshold: '200px' })
+    $(window).smack({ threshold: '500px' })
       .done(function () {
+        console.log('smacked');
         $('ul.' + self.type + '-page-list').find('.next-page').last().trigger('click');
       });
 

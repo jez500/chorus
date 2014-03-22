@@ -12,9 +12,6 @@ app.FileCollection = Backbone.Collection.extend({
       if(options.name == 'sources'){
         // Get Sources
         this.getAllSources(options.success);
-      } else if(options.name == 'addons'){
-        // Get addons
-        this.getAddonSources(options.success);
       } else {
         // Get Dir
         this.getDirectory(options.sourcetype, options.name, options.success);

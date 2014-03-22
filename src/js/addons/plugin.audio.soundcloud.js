@@ -28,13 +28,6 @@ app.addOns.addon.pluginaudiosoundcloud = {
         'plugin://plugin.audio.soundcloud/',
         'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label)
       );
-
-      /* // add an icon if none - doesn't look much better than default icons
-       if(typeof record.thumbnail == 'undefined' || record.thumbnail == ''){
-       var sc = app.addOns.getAddon('pluginaudiosoundcloud');
-       record.thumbnail = sc.thumbnail;
-       } */
-
     }
 
     return record;
@@ -63,8 +56,9 @@ app.addOns.addon.pluginaudiosoundcloud = {
    * @returns {*}
    */
   postProcessFileView: function($el, file){
-    if(app.addOns.addon.pluginaudiosoundcloud.isSoundCloud(file)){
-      var sc = app.addOns.addon.pluginaudiosoundcloud.getAddon();
+    var self = app.addOns.addon.pluginaudiosoundcloud;
+    if(self.isSoundCloud(file)){
+      var sc = self.getAddon();
 
       // if root item for addon
       if(file.file == sc.file){
@@ -78,11 +72,11 @@ app.addOns.addon.pluginaudiosoundcloud = {
           e.stopPropagation();
 
           // trigger search
-          app.addOns.addon.pluginaudiosoundcloud.doSearchDialog();
-          var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
+          self.doSearchDialog();
+          var dir = self.getSearchPath();
 
           app.cached.fileCollection = new app.FileCollection();
-          app.cached.fileCollection.fetch({"name":dir, "success": function(res){
+          app.cached.fileCollection.fetch({"sourcetype": 'music', "name":dir, "success": function(res){
             // render page
             app.cached.filesSearchView = new app.FilesView({"model":res}).render();
           }});
@@ -103,7 +97,9 @@ app.addOns.addon.pluginaudiosoundcloud = {
    * @param key
    * @returns {*}
    */
-  searchAddons: function($el, key){
+  searchAddons: function($container, key){
+
+    var $el = $('<div></div>');
 
     var self = app.addOns.addon.pluginaudiosoundcloud,
       $nores = $('<div>', {class: 'addon-box', id: 'sc-search'}),
@@ -191,21 +187,39 @@ app.addOns.addon.pluginaudiosoundcloud = {
   getSearchResults: function(query, callback){
 
     // get search directory
-    var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath();
+    var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath(),
+      $window = $(window);
+
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"name":dir, "success": function(result){
-      // success only after text input complete which is flaky!
+    app.cached.fileCollection.fetch({"sourcetype": 'music', "name":dir, "success": function(result){
+
       // return view
       app.cached.fileListView = new app.FilesListView({model: result});
       callback(app.cached.fileListView);
+
     }});
 
-    // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
-    window.setTimeout(function(){
-      app.xbmcController.command('Input.SendText', [query], function(res){
+    if(!app.notifications.wsActive){
+
+      // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
+      // this is a fallback function that is only used when websockets are not active
+      window.setTimeout(function(){
+        app.xbmcController.command('Input.SendText', [query], function(res){ });
+      }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
+
+    } else {
+
+      // Bind to websockets window open
+      $window.bind('Input.OnInputRequested', function(){
+
+        // send the text input (search)
+        app.xbmcController.command('Input.SendText', [query], function(res){});
+
+        // only run once
+        $window.unbind('Input.OnInputRequested');
 
       });
-    }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
+    }
 
   },
 
