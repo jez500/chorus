@@ -993,6 +993,10 @@ app.Router = Backbone.Router.extend({
       app.xbmcController.command('AudioLibrary.Scan', {}, function(d){
         app.notification('Started Audio Scan');
       });
+    } else if(type == 'video'){
+      app.xbmcController.command('VideoLibrary.Scan', {}, function(d){
+        app.notification('Started Video Scan');
+      });
     }
 
   },
