@@ -132,8 +132,8 @@ app.playerStateView = Backbone.View.extend({
     // switch between audio / video formatting
     if(data.activePlayer == 1){
       // Video
-      dur = data.player.totaltime.hours + ':' + data.player.totaltime.minutes + ':' + data.player.totaltime.seconds;
-      cur = data.player.time.hours + ':' + data.player.time.minutes + ':' + data.player.time.seconds;
+      dur = data.player.totaltime.hours + ':' + app.helpers.numPad(data.player.totaltime.minutes, 2) + ':' + app.helpers.numPad(data.player.totaltime.seconds, 2);
+      cur = data.player.time.hours + ':' + app.helpers.numPad(data.player.time.minutes, 2) + ':' + app.helpers.numPad(data.player.time.seconds, 2);
     } else if (data.activePlayer === 0){
       // Audio
       dur = app.helpers.secToTime(parseInt(data.item.duration));
