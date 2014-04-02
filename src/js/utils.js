@@ -223,6 +223,15 @@ $(document).ready(function(){
 
 
   /**
+   * Format a number with the desired number of leading zeros
+   */
+  app.helpers.numPad = function(num, size) {
+    var s = "000000000" + num;
+    return s.substr(s.length-size);
+  };
+
+
+  /**
    * Convert seconds to time
    */
   app.helpers.secToTime = function(totalSec){
