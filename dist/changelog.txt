@@ -1,3 +1,15 @@
+Version 0.3.3
+- Audio streaming buffer indicator
+- Movie/TV Sorting abilities
+- Movie/TV Toggle watched status
+- Movie/TV Toggle visibility of watched
+- minor UI updates
+- Remember watched visibility and last player
+- SoundCloud streaming now shows current time
+- Added leading 0 to time formatter when required
+- Added video library scan
+
+
 Version 0.3.2
 - Bug fix: search issue with repeated addons
 - Bug fix: soundcloud search (broken in last release)
