@@ -14030,6 +14030,15 @@ $(document).ready(function(){
 
 
   /**
+   * Format a number with the desired number of leading zeros
+   */
+  app.helpers.numPad = function(num, size) {
+    var s = "000000000" + num;
+    return s.substr(s.length-size);
+  };
+
+
+  /**
    * Convert seconds to time
    */
   app.helpers.secToTime = function(totalSec){
@@ -15121,7 +15130,8 @@ $(document).ready(function(){
 
     return old.apply(this, arguments);
   };
-})($.fn.attr);;var app = {
+})($.fn.attr);
+;var app = {
 
   views: {},
 
@@ -15489,7 +15499,6 @@ app.Router = Backbone.Router.extend({
       // get the local playing item
       var browserPlaying = app.audioStreaming.getNowPlayingSong();
       backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
-      $('.local-tab').tigger('click');
     } else {
       // xbmc playing image
       backstretchImage = (data === undefined || data.item === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
@@ -16211,7 +16220,7 @@ $(document).on("ready", function () {
     app.notification('Library loaded');
     // set last player
     if(app.settings.get('lastPlayer', 'xbmc') == 'local'){
-      app.playlists.changePlaylistView('local');
+      $('.local-tab').trigger('click');
     }
 
   },'songsReady');
@@ -24111,7 +24120,8 @@ app.playerStateView = Backbone.View.extend({
 
 
 
-});;/*
+});
+;/*
  * Sidebar artist list
  */
 

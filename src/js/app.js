@@ -366,7 +366,6 @@ app.Router = Backbone.Router.extend({
       // get the local playing item
       var browserPlaying = app.audioStreaming.getNowPlayingSong();
       backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
-      $('.local-tab').tigger('click');
     } else {
       // xbmc playing image
       backstretchImage = (data === undefined || data.item === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
@@ -1088,7 +1087,7 @@ $(document).on("ready", function () {
     app.notification('Library loaded');
     // set last player
     if(app.settings.get('lastPlayer', 'xbmc') == 'local'){
-      app.playlists.changePlaylistView('local');
+      $('.local-tab').trigger('click');
     }
 
   },'songsReady');
