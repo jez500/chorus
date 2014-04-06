@@ -132,12 +132,13 @@ app.playerStateView = Backbone.View.extend({
     // switch between audio / video formatting
     if(data.activePlayer == 1){
       // Video
-      dur = data.player.totaltime.hours + ':' + app.helpers.numPad(data.player.totaltime.minutes, 2) + ':' + app.helpers.numPad(data.player.totaltime.seconds, 2);
-      cur = data.player.time.hours + ':' + app.helpers.numPad(data.player.time.minutes, 2) + ':' + app.helpers.numPad(data.player.time.seconds, 2);
+      dur = app.helpers.formatTime(data.player.totaltime);
+      cur = app.helpers.formatTime(data.player.time);
     } else if (data.activePlayer === 0){
       // Audio
       dur = app.helpers.secToTime(parseInt(data.item.duration));
-      cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
+      cur = app.helpers.formatTime(data.player.time);
+      //cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
     }
 
     // set time
@@ -146,15 +147,7 @@ app.playerStateView = Backbone.View.extend({
 
     // If episode is playing, remove cache so watched status is updated
     if(data.item.type == 'episode'){
-      var key;
-      key = 'episodes:' + data.item.tvshowid + ':' + data.item.season;
-      if(app.stores.TvEpisodes !== undefined && app.stores.TvEpisodes[key] !== undefined){
-        delete app.stores.TvEpisodes[key];
-      }
-      key = 'seasons:' + data.item.tvshowid;
-      if(app.stores.TvSeasons !== undefined && app.stores.TvSeasons[key] !== undefined){
-        delete app.stores.TvSeasons[key];
-      }
+      app.VideoController.invalidateCache('episode');
     }
 
   },
@@ -205,8 +198,8 @@ app.playerStateView = Backbone.View.extend({
     controller.playlistRender(function(){
       // scroll to playing item
       $sb = $('#sidebar-second');
-      $('.sidebar-pane', $sb).scrollTo( $('.playing-row'), 1000, {offset: {top:-11}} );
-
+      //$('.sidebar-pane', $sb).scrollTo( $('.playing-row'), 1000, {offset: {top:-11}} );
+      $('.playlist-pos-' + data.player.position, $sb).scrollTo( $('.playing-row'), 0, {offset: {top:-11}} );
     });
 
   },

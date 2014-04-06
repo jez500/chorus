@@ -411,6 +411,14 @@ app.ShellView = Backbone.View.extend({
     app.helpers.aboutDialog();
   },
 
+  /**
+   * Scan Library
+   * @param e
+   */
+  scanLibrary: function(e){
+
+  },
+
 
   /*************************************
    * Local Browser Streaming below

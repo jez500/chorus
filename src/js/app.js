@@ -311,7 +311,7 @@ app.Router = Backbone.Router.extend({
     "scan/:type":           "scan",
     "thumbsup":             "thumbsup",
     "files":                "files",
-    "movies/page/:num":     "moviesPage",
+    "movies/page/:num/:sort":     "moviesPage",
     "movies/genre/:genre":  "moviesGenre",
     "movies":               "moviesLanding",
     "movie/:id":            "movie",
@@ -630,11 +630,19 @@ app.Router = Backbone.Router.extend({
 
     // vars
     var $content = $('#content'),
+      sort = app.helpers.getSortParams(),
       $results = $('ul.movie-page-list',$content),
       fullRange = false,
       scrolled = false,
       lastPageNum = app.moviePageNum,
-      $window = $(window);
+      $window = $(window),
+      isNewPage = ($results.length === 0);
+
+    // clear page if sort changed
+    if(sort != app.filters.movieLastSort){
+      isNewPage = true;
+    }
+    app.filters.movieLastSort = sort;
 
     // do we append?
     append = (append !== undefined && append === true);
@@ -643,17 +651,19 @@ app.Router = Backbone.Router.extend({
     // force a page via url
     app.moviePageNum = parseInt(num);
 
-    // chnage the hash without triggering the router (for back action)
-    app.router.navigate('movies/page/' + num);
+    // change the hash without triggering the router (for back action)
+    app.router.navigate('movies/page/' + num + '/' + sort);
+    // remember last sort setting
+    app.settings.set('movieSort', sort);
 
     // We have no content on the page so init pager
-    if($results.length === 0){
+    if(isNewPage === true){
 
       // Loading
       $content.html('<div class="loading-box">Loading Movies</div>');
 
       // set title and add some tabs
-      app.helpers.setTitle('All Movies', { addATag:'#movies/page/0', tabs: {'#movies': 'Recently Added'}, activeTab: 1});
+      app.helpers.setTitle('<i class="fa fa-film"></i>');
 
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
@@ -678,10 +688,13 @@ app.Router = Backbone.Router.extend({
       collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
 
-      if(app.moviePageNum === 0 || append !== true){ // Replace content //
+      if(isNewPage === true || app.moviePageNum === 0 || append !== true){ // Replace content //
 
         // Render view
         $content.html(app.cached.movieListView.render().$el);
+
+        // filters
+        $content.prepend(app.filters.renderFilters('movie'));
 
         // scroll to top
         $window.scrollTo(0);
@@ -728,7 +741,7 @@ app.Router = Backbone.Router.extend({
    *
    * @param num
    */
-  moviesPage: function(num){
+  moviesPage: function(num, sort){
     this.movies(num, false);
   },
 
@@ -739,7 +752,7 @@ app.Router = Backbone.Router.extend({
   moviesLanding: function () {
 
     var self = this;
-    app.helpers.setTitle('Recently Added', { addATag:'#movies', tabs: {'#movies/page/0' : 'Browse All'}, activeTab: 1});
+    app.helpers.setTitle('<i class="fa fa-film"></i>');
 
     // loading
     self.$content.html('<div class="loading-box">Loading Movies</div>');
@@ -751,10 +764,15 @@ app.Router = Backbone.Router.extend({
       app.cached.movieListView = new app.MovieListView({model: collection});
       // render
       self.$content.html(app.cached.movieListView.render().$el);
+
+      // filters
+      self.$content.prepend(app.filters.renderFilters('movie'));
+
       // no pagination
       self.$content.find('.next-page').remove();
       // change class
-      self.$content.find('ul').removeClass('movie-list').addClass('movie-recent-list');
+      self.$content.find('ul').removeClass('movie-page-list').addClass('movie-recent-list');
+      self.$content.find('img').lazyload({threshold : 200});
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
       // lazyload
@@ -988,16 +1006,14 @@ app.Router = Backbone.Router.extend({
    */
   scan: function(type){
 
-    //start music scan
-    if(type == 'audio'){
-      app.xbmcController.command('AudioLibrary.Scan', {}, function(d){
-        app.notification('Started Audio Scan');
-      });
-    } else if(type == 'video'){
-      app.xbmcController.command('VideoLibrary.Scan', {}, function(d){
-        app.notification('Started Video Scan');
-      });
-    }
+    var lib = (type == 'audio' ? 'AudioLibrary' : 'VideoLibrary'),
+      self = this;
+    app.xbmcController.command(lib + '.Scan', {}, function(d){
+      app.notification('Started ' + type + ' Scan');
+      app.shellView.selectMenuItem('scan', 'no-sidebar');
+      self.$content.html('<div class="loading-box">Scanning ' + type + ' library</div>');
+      app.helpers.setTitle('<i class="fa fa-refresh"></i> ' + type + ' scan');
+    });
 
   },
 

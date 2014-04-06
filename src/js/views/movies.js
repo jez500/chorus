@@ -101,7 +101,8 @@ app.MovieListItemView = Backbone.View.extend({
     "click .movie-add": "addMovie",
     "click .movie-thumbsup": "thumbsUp",
     "click .movie-menu": "menu",
-    "click .actions-wrapper": "view"
+    "click .actions-wrapper": "view",
+    "click .movie-watched": "toggleWatched"
   },
 
 
@@ -197,6 +198,28 @@ app.MovieListItemView = Backbone.View.extend({
       app.VideoController.playlistRender();
     });
 
+  },
+
+
+  /**
+   * Watched it
+   * @param e
+   */
+  toggleWatched: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $target = $(e.target).closest('.card');
+
+    // We use the class to toggle so a full refresh is avoided
+    this.model.attributes.playcount = ($target.hasClass('watched-yes') ? 1 : 0);
+    // toggle
+    app.VideoController.toggleWatched('movie', this.model.attributes, function(state){
+      if(state === true){
+        $target.addClass('watched-yes').removeClass('watched-no');
+      } else {
+        $target.addClass('watched-no').removeClass('watched-yes');
+      }
+    });
   }
 
 });

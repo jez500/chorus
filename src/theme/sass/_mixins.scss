@@ -80,10 +80,14 @@
     }
   }
   &.watched-yes {
-    opacity: 0.5;
-    &:hover {
-      opacity: 1;
+    .is-watched {
+      display: block;
     }
+//    opacity: 0.5;
+//    &:hover {
+//      opacity: 1;
+//    }
+
   }
 
 }

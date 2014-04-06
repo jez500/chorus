@@ -12,6 +12,8 @@ app.MovieCollection = Backbone.Collection.extend({
 
   cached: [],
   fullyLoaded: false,
+  lastOrder: '',
+  lastSort: '',
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -20,6 +22,7 @@ app.MovieCollection = Backbone.Collection.extend({
       // Get a paginated
       var self = this,
         fullRange = (typeof options.fullRange != 'undefined' && options.fullRange === true);
+
 
 
       // load up a full cache for pagination
@@ -36,7 +39,8 @@ app.MovieCollection = Backbone.Collection.extend({
 
         // model for params
         var args = {
-          range: app.helpers.createPaginationRange(app.moviePageNum, fullRange)
+          range: app.helpers.createPaginationRange(app.moviePageNum, fullRange),
+          sort: app.helpers.getSort()
         };
 
         // prep empty cache
@@ -78,6 +82,8 @@ app.MovieCollection = Backbone.Collection.extend({
   },
 
 
+
+
   /**
    * Returns a set of results if in cache or false if a lookup is required
    * @param pageNum
@@ -85,6 +91,13 @@ app.MovieCollection = Backbone.Collection.extend({
    */
   cachedPagination: function(pageNum, fullRange){
 
+    // if order change, flush cache
+    var sort = app.helpers.getSort();
+    if(this.lastSort != sort.method || this.lastOrder != sort.order){
+      delete app.stores.movies;
+    }
+    this.lastSort = sort.method;
+    this.lastOrder = sort.order;
 
     // always lookup if no cache
     if(app.stores.movies === undefined ||

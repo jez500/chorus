@@ -207,9 +207,12 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   arg2: function(){
     return this.models[0].attributes.range;
   },
+  arg3: function(){
+    return this.models[0].attributes.sort;
+  },
   //method/params
   methods: {
-    read:  ['VideoLibrary.GetMovies', 'arg1', 'arg2']
+    read:  ['VideoLibrary.GetMovies', 'arg1', 'arg2', 'arg3']
   },
   //return the artists key from the result
   parse:  function(resp, xhr){

@@ -3,13 +3,46 @@
  * =====================================================================
  */
 
+
 /**
  * On Shell ready
  * Browser player binds and load last playlist from local storage
  */
 $(window).on('shellReady', function(){
+
+
+
   // browser player setup
-  app.audioStreaming.init();
+  app.audioStreaming.$body = $('body');
+  app.audioStreaming.$window = $(window);
+
+  // create a local browser playlist object that will contain local player information
+  // most importantly is the current playlist
+  app.audioStreaming.playList = {
+    items: [],
+    playingPosition: 0,
+    id: 0,
+    repeat: 'off',
+    random: 'off',
+    mute: false
+  };
+
+ // $.get('lib/soundmanager/swf/soundmanager2_flash9_debug.swf', function(){
+
+
+  // Lazy load sound manager so we can init it when we are ready
+  $.ajax({
+    url: 'lib/soundmanager/script/soundmanager2-nodebug-jsmin.js',
+    dataType: 'script',
+    success: function(data){
+      app.audioStreaming.playerReady();
+    },
+    error: function(data){
+      console.log('errzz', data);
+    }
+  });
+ // });
+
 });
 
 
@@ -27,9 +60,9 @@ $(window).on('browserPlayerStart', function(song){
  * On Playback stop
  * Browser player has stopped (or paused)
  */
-$(window).on('browserPlayerStop', function(song){
+$(window).on('browserPlayerStop', function(){
   app.audioStreaming.playbackInProgress = false;
-  app.audioStreaming.setTitle('stop', song.label);
+  app.audioStreaming.setTitle('stop', 'Nothing Playing');
 });
 
 
@@ -54,6 +87,7 @@ app.audioStreaming = {
   volumeEl: '#browser-volume',
   playlistEl: '#playlist-local',
   playbackInProgress: false,
+  currentPlaybackId: 'browser-none',
 
   // local storage
   lastListKey: 'lastBrowserList',
@@ -64,66 +98,74 @@ app.audioStreaming = {
   classLocalPlaying: 'browser-playing',
   classLocalPaused: 'browser-paused',
 
+  playerReady: function(){
+
+    // html5 audio doesn't work in firefox because it requires a strict mime type of audio/mpeg
+    // XBMC supplies the type as audio/mpeg3 resulting in html5 audio throwing errors and just
+    // not playing anything.
+    //
+    // In light of this we switch to flash, which has its own problems, namely not working after
+    // you refresh your page! seems to be a cache issue but same occurs in chrome :(
+    // First load is generally good so it is at least better than nothing - but maybe more frustrating?
+    var preferFlash = (app.helpers.getBrowser() == 'firefox');
+    console.log(preferFlash);
+
+    // setup soundmanager
+    soundManager.setup({
+      url: 'lib/soundmanager/swf/',
+      flashVersion: 9,
+      preferFlash: preferFlash,
+      useHTML5Audio: true,
+      useFlashBlock: false,
+      flashLoadTimeout: 3000,
+      debugMode: false,
+      noSWFCache: true,
+      debugFlash: false,
+      onready: function(){
+        app.audioStreaming.init();
+      },
+      ontimeout: function(){
+        console.log('timeout');
+        soundManager.flashLoadTimeout = 0; // When restarting, wait indefinitely for flash
+        soundManager.onerror = {}; // Prevent an infinite loop, in case it's not flashblock
+        soundManager.reboot(); // and, go!
+      }
+    });
+  },
+
+
   /**
    * Load libs, etc.
    */
   init: function($context){
 
-    app.audioStreaming.$body = $('body');
-    app.audioStreaming.$window = $(window);
+    $(window).trigger('soundManagerReady');
 
-    soundManager.setup({
+    // set a default (lower vol)
+    soundManager.setVolume(app.audioStreaming.defaultVol);
 
-      url: 'lib/soundmanager/swf/',
-      flashVersion: 9,
-      preferFlash: false, // prefer 100% HTML5 mode, where both supported
-      useHTML5Audio: true,
-      useFlashBlock: false,
+    // Get last browser playlist collection, if any
+    var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
+    if(lastList !== undefined && lastList !== null && lastList.length > 0){
+      // when songs are ready, render them
+      app.store.libraryCall(function(){
+        // get collection based on songids
+        app.playlists.playlistGetItems('items', lastList, function(collection){
+          app.audioStreaming.playList.items = collection;
+          // render it too
+          app.audioStreaming.renderPlaylistItems();
+          // add as loaded song
+          if(collection.models !== undefined && collection.models[0] !== undefined){
+            // load the first song
+            var song = collection.models[0];
+            app.audioStreaming.loadSong(song);
+            // update playing song details around the page
+            app.audioStreaming.updatePlayingState(song.attributes);
+          }
 
-      // Sound manager ready!
-      onready: function(){
-        $(window).trigger('soundManagerReady');
-
-        // create a local browser playlist object that will contain local player information
-        // most importantly is the current playlist
-        app.audioStreaming.playList = {
-          items: [],
-          playingPosition: 0,
-          id: 0,
-          repeat: 'off',
-          random: 'off',
-          mute: false
-        };
-
-        // set a default (lower vol)
-        soundManager.setVolume(app.audioStreaming.defaultVol);
-
-        // Get last browser playlist collection, if any
-        var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
-        if(lastList !== undefined && lastList !== null && lastList.length > 0){
-          // when songs are ready, render them
-          app.store.libraryCall(function(){
-            // get collection based on songids
-            app.playlists.playlistGetItems('items', lastList, function(collection){
-              app.audioStreaming.playList.items = collection;
-              // render it too
-              app.audioStreaming.renderPlaylistItems();
-              // add as loaded song
-              if(collection.models !== undefined && collection.models[0] !== undefined){
-                // load the first song
-                var song = collection.models[0];
-                app.audioStreaming.loadSong(song);
-                // update playing song details around the page
-                app.audioStreaming.updatePlayingState(song.attributes);
-              }
-
-            });
-          }, 'songsReady');
-        }
-
-      } // end onready
-
-    }); // end setup
+        });
+      }, 'songsReady');
+    }
 
     // Wake up our sliders
     app.audioStreaming.progressInit();
@@ -199,7 +241,8 @@ app.audioStreaming = {
     // remove currently playing class
     $('li.browser-player div.playlist-item').removeClass('browser-playing-row');
 
-    if(app.audioStreaming.playList.items.models.length > 0){
+    if(app.audioStreaming.playList.items.models.length > 0 &&
+      app.audioStreaming.playList.items.models[parseInt(pos)] !== undefined){
         var model = app.audioStreaming.playList.items.models[parseInt(pos)].attributes;
         app.audioStreaming.playList.playingPosition = pos;
         app.audioStreaming.loadSong({attributes: model}, function(){
@@ -209,6 +252,8 @@ app.audioStreaming = {
           app.notification('Playing ' + model.label + ' in the browser');
 
         });
+      } else {
+        app.audioStreaming.stop();
       }
 
     },
@@ -353,11 +398,14 @@ app.audioStreaming = {
     // Get download url
     app.AudioController.downloadFile(song.file, function(url){
 
+      // save id
+      app.audioStreaming.currentPlaybackId = 'browser-' + song.songid;
+
       //kick of soundmanager
       app.audioStreaming.localPlay = sm.createSound({
 
         // Options
-        id:'browser-' + song.songid,
+        id: app.audioStreaming.currentPlaybackId,
         url: url,
         autoPlay: false,
         autoLoad: true,
@@ -378,8 +426,7 @@ app.audioStreaming = {
         },
         onstop: function(){
           // remove classes
-          $('body').removeClass('browser-playing').removeClass('browser-paused');
-          $(window).trigger('browserPlayerStop', [song]);
+          app.audioStreaming.playerStateStop();
         },
         onpause:  function(){
           // toggle classes
@@ -417,6 +464,8 @@ app.audioStreaming = {
             if(items.length > playingPosition){
               // play it
               app.audioStreaming.playPosition((playingPosition + 1));
+            } else {
+              app.audioStreaming.stop();
             }
           }
         },
@@ -428,7 +477,8 @@ app.audioStreaming = {
             dur = parseInt(this.duration) / 1000,
             per = Math.round((pos / dur) * 100),
             $time = $('#browser-time'),
-            $nowPlaying = $('#browser-now-playing');
+            $nowPlaying = $('#browser-now-playing'),
+            buffered = Math.round((this.buffered[0] !== undefined ? ((this.buffered[0].end / this.duration) * 100) : 0));
 
           app.audioStreaming.nowplaying.player = {
             position : pos,
@@ -442,6 +492,11 @@ app.audioStreaming = {
 
           //update 100 times per song
           if(per != app.audioStreaming.lastPos){
+
+            // buffer bar
+            if(buffered > 0){
+              $('#browser-progress-buffer').css('width', buffered + '%');
+            }
 
             // slider
             $(app.audioStreaming.progressEl).slider('value', per );
@@ -542,8 +597,10 @@ app.audioStreaming = {
 
 
 
-  // Progress Bar
-  progressInit: function($context){
+  /**
+   * Progress slider
+   */
+  progressInit: function(){
 
     $(app.audioStreaming.progressEl).slider({
       range: "min",
@@ -552,23 +609,51 @@ app.audioStreaming = {
       min: 0,
       max: 100,
       stop: function( event, ui ) {
-        var params = {
-          'playerid': 0,
-          'value': ui.value
-        };
+
         // get the percentage then divide by duration
         var newpos = (ui.value / 100) * app.audioStreaming.localPlay.duration;
         newpos = Math.round(newpos);
 
-        // THIS SHOULD WORK?!?!? but it does not :(
-        // @TODO Investigate
-        app.audioStreaming.localPlay.setPosition(newpos);
+        // Big thanks to viking@github for providing a solution to setPosition() not working
+        // https://gist.github.com/viking/4949374
+
+        var sound = soundManager.getSoundById(app.audioStreaming.currentPlaybackId);
+        sound.setPosition(newpos);
+//        sound.pause();
+//
+//
+//        _.defer(function(){
+//          sound.play({position: newpos});
+//        });
+
+
+       // console.log(app.audioStreaming.currentPlaybackId, newpos);
+        // Pause an already loaded and playing song, change position, then resume.
+        //var sound = soundManager.getSoundById(app.audioStreaming.currentPlaybackId);
+        //sound.pause();
+
+//        // Callback for position set to 0
+//        var positionCallback = function(eventPosition) {
+//         // this.stop();
+//          console.log(this.id, newpos);
+//          this.clearOnPosition(0, positionCallback);
+//          //this.setPosition(newpos);
+//          //this.play({position: newpos});
+//          this.resume();
+//          //sound.play({position: newpos});
+//        };
+//        sound.onPosition(0, positionCallback);
+//        //sound.play({position: newpos});
+//        sound.setPosition(newpos);
+
       }
     });
   },
 
 
-  // volume Bar
+  /**
+   * Volume slider
+   */
   volumeInit: function($context){
 
     $(app.audioStreaming.volumeEl).slider({
@@ -584,13 +669,17 @@ app.audioStreaming = {
   },
 
 
-  // is playing
+  /**
+   * Helper, is playing?
+   */
   isPlaying: function(){
     return $('body').hasClass('browser-playing');
   },
 
 
-  // Controls
+  /**
+   * Toggle play / pause
+   */
   togglePlay: function(){
     if(app.audioStreaming.localPlay !== false){
       // if playing, pause, else play
@@ -616,13 +705,29 @@ app.audioStreaming = {
   },
 
 
+  /**
+   * Stop playback of the soundManager object
+   */
   stop: function(){
     if(app.audioStreaming.localPlay !== false){
-      app.audioStreaming.localPlay.stop(); //play existing
+      app.audioStreaming.playerStateStop();
+      app.audioStreaming.localPlay.stop(); //stop existing
     }
   },
 
 
+  /**
+   * Set the player state to stopped
+   */
+  playerStateStop: function(){
+    $('body').removeClass('browser-playing').removeClass('browser-paused');
+    $(window).trigger('browserPlayerStop', []);
+  },
+
+
+  /**
+   * Pause playback of the soundManager object
+   */
   pause: function(){
     if(app.audioStreaming.localPlay !== false){
       app.audioStreaming.localPlay.pause(); //pause existing
@@ -630,6 +735,9 @@ app.audioStreaming = {
   },
 
 
+  /**
+   * Find previous song and play it
+   */
   prev: function(){
     if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList;
@@ -643,6 +751,9 @@ app.audioStreaming = {
   },
 
 
+  /**
+   * Find next song and play it
+   */
   next: function(){
     if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList;
@@ -657,6 +768,9 @@ app.audioStreaming = {
   },
 
 
+  /**
+   * mute volume
+   */
   mute: function(){
     if(app.audioStreaming.localPlay !== false){
 
@@ -682,6 +796,9 @@ app.audioStreaming = {
   },
 
 
+  /**
+   * Set repeat state
+   */
   repeat: function(){
     if(app.audioStreaming.localPlay !== false){
       var pl = app.audioStreaming.playList, newVal;
@@ -704,7 +821,9 @@ app.audioStreaming = {
     }
   },
 
-
+  /**
+   * Set random state
+   */
   random: function(){
     if(app.audioStreaming.localPlay !== false){
       // set the opposite

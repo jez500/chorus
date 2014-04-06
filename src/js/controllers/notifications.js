@@ -146,6 +146,9 @@ app.notifications = {
       // Video Library scan end
       case 'VideoLibrary.OnScanFinished':
         app.notification('Video Library scan complete');
+        if(app.helpers.arg(0) == 'scan'){
+          $('#content').html('<div class="loading-box">Video Library Scan Complete</div>');
+        }
         break;
 
       // Audio Library scan
@@ -155,6 +158,9 @@ app.notifications = {
       // Audio Library scan end
       case 'AudioLibrary.OnScanFinished':
         app.notification('Audio Library scan complete');
+        if(app.helpers.arg(0) == 'scan'){
+          $('#content').html('<div class="loading-box">Audio Library Scan Complete</div>');
+        }
         break;
 
       // input box has opened

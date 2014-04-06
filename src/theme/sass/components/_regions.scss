@@ -138,7 +138,9 @@ body.fixed-header {
   right: 0;
   z-index: 500;
   @include transition(all 0.3s linear);
-
+  i {
+    color: rgba(246, 245, 243, 0.55);
+  }
   h1 {
     font-weight: normal;
     margin: 0px;

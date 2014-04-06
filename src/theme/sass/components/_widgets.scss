@@ -221,3 +221,122 @@ input[type="text"] {
   color: #999;
   background: #F4F4F4;
 }
+
+.filter-wrapper {
+  margin: -10px 0 5px;
+  padding: 0;
+  background: #F6F5F3;
+  @include breakpoint($width-small){
+    margin: 0px 0 5px;
+    background: none;
+    position: fixed;
+    top: 0;
+    left: 115px;
+    right: 610px;
+    z-index: 50;
+  }
+  &:after {
+    content:"";
+    display: block;
+    clear: both;
+  }
+  a, .btn {
+    color: #444;
+    padding: 14px 25px;
+    @include breakpoint($width-small){
+      padding: 14px 25px;
+      color: #eee;
+      background: rgba(255,255,255,0.05);
+      &:hover {
+        background: rgba(255,255,255,0.2);
+      }
+
+    }
+  }
+  .show-watched-btn {
+    padding: 14px 16px;
+    float: left;
+    background: none;
+    opacity: 0.5;
+    font-size: 13px;
+    i {
+      padding: 0 !important;
+    }
+  }
+  .links {
+    float: left;
+    margin-left: 0px;
+    margin-top: 0px;
+    a {
+      float: left;
+
+      //background: none;
+      &.active {
+        background: #DFDFDF;
+        color: #444;
+      }
+    }
+  }
+  .sort-wrapper {
+    float: right;
+    margin-right: 10px;
+    text-transform: capitalize;
+    min-width: 180px;
+    @include breakpoint($width-small){
+      margin-right: 0;
+    }
+    .btn {
+      text-transform: capitalize;
+      float: right;
+      i {
+        padding-right: 5px;
+      }
+    }
+  }
+  .dropdown-menu {
+    li {
+      &:hover {
+        i {
+          color: #555;
+        }
+      }
+      i {
+        color: #ddd;
+        padding-right: 5px;
+        font-size: 110%;
+        float: right;
+        padding-top: 4px;
+      }
+    }
+  }
+  .sort-items-menu {
+    display: none;
+  }
+  &.active-tab-all {
+    .sort-items-menu {
+      display: block;
+    }
+  }
+}
+
+.fixed-header {
+  .filter-wrapper {
+    @include breakpoint($width-small){
+      .links a.active {
+        background: rgba(255,255,255,0.8);
+      }
+    }
+  }
+}
+
+.hide-watched {
+  .show-watched-btn {
+    opacity: 1;
+    i:before {
+      content: "\f111";
+    }
+  }
+  .card.watched-yes {
+    display: none !important;
+  }
+}

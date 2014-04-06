@@ -337,6 +337,12 @@ app.VideoController.watchedStatus = function(m){
 };
 
 
+/**
+ * Init a video stream popup
+ *
+ * @param player
+ * @param model
+ */
 app.VideoController.stream = function(player, model){
   var winUrl = "videoPlayer.html?player=" + player,
     loaded = false;
@@ -356,6 +362,87 @@ app.VideoController.stream = function(player, model){
     app.AudioController.downloadFile(model.file, function(url){
       win.location = winUrl + "&src=" + encodeURIComponent(url);
     });
+  }
+
+};
+
+
+/**
+ * Set if something is watched, or not.
+ *
+ * @param state
+ *  bool, true = set as watched, false = set as not watched
+ * @param type
+ *  movie, episode
+ * @param model
+ *  the model object containing id and title
+ */
+app.VideoController.setWatched = function(state, type, model, callback){
+
+  var id = model[type + 'id'],
+    title = (model.title === undefined ? model.label : model.title),
+    method = (type == 'episode' ? 'SetEpisodeDetails' : 'SetMovieDetails'),
+    playcount = (state === true ? 1 : 0);
+
+  app.xbmcController.command('VideoLibrary.' + method, [id, title, playcount], function(result){
+
+    // we invalidate the cache so updates are reflected in lists
+    app.VideoController.invalidateCache(type);
+
+    // return state
+    if(app.helpers.exists(callback)){
+      callback(state);
+    }
+
+  });
+
+};
+
+
+/**
+ * Toggle watched, uses setWatched()
+ *
+ * @param type
+ * @param model
+ *  must contain playcount property!
+ * @param callback
+ */
+app.VideoController.toggleWatched = function(type, model, callback){
+
+  var state = false;
+  if(parseInt(model.playcount) === 0){
+    state = true;
+  }
+  app.VideoController.setWatched(state, type, model, callback);
+
+};
+
+
+/**
+ * Wipe a video cache
+ *
+ * @param type
+ */
+app.VideoController.invalidateCache = function(type){
+
+  if(type == 'movie'){
+
+    // wipe the movie list
+    delete app.stores.movies;
+
+  } else if(type == 'episode'){
+
+    // wipe the episode and season lists
+    var key;
+    key = 'episodes:' + data.item.tvshowid + ':' + data.item.season;
+    if(app.stores.TvEpisodes !== undefined && app.stores.TvEpisodes[key] !== undefined){
+      delete app.stores.TvEpisodes[key];
+    }
+    key = 'seasons:' + data.item.tvshowid;
+    if(app.stores.TvSeasons !== undefined && app.stores.TvSeasons[key] !== undefined){
+      delete app.stores.TvSeasons[key];
+    }
+
   }
 
 };

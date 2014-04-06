@@ -166,6 +166,19 @@ $(document).ready(function(){
 
 
   /**
+   * Get a url GET paramater
+   * @param name
+   * @returns {string}
+   */
+  app.helpers.getParameterByName = function(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  };
+
+
+  /**
    * like shuffle() in php
    */
   app.helpers.shuffle = function(array) {
@@ -243,6 +256,19 @@ $(document).ready(function(){
     return (hours > 0 ? hours + ":" : "") + //hours
       (minutes > 0 ? (hours > 0 && minutes < 10 ? "0" + minutes : minutes) + ":" : (hours > 0 ? "00:" : "")) + //mins
       (seconds  < 10 ? "0" + seconds : seconds); //seconds
+  };
+
+
+  /**
+   * format a nowplaying time object for display
+   */
+  app.helpers.formatTime = function(time){
+    if(time === undefined){
+      return 0;
+    }
+    return (time.hours > 0 ? time.hours + ':' : '') +
+      (time.hours > 0 && time.minutes < 10 ? '0' : '') + (time.minutes > 0 ? time.minutes + ':' : '') +
+      ((time.minutes > 0 || time.hours > 0) && time.seconds < 10 ? '0' : '') + time.seconds;
   };
 
 
@@ -425,6 +451,8 @@ $(document).ready(function(){
       animate: false,
       cellW: 170,
       cellH: '230',
+      gutterY: 15,
+      gutterX: 15,
       onResize: function() {
         wall.fitWidth();
       }
@@ -444,6 +472,8 @@ $(document).ready(function(){
       animate: false,
       cellW: 170,
       cellH: '305',
+      gutterY: 15,
+      gutterX: 15,
       onResize: function() {
         wall.fitWidth();
       }
@@ -521,6 +551,7 @@ $(document).ready(function(){
 
   /********************************************************************************
    * Pagination
+   *  @todo move to pager helper
    ********************************************************************************/
 
   /**
@@ -561,6 +592,65 @@ $(document).ready(function(){
     // Return the range
     return {'end': end, 'start': start};
   };
+
+  /**
+   * create sort obj from url params
+   * @returns {{order: string, method: string}}
+   */
+  app.helpers.getSort = function(){
+    // get sort params
+    var sort = app.helpers.arg(3),
+      sortAr = sort.split(':'),
+      ret = {};
+
+    if(sort === '' || sortAr.length != 2){
+      ret.method = 'title';
+      ret.order = 'ascending';
+    } else {
+      ret.method = sortAr[0];
+      ret.order = sortAr[1];
+    }
+    return ret;
+  };
+
+
+  /**
+   * create sort obj from url params
+   * @returns {{order: string, method: string}}
+   */
+  app.helpers.getSortParams = function(){
+    var sort = app.helpers.getSort();
+    return sort.method + ':' + sort.order;
+  };
+
+  /********************************************************************************
+   * Backstretch
+   ********************************************************************************/
+
+
+  /**
+   * Detect browser - Only use for extreme cases
+   * cred: http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+   *
+   * @returns {string}
+   *  browser name, or other for no match
+   */
+   app.helpers.getBrowser = function(){
+     var browser = 'other';
+     if(!!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0){
+       browser = 'opera';
+     } else if(typeof InstallTrigger !== 'undefined'){
+       browser = 'firefox';
+     } else if(Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0){
+       browser = 'safari';
+     } else if(!!window.chrome && browser != 'opera'){
+       browser = 'chrome';
+     } else if(/*@cc_on!@*/false || !!document.documentMode){
+       browser = 'ie';
+     }
+     return browser;
+   };
+
 
 
   /********************************************************************************
@@ -872,7 +962,9 @@ $(document).ready(function(){
         key: 'untitled',
         items: [],
         pull: 'left',
-        omitwrapper: false
+        omitwrapper: false,
+        buttonIcon: 'fa-ellipsis-v',
+        buttonText: ''
       },
       tpl = '',
       settings = $.extend(defaults, options);
@@ -881,7 +973,10 @@ $(document).ready(function(){
     if(!settings.omitwrapper){
       tpl += '<div class="' + settings.key + '-actions list-actions">';
     }
-    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>';
+    // button
+    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"> ' +
+      '<i class="fa ' + settings.buttonIcon + '"></i>' + settings.buttonText + '</button>';
+    // menu
     tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
     for(var i in settings.items){
       var item = settings.items[i];

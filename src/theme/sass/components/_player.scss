@@ -253,6 +253,25 @@
 }
 
 
+#browser-progress-bar {
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+}
+
+
+#browser-progress-buffer {
+  @include transition(2s all linear);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  left: 0;
+  z-index: 0;
+  background: #606364;
+  height: 20px;
+}
+
+
 // hide broswer footer by default
 #browser-player-footer {
   display: none;
