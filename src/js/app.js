@@ -298,30 +298,31 @@ var app = {
 app.Router = Backbone.Router.extend({
 
   routes: {
-    "":                     "home",
-    "contact":              "contact",
-    "artist/:id":           "artist",
-    "artist/:id/:task":     "artist",
-    "artists":              "artists",
-    "album/:id":            "album",
-    "albums":               "albums",
-    "playlist/:id":         "playlist",
-    "search/:q":            "search",
-    "search":               "searchLanding",
-    "scan/:type":           "scan",
-    "thumbsup":             "thumbsup",
-    "files":                "files",
-    "movies/page/:num/:sort":     "moviesPage",
-    "movies/genre/:genre":  "moviesGenre",
-    "movies":               "moviesLanding",
-    "movie/:id":            "movie",
-    "tvshows":              "tvshows",
-    "tvshow/:id":           "tvshow",
-    "tvshow/:tvid/:seas":   "season",
-    "tvshow/:tv/:s/:e":     "episode",
-    "xbmc/:op":             "xbmc",
-    "remote":               "remoteControl",
-    "playlists":            "playlists"
+    "":                         "home",
+    "contact":                  "contact",
+    "artist/:id":               "artist",
+    "artist/:id/:task":         "artist",
+    "artists":                  "artists",
+    "album/:id":                "album",
+    "albums":                   "albums",
+    "playlist/:id":             "playlist",
+    "search/:q":                "search",
+    "search":                   "searchLanding",
+    "scan/:type":               "scan",
+    "thumbsup":                 "thumbsup",
+    "files":                    "files",
+    "movies/page/:num/:sort":   "moviesPage",
+    "movies/genre/:genre":      "moviesGenre",
+    "movies":                   "moviesLanding",
+    "movie/:id":                "movie",
+    "tvshows/page/:num/:sort":  "tvshows",
+    "tvshows":                  "tvshowsLanding",
+    "tvshow/:id":               "tvshow",
+    "tvshow/:tvid/:seas":       "season",
+    "tvshow/:tv/:s/:e":         "episode",
+    "xbmc/:op":                 "xbmc",
+    "remote":                   "remoteControl",
+    "playlists":                "playlists"
   },
 
 
@@ -365,6 +366,7 @@ app.Router = Backbone.Router.extend({
       // get the local playing item
       var browserPlaying = app.audioStreaming.getNowPlayingSong();
       backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
+      $('.local-tab').tigger('click');
     } else {
       // xbmc playing image
       backstretchImage = (data === undefined || data.item === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
@@ -559,7 +561,7 @@ app.Router = Backbone.Router.extend({
     app.cached.fileCollection.fetch({'name': 'sources', 'success': function(sources){
 
       // title / menu
-      app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
+      app.helpers.setTitle('<i class="fa fa-align-justify"></i><span id="folder-name"></span>');
       app.shellView.selectMenuItem('files', 'sidebar');
 
       // the view writes to content,
@@ -792,11 +794,7 @@ app.Router = Backbone.Router.extend({
 
 
     var self = this;
-    app.helpers.setTitle(genre, {
-      addATag:'#movies/genre/' + genre,
-      tabs: {'#movies/page/0' : 'Browse All', '#movies' : 'Recent'}
-
-    });
+    app.helpers.setTitle('<i class="fa fa-film"></i>');
 
     // loading
     self.$content.html('<div class="loading-box">Loading Movies</div>');
@@ -838,8 +836,7 @@ app.Router = Backbone.Router.extend({
       success: function (data) {
         // render content
         self.$content.html(new app.MovieView({model: data}).render().el);
-        app.helpers.setTitle( data.attributes.title + ' <span>' + data.attributes.year + '</span>');
-
+        app.helpers.setTitle( '<i class="fa fa-film"></i>' + data.attributes.title + ' <span>' + data.attributes.year + '</span>');
         // set menu
         app.shellView.selectMenuItem('movie', 'sidebar');
 
@@ -853,14 +850,14 @@ app.Router = Backbone.Router.extend({
   /**
    * A tvshow collection (no pager)
    */
-  tvshows: function () {
+  tvshows: function (pageNum, sort) {
 
     var $content = $('#content');
 
     // set menu
     app.shellView.selectMenuItem('tvshows', 'no-sidebar');
     $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('TVShows', { addATag:'#tvshows'});
+    app.helpers.setTitle('<i class="fa fa-desktop"></i>');
 
     // init the collection
     app.cached.tvCollection = new app.TvshowAllCollection();
@@ -872,6 +869,9 @@ app.Router = Backbone.Router.extend({
       app.cached.tvshowListView = new app.TvshowListView({model: collection});
       $content.html(app.cached.tvshowListView.render().$el);
 
+      // filters
+      $content.prepend(app.filters.renderFilters('tvshow'));
+
       // lazyload
       app.helpers.triggerContentLazy();
 
@@ -879,6 +879,34 @@ app.Router = Backbone.Router.extend({
 
   },
 
+  tvshowsLanding: function () {
+
+    var $content = $('#content');
+
+    // set menu
+    app.shellView.selectMenuItem('tvshows', 'no-sidebar');
+    $content.html('<div class="loading-box">Loading TV Shows</div>');
+    app.helpers.setTitle('<i class="fa fa-desktop"></i>');
+
+    // init the collection
+    app.cached.recentTvCollection = new app.RecentTvepisodeCollection();
+
+    // fetch results
+    app.cached.recentTvCollection.fetch({"success": function(collection){
+
+      // render collection
+      app.cached.recentTvshowListView = new app.TvSeasonListView({model: collection, className:'video-list recent-tv-list'});
+      $content.html(app.cached.recentTvshowListView.render().$el);
+
+      // filters
+      $content.prepend(app.filters.renderFilters('tvshow'));
+
+      // lazyload
+      app.helpers.triggerContentLazy();
+
+    }});
+
+  },
 
   /**
    * A single tvshow
@@ -896,7 +924,7 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
-        app.helpers.setTitle( data.attributes.label);
+        app.helpers.setTitle('<i class="fa fa-desktop"></i>' + data.attributes.label);
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -937,7 +965,8 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
-        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.label + '</a>Season ' + season);
+        app.helpers.setTitle( '<i class="fa fa-desktop"></i>' +
+          '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.label + '</a>Season ' + season);
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -971,7 +1000,8 @@ app.Router = Backbone.Router.extend({
         self.$content.html(new app.TvshowView({model: data}).render().el);
 
         // title
-        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.showtitle + '  Season ' + season + '</a>' +
+        app.helpers.setTitle( '<i class="fa fa-desktop"></i>' +
+          '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.showtitle + '  Season ' + season + '</a>' +
           'E' + data.attributes.episode + '. ' + data.attributes.label);
 
         // set menu
@@ -1056,6 +1086,13 @@ $(document).on("ready", function () {
   app.store.libraryCall(function(){
     $('body').addClass('audio-library-ready');
     app.notification('Library loaded');
+    // set last player
+    if(app.settings.get('lastPlayer', 'xbmc') == 'local'){
+      app.playlists.changePlaylistView('local');
+    }
+
   },'songsReady');
+
+
 
 });

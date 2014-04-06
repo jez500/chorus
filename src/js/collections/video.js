@@ -256,27 +256,39 @@ app.CustomMovieCollection = Backbone.Collection.extend({
  ***********************************/
 
 /**
- * A lightweight collection of all movies (cached).
+ * A lightweight collection of all tv (cached).
  */
 app.TvshowAllCollection = Backbone.Collection.extend({
   model: app.TVShow,
+  lastOrder: '',
+  lastSort: '',
 
   sync: function(method, model, options) {
 
+    // if order change, flush cache
+    var sort = app.helpers.getSort();
+    if(this.lastSort != sort.method || this.lastOrder != sort.order){
+      delete app.stores.allTvshows;
+    }
+    this.lastSort = sort.method;
+    this.lastOrder = sort.order;
+
+    // nocache
     if(typeof app.stores.allTvshows == 'undefined'){
 
       // no cache, do a lookup
-      var allTv = new app.AllTvshowXbmcCollection();
+      var allTv = new app.AllTvshowXbmcCollection({sort: sort});
       allTv.fetch({"success": function(data){
+
         // Sort
-        data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+       // data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
 
         // Make a dictionary and flag as not loaded
         app.stores.allTvshowsLookup = {};
         for(var i in data.models){
           var m = data.models[i].attributes;
           m.loaded = false;
-          app.stores.allTvshowsLookup[m.movieid] = m;
+          app.stores.allTvshowsLookup[m.tvshowid] = m;
           data.models[i].attributes = m;
         }
         // Cache
@@ -393,5 +405,55 @@ app.TvepisodeCollection = Backbone.Collection.extend({
   }
 
 });
+
+
+
+
+/**
+ * A collection of recent episodes
+ */
+app.RecentTvepisodeCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    // init cache
+    if(app.stores.TvEpisodesRecent === undefined){
+      app.stores.TvEpisodesRecent = {};
+    }
+
+    var opt = [];
+
+    // constuct params
+    opt.push(app.tvepisodeFields); // tv eps
+    opt.push({end: 10000, start: 0}); // show all
+    opt.push({method: 'date', order: 'descending'}); // new first
+
+    // lookup
+    app.xbmcController.command('VideoLibrary.GetRecentlyAddedEpisodes', opt, function(data){
+      var all = new app.TvshowAllCollection();
+      all.fetch({"success": function(){
+
+        // add url
+        for(var i in data.result.episodes){
+          var ep = data.result.episodes[i],
+            show = app.stores.allTvshowsLookup[ep.tvshowid];
+          data.result.episodes[i].url = '#tvshow/' + ep.tvshowid + '/' + ep.season + '/' + ep.episodeid;
+          data.result.episodes[i].thumbnail = show.thumbnail;
+        }
+
+        // save cache
+        app.stores.TvEpisodesRecent = data.result.episodes;
+
+        // return
+        options.success(data.result.episodes);
+
+      }});
+
+    });
+  }
+
+});
+
 
 

@@ -297,6 +297,7 @@
   }
 
   // generic top level
+  .thumbs-up,
   &.thumbs-up {
     button.thumbs-up {
       color: $color-carrot;
@@ -307,6 +308,7 @@
   &.watched-yes {
     button.watched-btn i.fa:before {
       content: "\f058";
+      color: $color-carrot;
     }
   }
 

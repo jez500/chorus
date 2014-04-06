@@ -13960,6 +13960,19 @@ $(document).ready(function(){
 
 
   /**
+   * Get a url GET paramater
+   * @param name
+   * @returns {string}
+   */
+  app.helpers.getParameterByName = function(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  };
+
+
+  /**
    * like shuffle() in php
    */
   app.helpers.shuffle = function(array) {
@@ -14028,6 +14041,19 @@ $(document).ready(function(){
     return (hours > 0 ? hours + ":" : "") + //hours
       (minutes > 0 ? (hours > 0 && minutes < 10 ? "0" + minutes : minutes) + ":" : (hours > 0 ? "00:" : "")) + //mins
       (seconds  < 10 ? "0" + seconds : seconds); //seconds
+  };
+
+
+  /**
+   * format a nowplaying time object for display
+   */
+  app.helpers.formatTime = function(time){
+    if(time === undefined){
+      return 0;
+    }
+    return (time.hours > 0 ? time.hours + ':' : '') +
+      (time.hours > 0 && time.minutes < 10 ? '0' : '') + (time.minutes > 0 ? time.minutes + ':' : '') +
+      ((time.minutes > 0 || time.hours > 0) && time.seconds < 10 ? '0' : '') + time.seconds;
   };
 
 
@@ -14210,6 +14236,8 @@ $(document).ready(function(){
       animate: false,
       cellW: 170,
       cellH: '230',
+      gutterY: 15,
+      gutterX: 15,
       onResize: function() {
         wall.fitWidth();
       }
@@ -14229,6 +14257,8 @@ $(document).ready(function(){
       animate: false,
       cellW: 170,
       cellH: '305',
+      gutterY: 15,
+      gutterX: 15,
       onResize: function() {
         wall.fitWidth();
       }
@@ -14306,6 +14336,7 @@ $(document).ready(function(){
 
   /********************************************************************************
    * Pagination
+   *  @todo move to pager helper
    ********************************************************************************/
 
   /**
@@ -14346,6 +14377,65 @@ $(document).ready(function(){
     // Return the range
     return {'end': end, 'start': start};
   };
+
+  /**
+   * create sort obj from url params
+   * @returns {{order: string, method: string}}
+   */
+  app.helpers.getSort = function(){
+    // get sort params
+    var sort = app.helpers.arg(3),
+      sortAr = sort.split(':'),
+      ret = {};
+
+    if(sort === '' || sortAr.length != 2){
+      ret.method = 'title';
+      ret.order = 'ascending';
+    } else {
+      ret.method = sortAr[0];
+      ret.order = sortAr[1];
+    }
+    return ret;
+  };
+
+
+  /**
+   * create sort obj from url params
+   * @returns {{order: string, method: string}}
+   */
+  app.helpers.getSortParams = function(){
+    var sort = app.helpers.getSort();
+    return sort.method + ':' + sort.order;
+  };
+
+  /********************************************************************************
+   * Backstretch
+   ********************************************************************************/
+
+
+  /**
+   * Detect browser - Only use for extreme cases
+   * cred: http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+   *
+   * @returns {string}
+   *  browser name, or other for no match
+   */
+   app.helpers.getBrowser = function(){
+     var browser = 'other';
+     if(!!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0){
+       browser = 'opera';
+     } else if(typeof InstallTrigger !== 'undefined'){
+       browser = 'firefox';
+     } else if(Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0){
+       browser = 'safari';
+     } else if(!!window.chrome && browser != 'opera'){
+       browser = 'chrome';
+     } else if(/*@cc_on!@*/false || !!document.documentMode){
+       browser = 'ie';
+     }
+     return browser;
+   };
+
 
 
   /********************************************************************************
@@ -14657,7 +14747,9 @@ $(document).ready(function(){
         key: 'untitled',
         items: [],
         pull: 'left',
-        omitwrapper: false
+        omitwrapper: false,
+        buttonIcon: 'fa-ellipsis-v',
+        buttonText: ''
       },
       tpl = '',
       settings = $.extend(defaults, options);
@@ -14666,7 +14758,10 @@ $(document).ready(function(){
     if(!settings.omitwrapper){
       tpl += '<div class="' + settings.key + '-actions list-actions">';
     }
-    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>';
+    // button
+    tpl += '<button class="' + settings.key + '-menu btn dropdown-toggle" data-toggle="dropdown"> ' +
+      '<i class="fa ' + settings.buttonIcon + '"></i>' + settings.buttonText + '</button>';
+    // menu
     tpl += '<ul class="dropdown-menu pull-' + settings.pull + '">';
     for(var i in settings.items){
       var item = settings.items[i];
@@ -15326,30 +15421,31 @@ $(document).ready(function(){
 app.Router = Backbone.Router.extend({
 
   routes: {
-    "":                     "home",
-    "contact":              "contact",
-    "artist/:id":           "artist",
-    "artist/:id/:task":     "artist",
-    "artists":              "artists",
-    "album/:id":            "album",
-    "albums":               "albums",
-    "playlist/:id":         "playlist",
-    "search/:q":            "search",
-    "search":               "searchLanding",
-    "scan/:type":           "scan",
-    "thumbsup":             "thumbsup",
-    "files":                "files",
-    "movies/page/:num":     "moviesPage",
-    "movies/genre/:genre":  "moviesGenre",
-    "movies":               "moviesLanding",
-    "movie/:id":            "movie",
-    "tvshows":              "tvshows",
-    "tvshow/:id":           "tvshow",
-    "tvshow/:tvid/:seas":   "season",
-    "tvshow/:tv/:s/:e":     "episode",
-    "xbmc/:op":             "xbmc",
-    "remote":               "remoteControl",
-    "playlists":            "playlists"
+    "":                         "home",
+    "contact":                  "contact",
+    "artist/:id":               "artist",
+    "artist/:id/:task":         "artist",
+    "artists":                  "artists",
+    "album/:id":                "album",
+    "albums":                   "albums",
+    "playlist/:id":             "playlist",
+    "search/:q":                "search",
+    "search":                   "searchLanding",
+    "scan/:type":               "scan",
+    "thumbsup":                 "thumbsup",
+    "files":                    "files",
+    "movies/page/:num/:sort":   "moviesPage",
+    "movies/genre/:genre":      "moviesGenre",
+    "movies":                   "moviesLanding",
+    "movie/:id":                "movie",
+    "tvshows/page/:num/:sort":  "tvshows",
+    "tvshows":                  "tvshowsLanding",
+    "tvshow/:id":               "tvshow",
+    "tvshow/:tvid/:seas":       "season",
+    "tvshow/:tv/:s/:e":         "episode",
+    "xbmc/:op":                 "xbmc",
+    "remote":                   "remoteControl",
+    "playlists":                "playlists"
   },
 
 
@@ -15393,6 +15489,7 @@ app.Router = Backbone.Router.extend({
       // get the local playing item
       var browserPlaying = app.audioStreaming.getNowPlayingSong();
       backstretchImage = (browserPlaying.fanart === undefined ? '' : browserPlaying.fanart);
+      $('.local-tab').tigger('click');
     } else {
       // xbmc playing image
       backstretchImage = (data === undefined || data.item === undefined || data.item.fanart === undefined ? '' : data.item.fanart);
@@ -15587,7 +15684,7 @@ app.Router = Backbone.Router.extend({
     app.cached.fileCollection.fetch({'name': 'sources', 'success': function(sources){
 
       // title / menu
-      app.helpers.setTitle('<a href="#files">Files</a><span id="folder-name"></span>');
+      app.helpers.setTitle('<i class="fa fa-align-justify"></i><span id="folder-name"></span>');
       app.shellView.selectMenuItem('files', 'sidebar');
 
       // the view writes to content,
@@ -15658,11 +15755,19 @@ app.Router = Backbone.Router.extend({
 
     // vars
     var $content = $('#content'),
+      sort = app.helpers.getSortParams(),
       $results = $('ul.movie-page-list',$content),
       fullRange = false,
       scrolled = false,
       lastPageNum = app.moviePageNum,
-      $window = $(window);
+      $window = $(window),
+      isNewPage = ($results.length === 0);
+
+    // clear page if sort changed
+    if(sort != app.filters.movieLastSort){
+      isNewPage = true;
+    }
+    app.filters.movieLastSort = sort;
 
     // do we append?
     append = (append !== undefined && append === true);
@@ -15671,17 +15776,19 @@ app.Router = Backbone.Router.extend({
     // force a page via url
     app.moviePageNum = parseInt(num);
 
-    // chnage the hash without triggering the router (for back action)
-    app.router.navigate('movies/page/' + num);
+    // change the hash without triggering the router (for back action)
+    app.router.navigate('movies/page/' + num + '/' + sort);
+    // remember last sort setting
+    app.settings.set('movieSort', sort);
 
     // We have no content on the page so init pager
-    if($results.length === 0){
+    if(isNewPage === true){
 
       // Loading
       $content.html('<div class="loading-box">Loading Movies</div>');
 
       // set title and add some tabs
-      app.helpers.setTitle('All Movies', { addATag:'#movies/page/0', tabs: {'#movies': 'Recently Added'}, activeTab: 1});
+      app.helpers.setTitle('<i class="fa fa-film"></i>');
 
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
@@ -15706,10 +15813,13 @@ app.Router = Backbone.Router.extend({
       collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
 
-      if(app.moviePageNum === 0 || append !== true){ // Replace content //
+      if(isNewPage === true || app.moviePageNum === 0 || append !== true){ // Replace content //
 
         // Render view
         $content.html(app.cached.movieListView.render().$el);
+
+        // filters
+        $content.prepend(app.filters.renderFilters('movie'));
 
         // scroll to top
         $window.scrollTo(0);
@@ -15756,7 +15866,7 @@ app.Router = Backbone.Router.extend({
    *
    * @param num
    */
-  moviesPage: function(num){
+  moviesPage: function(num, sort){
     this.movies(num, false);
   },
 
@@ -15767,7 +15877,7 @@ app.Router = Backbone.Router.extend({
   moviesLanding: function () {
 
     var self = this;
-    app.helpers.setTitle('Recently Added', { addATag:'#movies', tabs: {'#movies/page/0' : 'Browse All'}, activeTab: 1});
+    app.helpers.setTitle('<i class="fa fa-film"></i>');
 
     // loading
     self.$content.html('<div class="loading-box">Loading Movies</div>');
@@ -15779,10 +15889,15 @@ app.Router = Backbone.Router.extend({
       app.cached.movieListView = new app.MovieListView({model: collection});
       // render
       self.$content.html(app.cached.movieListView.render().$el);
+
+      // filters
+      self.$content.prepend(app.filters.renderFilters('movie'));
+
       // no pagination
       self.$content.find('.next-page').remove();
       // change class
-      self.$content.find('ul').removeClass('movie-list').addClass('movie-recent-list');
+      self.$content.find('ul').removeClass('movie-page-list').addClass('movie-recent-list');
+      self.$content.find('img').lazyload({threshold : 200});
       // set menu
       app.shellView.selectMenuItem('movies', 'no-sidebar');
       // lazyload
@@ -15802,11 +15917,7 @@ app.Router = Backbone.Router.extend({
 
 
     var self = this;
-    app.helpers.setTitle(genre, {
-      addATag:'#movies/genre/' + genre,
-      tabs: {'#movies/page/0' : 'Browse All', '#movies' : 'Recent'}
-
-    });
+    app.helpers.setTitle('<i class="fa fa-film"></i>');
 
     // loading
     self.$content.html('<div class="loading-box">Loading Movies</div>');
@@ -15848,8 +15959,7 @@ app.Router = Backbone.Router.extend({
       success: function (data) {
         // render content
         self.$content.html(new app.MovieView({model: data}).render().el);
-        app.helpers.setTitle( data.attributes.title + ' <span>' + data.attributes.year + '</span>');
-
+        app.helpers.setTitle( '<i class="fa fa-film"></i>' + data.attributes.title + ' <span>' + data.attributes.year + '</span>');
         // set menu
         app.shellView.selectMenuItem('movie', 'sidebar');
 
@@ -15863,14 +15973,14 @@ app.Router = Backbone.Router.extend({
   /**
    * A tvshow collection (no pager)
    */
-  tvshows: function () {
+  tvshows: function (pageNum, sort) {
 
     var $content = $('#content');
 
     // set menu
     app.shellView.selectMenuItem('tvshows', 'no-sidebar');
     $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('TVShows', { addATag:'#tvshows'});
+    app.helpers.setTitle('<i class="fa fa-desktop"></i>');
 
     // init the collection
     app.cached.tvCollection = new app.TvshowAllCollection();
@@ -15882,6 +15992,9 @@ app.Router = Backbone.Router.extend({
       app.cached.tvshowListView = new app.TvshowListView({model: collection});
       $content.html(app.cached.tvshowListView.render().$el);
 
+      // filters
+      $content.prepend(app.filters.renderFilters('tvshow'));
+
       // lazyload
       app.helpers.triggerContentLazy();
 
@@ -15889,6 +16002,34 @@ app.Router = Backbone.Router.extend({
 
   },
 
+  tvshowsLanding: function () {
+
+    var $content = $('#content');
+
+    // set menu
+    app.shellView.selectMenuItem('tvshows', 'no-sidebar');
+    $content.html('<div class="loading-box">Loading TV Shows</div>');
+    app.helpers.setTitle('<i class="fa fa-desktop"></i>');
+
+    // init the collection
+    app.cached.recentTvCollection = new app.RecentTvepisodeCollection();
+
+    // fetch results
+    app.cached.recentTvCollection.fetch({"success": function(collection){
+
+      // render collection
+      app.cached.recentTvshowListView = new app.TvSeasonListView({model: collection, className:'video-list recent-tv-list'});
+      $content.html(app.cached.recentTvshowListView.render().$el);
+
+      // filters
+      $content.prepend(app.filters.renderFilters('tvshow'));
+
+      // lazyload
+      app.helpers.triggerContentLazy();
+
+    }});
+
+  },
 
   /**
    * A single tvshow
@@ -15906,7 +16047,7 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
-        app.helpers.setTitle( data.attributes.label);
+        app.helpers.setTitle('<i class="fa fa-desktop"></i>' + data.attributes.label);
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -15947,7 +16088,8 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
-        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.label + '</a>Season ' + season);
+        app.helpers.setTitle( '<i class="fa fa-desktop"></i>' +
+          '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.label + '</a>Season ' + season);
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -15981,7 +16123,8 @@ app.Router = Backbone.Router.extend({
         self.$content.html(new app.TvshowView({model: data}).render().el);
 
         // title
-        app.helpers.setTitle( '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.showtitle + '  Season ' + season + '</a>' +
+        app.helpers.setTitle( '<i class="fa fa-desktop"></i>' +
+          '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.showtitle + '  Season ' + season + '</a>' +
           'E' + data.attributes.episode + '. ' + data.attributes.label);
 
         // set menu
@@ -16016,12 +16159,14 @@ app.Router = Backbone.Router.extend({
    */
   scan: function(type){
 
-    //start music scan
-    if(type == 'audio'){
-      app.xbmcController.command('AudioLibrary.Scan', {}, function(d){
-        app.notification('Started Audio Scan');
-      });
-    }
+    var lib = (type == 'audio' ? 'AudioLibrary' : 'VideoLibrary'),
+      self = this;
+    app.xbmcController.command(lib + '.Scan', {}, function(d){
+      app.notification('Started ' + type + ' Scan');
+      app.shellView.selectMenuItem('scan', 'no-sidebar');
+      self.$content.html('<div class="loading-box">Scanning ' + type + ' library</div>');
+      app.helpers.setTitle('<i class="fa fa-refresh"></i> ' + type + ' scan');
+    });
 
   },
 
@@ -16064,9 +16209,140 @@ $(document).on("ready", function () {
   app.store.libraryCall(function(){
     $('body').addClass('audio-library-ready');
     app.notification('Library loaded');
+    // set last player
+    if(app.settings.get('lastPlayer', 'xbmc') == 'local'){
+      app.playlists.changePlaylistView('local');
+    }
+
   },'songsReady');
 
+
+
 });
+;app.filters = {
+
+  movieLastSort: 'title:ascending',
+  tvshowLastSort: 'title:ascending',
+
+  movieFilters: {
+    title: 'Movies',
+    basePath: '#movies/page/',
+    paths: [{
+      title: 'All Movies',
+      path: 'movies/page/0/title:ascending',
+      argOne: 'page',
+      key: 'all'
+    },{
+      title: 'Recently Added',
+      path: 'movies',
+      argOne: '',
+      key: 'recent'
+    }],
+    sort: ["title", "date", "rating", "year", "file"]
+  },
+
+  tvshowFilters: {
+    title: 'TV Show',
+    basePath: '#tvshows/page/',
+    paths: [{
+      title: 'All TV',
+      path: 'tvshows/page/0/title:ascending',
+      argOne: 'page',
+      key: 'all'
+    },{
+      title: 'Recently Added',
+      path: 'tvshows',
+      argOne: '',
+      key: 'recent'
+    }],
+    sort: ["title", "date", "rating", "year", "file"]
+  },
+
+
+  /**
+   * Creates a filter bar give a type/structure
+   *
+   * @param type
+   * @returns {*|jQuery|HTMLElement}
+   */
+  renderFilters: function(type){
+
+    // make our containers and get structure
+    var $container = $('<div/>', {class: 'filter-wrapper ' + type + '-filters'}),
+      $links = $('<div/>', {class: 'links'}),
+      $sort = $('<div/>', {class: 'sort-wrapper dropdown'}),
+      structure = app.filters[type + 'Filters'],
+      sort = app.helpers.getSort(),
+      $body = $('body');
+
+    // tabs
+    $.each(structure.paths, function(i,d){
+      // active state
+      var act = app.helpers.arg(1) == d.argOne,
+        active = (act ? ' active' : '');
+      if(act){
+        $container.addClass('active-tab-' + d.key);
+      }
+      // append link
+      $links.append($('<a href="#' + d.path + '" class="btn' + active + '">' + d.title + '</a>'));
+    });
+
+    // dropdown with sortable features like asc/desc stuff
+    var sortItems = [], item = {}, order = 'ascending', shortOrder = 'asc';
+    // build items from structure
+    $.each(structure.sort, function(i,d){
+      order = (d == sort.method ? (sort.order == 'ascending' ? 'descending' : 'ascending') : order);
+      shortOrder = app.filters.shortOrder(order);
+      item = {
+        title: d + (sort.method == d ? ' <i class="fa fa-angle-' + (app.filters.shortOrder(order) != 'asc' ? 'down' : 'up') + '"></i>' : ''),
+        url: structure.basePath + '0/'  + d + ':' + order,
+        class: 'dir-' + order
+      };
+      sortItems.push(item);
+    });
+
+    // build dropdown
+    var dropdown = {
+        key: 'sort-items',
+        items: sortItems,
+        pull: 'right',
+        buttonIcon: 'fa-angle-' + (app.filters.shortOrder(sort.order) == 'desc' ? 'down' : 'up'),
+        buttonText: ' ' + sort.method
+      };
+    $sort.append(app.helpers.makeDropdown(dropdown));
+
+    // Watched toggle, button and click event
+    var $showWatched = $('<button class="btn show-watched-btn" title="Hide watched"><i class="fa fa-check-circle"></i></button>');
+    $showWatched.on('click', function(){
+      $body.toggleClass('hide-watched');
+      // save preference
+      app.settings.set('hideWatched', $body.hasClass('hide-watched'));
+    });
+    $sort.append($showWatched);
+
+    // init hide-watched body class
+    if(app.settings.get('hideWatched', false)){
+      $body.addClass('hide-watched');
+    }
+
+    $container
+      .append($links)
+      .append($sort);
+
+    return $container;
+  },
+
+
+  shortOrder: function(order, reversed){
+    if(reversed !== undefined && reversed === true){
+      return (order != 'ascending' ? 'asc' : 'desc');
+    } else {
+      return (order == 'ascending' ? 'asc' : 'desc');
+    }
+  }
+
+};
+
 ;/**
  * Helper functionality for creating paginated pages
  */
@@ -16199,7 +16475,71 @@ app.pager = {
 
 };
 
-;
+;/**
+ *
+ * Persistent UI settings (stored in local storage)
+ *
+ */
+app.settings = {
+
+  settingsKey: 'settings',
+
+  /**
+   * Default settings structure, not required really but lets us know what is in use
+   */
+  defaultSettings: {
+    init: true,
+    hideWatched: false,
+    lastPlayer: 'xbmc',
+    movieSort: 'title:ascending'
+  },
+
+  /**
+   * Set a setting
+   * @param key
+   * @param value
+   * @returns {*}
+   */
+  set: function(key, value){
+    var s = app.settings.allSettings();
+    s[key] = value;
+    app.storageController.setStorage(app.settings.settingsKey, s);
+    return value;
+  },
+
+  /**
+   * Get a setting
+   * @param key
+   * @param defaultValue
+   * @returns {*}
+   */
+  get: function(key, defaultValue){
+    var s = app.settings.allSettings();
+    if(s[key] !== undefined){
+      return s[key];
+    } else {
+      return defaultValue;
+    }
+  },
+
+  /**
+   * Get all settings
+   * @returns {*}
+   */
+  allSettings: function(){
+    var s = app.storageController.getStorage(app.settings.settingsKey);
+    // never initialised, create structure
+    if(s === null || s.init === undefined){
+      app.storageController.setStorage(app.settings.settingsKey, app.settings.defaultSettings);
+      return app.settings.defaultSettings;
+    }
+    // return storage
+    return s;
+  }
+
+
+
+};;
 /**
  * Artist
  * @type {extend|*}
@@ -17019,17 +17359,38 @@ app.AudioController.updatePlayerState = function(){
  */
 
 
-//soundManager.setup({
+
+// html5 audio doesn't work in firefox because it requires a strict mime type of audio/mpeg
+// XBMC supplies the type as audio/mpeg3 resulting in html5 audio throwing errors and just
+// not playing anything.
 //
-//  url: 'lib/soundmanager/swf/',
-//  flashVersion: 9,
-//  preferFlash: true, // prefer 100% HTML5 mode, where both supported
-//  useHTML5Audio: true,
-//  useFlashBlock: false,
-//  onready: function(){
-//    app.audioStreaming.init();
-//  }
-//});
+// In light of this we switch to flash, which has its own problems, namely not working after
+// you refresh your page! seems to be a cache issue but same occurs in chrome :(
+// First load is generally good so it is at least better than nothing - but maybe more frustrating?
+//var preferFlash = (app.helpers.getBrowser() == 'firefox');
+//console.log(preferFlash);
+
+// setup soundmanager
+soundManager.setup({
+  url: 'lib/soundmanager/swf/',
+  flashVersion: 9,
+  preferFlash: false,
+  useHTML5Audio: true,
+  useFlashBlock: false,
+  flashLoadTimeout: 3000,
+  debugMode: false,
+  noSWFCache: true,
+  debugFlash: false,
+  onready: function(){
+    app.audioStreaming.init();
+  },
+  ontimeout: function(){
+    console.log('timeout');
+    soundManager.flashLoadTimeout = 0; // When restarting, wait indefinitely for flash
+    soundManager.onerror = {}; // Prevent an infinite loop, in case it's not flashblock
+    soundManager.reboot(); // and, go!
+  }
+});
 
 
 /**
@@ -17054,25 +17415,6 @@ $(window).on('shellReady', function(){
     random: 'off',
     mute: false
   };
-
- // $.get('lib/soundmanager/swf/soundmanager2_flash9_debug.swf', function(){
-
-
-  // Lazy load sound manager so we can init it when we are ready
-  $.ajax({
-    url: 'lib/soundmanager/script/soundmanager2-nodebug.js',
-    dataType: 'script',
-    success: function(data){
-      console.log('loaded scr');
-
-      app.audioStreaming.playerReady();
-
-    },
-    error: function(data){
-      console.log('errzz', data);
-    }
-  });
- // });
 
 });
 
@@ -17130,27 +17472,7 @@ app.audioStreaming = {
   classLocalPaused: 'browser-paused',
 
   playerReady: function(){
-    soundManager.setup({
 
-      url: 'sm/',
-      flashVersion: 9,
-      preferFlash: true, // prefer 100% HTML5 mode, where both supported
-      useHTML5Audio: true,
-      useFlashBlock: false,
-      flashLoadTimeout: 3000,
-      debugMode: false,
-      noSWFCache: true,
-      debugFlash: false,
-      onready: function(){
-        app.audioStreaming.init();
-      },
-      ontimeout: function(){
-        console.log('timeout');
-        soundManager.flashLoadTimeout = 0; // When restarting, wait indefinitely for flash
-        soundManager.onerror = {}; // Prevent an infinite loop, in case it's not flashblock
-        soundManager.reboot(); // and, go!
-      }
-    });
   },
 
 
@@ -17159,55 +17481,37 @@ app.audioStreaming = {
    */
   init: function($context){
 
+    $(window).trigger('soundManagerReady');
+
+    // set a default (lower vol)
+    soundManager.setVolume(app.audioStreaming.defaultVol);
+
+    // Get last browser playlist collection, if any
+    var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
+    if(lastList !== undefined && lastList !== null && lastList.length > 0){
+      // when songs are ready, render them
+      app.store.libraryCall(function(){
+        // get collection based on songids
+        app.playlists.playlistGetItems('items', lastList, function(collection){
+
+          if(app.audioStreaming.playList !== undefined){
+            app.audioStreaming.playList.items = collection;
+            // render it too
+            app.audioStreaming.renderPlaylistItems();
+            // add as loaded song
+            if(collection.models !== undefined && collection.models[0] !== undefined){
+              // load the first song
+              var song = collection.models[0];
+              app.audioStreaming.loadSong(song);
+              // update playing song details around the page
+              app.audioStreaming.updatePlayingState(song.attributes);
+            }
+          }
 
 
-
-console.log('init');
-
-
-//    soundManager.setup({
-//
-//      url: 'lib/soundmanager/swf/',
-//      flashVersion: 9,
-//      preferFlash: false, // prefer 100% HTML5 mode, where both supported
-//      useHTML5Audio: true,
-//      useFlashBlock: false,
-//
-//      // Sound manager ready!
-//      onready: function(){
-        $(window).trigger('soundManagerReady');
-
-
-
-        // set a default (lower vol)
-        soundManager.setVolume(app.audioStreaming.defaultVol);
-
-        // Get last browser playlist collection, if any
-        var lastList = app.storageController.getStorage(app.audioStreaming.lastListKey);
-        if(lastList !== undefined && lastList !== null && lastList.length > 0){
-          // when songs are ready, render them
-          app.store.libraryCall(function(){
-            // get collection based on songids
-            app.playlists.playlistGetItems('items', lastList, function(collection){
-              app.audioStreaming.playList.items = collection;
-              // render it too
-              app.audioStreaming.renderPlaylistItems();
-              // add as loaded song
-              if(collection.models !== undefined && collection.models[0] !== undefined){
-                // load the first song
-                var song = collection.models[0];
-                app.audioStreaming.loadSong(song);
-                // update playing song details around the page
-                app.audioStreaming.updatePlayingState(song.attributes);
-              }
-
-            });
-          }, 'songsReady');
-        }
-
-//      } // end onready
-//
-//    }); // end setup
+        });
+      }, 'songsReady');
+    }
 
     // Wake up our sliders
     app.audioStreaming.progressInit();
@@ -17221,11 +17525,12 @@ console.log('init');
    * @param player
    */
   setPlayer: function(player){
-    var song;
+    var song,
+      $body = $('body');
 
     // Switch to XBMC Player
     if(player == 'xbmc'){
-      app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
+      $body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
       song = app.playlists.getNowPlaying('item');
       app.helpers.applyBackstretch(song.fanart, 'xbmc');
@@ -17233,7 +17538,7 @@ console.log('init');
 
     // Switch to Local Player
     if(player == 'local'){
-      app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
+      $body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
       // if empty, render
       if($('ul.browser-playlist-song-list').length === 0){
         app.audioStreaming.renderPlaylistItems();
@@ -17251,7 +17556,7 @@ console.log('init');
    */
   getPlayer: function(){
     // check if body has the local class
-    if(app.audioStreaming.$body.hasClass(app.audioStreaming.classLocal)){
+    if($('body').hasClass(app.audioStreaming.classLocal)){
       return 'local';
     } else {
       return 'xbmc';
@@ -17264,7 +17569,8 @@ console.log('init');
    * @returns {*}
    */
   getNowPlayingSong: function(){
-    if(app.audioStreaming.playList.items.models !== undefined &&
+    if(app.audioStreaming.playList !== undefined &&
+      app.audioStreaming.playList.items.models !== undefined &&
       app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] !== undefined){
       var model = app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition];
       return model.attributes;
@@ -18068,6 +18374,9 @@ app.notifications = {
       // Video Library scan end
       case 'VideoLibrary.OnScanFinished':
         app.notification('Video Library scan complete');
+        if(app.helpers.arg(0) == 'scan'){
+          $('#content').html('<div class="loading-box">Video Library Scan Complete</div>');
+        }
         break;
 
       // Audio Library scan
@@ -18077,6 +18386,9 @@ app.notifications = {
       // Audio Library scan end
       case 'AudioLibrary.OnScanFinished':
         app.notification('Audio Library scan complete');
+        if(app.helpers.arg(0) == 'scan'){
+          $('#content').html('<div class="loading-box">Audio Library Scan Complete</div>');
+        }
         break;
 
       // input box has opened
@@ -19195,6 +19507,41 @@ app.playlists.getNowPlaying = function(key){
   }
 
 };
+;/**
+ * A controller to handle all saves back to the xbmc database
+ */
+
+app.setDetail = {
+
+  /**
+   * Param order is very important
+   */
+  songParams: [
+    'songid', 'title', 'artist', 'albumartist', 'genre', 'year', 'rating', 'album', 'track', 'disc', 'duration', 'comment'
+  ],
+
+  artistParams: [
+    'artistid', 'artist', 'instrument', 'style', 'mood', 'born', 'formed', 'description', 'genre', 'died', 'disbanded', 'yearsactive'
+  ],
+
+  albumParams: [
+    'albumid', 'title', 'artist', 'description', 'genre', 'theme', 'mood', 'style', 'type', 'albumlabel', 'rating', 'year'
+  ],
+
+  episodeParams: [
+    'episodeid', 'title', 'playcount', 'runtime', 'director', 'plot', 'rating', 'votes', 'lastplayed', 'writer', 'firstaired', 'productioncode', 'season', 'episode'
+  ],
+
+
+
+
+
+
+  save: function(type, model){
+
+  }
+
+};
 ;app.storageController = {
   nameSpace: 'chorusStorage:'
 };
@@ -19567,6 +19914,14 @@ app.VideoController.watchedStatus = function(m){
 };
 
 
+
+
+/**
+ * Init a video stream popup
+ *
+ * @param player
+ * @param model
+ */
 app.VideoController.stream = function(player, model){
   var winUrl = "videoPlayer.html?player=" + player,
     loaded = false;
@@ -19586,6 +19941,89 @@ app.VideoController.stream = function(player, model){
     app.AudioController.downloadFile(model.file, function(url){
       win.location = winUrl + "&src=" + encodeURIComponent(url);
     });
+  }
+
+};
+
+
+/**
+ * Set if something is watched, or not.
+ *
+ * @param state
+ *  bool, true = set as watched, false = set as not watched
+ * @param type
+ *  movie, episode
+ * @param model
+ *  the model object containing id and title
+ */
+app.VideoController.setWatched = function(state, type, model, callback){
+
+  var id = model[type + 'id'],
+    title = (model.title === undefined ? model.label : model.title),
+    method = (type == 'episode' ? 'SetEpisodeDetails' : 'SetMovieDetails'),
+    playcount = (state === true ? 1 : 0);
+
+  app.xbmcController.command('VideoLibrary.' + method, [id, title, playcount], function(result){
+
+    // we invalidate the cache so updates are reflected in lists
+    app.VideoController.invalidateCache(type, model);
+
+    // return state
+    if(app.helpers.exists(callback)){
+      callback(state);
+    }
+
+  });
+
+};
+
+
+/**
+ * Toggle watched, uses setWatched()
+ *
+ * @param type
+ * @param model
+ *  must contain playcount property!
+ * @param callback
+ */
+app.VideoController.toggleWatched = function(type, model, callback){
+
+  var state = false;
+  if(parseInt(model.playcount) === 0){
+    state = true;
+  }
+  app.VideoController.setWatched(state, type, model, callback);
+
+};
+
+
+
+
+/**
+ * Wipe a video cache
+ *
+ * @param type
+ */
+app.VideoController.invalidateCache = function(type, model){
+
+  if(type == 'movie'){
+
+    // wipe the movie list
+    delete app.stores.movies;
+
+  } else if(type == 'episode'){
+
+    // wipe the episode and season lists
+    var key;
+    key = 'episodes:' + model.tvshowid + ':' + model.season;
+    if(app.stores.TvEpisodes !== undefined && app.stores.TvEpisodes[key] !== undefined){
+      delete app.stores.TvEpisodes[key];
+    }
+    key = 'seasons:' + model.tvshowid;
+    if(app.stores.TvSeasons !== undefined && app.stores.TvSeasons[key] !== undefined){
+      delete app.stores.TvSeasons[key];
+    }
+
   }
 
 };;
@@ -20035,9 +20473,12 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   arg2: function(){
     return this.models[0].attributes.range;
   },
+  arg3: function(){
+    return this.models[0].attributes.sort;
+  },
   //method/params
   methods: {
-    read:  ['VideoLibrary.GetMovies', 'arg1', 'arg2']
+    read:  ['VideoLibrary.GetMovies', 'arg1', 'arg2', 'arg3']
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
@@ -20085,10 +20526,12 @@ app.AllTvshowXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.tvshowFields, //properties
   arg2: {"start": 0, "end": 10000}, //count
-  //arg4: {"sort": {"method": "label"}},
+  arg3: function(){
+    return this.models[0].attributes.sort;
+  },
   //method/params
   methods: {
-    read:  ['VideoLibrary.GetTVShows', 'arg1', 'arg2']
+    read:  ['VideoLibrary.GetTVShows', 'arg1', 'arg2', 'arg3']
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
@@ -20138,6 +20581,8 @@ app.MovieCollection = Backbone.Collection.extend({
 
   cached: [],
   fullyLoaded: false,
+  lastOrder: '',
+  lastSort: '',
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -20146,6 +20591,7 @@ app.MovieCollection = Backbone.Collection.extend({
       // Get a paginated
       var self = this,
         fullRange = (typeof options.fullRange != 'undefined' && options.fullRange === true);
+
 
 
       // load up a full cache for pagination
@@ -20162,7 +20608,8 @@ app.MovieCollection = Backbone.Collection.extend({
 
         // model for params
         var args = {
-          range: app.helpers.createPaginationRange(app.moviePageNum, fullRange)
+          range: app.helpers.createPaginationRange(app.moviePageNum, fullRange),
+          sort: app.helpers.getSort()
         };
 
         // prep empty cache
@@ -20204,6 +20651,8 @@ app.MovieCollection = Backbone.Collection.extend({
   },
 
 
+
+
   /**
    * Returns a set of results if in cache or false if a lookup is required
    * @param pageNum
@@ -20211,6 +20660,13 @@ app.MovieCollection = Backbone.Collection.extend({
    */
   cachedPagination: function(pageNum, fullRange){
 
+    // if order change, flush cache
+    var sort = app.helpers.getSort();
+    if(this.lastSort != sort.method || this.lastOrder != sort.order){
+      delete app.stores.movies;
+    }
+    this.lastSort = sort.method;
+    this.lastOrder = sort.order;
 
     // always lookup if no cache
     if(app.stores.movies === undefined ||
@@ -20369,27 +20825,39 @@ app.CustomMovieCollection = Backbone.Collection.extend({
  ***********************************/
 
 /**
- * A lightweight collection of all movies (cached).
+ * A lightweight collection of all tv (cached).
  */
 app.TvshowAllCollection = Backbone.Collection.extend({
   model: app.TVShow,
+  lastOrder: '',
+  lastSort: '',
 
   sync: function(method, model, options) {
 
+    // if order change, flush cache
+    var sort = app.helpers.getSort();
+    if(this.lastSort != sort.method || this.lastOrder != sort.order){
+      delete app.stores.allTvshows;
+    }
+    this.lastSort = sort.method;
+    this.lastOrder = sort.order;
+
+    // nocache
     if(typeof app.stores.allTvshows == 'undefined'){
 
       // no cache, do a lookup
-      var allTv = new app.AllTvshowXbmcCollection();
+      var allTv = new app.AllTvshowXbmcCollection({sort: sort});
       allTv.fetch({"success": function(data){
+
         // Sort
-        data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
+       // data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
 
         // Make a dictionary and flag as not loaded
         app.stores.allTvshowsLookup = {};
         for(var i in data.models){
           var m = data.models[i].attributes;
           m.loaded = false;
-          app.stores.allTvshowsLookup[m.movieid] = m;
+          app.stores.allTvshowsLookup[m.tvshowid] = m;
           data.models[i].attributes = m;
         }
         // Cache
@@ -20506,6 +20974,56 @@ app.TvepisodeCollection = Backbone.Collection.extend({
   }
 
 });
+
+
+
+
+/**
+ * A collection of recent episodes
+ */
+app.RecentTvepisodeCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    // init cache
+    if(app.stores.TvEpisodesRecent === undefined){
+      app.stores.TvEpisodesRecent = {};
+    }
+
+    var opt = [];
+
+    // constuct params
+    opt.push(app.tvepisodeFields); // tv eps
+    opt.push({end: 10000, start: 0}); // show all
+    opt.push({method: 'date', order: 'descending'}); // new first
+
+    // lookup
+    app.xbmcController.command('VideoLibrary.GetRecentlyAddedEpisodes', opt, function(data){
+      var all = new app.TvshowAllCollection();
+      all.fetch({"success": function(){
+
+        // add url
+        for(var i in data.result.episodes){
+          var ep = data.result.episodes[i],
+            show = app.stores.allTvshowsLookup[ep.tvshowid];
+          data.result.episodes[i].url = '#tvshow/' + ep.tvshowid + '/' + ep.season + '/' + ep.episodeid;
+          data.result.episodes[i].thumbnail = show.thumbnail;
+        }
+
+        // save cache
+        app.stores.TvEpisodesRecent = data.result.episodes;
+
+        // return
+        options.success(data.result.episodes);
+
+      }});
+
+    });
+  }
+
+});
+
 
 
 ;
@@ -23016,7 +23534,8 @@ app.MovieListItemView = Backbone.View.extend({
     "click .movie-add": "addMovie",
     "click .movie-thumbsup": "thumbsUp",
     "click .movie-menu": "menu",
-    "click .actions-wrapper": "view"
+    "click .actions-wrapper": "view",
+    "click .movie-watched": "toggleWatched"
   },
 
 
@@ -23112,6 +23631,28 @@ app.MovieListItemView = Backbone.View.extend({
       app.VideoController.playlistRender();
     });
 
+  },
+
+
+  /**
+   * Watched it
+   * @param e
+   */
+  toggleWatched: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $target = $(e.target).closest('.card');
+
+    // We use the class to toggle so a full refresh is avoided
+    this.model.attributes.playcount = ($target.hasClass('watched-yes') ? 1 : 0);
+    // toggle
+    app.VideoController.toggleWatched('movie', this.model.attributes, function(state){
+      if(state === true){
+        $target.addClass('watched-yes').removeClass('watched-no');
+      } else {
+        $target.addClass('watched-no').removeClass('watched-yes');
+      }
+    });
   }
 
 });
@@ -23396,12 +23937,13 @@ app.playerStateView = Backbone.View.extend({
     // switch between audio / video formatting
     if(data.activePlayer == 1){
       // Video
-      dur = data.player.totaltime.hours + ':' + data.player.totaltime.minutes + ':' + data.player.totaltime.seconds;
-      cur = data.player.time.hours + ':' + data.player.time.minutes + ':' + data.player.time.seconds;
+      dur = app.helpers.formatTime(data.player.totaltime);
+      cur = app.helpers.formatTime(data.player.time);
     } else if (data.activePlayer === 0){
       // Audio
       dur = app.helpers.secToTime(parseInt(data.item.duration));
-      cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
+      cur = app.helpers.formatTime(data.player.time);
+      //cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
     }
 
     // set time
@@ -23410,15 +23952,7 @@ app.playerStateView = Backbone.View.extend({
 
     // If episode is playing, remove cache so watched status is updated
     if(data.item.type == 'episode'){
-      var key;
-      key = 'episodes:' + data.item.tvshowid + ':' + data.item.season;
-      if(app.stores.TvEpisodes !== undefined && app.stores.TvEpisodes[key] !== undefined){
-        delete app.stores.TvEpisodes[key];
-      }
-      key = 'seasons:' + data.item.tvshowid;
-      if(app.stores.TvSeasons !== undefined && app.stores.TvSeasons[key] !== undefined){
-        delete app.stores.TvSeasons[key];
-      }
+      app.VideoController.invalidateCache('episode');
     }
 
   },
@@ -24462,6 +24996,10 @@ app.searchView = Backbone.View.extend({
     // toggle based on tab class
     var view = $thisTab.data('pane');
     app.playlists.changePlaylistView(view);
+    // remember
+    if(view == 'xbmc' || view == 'local'){
+      app.settings.set('lastPlayer', view);
+    }
   },
 
   /**
@@ -24702,6 +25240,14 @@ app.searchView = Backbone.View.extend({
   about: function(e){
     e.preventDefault();
     app.helpers.aboutDialog();
+  },
+
+  /**
+   * Scan Library
+   * @param e
+   */
+  scanLibrary: function(e){
+
   },
 
 
@@ -24947,7 +25493,7 @@ app.ThumbsupView = Backbone.View.extend({
     app.shellView.selectMenuItem('thumbsup', 'no-sidebar');
 
     // set title
-    app.helpers.setTitle('Thumbs Up');
+    app.helpers.setTitle('<i class="fa fa-thumbs-up"></i> Thumbs Up');
 
     if(!anyThumbs){ // No thumbs
       // no thumbs
@@ -25458,6 +26004,7 @@ app.TvSeasonListItemView = Backbone.View.extend({
   events:{
     "click .actions-wrapper": "view",
     "click .tv-play": "play",
+    "click .tv-watched": "toggleWatched",
     "click .tv-add": "add"
   },
 
@@ -25527,6 +26074,27 @@ app.TvSeasonListItemView = Backbone.View.extend({
       app.VideoController.playlistRender();
     });
 
+  },
+
+  /**
+   * Watched it
+   * @param e
+   */
+  toggleWatched: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $target = $(e.target).closest('.card');
+
+    // We use the class to toggle so a full refresh is avoided
+    this.model.attributes.playcount = ($target.hasClass('watched-yes') ? 1 : 0);
+    // toggle
+    app.VideoController.toggleWatched('episode', this.model.attributes, function(state){
+      if(state === true){
+        $target.addClass('watched-yes').removeClass('watched-no');
+      } else {
+        $target.addClass('watched-no').removeClass('watched-yes');
+      }
+    });
   }
 
 

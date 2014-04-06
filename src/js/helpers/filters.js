@@ -1,20 +1,38 @@
 app.filters = {
 
   movieLastSort: 'title:ascending',
+  tvshowLastSort: 'title:ascending',
 
   movieFilters: {
     title: 'Movies',
     basePath: '#movies/page/',
     paths: [{
-      title: 'Recently Added',
-      path: 'movies',
-      argOne: '',
-      key: 'recent'
-    },{
       title: 'All Movies',
       path: 'movies/page/0/title:ascending',
       argOne: 'page',
       key: 'all'
+    },{
+      title: 'Recently Added',
+      path: 'movies',
+      argOne: '',
+      key: 'recent'
+    }],
+    sort: ["title", "date", "rating", "year", "file"]
+  },
+
+  tvshowFilters: {
+    title: 'TV Show',
+    basePath: '#tvshows/page/',
+    paths: [{
+      title: 'All TV',
+      path: 'tvshows/page/0/title:ascending',
+      argOne: 'page',
+      key: 'all'
+    },{
+      title: 'Recently Added',
+      path: 'tvshows',
+      argOne: '',
+      key: 'recent'
     }],
     sort: ["title", "date", "rating", "year", "file"]
   },
@@ -82,7 +100,7 @@ app.filters = {
     $sort.append($showWatched);
 
     // init hide-watched body class
-    if(app.settings.set('hideWatched', false)){
+    if(app.settings.get('hideWatched', false)){
       $body.addClass('hide-watched');
     }
 

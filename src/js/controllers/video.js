@@ -337,6 +337,8 @@ app.VideoController.watchedStatus = function(m){
 };
 
 
+
+
 /**
  * Init a video stream popup
  *
@@ -387,7 +389,7 @@ app.VideoController.setWatched = function(state, type, model, callback){
   app.xbmcController.command('VideoLibrary.' + method, [id, title, playcount], function(result){
 
     // we invalidate the cache so updates are reflected in lists
-    app.VideoController.invalidateCache(type);
+    app.VideoController.invalidateCache(type, model);
 
     // return state
     if(app.helpers.exists(callback)){
@@ -418,12 +420,14 @@ app.VideoController.toggleWatched = function(type, model, callback){
 };
 
 
+
+
 /**
  * Wipe a video cache
  *
  * @param type
  */
-app.VideoController.invalidateCache = function(type){
+app.VideoController.invalidateCache = function(type, model){
 
   if(type == 'movie'){
 
@@ -434,11 +438,11 @@ app.VideoController.invalidateCache = function(type){
 
     // wipe the episode and season lists
     var key;
-    key = 'episodes:' + data.item.tvshowid + ':' + data.item.season;
+    key = 'episodes:' + model.tvshowid + ':' + model.season;
     if(app.stores.TvEpisodes !== undefined && app.stores.TvEpisodes[key] !== undefined){
       delete app.stores.TvEpisodes[key];
     }
-    key = 'seasons:' + data.item.tvshowid;
+    key = 'seasons:' + model.tvshowid;
     if(app.stores.TvSeasons !== undefined && app.stores.TvSeasons[key] !== undefined){
       delete app.stores.TvSeasons[key];
     }

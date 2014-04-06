@@ -169,6 +169,10 @@ app.ShellView = Backbone.View.extend({
     // toggle based on tab class
     var view = $thisTab.data('pane');
     app.playlists.changePlaylistView(view);
+    // remember
+    if(view == 'xbmc' || view == 'local'){
+      app.settings.set('lastPlayer', view);
+    }
   },
 
   /**

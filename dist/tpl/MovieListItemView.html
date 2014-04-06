@@ -1,7 +1,6 @@
 <div class="card movie-row movie-row-<%= movieid %> clearfix watched-<%=watched.status%>" data-id="<%= movieid %>">
     <a class="image-wrapper" href="#movie/<%= movieid %>" title="<%= label %>">
         <img class="image content-lazy" src="<%= app.parseImage('', 'space') %>" data-original="<%= app.parseImage(thumbnail) %>" />
-        <i class="fa fa-check is-watched"></i>
     </a>
     <div class="actions-wrapper movie-actions-wrapper">
         <div class="actions movie-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= movieid %>">
@@ -20,6 +19,6 @@
         <p class="item-sub-title">
             <span><%= year %></span>
         </p>
-
+        <i class="fa fa-check is-watched" title="Watched"></i>
     </div>
 </div>

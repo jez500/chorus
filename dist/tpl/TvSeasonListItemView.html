@@ -5,6 +5,9 @@
 
     <div class="actions-wrapper tvseason-actions-wrapper">
         <div class="actions tvseason-actions" data-id="">
+            <% if(type != 'season'){ %>
+                <button class="tv-watched btn watched-btn" title="Toggle Watched"><i class="fa fa-circle"></i></button>
+            <% } %>
             <button class="tv-play btn" title="Replace the playlist with this tvseason and start playing"><i class="fa fa-play"></i></button>
             <button class="tv-add btn" title="Add this tvseason to the playlist"><i class="fa fa-plus"></i></button>
             <!--<button class="tvseason-menu btn" title="More tvseason options"><i class="fa fa-ellipsis-v"></i></button>-->
@@ -18,7 +21,7 @@
         <p class="item-sub-title">
             <span><%= subText %></span>
         </p>
-
+        <i class="fa fa-check is-watched" title="Watched"></i>
     </div>
 
 </div>

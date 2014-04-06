@@ -260,10 +260,12 @@ app.AllTvshowXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.tvshowFields, //properties
   arg2: {"start": 0, "end": 10000}, //count
-  //arg4: {"sort": {"method": "label"}},
+  arg3: function(){
+    return this.models[0].attributes.sort;
+  },
   //method/params
   methods: {
-    read:  ['VideoLibrary.GetTVShows', 'arg1', 'arg2']
+    read:  ['VideoLibrary.GetTVShows', 'arg1', 'arg2', 'arg3']
   },
   //return the artists key from the result
   parse:  function(resp, xhr){

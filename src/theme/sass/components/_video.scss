@@ -31,7 +31,7 @@ ul.video-list {
     }
   }
 }
-
+.section-tvshows,
 .section-movies {
   #sidebar-first {
     display: none;
@@ -443,4 +443,8 @@ ul.video-list {
 }
 
 
-
+.recent-tv-list {
+  &.video-list li .card {
+    //@include card('episode');
+  }
+}

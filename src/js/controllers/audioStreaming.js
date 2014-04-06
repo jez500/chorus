@@ -4,6 +4,40 @@
  */
 
 
+
+// html5 audio doesn't work in firefox because it requires a strict mime type of audio/mpeg
+// XBMC supplies the type as audio/mpeg3 resulting in html5 audio throwing errors and just
+// not playing anything.
+//
+// In light of this we switch to flash, which has its own problems, namely not working after
+// you refresh your page! seems to be a cache issue but same occurs in chrome :(
+// First load is generally good so it is at least better than nothing - but maybe more frustrating?
+//var preferFlash = (app.helpers.getBrowser() == 'firefox');
+//console.log(preferFlash);
+
+// setup soundmanager
+soundManager.setup({
+  url: 'lib/soundmanager/swf/',
+  flashVersion: 9,
+  preferFlash: false,
+  useHTML5Audio: true,
+  useFlashBlock: false,
+  flashLoadTimeout: 3000,
+  debugMode: false,
+  noSWFCache: true,
+  debugFlash: false,
+  onready: function(){
+    app.audioStreaming.init();
+  },
+  ontimeout: function(){
+    console.log('timeout');
+    soundManager.flashLoadTimeout = 0; // When restarting, wait indefinitely for flash
+    soundManager.onerror = {}; // Prevent an infinite loop, in case it's not flashblock
+    soundManager.reboot(); // and, go!
+  }
+});
+
+
 /**
  * On Shell ready
  * Browser player binds and load last playlist from local storage
@@ -26,22 +60,6 @@ $(window).on('shellReady', function(){
     random: 'off',
     mute: false
   };
-
- // $.get('lib/soundmanager/swf/soundmanager2_flash9_debug.swf', function(){
-
-
-  // Lazy load sound manager so we can init it when we are ready
-  $.ajax({
-    url: 'lib/soundmanager/script/soundmanager2-nodebug-jsmin.js',
-    dataType: 'script',
-    success: function(data){
-      app.audioStreaming.playerReady();
-    },
-    error: function(data){
-      console.log('errzz', data);
-    }
-  });
- // });
 
 });
 
@@ -100,37 +118,6 @@ app.audioStreaming = {
 
   playerReady: function(){
 
-    // html5 audio doesn't work in firefox because it requires a strict mime type of audio/mpeg
-    // XBMC supplies the type as audio/mpeg3 resulting in html5 audio throwing errors and just
-    // not playing anything.
-    //
-    // In light of this we switch to flash, which has its own problems, namely not working after
-    // you refresh your page! seems to be a cache issue but same occurs in chrome :(
-    // First load is generally good so it is at least better than nothing - but maybe more frustrating?
-    var preferFlash = (app.helpers.getBrowser() == 'firefox');
-    console.log(preferFlash);
-
-    // setup soundmanager
-    soundManager.setup({
-      url: 'lib/soundmanager/swf/',
-      flashVersion: 9,
-      preferFlash: preferFlash,
-      useHTML5Audio: true,
-      useFlashBlock: false,
-      flashLoadTimeout: 3000,
-      debugMode: false,
-      noSWFCache: true,
-      debugFlash: false,
-      onready: function(){
-        app.audioStreaming.init();
-      },
-      ontimeout: function(){
-        console.log('timeout');
-        soundManager.flashLoadTimeout = 0; // When restarting, wait indefinitely for flash
-        soundManager.onerror = {}; // Prevent an infinite loop, in case it's not flashblock
-        soundManager.reboot(); // and, go!
-      }
-    });
   },
 
 
@@ -151,17 +138,21 @@ app.audioStreaming = {
       app.store.libraryCall(function(){
         // get collection based on songids
         app.playlists.playlistGetItems('items', lastList, function(collection){
-          app.audioStreaming.playList.items = collection;
-          // render it too
-          app.audioStreaming.renderPlaylistItems();
-          // add as loaded song
-          if(collection.models !== undefined && collection.models[0] !== undefined){
-            // load the first song
-            var song = collection.models[0];
-            app.audioStreaming.loadSong(song);
-            // update playing song details around the page
-            app.audioStreaming.updatePlayingState(song.attributes);
+
+          if(app.audioStreaming.playList !== undefined){
+            app.audioStreaming.playList.items = collection;
+            // render it too
+            app.audioStreaming.renderPlaylistItems();
+            // add as loaded song
+            if(collection.models !== undefined && collection.models[0] !== undefined){
+              // load the first song
+              var song = collection.models[0];
+              app.audioStreaming.loadSong(song);
+              // update playing song details around the page
+              app.audioStreaming.updatePlayingState(song.attributes);
+            }
           }
+
 
         });
       }, 'songsReady');
@@ -179,11 +170,12 @@ app.audioStreaming = {
    * @param player
    */
   setPlayer: function(player){
-    var song;
+    var song,
+      $body = $('body');
 
     // Switch to XBMC Player
     if(player == 'xbmc'){
-      app.audioStreaming.$body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
+      $body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
       song = app.playlists.getNowPlaying('item');
       app.helpers.applyBackstretch(song.fanart, 'xbmc');
@@ -191,7 +183,7 @@ app.audioStreaming = {
 
     // Switch to Local Player
     if(player == 'local'){
-      app.audioStreaming.$body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
+      $body.removeClass(app.audioStreaming.classXbmc).addClass(app.audioStreaming.classLocal);
       // if empty, render
       if($('ul.browser-playlist-song-list').length === 0){
         app.audioStreaming.renderPlaylistItems();
@@ -209,7 +201,7 @@ app.audioStreaming = {
    */
   getPlayer: function(){
     // check if body has the local class
-    if(app.audioStreaming.$body.hasClass(app.audioStreaming.classLocal)){
+    if($('body').hasClass(app.audioStreaming.classLocal)){
       return 'local';
     } else {
       return 'xbmc';
@@ -222,7 +214,8 @@ app.audioStreaming = {
    * @returns {*}
    */
   getNowPlayingSong: function(){
-    if(app.audioStreaming.playList.items.models !== undefined &&
+    if(app.audioStreaming.playList !== undefined &&
+      app.audioStreaming.playList.items.models !== undefined &&
       app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition] !== undefined){
       var model = app.audioStreaming.playList.items.models[app.audioStreaming.playList.playingPosition];
       return model.attributes;

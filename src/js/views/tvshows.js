@@ -440,6 +440,7 @@ app.TvSeasonListItemView = Backbone.View.extend({
   events:{
     "click .actions-wrapper": "view",
     "click .tv-play": "play",
+    "click .tv-watched": "toggleWatched",
     "click .tv-add": "add"
   },
 
@@ -509,6 +510,27 @@ app.TvSeasonListItemView = Backbone.View.extend({
       app.VideoController.playlistRender();
     });
 
+  },
+
+  /**
+   * Watched it
+   * @param e
+   */
+  toggleWatched: function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $target = $(e.target).closest('.card');
+
+    // We use the class to toggle so a full refresh is avoided
+    this.model.attributes.playcount = ($target.hasClass('watched-yes') ? 1 : 0);
+    // toggle
+    app.VideoController.toggleWatched('episode', this.model.attributes, function(state){
+      if(state === true){
+        $target.addClass('watched-yes').removeClass('watched-no');
+      } else {
+        $target.addClass('watched-no').removeClass('watched-yes');
+      }
+    });
   }
 
 
