@@ -129,9 +129,12 @@ app.MixedView = Backbone.View.extend({
    * @param type
    */
   noResult: function(type){
-   // add no results to bottom pane
-    $('#' + this.model.key + '-bottom')
-      .append( this.getHeading(type, 'No ' + type + ' matches', 'no-result') );
+    if($('.' + type + '-type-heading').length === 0){
+      // add no results to bottom pane
+      $('#' + this.model.key + '-bottom')
+        .append( this.getHeading(type, 'No ' + type + ' matches', 'no-result') );
+    }
+
     // empty top result
     $('#' + this.model.key + '-' + type + 's').empty();
   },
@@ -145,7 +148,7 @@ app.MixedView = Backbone.View.extend({
    * @returns {string}
    */
   getHeading: function(type, text, classes){
-    return '<h3 class="' + this.model.key + '-heading entity-heading ' + classes + '">' + this.getLogo(type) + text + '</h3>';
+    return '<h3 class="' + type + '-type-heading ' + this.model.key + '-heading entity-heading ' + classes + '">' + this.getLogo(type) + text + '</h3>';
   },
 
 
