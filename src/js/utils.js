@@ -252,10 +252,7 @@ $(document).ready(function(){
     var minutes = parseInt( totalSec / 60 ) % 60;
     var seconds = totalSec % 60;
 
-    // return a string with zeros only when we need em
-    return (hours > 0 ? hours + ":" : "") + //hours
-      (minutes > 0 ? (hours > 0 && minutes < 10 ? "0" + minutes : minutes) + ":" : (hours > 0 ? "00:" : "")) + //mins
-      (seconds  < 10 ? "0" + seconds : seconds); //seconds
+    return { hours: hours, minutes: minutes, seconds: seconds }
   };
 
 

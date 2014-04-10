@@ -136,7 +136,7 @@ app.playerStateView = Backbone.View.extend({
       cur = app.helpers.formatTime(data.player.time);
     } else if (data.activePlayer === 0){
       // Audio
-      dur = app.helpers.secToTime(parseInt(data.item.duration));
+      dur = app.helpers.formatTime(app.helpers.secToTime(parseInt(data.item.duration)));
       cur = app.helpers.formatTime(data.player.time);
       //cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
     }
