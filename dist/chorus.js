@@ -14046,10 +14046,7 @@ $(document).ready(function(){
     var minutes = parseInt( totalSec / 60 ) % 60;
     var seconds = totalSec % 60;
 
-    // return a string with zeros only when we need em
-    return (hours > 0 ? hours + ":" : "") + //hours
-      (minutes > 0 ? (hours > 0 && minutes < 10 ? "0" + minutes : minutes) + ":" : (hours > 0 ? "00:" : "")) + //mins
-      (seconds  < 10 ? "0" + seconds : seconds); //seconds
+    return { hours: hours, minutes: minutes, seconds: seconds };
   };
 
 
@@ -17844,8 +17841,8 @@ app.audioStreaming = {
           };
 
           // time
-          $('.time-cur', $time).html(app.helpers.secToTime(Math.floor(pos)));
-          $('.time-total', $time).html(app.helpers.secToTime(Math.floor(dur)));
+          $('.time-cur', $time).html(app.helpers.formatTime(app.helpers.secToTime(Math.floor(pos))));
+          $('.time-total', $time).html(app.helpers.formatTime(app.helpers.secToTime(Math.floor(dur))));
 
           //update 100 times per song
           if(per != app.audioStreaming.lastPos){
@@ -23950,7 +23947,7 @@ app.playerStateView = Backbone.View.extend({
       cur = app.helpers.formatTime(data.player.time);
     } else if (data.activePlayer === 0){
       // Audio
-      dur = app.helpers.secToTime(parseInt(data.item.duration));
+      dur = app.helpers.formatTime(app.helpers.secToTime(parseInt(data.item.duration)));
       cur = app.helpers.formatTime(data.player.time);
       //cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
     }
@@ -24323,7 +24320,7 @@ app.PlaylistItemView = Backbone.View.extend({
       model.artistString = (typeof model.artist != 'undefined' && typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
 
       // build song vars
-      title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
+      title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.formatTime(app.helpers.secToTime(this.model.duration));
       url = '#search/' + (model.albumArtistString !== '' ? model.albumArtistString : model.artistString);
       text = (model.artistString !== '' ? model.artistString : model.albumArtistString);
 

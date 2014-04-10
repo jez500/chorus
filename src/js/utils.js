@@ -252,7 +252,7 @@ $(document).ready(function(){
     var minutes = parseInt( totalSec / 60 ) % 60;
     var seconds = totalSec % 60;
 
-    return { hours: hours, minutes: minutes, seconds: seconds }
+    return { hours: hours, minutes: minutes, seconds: seconds };
   };
 
 
