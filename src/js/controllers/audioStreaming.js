@@ -480,8 +480,8 @@ app.audioStreaming = {
           };
 
           // time
-          $('.time-cur', $time).html(app.helpers.secToTime(Math.floor(pos)));
-          $('.time-total', $time).html(app.helpers.secToTime(Math.floor(dur)));
+          $('.time-cur', $time).html(app.helpers.formatTime(app.helpers.secToTime(Math.floor(pos))));
+          $('.time-total', $time).html(app.helpers.formatTime(app.helpers.secToTime(Math.floor(dur))));
 
           //update 100 times per song
           if(per != app.audioStreaming.lastPos){

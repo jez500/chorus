@@ -200,7 +200,7 @@ app.PlaylistItemView = Backbone.View.extend({
       model.artistString = (typeof model.artist != 'undefined' && typeof model.artist[0] != 'undefined' ? model.artist[0] : '');
 
       // build song vars
-      title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.secToTime(this.model.duration);
+      title = 'Track: ' + this.model.track + ' Duration: ' + app.helpers.formatTime(app.helpers.secToTime(this.model.duration));
       url = '#search/' + (model.albumArtistString !== '' ? model.albumArtistString : model.artistString);
       text = (model.artistString !== '' ? model.artistString : model.albumArtistString);
 
