@@ -120,6 +120,7 @@ app.ShellView = Backbone.View.extend({
     "click .clear-playlist": "clearPlaylist",
     "click .refresh-playlist": "refreshPlaylist",
     "click .new-custom-playlist": "newCustomPlaylist",
+    "click .party-mode": "partyMode",
     // bottom menu
     "click .about-dialog": "about",
 
@@ -370,6 +371,17 @@ app.ShellView = Backbone.View.extend({
     app.playlists.saveCustomPlayListsDialog('song', []);
   },
 
+
+  /**
+   * Toggle partyMode
+   */
+  partyMode: function(e){
+    e.preventDefault();
+    var self = this;
+    this.getController().setPartyMode(function(){
+      self.updateState();
+    });
+  },
 
   /**
    *  Clear a playlist

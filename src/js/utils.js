@@ -443,10 +443,11 @@ $(document).ready(function(){
    */
   app.helpers.addFreewall = function(selector){
     var wall = new freewall(selector);
+    console.log('WALL');
     wall.reset({
       selector: 'li',
       animate: false,
-      cellW: 170,
+      cellW: 160,
       cellH: '230',
       gutterY: 15,
       gutterX: 15,
@@ -1087,6 +1088,7 @@ $(document).ready(function(){
             {class: 'dropdown-header', title: 'Current Playlist'},
             {url: '#', class: 'clear-playlist', title: 'Clear Playlist'},
             {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'},
+            {url: '#', class: 'party-mode', title: 'Party Mode <i class="fa fa-check"></i>'},
             {class: 'dropdown-header', title: 'Audio'},
             {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
             {url: '#', class: 'new-custom-playlist', title: 'New Browser Playlist'}

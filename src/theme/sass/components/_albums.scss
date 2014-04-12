@@ -105,13 +105,28 @@ $album-margin-right: $album-meta-width + 10;
 
 // albums list
 .album-list-landing {
+  margin: 0px;
+  @include breakpoint($width-small){
+    padding: 15px 10px;
+  }
+  padding: 10px 0px;
+  background: #fff;
+  &:after {
+    content: "";
+    clear: both;
+    display: block;
+  }
+  li {
+    min-height: $card-small-height;
+    width: $card-small-width;
+  }
   li.has-thumb { // only items with thumbs get enlarged
     // set a few as large @todo move to js
     &:nth-child(8),
-    &:nth-child(18),
-    &:nth-child(25),
+    &:nth-child(22),
+    &:nth-child(40),
     &:first-child {
-      @include card('large');
+      //@include card('large');
     }
   }
 }

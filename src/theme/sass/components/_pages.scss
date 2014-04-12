@@ -334,8 +334,10 @@
   height: 210px;
   margin-top: -#{$height-header + 5};
   cursor: pointer;
+  display: none;
   @include breakpoint($width-tablet){
-    height: 342px;
+    height: 280px;
+    display: block;
     img {
       min-width: 600px;
     }
@@ -411,12 +413,15 @@ body {
 
   // Landings
   &.section-tvshows,
-  &.section-movies,
-  &.section-artists,
-  &.section-albums {
-    background: #DFDFDF;
+  &.section-movies {
+    background: #f2f2f2;
     #content {
-      background: #DFDFDF;
+      background: #fff;
+      // needs latest Compass, add '@import "compass"' to your scss
+      @include filter-gradient(#f2f2f2, #fff, vertical); // IE6-9
+      @include background-image(linear-gradient(top,  rgba(242,242,242,0) 1%,rgba(242,242,242,0) 41%,rgba(242,242,242,0.97) 98%,rgba(242,242,242,1) 100%));
+
+      min-height: 400px;
     }
   }
 
@@ -442,4 +447,37 @@ body {
     }
   }
 
+  &.section-movies,
+  &.section-tvshows,
+  &.section-mymusic,
+  &.section-music {
+
+    @include breakpoint($width-tablet){ 
+      #page-header h1 a {
+        width: 185px;
+        background: rgba(255, 255, 255, 0.96);
+      }
+      #sidebar-first {
+        width: 185px;
+        background: $color-whitesmoke;
+        .active-recent a {
+          &:first-child {
+            background: $color-asbestos;
+            color: $color-whitesmoke;
+          }
+        }
+        .links .btn {
+          font-size: 14px;
+          //border-left: 4px solid #F0F0F0;
+
+          &.active {
+            background: $color-asbestos;
+          }
+        }
+      }
+      #main {
+        margin-left: $width-header + 185 !important;
+      }
+    }
+  }
 }

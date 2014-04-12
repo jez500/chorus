@@ -79,7 +79,7 @@
         &.active {
           a {
             color: #2B2F30;
-            background: #F0F0F0;
+            background: $color-whitesmoke;
           }
         }
       }
@@ -143,8 +143,8 @@ body.fixed-header {
 
   i {
     color: rgba(246, 245, 243, 0.55);
-    padding-right: 15px;
-    font-size: 19px;
+    padding-right: 5px;
+    font-size: 16px;
   }
   h1 {
     font-weight: normal;
@@ -166,9 +166,13 @@ body.fixed-header {
       overflow: hidden;
       position: relative;
       white-space: nowrap;
-      background: #F6F5F3;
+      background: rgba(255, 255, 255, 0.96);
+      font-size: 17px;
       &:hover {
         //color: $color-darkest-xbmc;
+      }
+      i {
+        color: rgba(0,0,0,0.3);
       }
     }
     span {
@@ -261,7 +265,7 @@ body.fixed-header {
 // First Sidebar (artists)
 #sidebar-first {
   right: 0;
-  background: #f9f9f9;
+  background: $color-whitesmoke;
   position: fixed;
   top: $height-header;
   left: 0;
@@ -777,6 +781,7 @@ body {
       }
     }
   }
+  &.section-music,
   &.section-album,
   &.section-artist {
     #sidebar-first {

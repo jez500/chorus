@@ -198,6 +198,12 @@ app.VideoController.playlistAddMultiple = function(type, ids, callback){
 };
 
 
+/**
+ * Party mode
+ */
+app.VideoController.setPartyMode = function(callback){
+  app.playlists.setPartyMode(app.VideoController.playlistId, callback);
+};
 
 
 /**

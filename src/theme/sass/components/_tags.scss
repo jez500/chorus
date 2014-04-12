@@ -1,0 +1,54 @@
+
+.tag-list {
+  padding: 10px;
+  padding-bottom: $height-footer;
+  &:after {
+    content: "";
+    clear: both;
+    display: block;
+  }
+  .tag-list-item .tag-label {
+    padding: 10px;
+    margin: 5px;
+    background: #f7f7f7;
+    font-size: 14px;
+
+    display: block;
+    @include breakpoint($width-mobile){
+      width: 200px;
+      float: left;
+    }
+    &:hover {
+      background: $color-asbestos;
+      color: $color-whitesmoke;
+    }
+  }
+  .tag-container {
+    display: none;
+
+  }
+  .open {
+    clear: left;
+    padding: 10px 0;
+
+    .tag-label {
+      float: none;
+      background: $color-asbestos;
+      color: $color-whitesmoke;
+      padding: 10px 15px;
+      font-size: 16px;
+      width: auto;
+      display: block;
+      margin: 0;
+    }
+    .tag-container {
+      display: block;
+      background: #f0f0f0;
+      overflow: hidden;
+      .album-list-landing {
+        background: none;
+        padding: 8px 2px;
+      }
+    }
+  }
+}

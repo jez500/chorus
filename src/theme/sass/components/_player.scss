@@ -294,6 +294,16 @@
   }
 }
 
+a.party-mode {
+  i {
+    display: none;
+    float: right;
+    color: $color-carrot;
+    font-size: 12px;
+    padding-top: 5px;
+  }
+}
+
 body {
   // not connected! using a few importants to force this state
   &.notconnected {
@@ -511,5 +521,11 @@ body {
     }
   }
 
-
+  &.partymode-on {
+    a.party-mode {
+      i {
+        display: block;
+      }
+    }
+  }
 }

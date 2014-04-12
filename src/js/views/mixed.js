@@ -87,6 +87,14 @@ app.MixedView = Backbone.View.extend({
   },
 
   /**
+   * Add key if it doesn't exist
+   * @param entity
+   */
+  setEntities: function(entities){
+    this.model.entities = entities;
+  },
+
+  /**
    * Render a single pane
    *
    * @param type

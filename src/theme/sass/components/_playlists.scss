@@ -190,7 +190,9 @@
         opacity: 1;
         right: 0;
         left: auto;
-
+      }
+      .thumb {
+        box-shadow: -17px 0 10px -5px #eee;
       }
       .playlist-song-actions-wrapper {
         z-index: 3;

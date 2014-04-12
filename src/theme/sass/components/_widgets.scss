@@ -340,3 +340,33 @@ input[type="text"] {
     display: none !important;
   }
 }
+
+.sidebar-content {
+
+  .links {
+    margin-top: 0px;
+    a {
+      display: block;
+      color: #4F5861;
+      text-align: left;
+      padding: 10px 10px 11px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.44);
+      &:hover {
+        background: #f8f8f8;
+      }
+      &.active {
+        background: $color-asbestos;
+        color: $color-whitesmoke;
+      }
+    }
+  }
+}
+
+.section-music {
+  #sidebar-first {
+    background: #F0F0F0;
+  }
+  #page-header h1 a {
+    background: #fafafa;
+  }
+}

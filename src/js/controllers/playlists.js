@@ -919,6 +919,26 @@ app.playlists.renderXbmcPlaylist = function(playlistId, callback){
 
 
 /**
+ * Toggle party mode (auto playing of random songs)
+ *
+ * @param playlistId
+ * @param callback
+ */
+app.playlists.setPartyMode = function(playlistId, callback){
+
+  var data = app.playlists.getNowPlaying('player');
+
+  app.xbmcController.command('Player.setPartyMode', [ playlistId, (data.partymode !== true)], function(result){
+    app.notification('Partymode ' + (!data.partymode ? 'on' : 'off'));
+    if(callback){
+      callback(result.result); // return items
+    }
+  });
+
+};
+
+
+/**
  * Swap the position of an item in the playlist
  *
  * This moves an item from one position to another
@@ -1032,7 +1052,8 @@ app.playlists.getNowPlaying = function(key){
     },
     player: {
       repeat: "off",
-      shuffled: false
+      shuffled: false,
+      partymode: false
     },
     item: {
       thumbnail: '', fanart: '', id: 0, label: 'Nothing Playing', songid: 0, episodeid: 0, album: '', albumid: 'file', file: '', duration: 0, type: 'song'

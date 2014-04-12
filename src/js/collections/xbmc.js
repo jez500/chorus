@@ -93,6 +93,36 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
 });
 
 
+/**
+ * Get Filtered Album collection
+ */
+app.AlbumFilteredXbmcCollection = Backbone.Collection.extend({
+  //rpc deets
+  url: app.jsonRpcUrl,
+  rpc: new Backbone.Rpc({
+    errorHandler: function(error){app.helpers.errorHandler('xbmc album call',error);},
+    namespaceDelimiter: ''
+  }),
+  //model
+  model: app.Album,
+  //collection params
+  arg1: app.albumFields, //properties
+  arg2: {"start": 0, "end": 15000}, //count
+  arg3: {"sort": {"method": "album", "order": "ascending"}},
+  arg4: function(){
+    return this.models[0].attributes.filter;
+  },
+  //method/params
+  methods: {
+    read:  ['AudioLibrary.GetAlbums', 'arg1', 'arg2', 'arg3', 'arg4']
+  },
+  //return the artists key from the result
+  parse:  function(resp, xhr){
+    return resp.albums;
+  }
+});
+
+
 
 /**
  * Get Recently Added Album collection
@@ -119,8 +149,8 @@ app.AlbumRecentlyAddedXbmcCollection = Backbone.Collection.extend({
     $.each(resp.albums, function(i,d){
       resp.albums[i].recent = 'added';
     });
-    var a = app.helpers.shuffle(resp.albums);
-    return a;
+    //var a = app.helpers.shuffle(resp.albums);
+    return resp.albums;
   }
 });
 
@@ -150,8 +180,8 @@ app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
     $.each(resp.albums, function(i,d){
       resp.albums[i].recent = 'played';
     });
-    var a = app.helpers.shuffle(resp.albums);
-    return app.helpers.buildUrls(a, 'album', 'albumid');
+    //var a = app.helpers.shuffle(resp.albums);
+    return app.helpers.buildUrls(resp.albums, 'album', 'albumid');
   }
 });
 

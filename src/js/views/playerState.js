@@ -76,24 +76,19 @@ app.playerStateView = Backbone.View.extend({
 
     var data = app.playlists.getNowPlaying();
 
-    // player was stopped on page load
-    if(data.player === undefined){
-      data.player = {
-        shuffled: false,
-        repeat: 'off'
-      };
-    }
-
     this.$body
       // remove all old classes and list the options in use
       .removeClass('playing').removeClass('paused').removeClass('notPlaying')
-      .removeClass('random-on').removeClass('random-off')
+      .removeClass('random-on').removeClass('random-off').removeClass('partymode-on')
       .removeClass('repeat-off').removeClass('repeat-all').removeClass('repeat-one')
       // add active classes
       .addClass(data.status)
       .addClass( 'random-' + (data.player.shuffled === true ? 'on' : 'off') )
       .addClass( 'repeat-' + data.player.repeat );
 
+    if(data.player.partymode === true){
+      this.$body.addClass('partymode-on');
+    }
     // Remove all classes starting with 'activePlayer'
     this.$body.removeClass (function (index, css) {
       return (css.match (/\bactivePlayer\S+/g) || []).join(' ');

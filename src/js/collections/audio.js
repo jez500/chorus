@@ -226,6 +226,146 @@ app.CustomSongCollection = Backbone.Collection.extend({
 });
 
 
+/**
+ * Get recent albumbs.
+ * @TODO optimize it is quite slow - use multi command and remove fields
+ *
+ * @type {added, played, all}
+ */
+app.RecentAlbumCollection = Backbone.Collection.extend({
+
+  model: app.Song,
+
+  sync: function(method, model, options) {
+    if (method === "read") {
+
+      var type = options.type;
+
+      // If cache
+      if(app.stores.recentAlbums !== undefined){
+        options.success(app.stores.recentAlbums[type]);
+        return;
+      }
+
+      // Get data
+      var data = {added: [], played: [], all: []},
+        used = {};
+      // first get recently added
+      app.cached.recentlyAddedAlbums = new app.AlbumRecentlyAddedXbmcCollection();
+      app.cached.recentlyAddedAlbums.fetch({"success": function(albumsAdded){
+        // store
+        data.added = albumsAdded.models;
+        // then get recently played
+        app.cached.recentlyPlayedAlbums = new app.AlbumRecentlyPlayedXbmcCollection();
+        app.cached.recentlyPlayedAlbums.fetch({"success": function(albumsPlayed){
+          // store
+          data.played = albumsPlayed.models;
+          // combine
+          $.each(data.added, function(i,d){
+            data.all.push(d);
+            used[d.attributes.albumid] = true;
+          });
+          $.each(data.played, function(i,d){
+            // if not already added...
+            if(used[d.attributes.albumid] === undefined){
+              data.all.push(d);
+            }
+          });
+          // save cache
+          app.stores.recentAlbums = data;
+          // call success!
+          options.success(data[type]);
+        }});
+
+      }});
+
+    }
+  }
+
+});
+
+
+
+/**
+ * Get a list of song models based on an array of songids
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.AudioGenreCollection = Backbone.Collection.extend({
+
+  model: app.Tag,
+
+  sync: function(method, model, options) {
+    if (method === "read") {
+
+      // Get all genres
+
+      // cache
+      if(app.stores.audioGenres !== undefined){
+        options.success(app.stores.audioGenres);
+      }
+
+      // get genres
+      app.xbmcController.command('AudioLibrary.GetGenres', [['title'], {start: 0, end: 500000}, {method: 'label', order: 'ascending'}], function(data){
+
+        $.each(data.result.genres, function(i,d){
+          d.type = 'musicGenre';
+          d.id = d.genreid;
+          d.url = '#music/genres/' + d.id;
+          data.result.genres[i] = d;
+        });
+        app.stores.audioGenres = data.result.genres;
+
+
+        options.success(data.result.genres);
+      });
+
+    }
+  }
+
+});
+
+
+/**
+ * Get a list of song models based on an array of songids
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.AudioYearCollection = Backbone.Collection.extend({
+
+  model: app.Tag,
+
+  sync: function(method, model, options) {
+    if (method === "read") {
+
+      app.store.getAlbumYears(function(data){
+        options.success(data);
+      });
+
+    }
+  }
+
+});
+
+
+/**
+ * Get a list of song models based on an array of songids
+ * @type {*|void|Object|extend|extend|extend}
+ */
+app.AlbumYearCollection = Backbone.Collection.extend({
+
+  model: app.Album,
+
+  sync: function(method, model, options) {
+    if (method === "read") {
+
+      app.store.getAlbumsByYear(options.year, function(data){
+        console.log(data, options.year);
+        options.success(data);
+      });
+
+    }
+  }
+
+});
 
 /**************************
  * Memory store
@@ -415,6 +555,64 @@ app.MemoryStore = function (successCallback, errorCallback) {
     });
 
   };
+
+
+  /**
+   * Get albumbs by genre
+   */
+  this.getAlbumsByGenre = function(genreid, callback){
+
+
+
+    this.allAlbums(function(albums){
+      // filter list by ids
+      var filtered = albums.models.filter(function (element) {
+        return ($.inArray(genreid, element.attributes.genreid) != -1);
+      });
+
+      callLater(callback, filtered);
+    });
+
+  };
+
+
+  /**
+   * Get albums by year
+   */
+  this.getAlbumsByYear = function(year, callback){
+
+    this.allAlbums(function(albums){
+      // filter list by ids
+      var filtered = albums.models.filter(function (element) {
+        return (year == element.attributes.year);
+      });
+
+      callLater(callback, filtered);
+    });
+
+  };
+
+
+  /**
+   * Get a list of years from albums
+   */
+  this.getAlbumYears = function(callback){
+
+    var filtered = [], all = {};
+
+    this.allAlbums(function(albums){
+      $.each(albums.models, function(i,d){
+        all[d.attributes.year] = true;
+      });
+      for(var year in all){
+        filtered.push({label: year, id: year, type: 'year', url: '#music/years/' + year});
+      }
+      callLater(callback, filtered);
+    });
+
+  };
+
+
 
   /**
    * Get a song by type/delta

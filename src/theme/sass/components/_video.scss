@@ -1,5 +1,5 @@
 ul.video-list {
-  margin: 0px 12px 20px 10px;
+  margin: 10px 10px 20px 10px;
   text-align: center;
   li {
     display: inline-block;
@@ -34,10 +34,10 @@ ul.video-list {
 .section-tvshows,
 .section-movies {
   #sidebar-first {
-    display: none;
+   // display: none;
   }
   #main {
-    margin-left: $width-header;
+  //  margin-left: $width-header;
   }
   .nav {
     margin-bottom: 0;
@@ -47,13 +47,6 @@ ul.video-list {
   }
 }
 
-.section-tvshows,
-.section-movies {
-  #content {
-    padding-bottom: 20px;
-    overflow: hidden;
-  }
-}
 
 
 /** MOVIE *******************/

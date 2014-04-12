@@ -109,7 +109,7 @@ $height-offset: 90;
 .rand-list {
   margin-right: 2px;
   li.card.card-large {
-    height: $card-large-image-height - $height-offset;
+    height: $card-large-image-height;
     .image {
       background-repeat: cover;
       height: $card-small-image-height + 35;
@@ -118,7 +118,7 @@ $height-offset: 90;
       position: absolute;
     }
     .actions-wrapper .play {
-      bottom: 25px;
+      bottom: 10px;
     }
     &:nth-child(4n+4),{
       //height: $card-large-image-height - $height-offset;

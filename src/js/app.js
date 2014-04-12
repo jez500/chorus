@@ -304,7 +304,10 @@ app.Router = Backbone.Router.extend({
     "artist/:id/:task":         "artist",
     "artists":                  "artists",
     "album/:id":                "album",
-    "albums":                   "albums",
+    "albums":                   "music",
+    "mymusic":                  "music",
+    "music/:page":              "music",
+    "music/:page/:id":          "music",
     "playlist/:id":             "playlist",
     "search/:q":                "search",
     "search":                   "searchLanding",
@@ -429,7 +432,7 @@ app.Router = Backbone.Router.extend({
       success: function (data) {
 
         self.$content.html(new app.ArtistView({model: data}).render().el);
-        app.helpers.setTitle('<a href="#/artists">Artists</a><b></b>' + data.attributes.artist);
+        app.helpers.setTitle('<a href="#/artists"><i class="fa fa-microphone"></i>Artists</a><b></b>' + data.attributes.artist);
 
         // set menu
         app.shellView.selectMenuItem('artists', 'sidebar');
@@ -451,7 +454,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html($el);
 
     // title
-    app.helpers.setTitle('Artists', {addATag:"#artists"});
+    app.helpers.setTitle('<i class="fa fa-microphone"></i>Artists', {addATag:"#artists"});
 
     // set menu
     app.shellView.selectMenuItem('artists', 'sidebar');
@@ -482,70 +485,37 @@ app.Router = Backbone.Router.extend({
   },
 
 
+
   /**
-   * Albums page
-   *
-   * @TODO abstract elsewhere
+   * Music Pages
+   * @param page
    */
-  albums: function(){
+  music: function(page, id){
 
-    app.shellView.selectMenuItem('album', 'no-sidebar');
-    var self = this;
+    if(page === undefined){
+      page = 'recent';
+    }
 
-    $('#content').html('<div class="loading-box">Loading Albums</div>');
+    // view vars
+    var m = {page: page};
+    if(id !== undefined){
+      m.id = id;
+    } else {
+      this.$content.html('<div class="loading-box">Loading Music</div>');
+      app.helpers.setFirstSidebarContent('');
+    }
+    // Set page state
+    app.helpers.setTitle('Music', {addATag:"#mymusic"});
+    app.shellView.selectMenuItem('music', 'sidebar');
 
-    // first get recently added
-    app.cached.recentlyAddedAlbums = new app.AlbumRecentlyAddedXbmcCollection();
-    app.cached.recentlyAddedAlbums.fetch({"success": function(albumsAdded){
-
-      // then get recently played
-      app.cached.recentlyPlayedAlbums = new app.AlbumRecentlyPlayedXbmcCollection();
-      app.cached.recentlyPlayedAlbums.fetch({"success": function(albumsPlayed){
-
-        // mush them together
-        var allAlbums = albumsPlayed.models,
-          used = {},
-          $el = $('<div class="landing-page"></div>');
-
-        // prevent dupes
-        _.each(allAlbums, function(r){
-          used[r.attributes.albumid] = true;
-        });
-        // add played
-        _.each(albumsAdded.models, function(r){
-          if(!used[r.attributes.albumid]){
-            allAlbums.push(r);
-          }
-        });
-
-        // randomise
-        allAlbums = app.helpers.shuffle(allAlbums);
-
-        // add back to models
-        albumsAdded.models = allAlbums;
-        albumsAdded.length = allAlbums.length;
-        // cache for later
-        app.cached.recentlAlbums = albumsAdded;
-
-        // render
-        app.cached.recentAlbumsView = new app.SmallAlbumsList({model: albumsAdded, className:'album-list-landing'});
-        $el.html(app.cached.recentAlbumsView.render().el);
-        self.$content.html($el);
-
-        // set title
-        app.helpers.setTitle('Recent', {addATag:"#albums"});
-
-        // set menu
-        app.shellView.selectMenuItem('albums', 'no-sidebar');
-
-        // add isotope (disabled)
-        app.helpers.addFreewall('ul.album-list-landing');
-
-      }});
+    // menu
+    app.filters.renderFilters('music');
+    $('.music-filters').addClass('active-' + page);
 
 
-
-    }});
+    // pass the page to musicView to do rendering
+    app.cached.musicView = new app.MusicView({model: m});
+    app.cached.musicView.render();
 
   },
 
@@ -621,6 +591,7 @@ app.Router = Backbone.Router.extend({
   /**
    * Browse all movies
    * uses lazyload, infinite scroll and intelligent back button
+   * @todo abstract elsewhere.
    *
    * @param num
    *  page number to show
@@ -662,12 +633,13 @@ app.Router = Backbone.Router.extend({
 
       // Loading
       $content.html('<div class="loading-box">Loading Movies</div>');
+      app.helpers.setFirstSidebarContent('');
 
       // set title and add some tabs
-      app.helpers.setTitle('<i class="fa fa-film"></i>');
+      app.helpers.setTitle('<i class="fa fa-film"></i> Movies', {addATag: '#movies'});
 
       // set menu
-      app.shellView.selectMenuItem('movies', 'no-sidebar');
+      app.shellView.selectMenuItem('movies', 'sidebar');
 
       // we always want fullrange with a fresh page
       fullRange = true;
@@ -753,7 +725,7 @@ app.Router = Backbone.Router.extend({
   moviesLanding: function () {
 
     var self = this;
-    app.helpers.setTitle('<i class="fa fa-film"></i>');
+    app.helpers.setTitle('<i class="fa fa-film"></i> Movies', {addATag: '#movies'});
 
     // loading
     self.$content.html('<div class="loading-box">Loading Movies</div>');
@@ -769,13 +741,16 @@ app.Router = Backbone.Router.extend({
       // filters
       self.$content.prepend(app.filters.renderFilters('movie'));
 
+      // fanart
+      self.$content.prepend(app.image.getFanartFromCollection(collection));
+
       // no pagination
       self.$content.find('.next-page').remove();
       // change class
       self.$content.find('ul').removeClass('movie-page-list').addClass('movie-recent-list');
       self.$content.find('img').lazyload({threshold : 200});
       // set menu
-      app.shellView.selectMenuItem('movies', 'no-sidebar');
+      app.shellView.selectMenuItem('movies', 'sidebar');
       // lazyload
       app.helpers.triggerContentLazy();
       // scroll to top
@@ -856,7 +831,7 @@ app.Router = Backbone.Router.extend({
     // set menu
     app.shellView.selectMenuItem('tvshows', 'no-sidebar');
     $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('<i class="fa fa-desktop"></i>');
+    app.helpers.setTitle('<i class="fa fa-desktop"></i> TVShows', {addATag: '#tvshows'});
 
     // init the collection
     app.cached.tvCollection = new app.TvshowAllCollection();
@@ -870,6 +845,7 @@ app.Router = Backbone.Router.extend({
 
       // filters
       $content.prepend(app.filters.renderFilters('tvshow'));
+
 
       // lazyload
       app.helpers.triggerContentLazy();
@@ -885,7 +861,7 @@ app.Router = Backbone.Router.extend({
     // set menu
     app.shellView.selectMenuItem('tvshows', 'no-sidebar');
     $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('<i class="fa fa-desktop"></i>');
+    app.helpers.setTitle('<i class="fa fa-desktop"></i> TVShows', {addATag: '#tvshows'});
 
     // init the collection
     app.cached.recentTvCollection = new app.RecentTvepisodeCollection();
@@ -899,6 +875,9 @@ app.Router = Backbone.Router.extend({
 
       // filters
       $content.prepend(app.filters.renderFilters('tvshow'));
+
+      // fanart
+      $content.prepend(app.image.getFanartFromCollection(collection));
 
       // lazyload
       app.helpers.triggerContentLazy();

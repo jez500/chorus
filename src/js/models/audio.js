@@ -90,3 +90,22 @@ app.PlaylistCustomListItemSong = Backbone.Model.extend({
   defaults: {'label':'', 'thumbnail':'', 'albumid':0, artistid: [0]}
 
 });
+
+
+/**
+ * AudioGenre
+ *
+ * @type {extend|*}
+ */
+app.Tag = Backbone.Model.extend({
+
+  initialize:function () {},
+  defaults: {'title':'', 'thumbnail':'', type: 'music', genreid: 0, id: 0, url: '#'},
+
+  sync: function(method, model, options) {
+    if (method === "read") {
+      // options.success(data);
+    }
+  }
+
+});

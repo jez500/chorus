@@ -292,6 +292,14 @@ app.AudioController.audioLibraryScan = function(){
 };
 
 
+/**
+ * Party mode
+ */
+app.AudioController.setPartyMode = function(callback){
+  app.playlists.setPartyMode(app.AudioController.playlistId, callback);
+};
+
+
 
 /**
  * Get now playing
@@ -340,7 +348,7 @@ app.AudioController.getNowPlayingSong = function(callback, forceFull){
   // fields to get
   var fields = {
     item: app.playlistItemFields,
-    player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek" ]
+    player: [ "playlistid", "speed", "position", "totaltime", "time", "percentage", "shuffled", "repeat", "canrepeat", "canshuffle", "canseek", "partymode" ]
   };
   var ret = {'status':'notPlaying'},
     notPlayingRet = {'status':'notPlaying', 'item': {}, 'player': {}, 'activePlayer': 0, 'volume': 0},

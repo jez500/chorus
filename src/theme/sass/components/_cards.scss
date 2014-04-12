@@ -34,9 +34,11 @@
     height: $card-large-height;
     .image {
       min-width: initial;
+      min-height: $card-large-image-height;
       height: $card-large-image-height;
       background-size: cover;
       background-repeat: no-repeat;
+      background-position: 50%;
     }
     .details {
       //position: absolute;
@@ -158,6 +160,8 @@
 
     min-width: $card-small-width;
     height: $card-small-height;
+
+
     .image {
       min-width: $card-small-width;
       height: $card-small-image-height;
@@ -174,7 +178,7 @@
 
   white-space: nowrap;
   display: inline-block;
-  margin: 5px;
+  margin: $card-gutter;
   border-radius: 2px;
   background: #FFF;
   overflow: hidden;
@@ -188,7 +192,11 @@
   @include breakpoint($width-mobile){
     zoom: 1;
   }
-
+  &:hover {
+    .item-sub-sub-title {
+      display: block;
+    }
+  }
   .image {
     display: block;
     background-color: #adb3b6;
@@ -219,19 +227,20 @@
       font-size: 13px;
       line-height: 16px;
       height: 16px;
-      color: #AAA;
+      color: #DDD;
       margin: 1px 0;
       a {
         color: #AAA;
       }
     }
     &.item-sub-sub-title {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dotted #eee;
+      padding-top: 2px;
       font-style: italic;
       display: none;
+      font-size: 12px;
     }
+
+
 
     // fadeout
     &:after {
