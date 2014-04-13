@@ -1,4 +1,14 @@
 Version 0.3.3
+- Browse by genre: albums, tv and movies
+- Browse by year: albums and movies
+- Toggle party mode
+- Lots of UI updates
+- Recently added and Recently played have their own pages
+- Minor bug fixes
+
+
+
+Version 0.3.3
 - Audio streaming buffer indicator
 - Movie/TV Sorting abilities
 - Movie/TV Toggle watched status
