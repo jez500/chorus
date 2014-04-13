@@ -580,7 +580,7 @@ h4 {
 .loading-box {
   font-size: 30px;
   color: #6e7374;
-  background: #fafafa url('../images/loading-box-bg.jpg?1397051872') 0 bottom repeat-x;
+  background: #fafafa url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
   padding: 40px 10px 40px 10px;
   width: 70%;
   margin: 80px auto 0 auto;
@@ -695,7 +695,7 @@ input[type="text"] {
 }
 .ui-dialog .ui-dialog-titlebar-close:hover .ui-icon-closethick, .ui-dialog .ui-dialog-titlebar-close:focus .ui-icon-closethick,
 .ui-dialog .ui-dialog-titlebar-close .ui-icon-closethick:hover {
-  background-image: url('../images/ui-icons_888888_256x240.png?1397051872');
+  background-image: url('../images/ui-icons_888888_256x240.png?1371898626');
 }
 .ui-dialog .ui-dialog-titlebar,
 .ui-dialog .form-text,
@@ -1305,7 +1305,7 @@ input[type="text"] {
   opacity: 0.5;
 }
 .entity-heading.loading {
-  background: #fafafa url('../images/loading-box-bg.jpg?1397051872') 0 bottom repeat-x;
+  background: #fafafa url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
   animation: wave 16s infinite linear;
   -webkit-animation: wave 16s infinite linear;
 }
@@ -1778,7 +1778,7 @@ body.fixed-header #search-box {
   color: #444;
 }
 #sidebar-first .file-lists li.loading {
-  background-image: url('../images/loader.gif?1397051872');
+  background-image: url('../images/loader.gif?1387808230');
   background-position: 98% 6px;
   background-repeat: no-repeat;
 }
@@ -2622,14 +2622,14 @@ body.notconnected #header #logo {
   border-bottom-color: #511e14 !important;
 }
 body.notconnected .track.playing-row {
-  background-image: url('../images/icons/row-pause.png?1397051872') !important;
+  background-image: url('../images/icons/row-pause.png?1378549596') !important;
 }
 body .player-play .fa-pause {
   display: none;
   margin-top: 3px;
 }
 body.paused .playing-row .song-tracknum, body.playing .playing-row .song-tracknum {
-  background: url('../images/row-playing.gif?1397051872') 50% 50% no-repeat;
+  background: url('../images/row-playing.gif?1378547169') 50% 50% no-repeat;
   text-indent: -999999px;
 }
 body.playing .player-play .fa-pause {
@@ -2652,10 +2652,10 @@ body.playing #progress-bar.ui-slider .ui-slider-range {
   border-top: 3px solid #f39c12;
 }
 body.paused .playing-row .song-tracknum {
-  background: url('../images/icons/row-pause.png?1397051872') 50% 50% no-repeat;
+  background: url('../images/icons/row-pause.png?1378549596') 50% 50% no-repeat;
 }
 body.paused ul.playlist .playing-row {
-  background-image: url('../images/icons/row-pause.png?1397051872');
+  background-image: url('../images/icons/row-pause.png?1378549596');
 }
 body.muted #footer .footer-right .actions-wrapper .fa-volume-up {
   display: block;
@@ -2698,7 +2698,7 @@ body.player-view-local.fixed-header #page-header {
   background: rgba(72, 78, 80, 0.97);
 }
 body.browser-playing .browser-playlist-song-list div.playlist-item.browser-playing-row {
-  background-image: url('../images/row-playing.gif?1397051872');
+  background-image: url('../images/row-playing.gif?1378547169');
 }
 body.browser-playing #browser-player-footer .footer-left .fa-play {
   display: none;
@@ -3600,7 +3600,7 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   color: #6e7374;
 }
 .album-row .album-info {
-  background: url('../images/loading-box-bg.jpg?1397051872') 0 bottom repeat-x;
+  background: url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
   color: #6e7374;
   border-bottom: 3px solid #eee;
 }
@@ -4295,7 +4295,7 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   transition: all 0.3s linear;
   height: 80px;
   background: #eeeff0;
-  background: url('../images/row-playing.gif?1397051872') 0px 0px no-repeat;
+  background: url('../images/row-playing.gif?1378547169') 0px 0px no-repeat;
   padding-right: 75px;
   background-color: #eeeeee;
 }

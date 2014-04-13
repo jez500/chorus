@@ -1,11 +1,10 @@
-Version 0.3.3
+Version 0.3.4
 - Browse by genre: albums, tv and movies
 - Browse by year: albums and movies
 - Toggle party mode
 - Lots of UI updates
-- Recently added and Recently played have their own pages
+- Albums page is now music and has had an overhaul
 - Minor bug fixes
-
 
 
 Version 0.3.3

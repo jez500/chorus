@@ -113,6 +113,9 @@ A few things that are "nice to haves"
 - Browser streaming audio playback... [maybe you want it to work in firefox](https://github.com/jez500/chorus/issues/5)?
 - Photo library, I wouldn't use it, but you might!
 
+## Donate
+Are you a fan of Chorus? [You can buy me a beer to say thanks](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ZCGV976794JHE&lc=AU&item_name=Chorus%20Beer%20Fund&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
+
 ## Screenshots
 
 ### Homepage (now playing)
