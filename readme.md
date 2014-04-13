@@ -6,6 +6,8 @@ but plays well with most modern browsers.
 Used by the [Doghouse Media Team](http://dhmedia.com.au) to control the shared office music box
 (an old pc running XBMC with chorus, plugged into an amp and a nas)
 
+[View the changelog](https://github.com/jez500/chorus/blob/master/dist/changelog.txt)
+
 ## Author
 Jeremy Graham
 mail@jez500.com
