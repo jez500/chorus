@@ -664,7 +664,7 @@ h4 {
 .loading-box {
   font-size: 30px;
   color: #6e7374;
-  background: #fafafa url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
+  background: #fafafa url('../images/loading-box-bg.jpg?1397051872') 0 bottom repeat-x;
   padding: 40px 10px 40px 10px;
   width: 70%;
   margin: 80px auto 0 auto;
@@ -798,7 +798,7 @@ input[type="text"] {
 /* line 103, ../../../src/theme/sass/components/_widgets.scss */
 .ui-dialog .ui-dialog-titlebar-close:hover .ui-icon-closethick, .ui-dialog .ui-dialog-titlebar-close:focus .ui-icon-closethick,
 .ui-dialog .ui-dialog-titlebar-close .ui-icon-closethick:hover {
-  background-image: url('../images/ui-icons_888888_256x240.png?1371898626');
+  background-image: url('../images/ui-icons_888888_256x240.png?1397051872');
 }
 /* line 110, ../../../src/theme/sass/components/_widgets.scss */
 .ui-dialog .ui-dialog-titlebar,
@@ -1415,7 +1415,7 @@ input[type="text"] {
 }
 /* line 71, ../../../src/theme/sass/components/_mixed.scss */
 .entity-heading.loading {
-  background: #fafafa url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
+  background: #fafafa url('../images/loading-box-bg.jpg?1397051872') 0 bottom repeat-x;
   animation: wave 16s infinite linear;
   -webkit-animation: wave 16s infinite linear;
 }
@@ -1948,7 +1948,7 @@ body.fixed-header #search-box {
 }
 /* line 409, ../../../src/theme/sass/components/_regions.scss */
 #sidebar-first .file-lists li.loading {
-  background-image: url('../images/loader.gif?1387808230');
+  background-image: url('../images/loader.gif?1397051872');
   background-position: 98% 6px;
   background-repeat: no-repeat;
 }
@@ -2918,7 +2918,7 @@ body.notconnected #header #logo {
 }
 /* line 304, ../../../src/theme/sass/components/_player.scss */
 body.notconnected .track.playing-row {
-  background-image: url('../images/icons/row-pause.png?1378549596') !important;
+  background-image: url('../images/icons/row-pause.png?1397051872') !important;
 }
 /* line 309, ../../../src/theme/sass/components/_player.scss */
 body .player-play .fa-pause {
@@ -2927,7 +2927,7 @@ body .player-play .fa-pause {
 }
 /* line 317, ../../../src/theme/sass/components/_player.scss */
 body.paused .playing-row .song-tracknum, body.playing .playing-row .song-tracknum {
-  background: url('../images/row-playing.gif?1378547169') 50% 50% no-repeat;
+  background: url('../images/row-playing.gif?1397051872') 50% 50% no-repeat;
   text-indent: -999999px;
 }
 /* line 327, ../../../src/theme/sass/components/_player.scss */
@@ -2957,11 +2957,11 @@ body.playing #progress-bar.ui-slider .ui-slider-range {
 }
 /* line 356, ../../../src/theme/sass/components/_player.scss */
 body.paused .playing-row .song-tracknum {
-  background: url('../images/icons/row-pause.png?1378549596') 50% 50% no-repeat;
+  background: url('../images/icons/row-pause.png?1397051872') 50% 50% no-repeat;
 }
 /* line 361, ../../../src/theme/sass/components/_player.scss */
 body.paused ul.playlist .playing-row {
-  background-image: url('../images/icons/row-pause.png?1378549596');
+  background-image: url('../images/icons/row-pause.png?1397051872');
 }
 /* line 377, ../../../src/theme/sass/components/_player.scss */
 body.muted #footer .footer-right .actions-wrapper .fa-volume-up {
@@ -3018,7 +3018,7 @@ body.player-view-local.fixed-header #page-header {
 }
 /* line 449, ../../../src/theme/sass/components/_player.scss */
 body.browser-playing .browser-playlist-song-list div.playlist-item.browser-playing-row {
-  background-image: url('../images/row-playing.gif?1378547169');
+  background-image: url('../images/row-playing.gif?1397051872');
 }
 /* line 454, ../../../src/theme/sass/components/_player.scss */
 body.browser-playing #browser-player-footer .footer-left .fa-play {
@@ -4109,7 +4109,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 }
 /* line 30, ../../../src/theme/sass/components/_albums.scss */
 .album-row .album-info {
-  background: url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
+  background: url('../images/loading-box-bg.jpg?1397051872') 0 bottom repeat-x;
   color: #6e7374;
   border-bottom: 3px solid #eee;
 }
@@ -4837,7 +4837,7 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
   transition: all 0.3s linear;
   height: 80px;
   background: #eeeff0;
-  background: url('../images/row-playing.gif?1378547169') 0px 0px no-repeat;
+  background: url('../images/row-playing.gif?1397051872') 0px 0px no-repeat;
   padding-right: 75px;
   background-color: #eeeeee;
 }

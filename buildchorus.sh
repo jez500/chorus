@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ["$1" == ""]; then
+if [ "$1" == "" ]; then
   echo "Missing version number. I did nothing"
   exit 1
 fi
