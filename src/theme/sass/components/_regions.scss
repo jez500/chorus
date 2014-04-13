@@ -127,6 +127,12 @@ body.fixed-header {
   @include breakpoint($width-tablet){
     margin-right: $width-sidebar-second-small;
   }
+  &:after {
+    content: "";
+    clear: both;
+    display: block;
+    height: 20px;
+  }
 }
 
 // top of page
@@ -150,7 +156,7 @@ body.fixed-header {
     font-weight: normal;
     margin: 0px;
     color: $color-mist;
-    font-size: 22px;
+    font-size: 20px;
     line-height: $height-header;
     padding-left: 20px;
     display: none;
@@ -781,6 +787,8 @@ body {
       }
     }
   }
+  &.section-tvshows,
+  &.section-movies,
   &.section-music,
   &.section-album,
   &.section-artist {

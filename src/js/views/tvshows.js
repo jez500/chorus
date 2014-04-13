@@ -538,4 +538,85 @@ app.TvSeasonListItemView = Backbone.View.extend({
 
 
 
+/**
+ * Tag view of movies
+ */
+app.TvshowTagListView = Backbone.View.extend({
+
+  tagName:'div',
+
+  className:'tvshow-tag-list',
+
+
+  initialize:function () {
+    var type = this.model.type,
+      tag = this.model.tag;
+    this.tagType = type + tag;
+  },
+
+  render: function () {
+
+    var self = this,
+      $content = $('#content'),
+      list, title = '';
+
+    // genre collection
+    if(this.model.tag == 'genreid'){
+      title = 'Genres';
+      list = new app.VideoGenreCollection();
+    } else {
+      // year collection
+      title = 'Years';
+    //  list = new app.MovieYearCollection();
+    }
+
+    // title/loading
+    app.helpers.setTitle('TV', {addATag: '#tvshows', icon: 'desktop', subTitle: title});
+    $content.html('<div class="loading-box">Loading TV</div>');
+
+    // get/render items
+    list.fetch({"type": "tvshow", "success": function(data){
+      // render
+      data.type = self.tagType;
+      app.cached.genresView = new app.TagsView({model: data});
+      $content.html( app.cached.genresView.render().$el );
+      // filters
+      $content.prepend(app.filters.renderFilters('tvshow'));
+      // open tag if req
+      self.renderTagItems();
+    }});
+
+    return this;
+
+  },
+
+
+  renderTagItems: function(){
+
+    if(this.model.id === undefined || this.model.id === ''){
+      return;
+    }
+
+    var filter = {};
+
+    // filter by...
+    filter[this.model.tag] = parseInt(this.model.id);
+
+    if($('.tag-type-' + this.tagType).length === 0){
+
+      // New Page, Call Render first
+      this.render();
+
+    } else {
+
+      var list = new app.TagsView({model: this.model});
+      list.renderTagItems(this.model, 'TvshowFilteredCollection', 'TvshowListView');
+
+    }
+
+  }
+
+});
+
+
 

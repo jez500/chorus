@@ -370,3 +370,67 @@ input[type="text"] {
     background: #fafafa;
   }
 }
+
+
+
+// artist/movie/tv
+.content-actions {
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  .btn {
+    background: none;
+    padding: 10px 13px;
+    @include border-radius(0);
+    float: left;
+    color: #f6f6f6;
+    &:focus,
+    &:hover {
+      background: transparent;
+      color: $color-dark-xbmc;
+    }
+  }
+  &.thumbs-up {
+    .fa-thumbs-up {
+      color: $color-carrot;
+    }
+  }
+}
+
+// artist/movie/tv
+.content-fanart {
+  overflow: hidden;
+  height: 210px;
+  margin-top: -#{$height-header + 10};
+  cursor: pointer;
+  display: none;
+  @include breakpoint($width-tablet){
+    height: 280px;
+    display: block;
+    img {
+      min-width: 600px;
+    }
+  }
+  img {
+    cursor: pointer;
+    width: 100%;
+    margin-top: -6%;
+    min-width: 400px;
+  }
+  &.full-size {
+    height: auto;
+   // margin: 0;
+    img {
+      margin-top: 0%;
+    }
+
+  }
+}
+
+
+.inline-loading {
+  padding: 20px;
+  font-size: 17px;
+  text-align: center;
+  color: #555;
+}

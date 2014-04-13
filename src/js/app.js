@@ -315,11 +315,17 @@ app.Router = Backbone.Router.extend({
     "thumbsup":                 "thumbsup",
     "files":                    "files",
     "movies/page/:num/:sort":   "moviesPage",
-    "movies/genre/:genre":      "moviesGenre",
+    "movies/:tag/:id":          "moviesTag",
+    "movie-genre/:tag":         "movieGenre", // wrapper for moivesTag
+    "movies/:tag":              "moviesTag",
     "movies":                   "moviesLanding",
+    "mymovies":                 "moviesLanding",
     "movie/:id":                "movie",
     "tvshows/page/:num/:sort":  "tvshows",
     "tvshows":                  "tvshowsLanding",
+    "mytv":                     "tvshowsLanding",
+    "tvshows/:tag/:id":         "tvshowTag",
+    "tvshows/:tag":             "tvshowTag",
     "tvshow/:id":               "tvshow",
     "tvshow/:tvid/:seas":       "season",
     "tvshow/:tv/:s/:e":         "episode",
@@ -432,7 +438,7 @@ app.Router = Backbone.Router.extend({
       success: function (data) {
 
         self.$content.html(new app.ArtistView({model: data}).render().el);
-        app.helpers.setTitle('<a href="#/artists"><i class="fa fa-microphone"></i>Artists</a><b></b>' + data.attributes.artist);
+        app.helpers.setTitle('Artists', {addATag: '#artists', icon: 'microphone', subTitle: data.attributes.artist});
 
         // set menu
         app.shellView.selectMenuItem('artists', 'sidebar');
@@ -454,7 +460,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html($el);
 
     // title
-    app.helpers.setTitle('<i class="fa fa-microphone"></i>Artists', {addATag:"#artists"});
+    app.helpers.setTitle('Artists', {addATag: '#artists', icon: 'microphone'});
 
     // set menu
     app.shellView.selectMenuItem('artists', 'sidebar');
@@ -530,7 +536,7 @@ app.Router = Backbone.Router.extend({
     app.cached.fileCollection.fetch({'name': 'sources', 'success': function(sources){
 
       // title / menu
-      app.helpers.setTitle('<i class="fa fa-align-justify"></i><span id="folder-name"></span>');
+      app.helpers.setTitle('Files', {addATag: '#files', icon: 'align-justify', subTitle: '<span id="folder-name"></span>'});
       app.shellView.selectMenuItem('files', 'sidebar');
 
       // the view writes to content,
@@ -557,7 +563,7 @@ app.Router = Backbone.Router.extend({
 
       // set title
       var list = app.playlists.getCustomPlaylist(id);
-      app.helpers.setTitle('<a href="#playlist/' + list.id + '">' + list.name + '</a>');
+      app.helpers.setTitle('Playlist', {addATag: '#playlist/' + list.id, icon: 'music', subTitle: list.name});
 
       // set menu
       app.shellView.selectMenuItem('playlist', 'no-sidebar');
@@ -636,7 +642,7 @@ app.Router = Backbone.Router.extend({
       app.helpers.setFirstSidebarContent('');
 
       // set title and add some tabs
-      app.helpers.setTitle('<i class="fa fa-film"></i> Movies', {addATag: '#movies'});
+      app.helpers.setTitle('Movies', {addATag: '#mymovies', icon: 'film', subTitle: 'All Movies'});
 
       // set menu
       app.shellView.selectMenuItem('movies', 'sidebar');
@@ -683,7 +689,7 @@ app.Router = Backbone.Router.extend({
 
         // trigger scroll for lazyLoad
         if(scrolled === false){
-          app.helpers.triggerContentLazy();
+          app.image.triggerContentLazy();
         }
 
       } else { // Append to the current content //
@@ -702,7 +708,7 @@ app.Router = Backbone.Router.extend({
 
       }
 
-      app.helpers.triggerContentLazy();
+      app.image.triggerContentLazy();
 
     }}); // end get collection
 
@@ -725,7 +731,7 @@ app.Router = Backbone.Router.extend({
   moviesLanding: function () {
 
     var self = this;
-    app.helpers.setTitle('<i class="fa fa-film"></i> Movies', {addATag: '#movies'});
+    app.helpers.setTitle('Movies', {addATag: '#mymovies', icon: 'film', subTitle: 'Recently Added'});
 
     // loading
     self.$content.html('<div class="loading-box">Loading Movies</div>');
@@ -748,11 +754,11 @@ app.Router = Backbone.Router.extend({
       self.$content.find('.next-page').remove();
       // change class
       self.$content.find('ul').removeClass('movie-page-list').addClass('movie-recent-list');
-      self.$content.find('img').lazyload({threshold : 200});
+
       // set menu
       app.shellView.selectMenuItem('movies', 'sidebar');
       // lazyload
-      app.helpers.triggerContentLazy();
+      app.image.triggerContentLazy();
       // scroll to top
       $(window).scrollTo(0);
     }});
@@ -762,34 +768,45 @@ app.Router = Backbone.Router.extend({
 
 
   /**
-   * Movie landing page
+   * Movie tag filter list
    */
-  moviesGenre: function (genre) {
+  moviesTag: function (tag, id) {
+
+    app.cached.movieTagView = new app.MovieTagListView({model: {type: 'movie', tag: tag, id: id}});
+    app.helpers.setTitle('Movies', {addATag: '#mymovies', icon: 'film'});
+
+    if(id === undefined){
+      // Loading
+      this.$content.html('<div class="loading-box">Loading Movies</div>');
+      // Full list
+      app.cached.movieTagView.render();
+    } else {
+      // tag items
+      app.cached.movieTagView.renderTagItems();
+    }
+
+  },
 
 
-    var self = this;
-    app.helpers.setTitle('<i class="fa fa-film"></i>');
+  /**
+   * if it is a genre (string) do lookup for id then redirect
+   * @TODO make... better, something other than this, problem is getMovies doesn't give you a genreid
+   * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Video.Fields.Movie
+   */
+  movieGenre: function(name){
 
-    // loading
-    self.$content.html('<div class="loading-box">Loading Movies</div>');
-
-    // get recent collection
-    app.movieFitleredCollection = new app.MovieFitleredCollection();
-    app.movieFitleredCollection.fetch({"filter" : {'genre': genre}, "success": function(collection){
-
-      app.cached.movieListView = new app.MovieListView({model: collection});
-      // render
-      self.$content.html(app.cached.movieListView.render().$el);
-      // no pagination
-      self.$content.find('.next-page').remove();
-      // change class
-      self.$content.find('ul').removeClass('movie-list').addClass('movie-genre-list');
-      // set menu
-      app.shellView.selectMenuItem('movies', 'no-sidebar');
-      // lazyload
-      app.helpers.triggerContentLazy();
-      // scroll to top
-      $(window).scrollTo(0);
+    this.$content.html('<div class="loading-box">Loading</div>');
+    var id = 0, self = this;
+    var genreList = new app.VideoGenreCollection();
+    genreList.fetch({"type": "movie", "success": function(data){
+      $.each(data.models, function(i,d){
+        if(d.attributes.label == app.helpers.arg(1)){
+          id = parseInt(d.attributes.id);
+        }
+      });
+      if(id > 0){
+        self.moviesTag('genreid', id);
+      }
     }});
 
   },
@@ -810,7 +827,13 @@ app.Router = Backbone.Router.extend({
       success: function (data) {
         // render content
         self.$content.html(new app.MovieView({model: data}).render().el);
-        app.helpers.setTitle( '<i class="fa fa-film"></i>' + data.attributes.title + ' <span>' + data.attributes.year + '</span>');
+
+        app.helpers.setTitle('Movies', {
+          addATag: '#mymovies',
+          icon: 'film',
+          subTitle: data.attributes.title + ' <span>' + data.attributes.year + '</span>'
+        });
+
         // set menu
         app.shellView.selectMenuItem('movie', 'sidebar');
 
@@ -831,7 +854,7 @@ app.Router = Backbone.Router.extend({
     // set menu
     app.shellView.selectMenuItem('tvshows', 'no-sidebar');
     $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('<i class="fa fa-desktop"></i> TVShows', {addATag: '#tvshows'});
+    app.helpers.setTitle('TVShows', { addATag: '#tvshows', icon: 'desktop', subTitle: 'All TV' });
 
     // init the collection
     app.cached.tvCollection = new app.TvshowAllCollection();
@@ -848,7 +871,7 @@ app.Router = Backbone.Router.extend({
 
 
       // lazyload
-      app.helpers.triggerContentLazy();
+      app.image.triggerContentLazy();
 
     }});
 
@@ -861,7 +884,7 @@ app.Router = Backbone.Router.extend({
     // set menu
     app.shellView.selectMenuItem('tvshows', 'no-sidebar');
     $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('<i class="fa fa-desktop"></i> TVShows', {addATag: '#tvshows'});
+    app.helpers.setTitle('TVShows', { addATag: '#tvshows', icon: 'desktop', subTitle: 'Recently Added' });
 
     // init the collection
     app.cached.recentTvCollection = new app.RecentTvepisodeCollection();
@@ -880,11 +903,33 @@ app.Router = Backbone.Router.extend({
       $content.prepend(app.image.getFanartFromCollection(collection));
 
       // lazyload
-      app.helpers.triggerContentLazy();
+      app.image.triggerContentLazy();
 
     }});
 
   },
+
+
+  /**
+   * TV tag filter list
+   */
+  tvshowTag: function (tag, id) {
+
+    app.cached.tvTagView = new app.TvshowTagListView({model: {type: 'tvshow', tag: tag, id: id}});
+    app.helpers.setTitle('TV', {addATag: '#tvshows', icon: 'desktop'});
+
+    if(id === undefined){
+      // Loading
+      this.$content.html('<div class="loading-box">Loading TV</div>');
+      // Full list
+      app.cached.tvTagView.render();
+    } else {
+      // tag items
+      app.cached.tvTagView.renderTagItems();
+    }
+
+  },
+
 
   /**
    * A single tvshow
@@ -902,7 +947,7 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
-        app.helpers.setTitle('<i class="fa fa-desktop"></i>' + data.attributes.label);
+        app.helpers.setTitle('TVShows', { addATag: '#tvshows', icon: 'desktop', subTitle: data.attributes.label });
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');

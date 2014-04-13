@@ -263,7 +263,8 @@ app.MovieView = Backbone.View.extend({
    */
   render: function () {
 
-    var model = this.model.attributes;
+    var self = this,
+      model = this.model.attributes;
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
 
     //main detail
@@ -271,7 +272,7 @@ app.MovieView = Backbone.View.extend({
 
     // backstretch
     _.defer(function(){
-      var $fart = $('#fanart-background',this.$el),
+      var $fart = $('#fanart-background',self.$el),
         fart = app.parseImage(model.fanart, 'fanart');
       $fart.backstretch(fart);
     });
@@ -371,3 +372,84 @@ app.MovieView = Backbone.View.extend({
   }
 
 });
+
+
+/**
+ * Tag view of movies
+ */
+app.MovieTagListView = Backbone.View.extend({
+
+  tagName:'div',
+
+  className:'movie-tag-list',
+
+  initialize:function () {
+    var type = this.model.type,
+      tag = this.model.tag;
+    this.tagType = type + tag;
+  },
+
+  render: function () {
+
+    var self = this,
+      $content = $('#content'),
+      list, title = '';
+
+    // genre collection
+    if(this.model.tag == 'genreid'){
+      title = 'Genres';
+      list = new app.VideoGenreCollection();
+    } else {
+      // year collection
+      title = 'Years';
+      list = new app.VideoYearCollection();
+    }
+
+    // title
+    app.helpers.setTitle('Movies', {addATag: '#movies', icon: 'film', subTitle: title});
+
+    // get/render items
+    list.fetch({"type": "movie", "success": function(data){
+      // render
+      data.type = self.tagType;
+      app.cached.genresView = new app.TagsView({model: data});
+      $content.html( app.cached.genresView.render().$el );
+      // filters
+      $content.prepend(app.filters.renderFilters('movie'));
+      // open tag if req
+      self.renderTagItems();
+    }});
+
+    return this;
+
+  },
+
+  renderTagItems: function(){
+    if(this.model.id === undefined || this.model.id === ''){
+      return;
+    }
+
+    var id = this.model.id,
+      type = this.tagType,
+      list,
+      tag = this.model.tag,
+      filter = {};
+
+    // filter by...
+    filter[tag] = parseInt(id);
+
+    if($('.tag-type-' + type).length === 0){
+
+      // New Page, Call Render first
+      this.render();
+
+    } else {
+
+      list = new app.TagsView({model: this.model});
+      list.renderTagItems(this.model, 'MovieFilteredCollection', 'MovieListView');
+
+    }
+  }
+
+});
+

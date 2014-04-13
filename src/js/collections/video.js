@@ -153,7 +153,7 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 /**
  * A collection of movies matching a filter
  */
-app.MovieFitleredCollection = Backbone.Collection.extend({
+app.MovieFilteredCollection = Backbone.Collection.extend({
   model: app.Movie,
 
   sync: function(method, model, options) {
@@ -249,6 +249,51 @@ app.CustomMovieCollection = Backbone.Collection.extend({
 
 });
 
+
+app.VideoGenreCollection = Backbone.Collection.extend({
+  model: app.Tag,
+
+  sync: function(method, model, options) {
+
+    var opt = [options.type,['title','thumbnail'],{start:0,end:500000},{method: 'label', order: 'ascending'}],
+      list = [];
+    app.xbmcController.command('VideoLibrary.GetGenres', opt, function(data){
+      // parse
+      $.each(data.result.genres, function(i,d){
+        d.label = (d.label === '' ? '- none -' : d.label);
+        d.id = d.genreid;
+        d.type = 'movieGenre';
+        d.url = '#' + options.type + 's/genreid/' + d.id;
+        list.push(d);
+      });
+      // return
+      options.success(list);
+    });
+
+  }
+
+});
+
+
+app.VideoYearCollection = Backbone.Collection.extend({
+  model: app.Tag,
+
+  sync: function(method, model, options) {
+    var d = new Date(), year, years = [];
+    for(i = d.getFullYear(); i >= 1900; i--){
+      year = {
+        id: i,
+        type: 'year',
+        url: '#' + options.type + 's/year/' + i,
+        label: i
+      };
+      years.push(year);
+    }
+    options.success(years);
+
+  }
+
+});
 
 
 /************************************
@@ -455,5 +500,45 @@ app.RecentTvepisodeCollection = Backbone.Collection.extend({
 
 });
 
+
+/**
+ * A collection of tv matching a filter
+ */
+app.TvshowFilteredCollection = Backbone.Collection.extend({
+  model: app.TVShow,
+
+  sync: function(method, model, options) {
+
+    // init cache
+    if(app.stores.tvshowsFiltered === undefined){
+      app.stores.tvshowsFiltered = {};
+    }
+
+    var sort = {"sort": {"method": "title"}},
+      opt = [app.tvshowFields, {'end': 500, 'start': 0}, sort, options.filter],
+      key = 'tvshows:key:filter';
+
+    // cache
+    for(var k in options.filter){
+      key = 'tvshows:' + k + ':' + options.filter[k];
+    }
+
+    // if cache use that
+    if(app.stores.tvshowsFiltered[key] !== undefined){
+      // return from cache
+      options.success(app.stores.tvshowsFiltered[key]);
+    } else {
+      // else lookup
+      app.xbmcController.command('VideoLibrary.GetTVShows', opt, function(data){
+        // save cache
+        app.stores.tvshowsFiltered[key] = data.result.tvshows;
+        // return
+        options.success(data.result.tvshows);
+      });
+    }
+
+  }
+
+});
 
 

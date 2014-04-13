@@ -1,3 +1,8 @@
+/**
+ * All Image related helpers
+ *
+ * @type {{getFanartFromCollection: Function, triggerContentLazy: Function}}
+ */
 
 app.image = {
 
@@ -16,6 +21,10 @@ app.image = {
     var self = this, m, arts = [],
       $art = $('<div />', {id: 'art', class: 'content-fanart'});
 
+    $art.on('click', function(){
+      $(this).toggleClass('full-size');
+    });
+
     $.each(models.models, function(i,d){
       m = d.attributes;
       if(m.fanart !== ''){
@@ -31,6 +40,19 @@ app.image = {
     $('#content').prepend($art);
     return $art;
 
+  },
+
+
+  /**
+   * Trigger lazyload on content items
+   */
+  triggerContentLazy: function(){
+    _.defer(function(){
+      $('#content').find('img').lazyload({threshold : 200});
+      $(window).trigger('scroll');
+    });
   }
 
 };
+
+

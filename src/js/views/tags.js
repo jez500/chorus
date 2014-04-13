@@ -21,17 +21,58 @@ app.TagsView = Backbone.View.extend({
 
   render: function () {
 
-      this.$el.empty();
+    this.$el.empty();
 
     // append results
     _.each(this.model.models, function (tag) {
-      tag.attributes.callback = this.callback;
-      tag.attributes.type = this.model.type;
       this.$el.append(new app.TagItemView({model:tag}).render().el);
     }, this);
 
+    this.$el.addClass('tag-type-' + this.model.type);
+
     return this;
 
+  },
+
+
+  renderTagItems: function(model, collectionName, viewName){
+
+    if(model.id === undefined || model.id === ''){
+      return;
+    }
+
+    var id = model.id,
+      list,
+      tag = model.tag,
+      filter = {};
+
+    // filter by...
+    filter[tag] = parseInt(id);
+
+    // find container
+    var $el = $('#tag-container-' + id), $c = $el.parent();
+
+    //open
+    $c.addClass('open');
+
+    // Render tag items into existing dom
+    $el.html('<div class="inline-loading">Loading the ' + $c.find('.tag-label').html() + ' ' + model.type + 's...</div>');
+
+    // get recent collection
+    list = new app[collectionName]();
+    list.fetch({"filter" : filter, "success": function(collection){
+
+      // render
+      var view = new app[viewName]({model: collection});
+      $el.html(view.render().$el);
+
+      // lazyload
+      app.image.triggerContentLazy();
+
+      // scroll to top
+      $(window).scrollTo($c, 0, {offset: {top:-40}});
+
+    }});
   }
 
 });
@@ -75,11 +116,13 @@ app.TagItemView = Backbone.View.extend({
   },
 
   toggleItems: function(e){
-    //e.preventDefault();
     var m = this.model.attributes,
       $container = $('#tag-container-' + m.id).closest('.tag-list-item');
-    $container.toggleClass('open');
+
+    if($container.hasClass('open')){
+      e.preventDefault();
+      $container.removeClass('open');
+    }
+
   }
-
-
 });

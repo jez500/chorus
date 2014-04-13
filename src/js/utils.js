@@ -443,7 +443,6 @@ $(document).ready(function(){
    */
   app.helpers.addFreewall = function(selector){
     var wall = new freewall(selector);
-    console.log('WALL');
     wall.reset({
       selector: 'li',
       animate: false,
@@ -479,13 +478,6 @@ $(document).ready(function(){
     wall.fitWidth();
   };
 
-
-  /**
-   * Trigger lazyload
-   */
-  app.helpers.triggerContentLazy = function(){
-    $(window).trigger('scroll');
-  };
 
 
   /********************************************************************************
@@ -697,17 +689,24 @@ $(document).ready(function(){
     var defaults = {
       addATag: false,
       tabs: false,
-      activeTab: 0
+      activeTab: 0,
+      subTitle: '',
+      icon: false
     };
 
     var settings = $.extend(defaults,options),
-      $title = $('#title');
+      $title = $('#title'), ico = '';
 
     $title.empty();
 
+    if(settings.icon !== false){
+      ico = '<i class="fa fa-' + settings.icon + '"></i> ';
+    }
+
     // add <a> tag if set
     if(settings.addATag){
-      $title.append($('<a class="title-sub" href="' + settings.addATag + '">' + value + '</a>'));
+      $title.append($('<a class="title-sub" href="' + settings.addATag + '">' + ico + value + '</a>'));
+      $title.append(settings.subTitle);
     }
 
     // append tabs
@@ -724,11 +723,11 @@ $(document).ready(function(){
 
     // if value not added, as that in a wrapper
     if(!settings.addATag){
-      $title.append('<div class="title-main">' + value + '</div>');
+      $title.append('<div class="title-main">' + ico + value + '</div>');
     }
 
     //cache
-    app.currentPageTitle = value;
+    app.currentPageTitle = ico + value;
   };
 
 

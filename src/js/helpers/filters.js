@@ -21,6 +21,16 @@ app.filters = {
       path: 'movies/page/0/title:ascending',
       argOne: 'page',
       key: 'all'
+    },{
+      title: 'Genres',
+      path: 'movies/genreid',
+      argOne: 'genreid',
+      key: 'genreid'
+    },{
+      title: 'Years',
+      path: 'movies/year',
+      argOne: 'year',
+      key: 'year'
     }],
     sort: ["title", "date", "rating", "year", "file"]
   },
@@ -39,6 +49,11 @@ app.filters = {
       path: 'tvshows/page/0/title:ascending',
       argOne: 'page',
       key: 'all'
+    },{
+      title: 'Genres',
+      path: 'tvshows/genreid',
+      argOne: 'genreid',
+      key: 'genreid'
     }],
     sort: ["title", "date", "rating", "year", "file"]
   },
@@ -103,7 +118,7 @@ app.filters = {
       sort = app.helpers.getSort(),
       $body = $('body');
 
-    // tabs/links
+    // tabs/links/sidebar
     $.each(structure.paths, function(i,d){
       // active state
       var act = app.helpers.arg(1) == d.argOne,
@@ -112,7 +127,7 @@ app.filters = {
         $container.addClass('active-tab-' + d.key);
       }
       // append link
-      $links.append($('<a href="#' + d.path + '" class="btn' + active + '">' + d.title + '</a>'));
+      $links.append($('<a href="#' + d.path + '" class="btn sublink-' + d.key + active + '">' + d.title + '</a>'));
     });
 
     // Sort dropdown
@@ -160,13 +175,10 @@ app.filters = {
     }
 
     // Build
-    $container
-  //    .append($links)
-      .append($sort);
+    $container.append($sort);
 
     // menu
     app.helpers.setFirstSidebarContent($links);
-  //  $('.music-filters').addClass('active-' + page);
 
     return $container;
   },

@@ -8,12 +8,16 @@
     display: block;
   }
   .tag-list-item .tag-label {
-    padding: 10px;
-    margin: 5px;
-    background: #f7f7f7;
-    font-size: 14px;
 
+    padding: 0 10px;
+    margin: 5px;
+    background: #F7F7F7;
+    font-size: 14px;
     display: block;
+    height: 37px;
+    line-height: 37px;
+    overflow: hidden;
+
     @include breakpoint($width-mobile){
       width: 200px;
       float: left;
@@ -30,12 +34,13 @@
   .open {
     clear: left;
     padding: 10px 0;
+    margin: 0 -10px;
 
     .tag-label {
       float: none;
-      background: $color-asbestos;
+      background: rgba(110, 115, 116, 0.61);
       color: $color-whitesmoke;
-      padding: 10px 15px;
+      padding: 0px 15px;
       font-size: 16px;
       width: auto;
       display: block;

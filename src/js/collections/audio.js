@@ -358,7 +358,6 @@ app.AlbumYearCollection = Backbone.Collection.extend({
     if (method === "read") {
 
       app.store.getAlbumsByYear(options.year, function(data){
-        console.log(data, options.year);
         options.success(data);
       });
 

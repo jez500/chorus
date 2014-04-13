@@ -304,56 +304,6 @@
   }
 }
 
-// artist/movie/tv
-.content-actions {
-  position: absolute;
-  right: 5px;
-  top: 0px;
-  .btn {
-    background: none;
-    padding: 10px 13px;
-    @include border-radius(0);
-    float: left;
-    color: #f6f6f6;
-    &:focus,
-    &:hover {
-      background: transparent;
-      color: $color-dark-xbmc;
-    }
-  }
-  &.thumbs-up {
-    .fa-thumbs-up {
-      color: $color-carrot;
-    }
-  }
-}
-
-// artist/movie/tv
-.content-fanart {
-  overflow: hidden;
-  height: 210px;
-  margin-top: -#{$height-header + 5};
-  cursor: pointer;
-  display: none;
-  @include breakpoint($width-tablet){
-    height: 280px;
-    display: block;
-    img {
-      min-width: 600px;
-    }
-  }
-  img {
-    cursor: pointer;
-    width: 100%;
-    margin-top: -5%;
-    min-width: 400px;
-  }
-  &.full-size {
-    height: auto;
-    margin-top: 0;
-  }
-}
-
 
 .genres {
   margin: 20px 0 0;
@@ -414,12 +364,12 @@ body {
   // Landings
   &.section-tvshows,
   &.section-movies {
-    background: #f2f2f2;
+    background: rgba(250,250,250,1);
     #content {
       background: #fff;
       // needs latest Compass, add '@import "compass"' to your scss
-      @include filter-gradient(#f2f2f2, #fff, vertical); // IE6-9
-      @include background-image(linear-gradient(top,  rgba(242,242,242,0) 1%,rgba(242,242,242,0) 41%,rgba(242,242,242,0.97) 98%,rgba(242,242,242,1) 100%));
+      @include filter-gradient(#fafafa, #fff, vertical); // IE6-9
+      @include background-image(linear-gradient(top,  rgba(250,250,250,0) 1%,rgba(250,250,250,0) 41%,rgba(250,250,250,0.97) 98%,rgba(250,250,250,1) 100%));
 
       min-height: 400px;
     }
@@ -447,9 +397,13 @@ body {
     }
   }
 
+  // @TODO set this as default
   &.section-movies,
+  &.section-movie-genre,
   &.section-tvshows,
   &.section-mymusic,
+  &.section-mymovies,
+  &.section-mytv,
   &.section-music {
 
     @include breakpoint($width-tablet){ 
@@ -478,6 +432,12 @@ body {
       #main {
         margin-left: $width-header + 185 !important;
       }
+    }
+  }
+  &.section-movie-genre {
+    #sidebar-first .sublink-genres {
+      background: #6E7374;
+      color: #F7F7F7;
     }
   }
 }
