@@ -1566,6 +1566,9 @@ body.fixed-header #search-box {
 }
 #page-header .mobile-menu li {
   float: left;
+  color: #ccc;
+}
+#page-header .mobile-menu li a {
   width: 50px;
   height: 50px;
   color: #ccc;
@@ -1573,11 +1576,9 @@ body.fixed-header #search-box {
   line-height: 49px;
   font-size: 1.5em;
   cursor: pointer;
+  display: block;
 }
-#page-header .mobile-menu li a {
-  color: #ccc;
-}
-#page-header .mobile-menu li a:hover {
+#page-header .mobile-menu li a:hover i {
   color: #fff;
 }
 @media (min-width: 800px) {
@@ -1918,7 +1919,7 @@ body.fixed-header #search-box {
   width: auto;
   background: #f8f8f8;
   position: fixed;
-  top: 0px;
+  top: 50px;
   right: 0;
   left: 0;
   bottom: 0;

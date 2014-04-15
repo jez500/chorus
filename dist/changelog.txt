@@ -1,3 +1,9 @@
+Version 0.3.5
+- Bug fix: Song duration in listings displaying as [object]
+- Bug fix: Mobile playlist tabs
+- Ui fix: Mobile top icons, made click area much larger
+
+
 Version 0.3.4
 - Browse by genre: albums, tv and movies
 - Browse by year: albums and movies

@@ -242,16 +242,17 @@ body.fixed-header {
     float: right;
     li {
       float: left;
-      width: 50px;
-      height: 50px;
       color: #ccc;
-      text-align: center;
-      line-height: 49px;
-      font-size: 1.5em;
-      cursor: pointer;
       a {
+        width: 50px;
+        height: 50px;
         color: #ccc;
-        &:hover {
+        text-align: center;
+        line-height: 49px;
+        font-size: 1.5em;
+        cursor: pointer;
+        display: block;
+        &:hover i {
           color: #fff;
         }
       }
@@ -519,7 +520,7 @@ body.fixed-header {
   width: auto;
   background: #f8f8f8;
   position: fixed;
-  top: 0px;
+  top: 50px;
   right: 0;
   left: 0;
   bottom: 0;
