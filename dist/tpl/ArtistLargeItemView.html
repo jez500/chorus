@@ -1,7 +1,7 @@
 <a class="artist-row-large artist-row-large-<%= artistid %>" href='#artist/<%= artistid %>' data-id="<%= artistid %>">
 
 
-    <span class="image" style="background-image: url('<%= app.parseImage(img) %>')" title="<%= artist %>"></span>
+    <span class="image" style="background-image: url('<%= app.image.url(img) %>')" title="<%= artist %>"></span>
 
     <div class="image actions-wrapper artist-actions-wrapper">
         <button class="play artist-play btn" title="Replace the playlist with this artist and start playing"><i class="fa fa-play"></i></button>

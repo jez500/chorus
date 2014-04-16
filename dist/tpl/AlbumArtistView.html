@@ -3,7 +3,7 @@
 
     <a href="#artist/<%= artistid %>" class="artist-header">
         <% if( fanart != '' ){ thumbnail = fanart; }
-           var img = app.parseImage(thumbnail, 'fanart');
+           var img = app.image.url(thumbnail, 'fanart');
         %>
         <div class="mini-artist-fanart" style="background-image: url('<%= img %>')">
         </div>

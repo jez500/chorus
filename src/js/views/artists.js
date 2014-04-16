@@ -20,7 +20,7 @@ app.ArtistsView = Backbone.View.extend({
       $('#main-content').html(this.artistsRandView.render().el);
 
       //add isotope
-      app.helpers.addFreewall('ul.rand-list');
+      app.image.addFreewall('ul.rand-list');
     }});
 
 

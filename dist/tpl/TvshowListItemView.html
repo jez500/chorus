@@ -1,6 +1,6 @@
 <div class="card tvshow-row tvshow-row-<%= tvshowid %> clearfix watched-<%=watched.status%>" data-id="<%= tvshowid %>">
     <a class="image-wrapper" href="#tvshow/<%= tvshowid %>" title="<%= label %>">
-        <img class="image content-lazy" src="<%= app.parseImage('', 'space') %>" data-original="<%= app.parseImage(thumbnail) %>" />
+        <img class="image content-lazy" src="<%= app.image.url('', 'space') %>" data-original="<%= app.image.url(thumbnail) %>" />
     </a>
     <div class="actions-wrapper tvshow-actions-wrapper">
         <div class="actions tvshow-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= tvshowid %>">

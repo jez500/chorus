@@ -273,7 +273,7 @@ app.MovieView = Backbone.View.extend({
     // backstretch
     _.defer(function(){
       var $fart = $('#fanart-background',self.$el),
-        fart = app.parseImage(model.fanart, 'fanart');
+        fart = app.image.url(model.fanart, 'fanart');
       $fart.backstretch(fart);
     });
 

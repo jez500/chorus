@@ -1,6 +1,6 @@
 <div class="card tvseason-row clearfix row-episode-<%=episodeid%> watched-<%=watched.status%>" data-id="">
     <a class="image-wrapper" href="<%=url%>" title="<%= label %>">
-        <img class="image content-lazy" src="<%= app.parseImage(thumbnail) %>" />
+        <img class="image content-lazy" src="<%= app.image.url(thumbnail) %>" />
     </a>
 
     <div class="actions-wrapper tvseason-actions-wrapper">

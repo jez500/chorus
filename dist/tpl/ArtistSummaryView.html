@@ -5,7 +5,7 @@
 <div class="artist-detail content-tab">
     <div class="right-col">
         <% if( thumbnail != '' ){ %>
-        <img src="<%= app.parseImage(thumbnail) %>" class="artist-thumb" />
+        <img src="<%= app.image.url(thumbnail) %>" class="artist-thumb" />
         <% } %>
     </div>
     <% if( description != '' ){ %>

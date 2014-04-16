@@ -115,7 +115,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
     // enrich the model
     model.title = ( typeof model.label != "undefined" ? model.label : model.album );
     model.url = '#album/' + model.albumid;
-    model.img = app.parseImage(model.thumbnail);
+    model.img = app.image.url(model.thumbnail);
     model.recenttext = (typeof model.recent != 'undefined' ? 'Recently ' + model.recent : '');
     model.artisturl = (model.artistid !== '' ? '#artist/' + model.artistid : '#artists');
 
@@ -123,7 +123,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
     this.$el.html(this.template(model));
 
     // classes
-    if(!app.helpers.isDefaultImage(model.img)){
+    if(!app.image.isDefaultImage(model.img)){
       this.$el.addClass('has-thumb');
     }
     if(app.playlists.isThumbsUp('album', model.albumid)){

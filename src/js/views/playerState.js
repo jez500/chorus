@@ -157,7 +157,7 @@ app.playerStateView = Backbone.View.extend({
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')");
+      .css('background-image',"url('" + app.image.url(data.item.thumbnail) + "')");
 
     if(app.cached.nowPlaying.activePlayer == 1){
       this.$nowPlaying.find('#playing-thumb').attr("#remote"); //('href', '#' + data.item.type + '/' + data.item.albumid);
@@ -174,14 +174,14 @@ app.playerStateView = Backbone.View.extend({
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
-        newImg = app.parseImage(data.item.fanart, 'fanart');
+        newImg = app.image.url(data.item.fanart, 'fanart');
       // if image is different
       if($bs.length > 0 && origImg != newImg){
         $.backstretch(newImg);
       }
     }
 
-    $('.playing-fanart').css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
+    $('.playing-fanart').css('background-image', 'url("' + app.image.url(data.item.fanart, 'fanart') + '")');
 
     // refresh playlist
     var controller;
@@ -247,7 +247,7 @@ app.playerStateView = Backbone.View.extend({
     app.shellView.$progressSlider.slider( "value",0);
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .attr('src',app.parseImage(''))
+      .attr('src',app.image.url(''))
       .attr('title', '')
       .parent().attr('href', '#albums');
     //time

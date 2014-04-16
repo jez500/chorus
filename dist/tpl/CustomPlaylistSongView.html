@@ -1,5 +1,5 @@
 <div class="track song playlist-item" data-type="song" data-pos="<%= position %>" data-id="<%= songid %>" data-songid="<%= songid %>" data-path="<%= (typeof file != 'undefined' ? file : '') %>">
-    <span class="track-col song-tracknum song-thumb"><a href="#album/<%= albumid %>"><img src="<%= app.parseImage( thumbnail ) %>" class="thumb" /></a></span>
+    <span class="track-col song-tracknum song-thumb"><a href="#album/<%= albumid %>"><img src="<%= app.image.url( thumbnail ) %>" class="thumb" /></a></span>
     <span class="track-col song-title"><%= label %></span>
     <span class="track-col song-artist"><a href="#artist/<%= artistid %> " class=""><%= artist %></a></span>
     <span class="track-col song-duration"><%= (duration !== undefined ? app.helpers.formatTime(app.helpers.secToTime(duration)) : '') %></span>

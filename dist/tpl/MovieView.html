@@ -2,7 +2,7 @@
 <div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %>">
     <div class="video-side">
         <div class="video-thumb">
-            <img src="<%= app.parseImage(thumbnail) %>" />
+            <img src="<%= app.image.url(thumbnail) %>" />
             <div class="actions-wrapper movie-actions-wrapper">
                 <div class="actions movie-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= movieid %>">
                     <button class="movie-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>
@@ -94,7 +94,7 @@
                         var c = cast[k];
                         if(i <= 40){ %>
                             <a class="cast-member" href="http://www.imdb.com/find?s=nm&q=<%=encodeURIComponent(c.name)%>" target="_blank">
-                                <span class="image" style="background-image: url('<%= app.parseImage(c.thumbnail) %>')" ></span>
+                                <span class="image" style="background-image: url('<%= app.image.url(c.thumbnail) %>')" ></span>
                                 <strong><%=c.name%></strong>
                                 <span><%=c.role%></span>
                             </a>

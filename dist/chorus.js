@@ -14198,80 +14198,6 @@ $(document).ready(function(){
 
 
 
-  /********************************************************************************
-   * Image helpers
-   ********************************************************************************/
-
-
-  /**
-   * Get default image
-   */
-  app.helpers.getDefaultImage = function(type){
-
-    // @TODO move elsewhere
-    var files = [
-        'wallpaper-443657.jpg',
-        'wallpaper-45040.jpg',
-        'wallpaper-765190.jpg',
-        'wallpaper-84050.jpg'
-      ],
-      random = files[app.helpers.getRandomInt(0, (files.length - 1))];
-
-    // return random
-    return 'theme/images/fanart_default/' + random;
-
-  };
-
-
-  /**
-   * Is default image
-   */
-  app.helpers.isDefaultImage = function(img){
-    return (app.helpers.varGet('defaultImage') == img);
-  };
-
-
-  /**
-   * Freewall Layout
-   * @param selector
-   */
-  app.helpers.addFreewall = function(selector){
-    var wall = new freewall(selector);
-    wall.reset({
-      selector: 'li',
-      animate: false,
-      cellW: 160,
-      cellH: '230',
-      gutterY: 15,
-      gutterX: 15,
-      onResize: function() {
-        wall.fitWidth();
-      }
-    });
-    wall.fitWidth();
-  };
-
-
-  /**
-   * Freewall Poster Layout
-   * @param selector
-   */
-  app.helpers.addPosterFreewall = function(selector){
-    var wall = new freewall(selector);
-    wall.reset({
-      selector: 'li',
-      animate: false,
-      cellW: 170,
-      cellH: '305',
-      gutterY: 15,
-      gutterX: 15,
-      onResize: function() {
-        wall.fitWidth();
-      }
-    });
-    wall.fitWidth();
-  };
-
 
 
   /********************************************************************************
@@ -14456,7 +14382,7 @@ $(document).ready(function(){
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
-        newImg = app.parseImage(fanart, 'fanart');
+        newImg = app.image.url(fanart, 'fanart');
       // if image is different
       if($bs.length > 0 && origImg != newImg){
         $.backstretch(newImg);
@@ -14986,25 +14912,6 @@ $(document).ready(function(){
    ********************************************************************************/
 
 
-  /**
-   * returns a url to the image
-   */
-  app.parseImage = function(rawPath, type){
-    type = (typeof type == 'undefined' ? 'default' : type);
-    if(type == 'space'){
-      return 'theme/images/space.png';
-    }
-    //no image, return placeholder
-    if(rawPath === undefined || rawPath === ''){
-      if(type == 'fanart'){
-        return app.helpers.getDefaultImage(type);
-      }
-      return app.helpers.varGet('defaultImage');
-    }
-    return 'image/' + encodeURIComponent(rawPath);
-  };
-
-
 
   /**
    *  nl2br
@@ -15514,7 +15421,7 @@ app.Router = Backbone.Router.extend({
     // Add Backstretch it doesnt exist
     if($('.backstretch').length === 0){
       // on initial page load this will be empty but if playing, state will be updated onPlay
-      var fa = app.parseImage(backstretchImage, 'fanart');
+      var fa = app.image.url(backstretchImage, 'fanart');
       $.backstretch(fa);
     }
 
@@ -16455,15 +16362,74 @@ $(document).on("ready", function () {
 app.image = {
 
 
+  /**
+  * Builds a url to an image from a given path, if empty returns default image
+  *
+  * @param rawPath
+  * @param type
+  * @returns {*}
+  */
+  url: function(rawPath, type){
+    type = (typeof type == 'undefined' ? 'default' : type);
+    if(type == 'space'){
+      return 'theme/images/space.png';
+    }
+    //no image, return placeholder
+    if(rawPath === undefined || rawPath === ''){
+      return app.image.defaultImage(type);
+    }
+    // return image with correct path
+    return app.settings.get('basePath', '/') + 'image/' + encodeURIComponent(rawPath);
+  },
+
 
   /**
-   * Gets a random fanart from a collection of models (with fanart)
-   *
-   * @param models
-   *  collection
-   * @returns {*|jQuery|HTMLElement}
-   *  renderable element
+  * Default fanart
+  *
+  * @param type
+  * @returns {string}
+  */
+  defaultImage: function(type){
+
+    var img = '';
+    if(type == 'fanart'){
+      // @TODO move elsewhere
+      var files = [
+          'wallpaper-443657.jpg',
+          'wallpaper-45040.jpg',
+          'wallpaper-765190.jpg',
+          'wallpaper-84050.jpg'
+        ],
+        random = files[app.helpers.getRandomInt(0, (files.length - 1))];
+
+      // return random
+      img = 'theme/images/fanart_default/' + random;
+    } else {
+      // return default
+      img = app.helpers.varGet('defaultImage');
+    }
+
+    return img;
+
+  },
+
+
+  /**
+   * Is default image
    */
+  isDefaultImage: function(img){
+    return (app.helpers.varGet('defaultImage') == img);
+  },
+
+
+  /**
+  * Gets a random fanart from a collection of models (with fanart)
+  *
+  * @param models
+  *  collection
+  * @returns {*|jQuery|HTMLElement}
+  *  renderable element
+  */
   getFanartFromCollection: function(models){
 
     var self = this, m, arts = [],
@@ -16482,7 +16448,7 @@ app.image = {
 
     if(arts.length > 0){
       arts = app.helpers.shuffle(arts);
-      $art.append($('<img />', {src: app.parseImage(arts[0].fanart)}));
+      $art.append($('<img />', {src: app.image.url(arts[0].fanart)}));
     }
 
     $('#content').prepend($art);
@@ -16492,17 +16458,156 @@ app.image = {
 
 
   /**
-   * Trigger lazyload on content items
-   */
+  * Trigger lazyload on content items
+  */
   triggerContentLazy: function(){
     _.defer(function(){
       $('#content').find('img').lazyload({threshold : 200});
       $(window).trigger('scroll');
     });
+  },
+
+
+  /**
+   * Freewall Layout
+   * @param selector
+   */
+  addFreewall: function(selector){
+    var wall = new freewall(selector);
+    wall.reset({
+      selector: 'li',
+      animate: false,
+      cellW: 160,
+      cellH: '230',
+      gutterY: 15,
+      gutterX: 15,
+      onResize: function() {
+        wall.fitWidth();
+      }
+    });
+    wall.fitWidth();
+  },
+
+
+  /**
+   * Freewall Poster Layout
+   * @param selector
+   */
+  addPosterFreewall: function(selector){
+    var wall = new freewall(selector);
+    wall.reset({
+      selector: 'li',
+      animate: false,
+      cellW: 170,
+      cellH: '305',
+      gutterY: 15,
+      gutterX: 15,
+      onResize: function() {
+        wall.fitWidth();
+      }
+    });
+    wall.fitWidth();
   }
+
 
 };
 
+
+
+/********************************************************************************
+ * Image helpers LEGACY
+ * @TODO refactor into app.image
+ ********************************************************************************/
+
+
+///**
+// * Get default image
+// */
+//app.helpers.getDefaultImage = function(type){
+//
+//  // @TODO move elsewhere
+//  var files = [
+//      'wallpaper-443657.jpg',
+//      'wallpaper-45040.jpg',
+//      'wallpaper-765190.jpg',
+//      'wallpaper-84050.jpg'
+//    ],
+//    random = files[app.helpers.getRandomInt(0, (files.length - 1))];
+//
+//  // return random
+//  return 'theme/images/fanart_default/' + random;
+//
+//};
+
+
+///**
+// * Is default image
+// */
+//app.helpers.isDefaultImage = function(img){
+//  return (app.helpers.varGet('defaultImage') == img);
+//};
+
+
+///**
+// * Freewall Layout
+// * @param selector
+// */
+//app.helpers.addFreewall = function(selector){
+//  var wall = new freewall(selector);
+//  wall.reset({
+//    selector: 'li',
+//    animate: false,
+//    cellW: 160,
+//    cellH: '230',
+//    gutterY: 15,
+//    gutterX: 15,
+//    onResize: function() {
+//      wall.fitWidth();
+//    }
+//  });
+//  wall.fitWidth();
+//};
+
+
+///**
+// * Freewall Poster Layout
+// * @param selector
+// */
+//app.helpers.addPosterFreewall = function(selector){
+//  var wall = new freewall(selector);
+//  wall.reset({
+//    selector: 'li',
+//    animate: false,
+//    cellW: 170,
+//    cellH: '305',
+//    gutterY: 15,
+//    gutterX: 15,
+//    onResize: function() {
+//      wall.fitWidth();
+//    }
+//  });
+//  wall.fitWidth();
+//};
+
+
+
+///**
+// * returns a url to the image
+// */
+//app..parseImage = function(rawPath, type){
+//  type = (typeof type == 'undefined' ? 'default' : type);
+//  if(type == 'space'){
+//    return 'theme/images/space.png';
+//  }
+//  //no image, return placeholder
+//  if(rawPath === undefined || rawPath === ''){
+//    if(type == 'fanart'){
+//      return app.helpers.getDefaultImage(type);
+//    }
+//    return app.helpers.varGet('defaultImage');
+//  }
+//  return '/image/' + encodeURIComponent(rawPath);
+//};
 
 ;/**
  * Helper functionality for creating paginated pages
@@ -16650,6 +16755,7 @@ app.settings = {
    */
   defaultSettings: {
     init: true,
+    basePath: '/',
     hideWatched: false,
     lastPlayer: 'xbmc',
     movieSort: 'title:ascending'
@@ -18070,7 +18176,7 @@ app.audioStreaming = {
 
   updatePlayingState: function(song){
     // image
-    $('#browser-playing-thumb').attr('src', app.parseImage(song.thumbnail));
+    $('#browser-playing-thumb').attr('src', app.image.url(song.thumbnail));
     // title
     $('.browser-playing-song-title').html(song.label);
     $('.browser-playing-song-meta').html(song.artist[0]);
@@ -22510,7 +22616,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
     // enrich the model
     model.title = ( typeof model.label != "undefined" ? model.label : model.album );
     model.url = '#album/' + model.albumid;
-    model.img = app.parseImage(model.thumbnail);
+    model.img = app.image.url(model.thumbnail);
     model.recenttext = (typeof model.recent != 'undefined' ? 'Recently ' + model.recent : '');
     model.artisturl = (model.artistid !== '' ? '#artist/' + model.artistid : '#artists');
 
@@ -22518,7 +22624,7 @@ app.AlbumItemSmallView = Backbone.View.extend({
     this.$el.html(this.template(model));
 
     // classes
-    if(!app.helpers.isDefaultImage(model.img)){
+    if(!app.image.isDefaultImage(model.img)){
       this.$el.addClass('has-thumb');
     }
     if(app.playlists.isThumbsUp('album', model.albumid)){
@@ -22786,7 +22892,7 @@ app.ArtistSummaryView = Backbone.View.extend({
       $('#main-content').html(this.artistsRandView.render().el);
 
       //add isotope
-      app.helpers.addFreewall('ul.rand-list');
+      app.image.addFreewall('ul.rand-list');
     }});
 
 
@@ -22955,7 +23061,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
     this.$el.html(this.template(model));
 
     // classes
-    if(!app.helpers.isDefaultImage(model.img)){
+    if(!app.image.isDefaultImage(model.img)){
       this.$el.addClass('has-thumb');
     }
     if(app.playlists.isThumbsUp('artist', model.artistid)){
@@ -24245,7 +24351,7 @@ app.MovieView = Backbone.View.extend({
     // backstretch
     _.defer(function(){
       var $fart = $('#fanart-background',self.$el),
-        fart = app.parseImage(model.fanart, 'fanart');
+        fart = app.image.url(model.fanart, 'fanart');
       $fart.backstretch(fart);
     });
 
@@ -24844,7 +24950,7 @@ app.playerStateView = Backbone.View.extend({
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .css('background-image',"url('" + app.parseImage(data.item.thumbnail) + "')");
+      .css('background-image',"url('" + app.image.url(data.item.thumbnail) + "')");
 
     if(app.cached.nowPlaying.activePlayer == 1){
       this.$nowPlaying.find('#playing-thumb').attr("#remote"); //('href', '#' + data.item.type + '/' + data.item.albumid);
@@ -24861,14 +24967,14 @@ app.playerStateView = Backbone.View.extend({
       // if homepage backstretch exists and changed, update
       var $bs = $('.backstretch img'),
         origImg = $bs.attr('src'),
-        newImg = app.parseImage(data.item.fanart, 'fanart');
+        newImg = app.image.url(data.item.fanart, 'fanart');
       // if image is different
       if($bs.length > 0 && origImg != newImg){
         $.backstretch(newImg);
       }
     }
 
-    $('.playing-fanart').css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
+    $('.playing-fanart').css('background-image', 'url("' + app.image.url(data.item.fanart, 'fanart') + '")');
 
     // refresh playlist
     var controller;
@@ -24934,7 +25040,7 @@ app.playerStateView = Backbone.View.extend({
     app.shellView.$progressSlider.slider( "value",0);
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
-      .attr('src',app.parseImage(''))
+      .attr('src',app.image.url(''))
       .attr('title', '')
       .parent().attr('href', '#albums');
     //time
@@ -25327,7 +25433,7 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
     this.$el.html(this.template(vars));
 
     var data = app.playlists.getNowPlaying();
-    $('.playing-fanart', this.$el).css('background-image', 'url("' + app.parseImage(data.item.fanart, 'fanart') + '")');
+    $('.playing-fanart', this.$el).css('background-image', 'url("' + app.image.url(data.item.fanart, 'fanart') + '")');
 
     $('.fa', this.$el).disableSelection();
 
@@ -26826,7 +26932,7 @@ app.TvshowView = Backbone.View.extend({
     // backstretch
     _.defer(function(){
       var $fart = $('#fanart-background',this.$el),
-        fart = app.parseImage(model.fanart, 'fanart');
+        fart = app.image.url(model.fanart, 'fanart');
       $fart.backstretch(fart);
     });
 

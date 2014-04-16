@@ -526,7 +526,7 @@ app.audioStreaming = {
 
   updatePlayingState: function(song){
     // image
-    $('#browser-playing-thumb').attr('src', app.parseImage(song.thumbnail));
+    $('#browser-playing-thumb').attr('src', app.image.url(song.thumbnail));
     // title
     $('.browser-playing-song-title').html(song.label);
     $('.browser-playing-song-meta').html(song.artist[0]);

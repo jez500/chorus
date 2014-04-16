@@ -134,7 +134,7 @@ app.ArtistLargeItemView = Backbone.View.extend({
     this.$el.html(this.template(model));
 
     // classes
-    if(!app.helpers.isDefaultImage(model.img)){
+    if(!app.image.isDefaultImage(model.img)){
       this.$el.addClass('has-thumb');
     }
     if(app.playlists.isThumbsUp('artist', model.artistid)){

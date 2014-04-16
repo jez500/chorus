@@ -383,7 +383,7 @@ app.Router = Backbone.Router.extend({
     // Add Backstretch it doesnt exist
     if($('.backstretch').length === 0){
       // on initial page load this will be empty but if playing, state will be updated onPlay
-      var fa = app.parseImage(backstretchImage, 'fanart');
+      var fa = app.image.url(backstretchImage, 'fanart');
       $.backstretch(fa);
     }
 

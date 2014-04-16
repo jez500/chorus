@@ -244,7 +244,7 @@ app.TvshowView = Backbone.View.extend({
     // backstretch
     _.defer(function(){
       var $fart = $('#fanart-background',this.$el),
-        fart = app.parseImage(model.fanart, 'fanart');
+        fart = app.image.url(model.fanart, 'fanart');
       $fart.backstretch(fart);
     });
 

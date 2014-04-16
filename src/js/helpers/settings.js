@@ -12,6 +12,7 @@ app.settings = {
    */
   defaultSettings: {
     init: true,
+    basePath: '/',
     hideWatched: false,
     lastPlayer: 'xbmc',
     movieSort: 'title:ascending'
