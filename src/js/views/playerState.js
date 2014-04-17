@@ -142,7 +142,7 @@ app.playerStateView = Backbone.View.extend({
 
     // If episode is playing, remove cache so watched status is updated
     if(data.item.type == 'episode'){
-      app.VideoController.invalidateCache('episode');
+      app.VideoController.invalidateCache('episode', data.item);
     }
 
   },

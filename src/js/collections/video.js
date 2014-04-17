@@ -411,7 +411,6 @@ app.TvepisodeCollection = Backbone.Collection.extend({
       app.stores.TvEpisodes = {};
     }
 
-
     var sort = {"sort": {"method": "title"}},
       opt = [],
       key = 'episodes:' + options.tvshowid + ':' + options.season;

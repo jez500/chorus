@@ -16415,8 +16415,12 @@ app.image = {
 
 
   /**
-   * Is default image
-   */
+  * Is default image
+  *
+  * @param img
+  * image path
+  * @returns {boolean}
+  */
   isDefaultImage: function(img){
     return (app.helpers.varGet('defaultImage') == img);
   },
@@ -16469,9 +16473,9 @@ app.image = {
 
 
   /**
-   * Freewall Layout
-   * @param selector
-   */
+  * Freewall Layout
+  * @param selector
+  */
   addFreewall: function(selector){
     var wall = new freewall(selector);
     wall.reset({
@@ -16490,9 +16494,9 @@ app.image = {
 
 
   /**
-   * Freewall Poster Layout
-   * @param selector
-   */
+  * Freewall Poster Layout
+  * @param selector
+  */
   addPosterFreewall: function(selector){
     var wall = new freewall(selector);
     wall.reset({
@@ -16511,104 +16515,6 @@ app.image = {
 
 
 };
-
-
-
-/********************************************************************************
- * Image helpers LEGACY
- * @TODO refactor into app.image
- ********************************************************************************/
-
-
-///**
-// * Get default image
-// */
-//app.helpers.getDefaultImage = function(type){
-//
-//  // @TODO move elsewhere
-//  var files = [
-//      'wallpaper-443657.jpg',
-//      'wallpaper-45040.jpg',
-//      'wallpaper-765190.jpg',
-//      'wallpaper-84050.jpg'
-//    ],
-//    random = files[app.helpers.getRandomInt(0, (files.length - 1))];
-//
-//  // return random
-//  return 'theme/images/fanart_default/' + random;
-//
-//};
-
-
-///**
-// * Is default image
-// */
-//app.helpers.isDefaultImage = function(img){
-//  return (app.helpers.varGet('defaultImage') == img);
-//};
-
-
-///**
-// * Freewall Layout
-// * @param selector
-// */
-//app.helpers.addFreewall = function(selector){
-//  var wall = new freewall(selector);
-//  wall.reset({
-//    selector: 'li',
-//    animate: false,
-//    cellW: 160,
-//    cellH: '230',
-//    gutterY: 15,
-//    gutterX: 15,
-//    onResize: function() {
-//      wall.fitWidth();
-//    }
-//  });
-//  wall.fitWidth();
-//};
-
-
-///**
-// * Freewall Poster Layout
-// * @param selector
-// */
-//app.helpers.addPosterFreewall = function(selector){
-//  var wall = new freewall(selector);
-//  wall.reset({
-//    selector: 'li',
-//    animate: false,
-//    cellW: 170,
-//    cellH: '305',
-//    gutterY: 15,
-//    gutterX: 15,
-//    onResize: function() {
-//      wall.fitWidth();
-//    }
-//  });
-//  wall.fitWidth();
-//};
-
-
-
-///**
-// * returns a url to the image
-// */
-//app..parseImage = function(rawPath, type){
-//  type = (typeof type == 'undefined' ? 'default' : type);
-//  if(type == 'space'){
-//    return 'theme/images/space.png';
-//  }
-//  //no image, return placeholder
-//  if(rawPath === undefined || rawPath === ''){
-//    if(type == 'fanart'){
-//      return app.helpers.getDefaultImage(type);
-//    }
-//    return app.helpers.varGet('defaultImage');
-//  }
-//  return '/image/' + encodeURIComponent(rawPath);
-//};
-
 ;/**
  * Helper functionality for creating paginated pages
  */
@@ -18522,6 +18428,62 @@ app.audioStreaming = {
 };
 
 ;/**
+ * Handle all keyboard requests of significance
+ */
+
+app.keymap = {
+
+
+  /**
+   * Ready for keyboard commands
+   */
+  init: function(){
+
+    $(document).keyup(function (e) {
+      e.preventDefault();
+      app.keymap.execute(e.which);
+    });
+
+  },
+
+
+  /**
+   * Bind key to controller / mapping
+   * @param key
+   */
+  execute: function(key){
+
+    var controller = app.xbmcController;
+
+    switch (key) {
+      case 37: // left
+        controller.input('Left');
+        break;
+      case 38: // up
+        controller.input('Up');
+        break;
+      case 39: // right
+        controller.input('Right');
+        break;
+      case 40: // down
+        controller.input('Down');
+        break;
+      case 8: // backspace
+        controller.input('Back');
+        break;
+      case 13: // enter
+        controller.input('Select');
+        break;
+      case 67: // c
+        controller.input('ContextMenu');
+        break;
+      default:
+        return ;
+    }
+
+  }
+
+};;/**
  * Deal with notifications from xbmc using web sockets
  * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Notifications_2
  *
