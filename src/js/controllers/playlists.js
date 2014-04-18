@@ -835,7 +835,7 @@ app.playlists.getXbmcPlaylist = function(playlistId, callback){
   app.xbmcController.command('Playlist.GetItems',
     [
       playlistId,
-      app.playlistItemFields
+      app.fields.get('playlistItem')
     ], function(result){
       var res = result.result;
       // set playlistId on models and collection

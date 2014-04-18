@@ -56,7 +56,7 @@ app.FileCollection = Backbone.Collection.extend({
   getDirectory: function(type, dir, callback){
     var self = this;
 
-    app.xbmcController.command('Files.GetDirectory', [dir, type, app.fileFields,  {"method": "title", "order": "ascending"}], function(res){
+    app.xbmcController.command('Files.GetDirectory', [dir, type, app.fields.get('file'),  {"method": "title", "order": "ascending"}], function(res){
 
       var files = self.parseData(res.result.files, type);
 

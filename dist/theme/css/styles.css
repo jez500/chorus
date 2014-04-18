@@ -965,7 +965,7 @@ input[type="text"] {
     background: none;
     position: fixed;
     top: 0;
-    left: 115px;
+    left: 330px;
     right: 610px;
     z-index: 50;
   }
@@ -4021,30 +4021,30 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
 }
 @media (min-width: 800px) {
   /* line 410, ../../../src/theme/sass/components/_pages.scss */
-  body.section-movies #page-header h1 a, body.section-movie-genre #page-header h1 a, body.section-tvshows #page-header h1 a, body.section-mymusic #page-header h1 a, body.section-mymovies #page-header h1 a, body.section-mytv #page-header h1 a, body.section-music #page-header h1 a {
+  body.section-movies #page-header h1 a, body.section-movie-genre #page-header h1 a, body.section-tv #page-header h1 a, body.section-mymusic #page-header h1 a, body.section-mymovies #page-header h1 a, body.section-mytv #page-header h1 a, body.section-music #page-header h1 a {
     width: 185px;
     background: rgba(255, 255, 255, 0.96);
   }
   /* line 414, ../../../src/theme/sass/components/_pages.scss */
-  body.section-movies #sidebar-first, body.section-movie-genre #sidebar-first, body.section-tvshows #sidebar-first, body.section-mymusic #sidebar-first, body.section-mymovies #sidebar-first, body.section-mytv #sidebar-first, body.section-music #sidebar-first {
+  body.section-movies #sidebar-first, body.section-movie-genre #sidebar-first, body.section-tv #sidebar-first, body.section-mymusic #sidebar-first, body.section-mymovies #sidebar-first, body.section-mytv #sidebar-first, body.section-music #sidebar-first {
     width: 185px;
     background: #f7f7f7;
   }
   /* line 418, ../../../src/theme/sass/components/_pages.scss */
-  body.section-movies #sidebar-first .active-recent a:first-child, body.section-movie-genre #sidebar-first .active-recent a:first-child, body.section-tvshows #sidebar-first .active-recent a:first-child, body.section-mymusic #sidebar-first .active-recent a:first-child, body.section-mymovies #sidebar-first .active-recent a:first-child, body.section-mytv #sidebar-first .active-recent a:first-child, body.section-music #sidebar-first .active-recent a:first-child {
+  body.section-movies #sidebar-first .active-recent a:first-child, body.section-movie-genre #sidebar-first .active-recent a:first-child, body.section-tv #sidebar-first .active-recent a:first-child, body.section-mymusic #sidebar-first .active-recent a:first-child, body.section-mymovies #sidebar-first .active-recent a:first-child, body.section-mytv #sidebar-first .active-recent a:first-child, body.section-music #sidebar-first .active-recent a:first-child {
     background: #6e7374;
     color: #f7f7f7;
   }
   /* line 423, ../../../src/theme/sass/components/_pages.scss */
-  body.section-movies #sidebar-first .links .btn, body.section-movie-genre #sidebar-first .links .btn, body.section-tvshows #sidebar-first .links .btn, body.section-mymusic #sidebar-first .links .btn, body.section-mymovies #sidebar-first .links .btn, body.section-mytv #sidebar-first .links .btn, body.section-music #sidebar-first .links .btn {
+  body.section-movies #sidebar-first .links .btn, body.section-movie-genre #sidebar-first .links .btn, body.section-tv #sidebar-first .links .btn, body.section-mymusic #sidebar-first .links .btn, body.section-mymovies #sidebar-first .links .btn, body.section-mytv #sidebar-first .links .btn, body.section-music #sidebar-first .links .btn {
     font-size: 14px;
   }
   /* line 427, ../../../src/theme/sass/components/_pages.scss */
-  body.section-movies #sidebar-first .links .btn.active, body.section-movie-genre #sidebar-first .links .btn.active, body.section-tvshows #sidebar-first .links .btn.active, body.section-mymusic #sidebar-first .links .btn.active, body.section-mymovies #sidebar-first .links .btn.active, body.section-mytv #sidebar-first .links .btn.active, body.section-music #sidebar-first .links .btn.active {
+  body.section-movies #sidebar-first .links .btn.active, body.section-movie-genre #sidebar-first .links .btn.active, body.section-tv #sidebar-first .links .btn.active, body.section-mymusic #sidebar-first .links .btn.active, body.section-mymovies #sidebar-first .links .btn.active, body.section-mytv #sidebar-first .links .btn.active, body.section-music #sidebar-first .links .btn.active {
     background: #6e7374;
   }
   /* line 432, ../../../src/theme/sass/components/_pages.scss */
-  body.section-movies #main, body.section-movie-genre #main, body.section-tvshows #main, body.section-mymusic #main, body.section-mymovies #main, body.section-mytv #main, body.section-music #main {
+  body.section-movies #main, body.section-movie-genre #main, body.section-tv #main, body.section-mymusic #main, body.section-mymovies #main, body.section-mytv #main, body.section-music #main {
     margin-left: 235px !important;
   }
 }

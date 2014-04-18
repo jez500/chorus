@@ -36,22 +36,22 @@ app.filters = {
   },
 
   tvshowFilters: {
-    title: 'TV Show',
-    basePath: '#tvshows/page/',
+    title: 'TV',
+    basePath: '#tv/page/',
     video: true,
     paths: [{
       title: 'Recently Added',
-      path: 'tvshows',
+      path: 'tv',
       argOne: '',
       key: 'recent'
     }, {
       title: 'All TV',
-      path: 'tvshows/page/0/title:ascending',
+      path: 'tv/page/0/title:ascending',
       argOne: 'page',
       key: 'all'
     },{
       title: 'Genres',
-      path: 'tvshows/genreid',
+      path: 'tv/genreid',
       argOne: 'genreid',
       key: 'genreid'
     }],
@@ -126,13 +126,18 @@ app.filters = {
     // is a sidebar filter
     var side = (type == 'music' ? 'sidebar-' : '');
 
+    // menu
+    app.shellView.selectMenuItem(type + (type != 'music' ? 's' : ''), 'sidebar');
+
     // make our containers and get structure
     var $container = $('<div/>', {class: side + 'filter-wrapper ' + type + '-filters'}),
       $links = $('<div/>', {class: 'links'}),
       $sort = $('<div/>', {class: 'sort-wrapper dropdown'}),
       structure = app.filters.getFilters(type),
       sort = app.helpers.getSort(),
-      $body = $('body');
+      $body = $('body'),
+      pageTitle = '';
+
 
     // tabs/links/sidebar
     $.each(structure.paths, function(i,d){
@@ -141,6 +146,7 @@ app.filters = {
         active = (act ? ' active' : '');
       if(act){
         $container.addClass('active-tab-' + d.key);
+        pageTitle = d.title;
       }
       // append link
       $links.append($('<a href="#' + d.path + '" class="btn sublink-' + d.key + active + '">' + d.title + '</a>'));
@@ -195,6 +201,13 @@ app.filters = {
 
     // menu
     app.helpers.setFirstSidebarContent($links);
+
+    // title
+    app.helpers.setTitle(structure.title, {
+      addATag: document.location.hash,
+      icon: app.image.getIcon(type),
+      subTitle: pageTitle
+    });
 
     return $container;
   },

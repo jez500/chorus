@@ -27,24 +27,19 @@ app.MusicView = Backbone.View.extend({
    */
   render:function () {
 
-    var title = '<a href="#mymusic"><i class="fa fa-music"></i> Music</a>';
     var $list = $('.tag-list');
 
     switch(this.model.page){
       case 'recently-played':
-        title += ' Recently Played';
         this.recentPlayed();
         break;
       case 'recent':
-        title += ' Recent Music';
         this.recent();
         break;
       case 'recently-added':
-        title += ' Recently Added';
         this.recentAdded();
         break;
       case 'genres':
-        title += ' Genres';
         if($list.length > 0){
           this.genre(this.model.id);
         } else {
@@ -52,7 +47,6 @@ app.MusicView = Backbone.View.extend({
         }
         break;
       case 'years':
-        title += ' Genres';
         if($list.length > 0){
           this.year(this.model.id);
         } else {
@@ -60,8 +54,6 @@ app.MusicView = Backbone.View.extend({
         }
         break;
     }
-
-    app.helpers.setTitle(title);
 
     return this;
 

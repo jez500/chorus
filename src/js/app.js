@@ -22,249 +22,6 @@ var app = {
     defaultImage: 'theme/images/default.png'
   },
 
-  // fields to grab from xbmc
-  artistFields: [
-    "instrument",
-    "style",
-    "mood",
-    "born",
-    "formed",
-    "description",
-    "genre",
-    "died",
-    "disbanded",
-    "yearsactive",
-    "musicbrainzartistid",
-    "fanart",
-    "thumbnail"
-],
-  albumFields: [
-    "title",
-    "description",
-    "artist",
-    "genre",
-    "theme",
-    "mood",
-    "style",
-    "type",
-    "albumlabel",
-    "rating",
-    "year",
-    //"musicbrainzalbumid",
-    //"musicbrainzalbumartistid",
-    "fanart",
-    "thumbnail",
-    "playcount",
-    "genreid",
-    "artistid",
-    "displayartist"
-  ],
-  songFields: ["title",
-    "artist",
-    "albumartist",
-    "genre",
-    "year",
-    "rating",
-    "album",
-    "track",
-    "duration",
-    //"comment",
-    //"lyrics",
-    //"musicbrainztrackid",
-    //"musicbrainzartistid",
-    //"musicbrainzalbumid",
-    //"musicbrainzalbumartistid",
-    "playcount",
-    "fanart",
-    "thumbnail",
-    "file",
-    "albumid",
-    "lastplayed",
-    "disc",
-    "genreid",
-    "artistid",
-    "displayartist",
-    "albumartistid"
-  ],
-  movieFields: [
-    "title",
-    "genre",
-    "year",
-    "rating",
-    "director",
-    "trailer",
-    "tagline",
-    "plot",
-    "plotoutline",
-    "originaltitle",
-    "lastplayed",
-    "playcount",
-    "writer",
-    "studio",
-    "mpaa",
-    "cast",
-    "country",
-    "imdbnumber",
-    "runtime",
-    "set",
-    "showlink",
-    "streamdetails",
-    "top250",
-    "votes",
-    "fanart",
-    "thumbnail",
-    "file",
-    "sorttitle",
-    "resume",
-    "setid",
-    "dateadded",
-    "tag",
-    "art"
-  ],
-
-  tvshowFields: [
-    "title",
-    "genre",
-    "year",
-    "rating",
-    "plot",
-    "studio",
-    "mpaa",
-    "cast",
-    "playcount",
-    "episode",
-    "imdbnumber",
-    "premiered",
-    "votes",
-    "lastplayed",
-   // "fanart",
-    "thumbnail",
-    "file",
-    "originaltitle",
-    "sorttitle",
-    "episodeguide",
-    "season",
-    "watchedepisodes",
-    "dateadded",
-    "tag",
-    "art"
-  ],
-
-  tvepisodeFields: [
-    "title",
-    "plot",
-    "votes",
-    "rating",
-    "writer",
-    "firstaired",
-    "playcount",
-    "runtime",
-    "director",
-    "productioncode",
-    "season",
-    "episode",
-    "originaltitle",
-    "showtitle",
-    "cast",
-    "streamdetails",
-    "lastplayed",
-    "fanart",
-    "thumbnail",
-    "file",
-    "resume",
-    "tvshowid",
-    "dateadded",
-    "uniqueid",
-    "art"
-  ],
-
-  tvseasonFields: [
-    "season",
-    "showtitle",
-    "playcount",
-    "episode",
-    "fanart",
-    "thumbnail",
-    "tvshowid",
-    "watchedepisodes",
-    "art"
-  ],
-
-  fileFields: [
-    'title', 'size', 'mimetype', 'file', 'dateadded', 'thumbnail', 'artistid', 'albumid', 'uniqueid'
-  ],
-
-  playlistItemFields: [
-    "title",
-    "artist",
-    "albumartist",
-    "genre",
-    "year",
-    "rating",
-    "album",
-    "track",
-    "duration",
-    "playcount",
-    "director",
-    "tagline",
-    "plotoutline",
-    "originaltitle",
-    "lastplayed",
-    "mpaa",
-    "cast",
-    "country",
-    "imdbnumber",
-    "premiered",
-    "runtime",
-    "showlink",
-    "streamdetails",
-    "votes",
-    "firstaired",
-    "season",
-    "episode",
-    "showtitle",
-    "thumbnail",
-    "fanart",
-    "file",
-    "resume",
-    "artistid",
-    "albumid",
-    "tvshowid",
-    "setid",
-    "watchedepisodes",
-    "disc",
-    "tag",
-    "art",
-    "genreid",
-    "displayartist",
-    "albumartistid",
-    "description",
-    "theme",
-    "mood",
-    "style",
-    "albumlabel",
-    "sorttitle",
-    "uniqueid",
-    "dateadded",
-    "channel",
-    "channeltype",
-    "hidden",
-    "locked",
-    "channelnumber",
-    "starttime",
-    "endtime"
-  ],
-
-  channelFields: [
-    "thumbnail",
-    "channeltype",
-    "hidden",
-    "locked",
-    "channel",
-    "lastplayed"
-  ],
-
-
   // filters
   albumFilters: [],
   songFilters: [],
@@ -332,12 +89,12 @@ app.Router = Backbone.Router.extend({
     "movies":                   "moviesLanding",
     "mymovies":                 "moviesLanding",
     "movie/:id":                "movie",
-    "tvshows/page/:num/:sort":  "tvshows",
-    "tvshows":                  "tvshowsLanding",
+    "tv/page/:num/:sort":       "tvshows",
+    "tv":                       "tvshowsLanding",
     "tv/live":                  "pvr",
     "mytv":                     "tvshowsLanding",
-    "tvshows/:tag/:id":         "tvshowTag",
-    "tvshows/:tag":             "tvshowTag",
+    "tv/:tag/:id":              "tvshowTag",
+    "tv/:tag":                  "tvshowTag",
     "tvshow/:id":               "tvshow",
     "tvshow/:tvid/:seas":       "season",
     "tvshow/:tv/:s/:e":         "episode",
@@ -419,9 +176,15 @@ app.Router = Backbone.Router.extend({
    * @param q
    */
   searchLanding: function (q) {
-    this.$content.html('<div class="loading-box">Type to search</div>');
-    app.shellView.selectMenuItem('search', 'no-sidebar');
-    $('#search').focus();
+    var $s = $('#search');
+    if($s.val().length > 0){
+      app.shellView.search($s.val());
+    } else {
+      this.$content.html('<div class="loading-box">Type to search</div>');
+      app.shellView.selectMenuItem('search', 'no-sidebar');
+      $s.focus();
+    }
+
   },
 
 
@@ -438,12 +201,12 @@ app.Router = Backbone.Router.extend({
       task = 'view';
     }
 
-    this.$content.html('<div class="loading-box">Loading Artist</div>');
+    app.ui.setLoading('Artist');
 
     app.artistsView = new app.ArtistsView();
     app.artistsView.render();
 
-    var artist = new app.Artist({"id": parseInt(id), "fields":app.artistFields}),
+    var artist = new app.Artist({"id": parseInt(id), "fields":app.fields.get('artist')}),
           self = this;
 
     artist.fetch({
@@ -485,6 +248,8 @@ app.Router = Backbone.Router.extend({
    */
   album: function (id) {
 
+    app.ui.setLoading('Album');
+
     // get album
     var model = {'attributes': {"albumid" : id}};
     app.cached.albumView = new app.AlbumView({"model": model, "type":"album"});
@@ -519,17 +284,12 @@ app.Router = Backbone.Router.extend({
     if(id !== undefined){
       m.id = id;
     } else {
-      this.$content.html('<div class="loading-box">Loading Music</div>');
-      app.helpers.setFirstSidebarContent('');
+      app.ui.setLoading('Playlist', true);
     }
-    // Set page state
-    app.helpers.setTitle('Music', {addATag:"#mymusic"});
-    app.shellView.selectMenuItem('music', 'sidebar');
 
     // menu
     app.filters.renderFilters('music');
     $('.music-filters').addClass('active-' + page);
-
 
     // pass the page to musicView to do rendering
     app.cached.musicView = new app.MusicView({model: m});
@@ -566,12 +326,15 @@ app.Router = Backbone.Router.extend({
    */
   playlist: function(id){
 
+    var self = this;
+    app.ui.setLoading('Playlist');
+
     app.cached.playlistCustomListSongCollection = new app.PlaylistCustomListSongCollection();
     app.cached.playlistCustomListSongCollection.fetch({"name":id, "success": function(res){
 
       // render page
       app.cached.customPlaylistSongListView = new app.CustomPlaylistSongListView({"model":res});
-      $('#content').html(app.cached.customPlaylistSongListView.render().el);
+      self.$content.html(app.cached.customPlaylistSongListView.render().el);
 
       // set title
       var list = app.playlists.getCustomPlaylist(id);
@@ -643,6 +406,7 @@ app.Router = Backbone.Router.extend({
 
     // change the hash without triggering the router (for back action)
     app.router.navigate('movies/page/' + num + '/' + sort);
+
     // remember last sort setting
     app.settings.set('movieSort', sort);
 
@@ -650,11 +414,8 @@ app.Router = Backbone.Router.extend({
     if(isNewPage === true){
 
       // Loading
-      $content.html('<div class="loading-box">Loading Movies</div>');
+      app.ui.setLoading('Movies', true);
       app.helpers.setFirstSidebarContent('');
-
-      // set title and add some tabs
-      app.helpers.setTitle('Movies', {addATag: '#mymovies', icon: 'film', subTitle: 'All Movies'});
 
       // set menu
       app.shellView.selectMenuItem('movies', 'sidebar');
@@ -743,16 +504,16 @@ app.Router = Backbone.Router.extend({
   moviesLanding: function () {
 
     var self = this;
-    app.helpers.setTitle('Movies', {addATag: '#mymovies', icon: 'film', subTitle: 'Recently Added'});
 
     // loading
-    self.$content.html('<div class="loading-box">Loading Movies</div>');
+    app.ui.setLoading('Movies', true);
 
     // get recent collection
     app.movieRecentCollection = new app.MovieRecentCollection();
     app.movieRecentCollection.fetch({"success": function(collection){
 
       app.cached.movieListView = new app.MovieListView({model: collection});
+
       // render
       self.$content.html(app.cached.movieListView.render().$el);
 
@@ -764,13 +525,13 @@ app.Router = Backbone.Router.extend({
 
       // no pagination
       self.$content.find('.next-page').remove();
+
       // change class
       self.$content.find('ul').removeClass('movie-page-list').addClass('movie-recent-list');
 
-      // set menu
-      app.shellView.selectMenuItem('movies', 'sidebar');
       // lazyload
       app.image.triggerContentLazy();
+
       // scroll to top
       $(window).scrollTo(0);
     }});
@@ -785,11 +546,10 @@ app.Router = Backbone.Router.extend({
   moviesTag: function (tag, id) {
 
     app.cached.movieTagView = new app.MovieTagListView({model: {type: 'movie', tag: tag, id: id}});
-    app.helpers.setTitle('Movies', {addATag: '#mymovies', icon: 'film'});
 
     if(id === undefined){
       // Loading
-      this.$content.html('<div class="loading-box">Loading Movies</div>');
+      app.ui.setLoading('Movies', true);
       // Full list
       app.cached.movieTagView.render();
     } else {
@@ -833,7 +593,7 @@ app.Router = Backbone.Router.extend({
     var movie = new app.Movie({"id": parseInt(id)}),
       self = this;
 
-    self.$content.html('<div class="loading-box">Loading Movie</div>');
+    app.ui.setLoading('Movie');
 
     movie.fetch({
       success: function (data) {
@@ -864,9 +624,7 @@ app.Router = Backbone.Router.extend({
     var $content = $('#content');
 
     // set menu
-    app.shellView.selectMenuItem('tvshows', 'no-sidebar');
-    $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('TVShows', { addATag: '#tvshows', icon: 'desktop', subTitle: 'All TV' });
+    app.ui.setLoading('TV Shows', true);
 
     // init the collection
     app.cached.tvCollection = new app.TvshowAllCollection();
@@ -881,7 +639,6 @@ app.Router = Backbone.Router.extend({
       // filters
       $content.prepend(app.filters.renderFilters('tvshow'));
 
-
       // lazyload
       app.image.triggerContentLazy();
 
@@ -894,9 +651,7 @@ app.Router = Backbone.Router.extend({
     var $content = $('#content');
 
     // set menu
-    app.shellView.selectMenuItem('tvshows', 'no-sidebar');
-    $content.html('<div class="loading-box">Loading TV Shows</div>');
-    app.helpers.setTitle('TVShows', { addATag: '#tvshows', icon: 'desktop', subTitle: 'Recently Added' });
+    app.ui.setLoading('TV Shows', true);
 
     // init the collection
     app.cached.recentTvCollection = new app.RecentTvepisodeCollection();
@@ -928,11 +683,10 @@ app.Router = Backbone.Router.extend({
   tvshowTag: function (tag, id) {
 
     app.cached.tvTagView = new app.TvshowTagListView({model: {type: 'tvshow', tag: tag, id: id}});
-    app.helpers.setTitle('TV', {addATag: '#tvshows', icon: 'desktop'});
 
     if(id === undefined){
       // Loading
-      this.$content.html('<div class="loading-box">Loading TV</div>');
+      app.ui.setLoading('TV', true);
       // Full list
       app.cached.tvTagView.render();
     } else {
@@ -952,14 +706,16 @@ app.Router = Backbone.Router.extend({
     var tv = new app.TVShow({"id": parseInt(id)}),
       self = this;
 
-    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+    app.ui.setLoading('TV Show');
 
     tv.fetch({
       success: function (data) {
 
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
-        app.helpers.setTitle('TVShows', { addATag: '#tvshows', icon: 'desktop', subTitle: data.attributes.label });
+
+        // title
+        app.helpers.setTitle('TVShows', { addATag: '#mytv', icon: 'desktop', subTitle: data.attributes.label });
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -979,7 +735,7 @@ app.Router = Backbone.Router.extend({
     var tv = new app.TVShow({"id": parseInt(tvshowid)}),
       self = this;
 
-    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+    app.ui.setLoading('Season');
 
     tv.fetch({
       success: function (data) {
@@ -1021,10 +777,12 @@ app.Router = Backbone.Router.extend({
     var tv = new app.TVEpisode({"id": parseInt(episodeid)}),
       self = this;
 
-    self.$content.html('<div class="loading-box">Loading TV Show</div>');
+    app.ui.setLoading('Episode');
 
     tv.fetch({
       success: function (data) {
+
+        var ep = data.attributes;
 
         // force ep view
         data.attributes.type = 'episode';
@@ -1035,9 +793,11 @@ app.Router = Backbone.Router.extend({
         self.$content.html(new app.TvshowView({model: data}).render().el);
 
         // title
-        app.helpers.setTitle( '<i class="fa fa-desktop"></i>' +
-          '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.showtitle + '  Season ' + season + '</a>' +
-          'E' + data.attributes.episode + '. ' + data.attributes.label);
+        app.helpers.setTitle(ep.showtitle + '  Season ' + season, {
+          addATag: '#tvshow/' + ep.tvshowid,
+          icon: 'desktop',
+          subTitle: 'E' + ep.episode + '. ' + ep.label
+        });
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -1058,7 +818,6 @@ app.Router = Backbone.Router.extend({
     var self = this,
       pvrType = app.pvr.getTypeFromPath();
 
-    app.shellView.selectMenuItem('pvr', 'sidebar');
     app.ui.setLoading(pvrType.niceName + ' channels', true);
 
     // get channels
@@ -1068,8 +827,7 @@ app.Router = Backbone.Router.extend({
       // render view
       app.cached.pvrChannelsView = new app.PvrChannelsView({model: collection});
       self.$content.html(app.cached.pvrChannelsView.render().$el);
-      //title
-      app.helpers.setTitle(pvrType.niceName, {addATag: '#tv/live'});
+
       // filters
       self.$content.prepend(app.filters.renderFilters(pvrType.filters));
 
@@ -1128,7 +886,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html(app.cached.xbmcView.render().$el);
 
     // set title
-    app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>');
+    app.helpers.setTitle('XBMC', {addATag: '#xbmc/home'});
 
     // set menu
     app.shellView.selectMenuItem('xbmc', 'no-sidebar');

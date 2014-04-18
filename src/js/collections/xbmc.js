@@ -47,7 +47,7 @@ app.SongFilteredXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Song,
   //collection params
-  arg1: app.songFields, //fields
+  arg1: app.fields.get('song'), //fields
   arg2: {"start": 0, "end": 500}, //count
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //apply our filter - Required! or call will fail
@@ -79,7 +79,7 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Album,
   //collection params
-  arg1: app.albumFields, //properties
+  arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 15000}, //count
   arg3: {"sort": {"method": "dateadded", "order": "descending"}},
   //method/params
@@ -106,7 +106,7 @@ app.AlbumFilteredXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Album,
   //collection params
-  arg1: app.albumFields, //properties
+  arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 15000}, //count
   arg3: {"sort": {"method": "album", "order": "ascending"}},
   arg4: function(){
@@ -137,7 +137,7 @@ app.AlbumRecentlyAddedXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Album,
   //collection params
-  arg1: app.albumFields, //properties
+  arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 200}, //count
   //method/params
   methods: {
@@ -168,7 +168,7 @@ app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.Album,
   //collection params
-  arg1: app.albumFields, //properties
+  arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 200}, //count
   //method/params
   methods: {
@@ -201,7 +201,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   model: app.Artist,
   //collection params
   arg1: true, //albumartistsonly
-  arg2: app.artistFields, //properties
+  arg2: app.fields.get('artist'), //properties
   arg3: {"start": 0, "end": 10000}, //count
   arg4: {"sort": {"method": "artist"}},
   //method/params
@@ -288,7 +288,7 @@ app.AllTvshowXbmcCollection = Backbone.Collection.extend({
   //model
   model: app.TVShow,
   //collection params
-  arg1: app.tvshowFields, //properties
+  arg1: app.fields.get('tvshow'), //properties
   arg2: {"start": 0, "end": 10000}, //count
   arg3: function(){
     return this.models[0].attributes.sort;

@@ -55,7 +55,7 @@ app.AlbumArtistView = Backbone.View.extend({
 
   initialize:function () {
 
-    this.artistModel = new app.Artist({"id": this.model.attributes.artistid, "fields":app.artistFields});
+    this.artistModel = new app.Artist({"id": this.model.attributes.artistid, "fields": app.fields.get('artist')});
     this.artistAlbums = {};
   },
 

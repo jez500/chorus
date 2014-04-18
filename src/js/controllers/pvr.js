@@ -77,7 +77,7 @@ app.pvr = {
   getChannels: function(group, callback){
 
     // lookup
-    app.xbmcController.command('PVR.GetChannels', [group, app.channelFields], function(data){
+    app.xbmcController.command('PVR.GetChannels', [group, app.fields.get('channel')], function(data){
       console.log(data.result);
       callback(data.result.channels);
     });

@@ -8,6 +8,40 @@ app.image = {
 
 
   /**
+   * Entity Icons
+   */
+  icons: {
+    music: 'music',
+    video: 'film',
+    song: 'music',
+    artist: 'microphone',
+    album: 'th-large',
+    tvshow: 'desktop',
+    movie: 'film'
+  },
+
+
+  /**
+   * Get a generic logo/icon
+   *
+   * @param type
+   *  entity type
+   * @param tag
+   *  bool, true = tag is rendered
+   * @returns {string}
+   *  fallback to cloud
+   */
+  getIcon: function(type, tag){
+    tag = (tag !== undefined && tag === true);
+    var ico = (this.icons[type] !== undefined ? this.icons[type] : 'cloud');
+    if(tag){
+      return '<i class="fa fa-' + ico + ' entity-icon"></i>';
+    }
+    return ico;
+  },
+
+
+  /**
   * Builds a url to an image from a given path, if empty returns default image
   *
   * @param rawPath

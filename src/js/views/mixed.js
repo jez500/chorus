@@ -14,15 +14,6 @@ app.MixedView = Backbone.View.extend({
 
   entities: ['artist', 'album', 'song', 'movie', 'tvshow'],
 
-  icons: {
-    music: 'fa-music',
-    video: 'fa-film',
-    song: 'fa-music',
-    artist: 'fa-microphone',
-    album: 'fa-th-large',
-    tvshow: 'fa-desktop',
-    movie: 'fa-film'
-  },
 
   initialize:function () {
 
@@ -156,18 +147,9 @@ app.MixedView = Backbone.View.extend({
    * @returns {string}
    */
   getHeading: function(type, text, classes){
-    return '<h3 class="' + type + '-type-heading ' + this.model.key + '-heading entity-heading ' + classes + '">' + this.getLogo(type) + text + '</h3>';
+    return '<h3 class="' + type + '-type-heading ' + this.model.key + '-heading entity-heading ' + classes + '">' + app.image.getIcon(type, true) + text + '</h3>';
   },
 
-
-  /**
-   * Get a generic logo/icon
-   * @param type
-   * @returns {string}
-   */
-  getLogo: function(type){
-    return '<i class="fa ' + (this.icons[type] !== undefined ? this.icons[type] : 'fa-cloud') + ' entity-icon"></i>';
-  },
 
   /**
    * Force Lazy loading images

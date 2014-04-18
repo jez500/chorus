@@ -108,19 +108,19 @@ app.xbmcController.entityLoadMultiple = function(type, items, callback){
       method: 'AudioLibrary.GetSongDetails',
       id: 'songid',
       returnKey: 'songdetails',
-      fields: app.songFields
+      fields: app.fields.get('song')
     },
     movie: {
       method: 'VideoLibrary.GetMovieDetails',
       id: 'movieid',
       returnKey: 'moviedetails',
-      fields: app.movieFields
+      fields: app.fields.get('movie')
     },
     tvshow: {
       method: 'VideoLibrary.GetTVShowDetails',
       id: 'tvshowid',
       returnKey: 'tvshowdetails',
-      fields: app.tvshowFields
+      fields: app.fields.get('tvshow')
     }
 
   };

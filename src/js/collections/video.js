@@ -140,7 +140,7 @@ app.MovieRecentCollection = Backbone.Collection.extend({
 
   sync: function(method, model, options) {
 
-    var opt = [app.movieFields, {'end': 100, 'start': 0}];
+    var opt = [app.fields.get('movie'), {'end': 100, 'start': 0}];
     app.xbmcController.command('VideoLibrary.GetRecentlyAddedMovies', opt, function(data){
       options.success(data.result.movies);
     });
@@ -164,7 +164,7 @@ app.MovieFilteredCollection = Backbone.Collection.extend({
     }
 
     var sort = {"sort": {"method": "title"}},
-      opt = [app.movieFields, {'end': 500, 'start': 0}, sort, options.filter],
+      opt = [app.fields.get('movie'), {'end': 500, 'start': 0}, sort, options.filter],
       key = 'movies:key:filter';
 
     // cache
@@ -263,7 +263,7 @@ app.VideoGenreCollection = Backbone.Collection.extend({
         d.label = (d.label === '' ? '- none -' : d.label);
         d.id = d.genreid;
         d.type = 'movieGenre';
-        d.url = '#' + options.type + 's/genreid/' + d.id;
+        d.url = '#' + (options.type == 'tvshow' ? 'tv' : options.type + 's') + '/genreid/' + d.id;
         list.push(d);
       });
       // return
@@ -419,7 +419,7 @@ app.TvepisodeCollection = Backbone.Collection.extend({
     opt.push(parseInt(options.tvshowid));
     if(options.season !== undefined){
       opt.push(parseInt(options.season));
-      opt.push(app.tvepisodeFields);
+      opt.push(app.fields.get('tvepisode'));
     }
 
     // if cache use that
@@ -469,7 +469,7 @@ app.RecentTvepisodeCollection = Backbone.Collection.extend({
     var opt = [];
 
     // constuct params
-    opt.push(app.tvepisodeFields); // tv eps
+    opt.push(app.fields.get('tvepisode')); // tv eps
     opt.push({end: 10000, start: 0}); // show all
     opt.push({method: 'date', order: 'descending'}); // new first
 
@@ -514,7 +514,7 @@ app.TvshowFilteredCollection = Backbone.Collection.extend({
     }
 
     var sort = {"sort": {"method": "title"}},
-      opt = [app.tvshowFields, {'end': 500, 'start': 0}, sort, options.filter],
+      opt = [app.fields.get('tvshow'), {'end': 500, 'start': 0}, sort, options.filter],
       key = 'tvshows:key:filter';
 
     // cache
