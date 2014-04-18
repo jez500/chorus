@@ -4722,30 +4722,63 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   text-align: left;
   font-size: 20px;
   position: relative;
+  height: 50px;
+  overflow: hidden;
+  white-space: nowrap;
 }
-/* line 11, ../../../src/theme/sass/components/_pvr.scss */
+/* line 13, ../../../src/theme/sass/components/_pvr.scss */
+.channel-list .row-item .thumb-wrapper {
+  float: left;
+  position: relative;
+  height: 50px;
+  width: 50px;
+}
+/* line 18, ../../../src/theme/sass/components/_pvr.scss */
+.channel-list .row-item .thumb-wrapper .btn,
+.channel-list .row-item .thumb-wrapper .thumb {
+  height: 50px;
+  width: 50px;
+  display: block;
+}
+/* line 24, ../../../src/theme/sass/components/_pvr.scss */
+.channel-list .row-item .thumb-wrapper .btn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0;
+  width: 10px;
+  padding: 15px;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.53);
+  color: #fff;
+  font-size: 11px;
+  text-align: center;
+  width: 50px;
+}
+/* line 14, ../../../src/theme/sass/_mixins.scss */
+.channel-list .row-item .thumb-wrapper .btn:hover {
+  opacity: 1;
+}
+/* line 29, ../../../src/theme/sass/components/_pvr.scss */
 .channel-list .row-item .name {
   display: block;
-  padding: 10px 10px;
-  margin: 5px;
+  padding: 15px 10px;
+  margin: 0px;
   height: 20px;
   overflow: hidden;
   color: #888;
 }
-/* line 20, ../../../src/theme/sass/components/_pvr.scss */
+/* line 38, ../../../src/theme/sass/components/_pvr.scss */
 .channel-list .row-item i {
   color: #bbb;
 }
-/* line 24, ../../../src/theme/sass/components/_pvr.scss */
+/* line 42, ../../../src/theme/sass/components/_pvr.scss */
 .channel-list .row-item:hover .name {
   color: #444;
 }
-/* line 27, ../../../src/theme/sass/components/_pvr.scss */
-.channel-list .row-item:hover .channel-actions-wrapper {
-  opacity: 1;
-}
-/* line 32, ../../../src/theme/sass/components/_pvr.scss */
+/* line 51, ../../../src/theme/sass/components/_pvr.scss */
 .channel-list .channel-actions-wrapper {
+  display: none;
   position: absolute;
   right: 5px;
   top: 5px;
@@ -4758,7 +4791,7 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   -o-transition: all 0.3s linear;
   transition: all 0.3s linear;
 }
-/* line 42, ../../../src/theme/sass/components/_pvr.scss */
+/* line 62, ../../../src/theme/sass/components/_pvr.scss */
 .channel-list .channel-actions-wrapper .btn:hover i {
   color: #888;
 }
@@ -4767,10 +4800,10 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   .channel-list {
     padding-right: 0;
   }
-  /* line 50, ../../../src/theme/sass/components/_pvr.scss */
+  /* line 70, ../../../src/theme/sass/components/_pvr.scss */
   .channel-list .row-item {
     float: left;
-    width: 230px;
+    width: 250px;
     margin: 0 10px 10px 0;
   }
 }

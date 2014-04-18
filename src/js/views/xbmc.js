@@ -128,7 +128,7 @@ app.XbmcChorusChangeLog = Backbone.View.extend({
       // render
       self.$el.html(app.nl2br(data));
       // set title
-      app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>Chorus ChangeLog');
+      app.ui.setTitle('<a href="#xbmc/home">XBMC</a>Chorus ChangeLog');
     });
 
     return this;
@@ -163,7 +163,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
   render:function () {
 
     // set title
-    app.helpers.setTitle('<a href="#xbmc/home">XBMC</a>jsonRPC');
+    app.ui.setTitle('<a href="#xbmc/home">XBMC</a>jsonRPC');
 
     this.$el.empty();
 

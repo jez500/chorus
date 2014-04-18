@@ -406,7 +406,7 @@ app.MovieTagListView = Backbone.View.extend({
     }
 
     // title
-    app.helpers.setTitle('Movies', {addATag: '#movies', icon: 'film', subTitle: title});
+    app.ui.setTitle('Movies', {addATag: '#movies', icon: 'film', subTitle: title});
 
     // get/render items
     list.fetch({"type": "movie", "success": function(data){

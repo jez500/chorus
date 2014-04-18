@@ -18,7 +18,7 @@ app.AlbumView = Backbone.View.extend({
       var $al = $('#album-list').html(self.albumsView.render().el);
 
       // set title
-      app.helpers.setTitle('<a href="#artist/' + alb.artistid + '">' + alb.artist + '</a>' + alb.album);
+      app.ui.setTitle('<a href="#artist/' + alb.artistid + '">' + alb.artist + '</a>' + alb.album);
 
       // add actions to title
       //var $actions = $al.find('.album-actions-wrapper').clone(true, true);

@@ -571,7 +571,7 @@ app.TvshowTagListView = Backbone.View.extend({
     }
 
     // title/loading
-    app.helpers.setTitle('TV', {addATag: '#mytv', icon: 'desktop', subTitle: title});
+    app.ui.setTitle('TV', {addATag: '#mytv', icon: 'desktop', subTitle: title});
     $content.html('<div class="loading-box">Loading TV</div>');
 
     // get/render items

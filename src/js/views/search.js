@@ -77,7 +77,7 @@ app.searchView = Backbone.View.extend({
       $content.html( $el );
 
       // Title
-      app.helpers.setTitle('<a href="#search">Search </a>');
+      app.ui.setTitle('<a href="#search">Search </a>');
 
       // Search Addons
       self.searchAddOns(key);

@@ -33,7 +33,6 @@ app.playerStateView = Backbone.View.extend({
     app.cached.nowPlaying = data;
 
     // set current as last playing var
-    console.log(this.playingKey(data));
     app.helpers.varSet('lastPlaying', this.playingKey(data));
 
     // body classes

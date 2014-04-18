@@ -41,7 +41,7 @@ app.pvr = {
   setIsEnabled: function(callback){
     var params = ['xbmc.pvrclient', 'unknown', true];
     app.xbmcController.command('Addons.GetAddons', params, function(res){
-      app.pvr.enabled = (res.result.addons.length > 0);
+      app.pvr.enabled = (res.result.addons !== undefined);
       callback(app.pvr.enabled);
     });
   },

@@ -32,7 +32,7 @@ app.ThumbsupView = Backbone.View.extend({
     app.shellView.selectMenuItem('thumbsup', 'no-sidebar');
 
     // set title
-    app.helpers.setTitle('<i class="fa fa-thumbs-up"></i> Thumbs Up');
+    app.ui.setTitle('<i class="fa fa-thumbs-up"></i> Thumbs Up');
 
     if(!anyThumbs){ // No thumbs
       // no thumbs

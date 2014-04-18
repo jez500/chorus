@@ -203,7 +203,7 @@ app.filters = {
     app.helpers.setFirstSidebarContent($links);
 
     // title
-    app.helpers.setTitle(structure.title, {
+    app.ui.setTitle(structure.title, {
       addATag: document.location.hash,
       icon: app.image.getIcon(type),
       subTitle: pageTitle

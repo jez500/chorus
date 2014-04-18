@@ -6,16 +6,34 @@
     padding: 0;
     text-align: left;
     font-size: 20px;
-   // letter-spacing: -1px;
     position: relative;
+    height: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+    .thumb-wrapper {
+      float: left;
+      position: relative;
+      height: 50px;
+      width: 50px;
+      .btn,
+      .thumb {
+        height: 50px;
+        width: 50px;
+        display: block;
+      }
+      .btn {
+        @include hover-play-button;
+        width: 50px;
+      }
+    }
     .name {
       display: block;
-      padding: 10px 10px;
-    //  background: #fefefe;
-      margin: 5px;
+      padding: 15px 10px;
+      margin: 0px;
       height: 20px;
       overflow: hidden;
       color: #888;
+     // float: left;
     }
     i {
       color: #bbb;
@@ -25,11 +43,13 @@
         color: #444;
       }
       .channel-actions-wrapper {
-        opacity: 1;
+        // @TODO uncomment when thumbs functionality works
+        //opacity: 1;
       }
     }
   }
   .channel-actions-wrapper {
+    display: none;
     position: absolute;
     right: 5px;
     top: 5px;
@@ -49,7 +69,7 @@
     padding-right: 0;
     .row-item {
       float: left;
-      width: 230px;
+      width: 250px;
       margin: 0 10px 10px 0;
     }
   }

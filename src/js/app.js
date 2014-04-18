@@ -134,7 +134,7 @@ app.Router = Backbone.Router.extend({
     this.$content.html('');
 
     // title
-    app.helpers.setTitle('');
+    app.ui.setTitle('');
 
     // menu
     app.shellView.selectMenuItem('home', 'no-sidebar');
@@ -213,7 +213,7 @@ app.Router = Backbone.Router.extend({
       success: function (data) {
 
         self.$content.html(new app.ArtistView({model: data}).render().el);
-        app.helpers.setTitle('Artists', {addATag: '#artists', icon: 'microphone', subTitle: data.attributes.artist});
+        app.ui.setTitle('Artists', {addATag: '#artists', icon: 'microphone', subTitle: data.attributes.artist});
 
         // set menu
         app.shellView.selectMenuItem('artists', 'sidebar');
@@ -235,7 +235,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html($el);
 
     // title
-    app.helpers.setTitle('Artists', {addATag: '#artists', icon: 'microphone'});
+    app.ui.setTitle('Artists', {addATag: '#artists', icon: 'microphone'});
 
     // set menu
     app.shellView.selectMenuItem('artists', 'sidebar');
@@ -308,7 +308,7 @@ app.Router = Backbone.Router.extend({
     app.cached.fileCollection.fetch({'name': 'sources', 'success': function(sources){
 
       // title / menu
-      app.helpers.setTitle('Files', {addATag: '#files', icon: 'align-justify', subTitle: '<span id="folder-name"></span>'});
+      app.ui.setTitle('Files', {addATag: '#files', icon: 'align-justify', subTitle: '<span id="folder-name"></span>'});
       app.shellView.selectMenuItem('files', 'sidebar');
 
       // the view writes to content,
@@ -338,7 +338,7 @@ app.Router = Backbone.Router.extend({
 
       // set title
       var list = app.playlists.getCustomPlaylist(id);
-      app.helpers.setTitle('Playlist', {addATag: '#playlist/' + list.id, icon: 'music', subTitle: list.name});
+      app.ui.setTitle('Playlist', {addATag: '#playlist/' + list.id, icon: 'music', subTitle: list.name});
 
       // set menu
       app.shellView.selectMenuItem('playlist', 'no-sidebar');
@@ -352,7 +352,7 @@ app.Router = Backbone.Router.extend({
    * playlists
    */
   playlists: function(){
-    app.helpers.setTitle('Playlists');
+    app.ui.setTitle('Playlists');
     // set menu
     app.shellView.selectMenuItem('playlists', 'no-sidebar');
   },
@@ -600,7 +600,7 @@ app.Router = Backbone.Router.extend({
         // render content
         self.$content.html(new app.MovieView({model: data}).render().el);
 
-        app.helpers.setTitle('Movies', {
+        app.ui.setTitle('Movies', {
           addATag: '#mymovies',
           icon: 'film',
           subTitle: data.attributes.title + ' <span>' + data.attributes.year + '</span>'
@@ -715,7 +715,7 @@ app.Router = Backbone.Router.extend({
         self.$content.html(new app.TvshowView({model: data}).render().el);
 
         // title
-        app.helpers.setTitle('TVShows', { addATag: '#mytv', icon: 'desktop', subTitle: data.attributes.label });
+        app.ui.setTitle('TVShows', { addATag: '#mytv', icon: 'desktop', subTitle: data.attributes.label });
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -756,7 +756,7 @@ app.Router = Backbone.Router.extend({
 
         // render content
         self.$content.html(new app.TvshowView({model: data}).render().el);
-        app.helpers.setTitle( '<i class="fa fa-desktop"></i>' +
+        app.ui.setTitle( '<i class="fa fa-desktop"></i>' +
           '<a href="#tvshow/' + data.attributes.tvshowid + '">' + data.attributes.label + '</a>Season ' + season);
 
         // set menu
@@ -793,7 +793,7 @@ app.Router = Backbone.Router.extend({
         self.$content.html(new app.TvshowView({model: data}).render().el);
 
         // title
-        app.helpers.setTitle(ep.showtitle + '  Season ' + season, {
+        app.ui.setTitle(ep.showtitle + '  Season ' + season, {
           addATag: '#tvshow/' + ep.tvshowid,
           icon: 'desktop',
           subTitle: 'E' + ep.episode + '. ' + ep.label
@@ -848,7 +848,7 @@ app.Router = Backbone.Router.extend({
     // Set Player
     app.playlists.changePlaylistView('xbmc');
     // set title
-    app.helpers.setTitle('Remote');
+    app.ui.setTitle('Remote');
     // set menu
     app.shellView.selectMenuItem('remote', 'no-sidebar');
   },
@@ -870,7 +870,7 @@ app.Router = Backbone.Router.extend({
       app.notification('Started ' + type + ' Scan');
       app.shellView.selectMenuItem('scan', 'no-sidebar');
       self.$content.html('<div class="loading-box">Scanning ' + type + ' library</div>');
-      app.helpers.setTitle('<i class="fa fa-refresh"></i> ' + type + ' scan');
+      app.ui.setTitle('<i class="fa fa-refresh"></i> ' + type + ' scan');
     });
 
   },
@@ -886,7 +886,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html(app.cached.xbmcView.render().$el);
 
     // set title
-    app.helpers.setTitle('XBMC', {addATag: '#xbmc/home'});
+    app.ui.setTitle('XBMC', {addATag: '#xbmc/home'});
 
     // set menu
     app.shellView.selectMenuItem('xbmc', 'no-sidebar');
