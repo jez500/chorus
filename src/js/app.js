@@ -831,7 +831,6 @@ app.Router = Backbone.Router.extend({
       // filters
       self.$content.prepend(app.filters.renderFilters(pvrType.filters));
 
-      console.log(collection);
     }});
 
 
