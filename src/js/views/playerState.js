@@ -25,7 +25,7 @@ app.playerStateView = Backbone.View.extend({
     this.$songs = $('.song');
 
     // enrich
-    data.playingItemChanged = (lastPlaying != data.item.file);
+    data.playingItemChanged = (lastPlaying != this.playingKey(data));
     data.status = (data.status == 'notPlaying' ? 'stopped' : (app.helpers.exists(data.player.speed) && data.player.speed === 0 ? 'paused' : data.status));
     app.state = data.status;
 
@@ -33,7 +33,8 @@ app.playerStateView = Backbone.View.extend({
     app.cached.nowPlaying = data;
 
     // set current as last playing var
-    app.helpers.varSet('lastPlaying', (data.item !== undefined ? data.item.file : null));
+    console.log(this.playingKey(data));
+    app.helpers.varSet('lastPlaying', this.playingKey(data));
 
     // body classes
     this.bodyClasses();
@@ -62,6 +63,19 @@ app.playerStateView = Backbone.View.extend({
 
     $window.trigger('playerUpdate', data);
 
+  },
+
+
+  /**
+   * Get a unique key for the playing item to determine if it has changed
+   * @param data
+   *  now playing object
+   * @returns {key}
+   */
+  playingKey: function(data){
+    return (data.item !== undefined ?
+      (data.item.file !== undefined ? data.item.file : data.item.type + data.item.id)
+      : null);
   },
 
 

@@ -255,6 +255,15 @@ var app = {
     "endtime"
   ],
 
+  channelFields: [
+    "thumbnail",
+    "channeltype",
+    "hidden",
+    "locked",
+    "channel",
+    "lastplayed"
+  ],
+
 
   // filters
   albumFilters: [],
@@ -286,7 +295,8 @@ var app = {
     "TvshowListItemView",
     "TvSeasonListItemView",
     "TvshowView",
-    "RemoteView"
+    "RemoteView",
+    "PvrChannelListItem"
   ],
 
   tpl: {} // for templates that are lazy loaded
@@ -304,6 +314,7 @@ app.Router = Backbone.Router.extend({
     "artist/:id/:task":         "artist",
     "artists":                  "artists",
     "album/:id":                "album",
+    "music/radio":              "pvr",
     "albums":                   "music",
     "mymusic":                  "music",
     "music/:page":              "music",
@@ -323,6 +334,7 @@ app.Router = Backbone.Router.extend({
     "movie/:id":                "movie",
     "tvshows/page/:num/:sort":  "tvshows",
     "tvshows":                  "tvshowsLanding",
+    "tv/live":                  "pvr",
     "mytv":                     "tvshowsLanding",
     "tvshows/:tag/:id":         "tvshowTag",
     "tvshows/:tag":             "tvshowTag",
@@ -1034,6 +1046,41 @@ app.Router = Backbone.Router.extend({
     });
 
   },
+
+
+  /**
+   * PVR
+   *
+   *  tv or radio
+   */
+  pvr: function(){
+
+    var self = this,
+      pvrType = app.pvr.getTypeFromPath();
+
+    app.shellView.selectMenuItem('pvr', 'sidebar');
+    app.ui.setLoading(pvrType.niceName + ' channels', true);
+
+    // get channels
+    app.cached.pvrChannelCollection = new app.PvrChannelCollection();
+    app.cached.pvrChannelCollection.fetch({"type": pvrType.type, "success": function(collection){
+
+      // render view
+      app.cached.pvrChannelsView = new app.PvrChannelsView({model: collection});
+      self.$content.html(app.cached.pvrChannelsView.render().$el);
+      //title
+      app.helpers.setTitle(pvrType.niceName, {addATag: '#tv/live'});
+      // filters
+      self.$content.prepend(app.filters.renderFilters(pvrType.filters));
+
+      console.log(collection);
+    }});
+
+
+
+  },
+
+
 
 
   /**

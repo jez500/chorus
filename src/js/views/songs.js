@@ -41,7 +41,7 @@ app.SongView = Backbone.View.extend({
 
   render:function () {
     // add if thumbs up
-    if( app.playlists.isThumbsUp(this.model.attributes.songid) ) {
+    if( app.playlists.isThumbsUp('song', this.model.attributes.songid) ) {
       this.$el.addClass('thumbs-up');
     }
     // render

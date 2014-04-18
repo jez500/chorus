@@ -1,0 +1,56 @@
+
+.channel-list {
+  padding: 10px;
+  .row-item {
+    background: #eee;
+    padding: 0;
+    text-align: left;
+    font-size: 20px;
+   // letter-spacing: -1px;
+    position: relative;
+    .name {
+      display: block;
+      padding: 10px 10px;
+    //  background: #fefefe;
+      margin: 5px;
+      height: 20px;
+      overflow: hidden;
+      color: #888;
+    }
+    i {
+      color: #bbb;
+    }
+    &:hover {
+      .name {
+        color: #444;
+      }
+      .channel-actions-wrapper {
+        opacity: 1;
+      }
+    }
+  }
+  .channel-actions-wrapper {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 90%;
+    opacity: 0;
+    background: #eee;
+    @include transition(all 0.3s linear);
+    .btn {
+      &:hover {
+        i {
+          color: #888;
+        }
+      }
+    }
+  }
+  @include breakpoint($width-mobile){
+    padding-right: 0;
+    .row-item {
+      float: left;
+      width: 230px;
+      margin: 0 10px 10px 0;
+    }
+  }
+}

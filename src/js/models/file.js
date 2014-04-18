@@ -1,7 +1,7 @@
 
 
 /**
- * Album
+ * File
  * @type {extend|*}
  */
 app.File = Backbone.Model.extend({

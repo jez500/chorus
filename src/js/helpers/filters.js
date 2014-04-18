@@ -95,9 +95,25 @@ app.filters = {
     }]
   },
 
+  /**
+   * Get all filters for a type
+   *
+   * @param type
+   * @returns {*}
+   */
+  getFilters: function(type){
+    return app.filters[type + 'Filters'];
+  },
 
-
-
+  /**
+   * Add a path to a filter
+   *
+   * @param type
+   * @param pathObj
+   */
+  addFilterPath: function(type, pathObj){
+    app.filters[type + 'Filters'].paths.push(pathObj);
+  },
 
   /**
    * Creates a filter bar give a type/structure
@@ -114,7 +130,7 @@ app.filters = {
     var $container = $('<div/>', {class: side + 'filter-wrapper ' + type + '-filters'}),
       $links = $('<div/>', {class: 'links'}),
       $sort = $('<div/>', {class: 'sort-wrapper dropdown'}),
-      structure = app.filters[type + 'Filters'],
+      structure = app.filters.getFilters(type),
       sort = app.helpers.getSort(),
       $body = $('body');
 
