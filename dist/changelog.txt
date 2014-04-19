@@ -1,3 +1,12 @@
+Version 0.3.6
+- Bug fix: Background changing while pvr playing
+- Feature: pvr channels (unfinished due to tuner breaking during dev)
+- Feature: Support for basic keyboard commands (directional, backspace, enter, c)
+- Refactor: Cleaned up a lot of code
+- Improved loading indicator
+- Some performance tweaks
+
+
 Version 0.3.5
 - Bug fix: Song duration in listings displaying as [object]
 - Bug fix: Mobile playlist tabs

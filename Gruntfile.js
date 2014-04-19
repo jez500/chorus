@@ -44,6 +44,7 @@ module.exports = function(grunt) {
           appPath + '/collections/video.js',
           appPath + '/collections/audio.js',
           appPath + '/collections/files.js',
+          appPath + '/collections/pvr.js',
 
           // application views
           appPath + '/views/*.js',

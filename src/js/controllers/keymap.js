@@ -37,7 +37,7 @@ app.keymap = {
 
     // not searching
     // @todo maybe change to input:focus
-    if($('#search:focus').length !== 0){
+    if($(e.target).is("input, textarea")){
       return;
     }
 
