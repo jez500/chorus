@@ -788,13 +788,13 @@ body {
       }
     }
   }
-  &.section-tvshows,
+  &.section-tv,
   &.section-movies,
   &.section-music,
   &.section-album,
   &.section-artist {
     #sidebar-first {
-      display: none;
+      display: none; 
       @include breakpoint($width-tablet){
         display: block;
       }
