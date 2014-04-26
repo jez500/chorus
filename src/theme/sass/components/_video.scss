@@ -69,28 +69,47 @@ ul.video-list {
   // fixed sidebar of movie
   .video-side {
     padding: 10px;
-    position: fixed;
-    top: 40px;
-    left: 40px;
-    width: $width-sidebar-first-small;
-    z-index: 20;
-    display: none;
+
+    .thumb {
+      display: none;
+    }
     @include breakpoint($width-tablet){
       display: block;
+      position: fixed;
+      top: 40px;
+      left: 40px;
+      width: $width-sidebar-first-small;
+      z-index: 20;
+      .thumb {
+        display: block;
+      }
+      .widethumb {
+        display: none;
+      }
     }
     .video-thumb {
-      padding: 5px;
+      padding: 0px;
       background: rgba(255, 255, 255, 0.7);
       position: relative;
+      max-height: 200px;
+      overflow: hidden;
+      margin: -10px -10px;
       img {
         width: 100%;
-        max-width: $width-sidebar-first-small;
+      }
+      @include breakpoint($width-tablet){
+        max-height: none;
+        overflow: visible;
+        margin: 0;
+        img {
+          max-width: $width-sidebar-first-small;
+        }
       }
     }
     // hover actions
     .actions-wrapper {
       @include hover-play-button;
-      @include center-absolute(5px);
+      @include center-absolute(0);
       width: auto;
       z-index: 30;
       background: rgba(0, 0, 0, 0.28);
@@ -120,21 +139,21 @@ ul.video-list {
       }
     }
     @include breakpoint($width-small){
-      top: 51px;
-      left: 50px;
+      top: 52px;
+      left: 51px;
       width: 279px;
       .video-thumb {
-        padding: 10px;
+        padding: 0px;
         img {
-          max-width: 240px;
+          max-width: none;
         }
       }
       .actions-wrapper {
-        @include center-absolute(10px);
+        @include center-absolute(0);
       }
     }
     @include breakpoint($width-large){
-      width: $width-sidebar-first-large;
+      width: $width-sidebar-first-large + 8;
       .video-thumb img {
         max-width: $width-sidebar-first-large;
       }

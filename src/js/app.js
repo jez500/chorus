@@ -284,7 +284,7 @@ app.Router = Backbone.Router.extend({
     if(id !== undefined){
       m.id = id;
     } else {
-      app.ui.setLoading('Playlist', true);
+      app.ui.setLoading('Music', true);
     }
 
     // menu

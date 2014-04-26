@@ -43,6 +43,9 @@ app.TVShow = Backbone.Model.extend({
       if($.inArray('fanart', fields) == -1){
         fields.push('fanart');
       }
+      if($.inArray('watchedepisodes', fields) == -1){
+        fields.push('watchedepisodes');
+      }
 
       // Fetch Show
       app.xbmcController.command('VideoLibrary.GetTVShowDetails',[parseInt(this.id), fields], function(data){
@@ -78,9 +81,11 @@ app.TVEpisode = Backbone.Model.extend({
 
   sync: function(method, model, options) {
     if (method === "read") {
-      // options.success(data);
 
-      app.xbmcController.command('VideoLibrary.GetEpisodeDetails',[parseInt(this.id), app.fields.get('tvepisode')], function(data){
+      var fields = app.fields.get('tvepisode');
+
+      // Get the episode
+      app.xbmcController.command('VideoLibrary.GetEpisodeDetails',[parseInt(this.id), fields], function(data){
         var m = data.result.episodedetails;
         // get thumbsup
         m.thumbsup = app.playlists.getThumbsUp('episode', m.episodeid);

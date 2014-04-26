@@ -323,11 +323,8 @@ app.TvshowAllCollection = Backbone.Collection.extend({
 
       // no cache, do a lookup
       var allTv = new app.AllTvshowXbmcCollection({sort: sort});
+
       allTv.fetch({"success": function(data){
-
-        // Sort
-       // data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
-
         // Make a dictionary and flag as not loaded
         app.stores.allTvshowsLookup = {};
         for(var i in data.models){
@@ -483,7 +480,7 @@ app.RecentTvepisodeCollection = Backbone.Collection.extend({
           var ep = data.result.episodes[i],
             show = app.stores.allTvshowsLookup[ep.tvshowid];
           data.result.episodes[i].url = '#tvshow/' + ep.tvshowid + '/' + ep.season + '/' + ep.episodeid;
-          data.result.episodes[i].thumbnail = show.thumbnail;
+          data.result.episodes[i].thumbnail = (show !== undefined ? show.thumbnail : '');
         }
 
         // save cache

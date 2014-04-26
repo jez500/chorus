@@ -132,3 +132,27 @@ $album-margin-right: $album-meta-width + 10;
 }
 
 
+.album-style {
+  // turn full albums into cards
+  padding: 5px;
+  &.as-cards {
+    padding: 10px;
+    .album-row {
+      float: left;
+      clear: none;
+      padding: 6px;
+      .tracks,
+      .album-title {
+        display: none;
+      }
+      .album-info {
+        .card {
+          @include card-resize(163px, 210px, 163px);
+        }
+        .details {
+          display: block;
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,10 @@
 <div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %>">
     <div class="video-side">
         <div class="video-thumb">
-            <img src="<%= app.image.url(thumbnail) %>" />
+            <% if(widethumb != ''){ %>
+              <img src="<%= app.image.url(widethumb) %>" class="widethumb" />
+            <% } %>
+            <img src="<%= app.image.url(thumbnail) %>" class="thumb" />
             <div class="actions-wrapper tvshow-actions-wrapper">
                 <div class="actions tvshow-actions<%= (thumbsup ? ' thumbs-up' : '') %>" data-id="<%= tvshowid %>">
                     <button class="tvshow-thumbsup btn" title="Thumbs Up"><i class="fa fa-thumbs-up"></i></button>

@@ -801,6 +801,17 @@ body {
     }
   }
 
+  &.section-mytv {
+    #content-wrapper {
+      position: fixed;
+      opacity: 0;
+      @include breakpoint($width-tablet){
+        position: static;
+        opacity: 1;
+      }
+    }
+  }
+
   // mobile-menu toggles
   &.section-playlists {
     #sidebar-second {

@@ -19,6 +19,12 @@ app.ui = {
     // title
     app.ui.setTitle('Loading', { addATag: '#', icon: 'refresh'});
 
+    // remove backstretch
+    var $bs = $('.backstretch');
+    if($bs.length > 0){
+       $.backstretch("destroy", false);
+    }
+
   },
 
 
@@ -82,6 +88,10 @@ app.ui = {
    */
   getTitle: function(){
     return app.currentPageTitle;
+  },
+
+  renderNoResult: function(text){
+    $('#content').html('<div class="loading-box no-result">' + (text === undefined ? 'Nothing found' : text) + '</div>');
   }
 
 };

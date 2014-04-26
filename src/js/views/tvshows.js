@@ -238,6 +238,10 @@ app.TvshowView = Backbone.View.extend({
 
     model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
 
+    model.widethumb = (model.type == 'episode' ? model.thumbnail : model.fanart);
+
+    model.watchedText = self.watchedStatsParse();
+
     //main detail
     this.$el.html(this.template(model));
 
@@ -379,6 +383,17 @@ app.TvshowView = Backbone.View.extend({
 
     app.VideoController.stream(player, this.model.attributes);
 
+  },
+
+  watchedStatsParse: function(){
+    var model = this.model.attributes;
+console.log(model);
+    switch(model.type){
+      case 'tvshow':
+
+        break;
+    }
+    return 'text';
   }
 
 

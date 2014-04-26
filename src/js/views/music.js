@@ -16,6 +16,13 @@ app.MusicView = Backbone.View.extend({
 
   initialize:function () {
 
+    this.model.viewStyle = this.getViewStyle();
+
+  },
+
+  events: {
+    "click .view-cards": "viewCards",
+    "click .view-songs": "viewSongs"
   },
 
 
@@ -98,17 +105,25 @@ app.MusicView = Backbone.View.extend({
 
       // build
       //var $content = $('<div />');
-      var $content = $('#content');
-      $content.empty();
+      var $content = $('#content'),
+        $albums = $('<div />', {class: 'album-style as-' + self.model.viewStyle});
+
       $.each(albumsAdded.models, function(i,d){
-        $content.append(self.renderFullAlbum(d));
+        $albums.append(self.renderFullAlbum(d));
       });
 
+      self.$el.empty();
+      self.$el.append(self.renderViewToggle());
+      self.$el.append($albums);
+
       // fanart
-      $content.prepend(app.image.getFanartFromCollection(albumsAdded));
-      return $content;
+      self.$el.prepend(app.image.getFanartFromCollection(albumsAdded));
+
+      $content.html(self.$el);
 
     }});
+
+    return this;
   },
 
 
@@ -125,17 +140,25 @@ app.MusicView = Backbone.View.extend({
 
       // build
       //var $content = $('<div />');
-      var $content = $('#content');
-      $content.empty();
+      var $content = $('#content'),
+        $albums = $('<div />', {class: 'album-style as-' + self.model.viewStyle});
+
       $.each(albumsPlayed.models, function(i,d){
-        $content.append(self.renderFullAlbum(d));
+        $albums.append(self.renderFullAlbum(d));
       });
 
+      self.$el.empty();
+      self.$el.append(self.renderViewToggle());
+      self.$el.append($albums);
+
       // fanart
-      $content.prepend(app.image.getFanartFromCollection(albumsPlayed));
-      return $content;
+      self.$el.prepend(app.image.getFanartFromCollection(albumsPlayed));
+
+      $content.html(self.$el);
 
     }});
+
+    return this;
   },
 
 
@@ -247,6 +270,54 @@ app.MusicView = Backbone.View.extend({
 
     return $album;
 
+  },
+
+
+  /**
+   * Gets last used view for this list
+   *
+   * @param type
+   * @returns {*}
+   */
+  getViewStyle: function(){
+    return app.settings.get('list-style-' + this.model.page, 'cards');
+  },
+
+  /**
+   * Change to card view
+   */
+  viewCards: function(){
+    $('.album-style').removeClass('as-songs').addClass('as-cards');
+    // set active toggle
+    $('.view-toggles .btn').removeClass('active');
+    $('.btn.view-cards').addClass('active');
+    // remember setting
+    app.settings.set('list-style-' + this.model.page, 'cards');
+  },
+
+  /**
+   * Change to song list view
+   */
+  viewSongs: function(){
+    $('.album-style').addClass('as-songs').removeClass('as-cards');
+    // set active toggle
+    $('.view-toggles .btn').removeClass('active');
+    $('.btn.view-songs').addClass('active');
+    // remember setting
+    app.settings.set('list-style-' + this.model.page, 'songs');
+  },
+
+
+  /**
+   * Return toggle buttons
+   * @returns {string}
+   */
+  renderViewToggle: function(){
+    var state = this.getViewStyle();
+    return '<div class="view-toggles"> ' +
+      '<button class="btn view-songs ' + (state == 'songs' ? 'active' : '') + '"><i class="fa fa-list"></i></button>' +
+      '<button class="btn view-cards ' + (state == 'cards' ? 'active' : '') + '"><i class="fa fa-th-large"></i></button>' +
+      '</div>';
   }
 
 

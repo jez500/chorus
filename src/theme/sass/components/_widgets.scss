@@ -399,6 +399,7 @@ input[type="text"] {
 
 // artist/movie/tv
 .content-fanart {
+  background: $color-concrete;
   overflow: hidden;
   height: 210px;
   margin-top: -#{$height-header + 10};
@@ -433,4 +434,33 @@ input[type="text"] {
   font-size: 17px;
   text-align: center;
   color: #555;
+}
+
+.view-toggles {
+  background: rgba(59, 63, 64, 0.5);
+  .btn {
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
+    &.active {
+      color: rgba(255,255,255,0.8);
+      background: none;
+    }
+    &:focus,
+    &:hover {
+      color: #fff;
+      background: none;
+    }
+  }
+  @include breakpoint($width-tablet){
+    background: none;
+    margin-top: -41px;
+    z-index: 10;
+    float: right;
+    margin-right: 10px;
+    position: relative;
+    .btn {
+      font-size: 14px;
+
+    }
+  }
 }

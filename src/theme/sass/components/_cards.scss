@@ -153,7 +153,16 @@
 
     @include card-resize(228px, 197px, 144px);
     &.active {
-      outline: #D7DCDD solid medium;
+      background: $color-invert-bg;
+      p.item-title a {
+        color: $color-invert-text;
+      }
+      .actions-wrapper {
+        //opacity: 0.4;
+      }
+      p:after {
+        display: none;
+      }
     }
 
   } @else { // small (default) //////////////////////
@@ -169,8 +178,9 @@
 
   }
 
-
 }
+
+
 
 
 
@@ -188,7 +198,7 @@
   cursor: default;
   @include watched-style;
 
-  zoom: 0.8;
+  //zoom: 0.8;
   @include breakpoint($width-mobile){
     zoom: 1;
   }

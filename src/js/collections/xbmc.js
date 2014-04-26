@@ -145,6 +145,7 @@ app.AlbumRecentlyAddedXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.albums === undefined){ return []; }
     // mark as recently added in the model
     $.each(resp.albums, function(i,d){
       resp.albums[i].recent = 'added';
@@ -176,6 +177,8 @@ app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.albums === undefined){ return []; }
+    console.log(resp);
     // mark as recently played in the model
     $.each(resp.albums, function(i,d){
       resp.albums[i].recent = 'played';
@@ -210,6 +213,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.artists === undefined){ return []; }
     return app.helpers.buildUrls(resp.artists, 'artist', 'artistid');
   }
 });
@@ -246,6 +250,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.movies === undefined){ return []; }
     return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });
@@ -269,6 +274,7 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.movies === undefined){ return []; }
     return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });
