@@ -1,3 +1,7 @@
+/**
+ * Chorus main app object
+ * This file mainly deals with routing
+ */
 var app = {
 
   views: {},

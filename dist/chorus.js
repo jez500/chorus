@@ -15009,7 +15009,11 @@ $(document).ready(function(){
     return old.apply(this, arguments);
   };
 })($.fn.attr);
-;var app = {
+;/**
+ * Chorus main app object
+ * This file mainly deals with routing
+ */
+var app = {
 
   views: {},
 
