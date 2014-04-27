@@ -59,8 +59,15 @@ app.settings = {
     }
     // return storage
     return s;
-  }
+  },
 
+
+  /**
+   * Get Beer url
+   */
+   getBeerUrl: function(){
+     return 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ZCGV976794JHE&lc=AU&item_name=Chorus%20Beer%20Fund&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted';
+   }
 
 
 };

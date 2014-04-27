@@ -350,13 +350,40 @@ input[type="text"] {
       color: #4F5861;
       text-align: left;
       padding: 10px 10px 11px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.44);
+      //border-bottom: 1px solid rgba(255, 255, 255, 0.44);
       &:hover {
-        background: #f8f8f8;
+        background: rgba(110, 115, 116, 0.10);
       }
       &.active {
         background: $color-asbestos;
         color: $color-whitesmoke;
+      }
+    }
+    .list-heading {
+      font-size: 17px;
+      line-height: 45px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 0px 15px 0;
+      color: #6E7374;
+      margin-top: 10px;
+      position: relative;
+      i {
+        font-size: 15px;
+        color: rgba(0, 0, 0, 0.3);
+        padding-right: 5px;
+      }
+      .menu {
+        position: absolute;
+        right: 0px;
+        top: -5px;
+        padding: 5px 15px;
+        display: block;
+        cursor: pointer;
+        &:hover {
+          i {
+            color: #444;
+          }
+        }
       }
     }
   }

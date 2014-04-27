@@ -17,6 +17,8 @@ app.notifications = {
   // playlist add timeout object
   plTimeout: {},
 
+  inputTimeout: false,
+
   /**
    * Kick off our connection and bind callbacks
    */
@@ -100,11 +102,13 @@ app.notifications = {
       // playback started
       case 'Player.OnPlay':
         self.getNowPlaying();
+        app.ui.timerStart();
         break;
 
       // playback stopped
       case 'Player.OnStop':
         self.getNowPlaying();
+        app.ui.timerStop();
         break;
 
       // eg. shuffled, repeat, partymode
@@ -117,6 +121,7 @@ app.notifications = {
       case 'Player.OnPause':
         app.cached.nowPlaying.player.pause = 0;
         self.updateState();
+        app.ui.timerStop();
         break;
 
       // progress changed
@@ -166,11 +171,24 @@ app.notifications = {
       // input box has opened
       case 'Input.OnInputRequested':
         $window.trigger('Input.OnInputRequested');
+        var wait = 60;
+
+        // We set a timeout for {wait} seconds for a fallback for no input
+        // this is to prevent an open dialog preventing api requests
+        app.notifications.inputTimeout = setTimeout(function(){
+          var msg = '<p>About ' + wait + ' seconds ago, an input dialog opened on xbmc and it is still open! To prevent ' +
+            'a mainframe implosion, you should probably give me some text. I don\'t really care what it is at this point, ' +
+            'why not be creative? Do you have a <a href="http://goo.gl/PGE7wg" target="_blank">word of the day</a>? I won\'t tell...</p>';
+          app.xbmcController.inputRequestedDialog(msg);
+        }, (1000 * wait));
+
         break;
 
       // input box has closed
       case 'Input.OnInputFinished':
         $window.trigger('Input.OnInputFinished');
+        clearTimeout(app.notifications.inputTimeout);
+        app.helpers.dialogClose();
         break;
 
       // xbmc shutdown

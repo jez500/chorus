@@ -178,7 +178,6 @@ app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
   //return the artists key from the result
   parse:  function(resp, xhr){
     if(resp.albums === undefined){ return []; }
-    console.log(resp);
     // mark as recently played in the model
     $.each(resp.albums, function(i,d){
       resp.albums[i].recent = 'played';

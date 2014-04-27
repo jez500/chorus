@@ -95,7 +95,8 @@ app.searchView = Backbone.View.extend({
     app.addOns.ready(function(){
       // get addons
       var $addons = $('#search-addons');
-      $addons.html(app.addOns.invokeAll('searchAddons', $addons, key));
+      $addons.empty();
+      app.addOns.invokeAll('searchAddons', $addons, key);
     });
 
   },

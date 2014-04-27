@@ -25,7 +25,6 @@
   background: #aaa;
 }
 .playlist,
-.custom-lists,
 .browser-playlist-song-list {
   padding: 2px;
 
@@ -233,82 +232,44 @@
 }
 
 .custom-lists {
-  li.list-item {
-    .name {
-      padding: 5px 10px 5px 15px;;
-      cursor: pointer;
-      height: 30px;
-      line-height: 30px;
-      display: block;
-    }
-    a.name {
-      height: 40px;
-      color: $color-dark-xbmc;
-    }
+  a {
     .meta {
-      display: none;
-      font-size: 80%;
-      color: #ddd;
-      padding-left: 5px;
-      .list-actions {
-        margin: 0 -10px -10px;
-        .cbutton {
-          display: inline-block;
-          padding: 6px 12px;
-          margin: 15px 1px 0 0;
-          background: rgba(235, 236, 236, 0.4);
-          color: #FFF;
-          cursor: pointer;
-          &:hover {
-            background: $color-dark-xbmc;
-          }
-        }
-      }
+      font-size: 11px;
+      color: #aaa;
+      opacity: 0;
+      @include transition(0.3s all linear);
     }
-    .del {
-      display: none;
-    }
-    &.open {
-      height: auto;
-      background: $color-asbestos;
-      .name {
-        background: $color-header;
-        font-weight: bold;
-        color: #fff;
-      }
-      .del {
-        display: block;
-        position: absolute;
-        right: 0;
-        top: 0;
-        text-align: center;
-        height: 40px;
-        line-height: 40px;
-        color: rgba(215, 216, 216, 0.55);
-        width: 40px;
-        font-size: 15px;
-        cursor: pointer;
-        &:hover {
-          color: $color-mist;
-        }
-      }
+    &:hover {
       .meta {
-        display: inline;
+        opacity: 1;
       }
     }
   }
 }
 
-//// Music
-//body.activePlayer-0 {
-//  .active-player-tabs li.player-audio {
-//    @include player-tab-active;
-//  }
-//}
-//
-//// Video
-//body.activePlayer-1 {
-//  .active-player-tabs li.player-video {
-//    @include player-tab-active;
-//  }
-//}
+
+.playlist-song-list {
+  .playlist-actions {
+    position: relative;
+    top: auto;
+    right: auto;
+    display: block;
+    margin: -10px -10px 10px;
+    background: #eee;
+    height: 34px;
+    .dropdown-menu {
+      max-width: 200px;
+    }
+    small {
+      font-size: 13px;
+      color: #B6B6B6;
+      display: inline-block;
+      padding: 9px 15px;
+    }
+  }
+}
+.section-playlists {
+  .playlist-actions {
+    display: none;
+  }
+}

@@ -16,11 +16,11 @@ var notificationTimoutObj = {};
  * Generic Helper Utils Binds
  */
 $(window).on('shellReady', function(){
-  // Get our dialog ready for use
-  app.helpers.dialogInit();
   // get version
   $.get('addon.xml',function(data){
     app.addonData = $(data).find('addon').attr();
+    // Get our dialog ready for use
+    app.helpers.dialogInit();
   });
 });
 
@@ -253,6 +253,16 @@ $(document).ready(function(){
     var seconds = totalSec % 60;
 
     return { hours: hours, minutes: minutes, seconds: seconds };
+  };
+
+
+  /**
+   * Convert time to seconds
+   */
+  app.helpers.timeToSec = function(time){
+    var hours = parseInt( time.hours ) * (60 * 60);
+    var minutes = parseInt( time.minutes ) * 60;
+    return parseInt( hours ) + parseInt( minutes) + parseInt( time.seconds );
   };
 
 
@@ -737,6 +747,25 @@ $(document).ready(function(){
 
 
   /**
+   * Simple info only, ok button to close
+   *
+   * @param title
+   * @param msg
+   */
+  app.helpers.info = function(title, msg){
+    var opts = {
+      title: title,
+      buttons: {
+        "OK": function(){
+          $( this ).dialog( "close" );
+        }
+      }
+    };
+    app.helpers.dialog(msg, opts);
+  };
+
+
+  /**
    * About Dialog
    */
   app.helpers.aboutDialog = function(){
@@ -870,18 +899,29 @@ $(document).ready(function(){
           key: 'song',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'song-download', title: 'Download song', callback: function(){
-              app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
-            }},
             {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist', callback: function(){
-              //@TODO do an id lookup if no songid
-              if(model.songid){ app.playlists.playlistAddItems('lists', 'new', 'song', model.songid); }
-            }},
-            {url: '#', class: 'song-browser-play', title: 'Play in browser', callback: function(){
-              if(model.songid){ app.playlists.playlistAddItems('local', 'replace', 'song', model.songid); }
+              // is there a songid?
+              if(parseInt( model.songid ) > 0){
+                app.playlists.playlistAddItems('lists', 'new', 'song', model.songid);
+              } else {
+                // file item
+                app.playlists.saveCustomPlayListsDialog('local', [model], false, false); // no redirect
+              }
             }}
           ]
         };
+
+        // if songid add extra options
+        // @todo fix this
+        if(parseInt( model.songid ) > 0){
+          opts.items.push({url: '#', class: 'song-download', title: 'Download song', callback: function(){
+            app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
+          }});
+          opts.items.push({url: '#', class: 'song-browser-play', title: 'Play in browser', callback: function(){
+            if(model.songid){ app.playlists.playlistAddItems('local', 'replace', 'song', model.songid); }
+          }});
+        }
+
         break;
 
       // also contains callbacks

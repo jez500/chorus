@@ -205,6 +205,20 @@ app.AudioController.insertAndPlay = function(type, id, callback){
 };
 
 
+
+/**
+ * Player Open (raw call, avoids playlist)
+ * Use sparingly
+ *
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.AudioController.playerOpen = function(type, id, callback){
+  app.playlists.playerOpen(app.AudioController.playlistId, type, id, callback);
+};
+
+
 /**
  * Gets a download url for a file
  * @param file

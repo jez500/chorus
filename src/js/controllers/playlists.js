@@ -20,11 +20,13 @@ $(window).on('shellReady', function(){
   $('.playlist-actions-wrapper', this.$el).html(
     app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
   );
-  //add custom playlists to dom
-  app.playlists.addCustomPlayLists(function(view){
-    var $sb = $('#playlist-lists', self.$el);
-    $sb.html(view.render().el);
-  });
+
+//  //add custom playlists to dom
+//  app.playlists.addCustomPlayLists(function(view){
+//    var $sb = $('#playlist-lists', self.$el);
+//    $sb.html(view.render().el);
+//  });
+
 });
 
 
@@ -128,6 +130,8 @@ app.playlists.playlistGetItems = function(type, delta, callback){
         callback(res);
       }});
       break;
+
+
   }
 
   // callback
@@ -256,10 +260,12 @@ app.playlists.addFileFieldToSongCollection = function(collection){
   $.each(collection.models, function(i,d){
     // get song from dictionary
     var song = app.store.getSongBy('id', d.attributes.songid);
-    // add the file field
-    d.attributes.file = song.file;
-    // save
-    collection.models[i] = d;
+    // add the file field if we have it
+    if(song !== null){
+      d.attributes.file = song.file;
+      // save
+      collection.models[i] = d;
+    }
   });
 
   // return parsed collection
@@ -360,11 +366,12 @@ app.playlists.changePlaylistView = function(type){
  * @param hideList
  *  set to true if you only want the add new option
  */
-app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
+app.playlists.saveCustomPlayListsDialog = function(type, items, hideList, redirect){
 
   // validate type & items
   type = (typeof type == 'undefined' ? 'xbmc' : type);
   items = (typeof items == 'undefined' ? [] : items);
+  redirect = (typeof redirect == 'undefined' ? true : redirect);
 
   // vars
   var lists = app.playlists.getCustomPlaylist(),
@@ -375,7 +382,7 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
   }
 
   // for when we want to force create a new list
-  if(typeof hideList != 'undefined'){
+  if(typeof hideList != 'undefined' && hideList === true){
     htmlList = '';
   }
 
@@ -393,7 +400,10 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
     var name = $('#newlistname').val(),
       pl = app.playlists.saveCustomPlayLists('new', name, type, items);
     app.helpers.dialogClose();
-    document.location = '#playlist/' + pl.id;
+    if(redirect){
+      document.location = '#playlist/' + pl.id;
+    }
+    app.notification('Playlist updated');
   });
 
   // add to existing
@@ -401,7 +411,10 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
     var id = $(this).data('id'),
       pl = app.playlists.saveCustomPlayLists('existing', id, type, items);
     app.helpers.dialogClose();
-    document.location = '#playlist/' + pl.id;
+    if(redirect){
+      document.location = '#playlist/' + pl.id;
+    }
+    app.notification('Playlist updated');
   });
 
 };
@@ -606,7 +619,7 @@ app.playlists.updateCustomPlayLists = function(){
 
   //custom playlists
   app.playlists.addCustomPlayLists(function(view){
-    $('#playlist-lists').html(view.render().el);
+    $('#sidebar-after').html(view.render().el);
   });
 
 };
@@ -663,7 +676,8 @@ app.playlists.getDropdown = function(){
     buttons = {
       append: 'Add to playlist',
       replace: 'Replace playlist',
-      'browser-replace': 'Play in browser'
+      'browser-replace': 'Play in browser',
+      export: 'Export Playlist'
     };
 
   if(type != 'thumbsup'){
@@ -876,8 +890,35 @@ app.playlists.playlistClear = function(playlistId, callback){
  * @param callback
  */
 app.playlists.playlistPlayPosition = function(playlistId, position, callback){
-  app.xbmcController.command('Player.Open', [{"playlistid": playlistId,"position":position}], function(result){
-    callback(result.result); // return items
+  app.playlists.playerOpen(playlistId, "position", position, callback);
+};
+
+
+
+/**
+ * Call Player.Open directly and does not add the item to the playlist
+ * should only be called directly only if the item cannot be added to the
+ * playlist. eg streams, partymode, etc.
+ *
+ * @param playlistId
+ * @param type
+ *  eg position
+ * @param value
+ *  eg 5
+ * @param callback
+ */
+app.playlists.playerOpen = function(playlistId, type, value, callback){
+  var data = {};
+  // only l
+  if(type == 'position'){
+    data.playlistid = playlistId;
+  }
+  data[type] = value;
+
+  app.xbmcController.command('Player.Open', [data], function(result){
+    if(callback){
+      callback(result.result); // return items
+    }
   });
 };
 
@@ -928,12 +969,24 @@ app.playlists.setPartyMode = function(playlistId, callback){
 
   var data = app.playlists.getNowPlaying('player');
 
-  app.xbmcController.command('Player.setPartyMode', [ playlistId, (data.partymode !== true)], function(result){
-    app.notification('Partymode ' + (!data.partymode ? 'on' : 'off'));
-    if(callback){
-      callback(result.result); // return items
-    }
-  });
+  // partymode off, so start it!
+  if(data.partymode === false){
+    var type = (playlistId === 0 ? 'music' : 'video');
+    app.playlists.playerOpen(playlistId, 'partymode', type, function(result){
+      app.notification('Partymode on');
+      if(callback){
+        callback(result.result); // return items
+      }
+    });
+  } else {
+    // Stop partymode
+    app.xbmcController.command('Player.setPartyMode', [ playlistId, false], function(result){
+      app.notification('Partymode off');
+      if(callback){
+        callback(result.result); // return items
+      }
+    });
+  }
 
 };
 
@@ -1033,6 +1086,19 @@ app.playlists.insertAndPlay = function(playlistId, type, id, callback){
 
 };
 
+
+
+
+/**
+ * Starts streaming something
+ *
+ * @param playlistId
+ * @param url
+ * @param callback
+ */
+app.playlists.playStream = function(playlistId, url, callback){
+
+};
 
 
 /**

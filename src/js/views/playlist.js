@@ -243,8 +243,7 @@ app.PlaylistCustomListsView = Backbone.View.extend({
   className:'custom-lists',
 
   events: {
-    "dblclick li": "replacePlaylist",
-    "click .name": "toggleDetail"
+    "dblclick li": "replacePlaylist"
   },
 
   initialize:function () {
@@ -254,7 +253,12 @@ app.PlaylistCustomListsView = Backbone.View.extend({
   render:function () {
 
     this.$el.empty();
-    var pos = 0;
+    var pos = 0,
+      self = this;
+
+//    if(this.model.models.length === 0){
+//      return this;
+//    }
 
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
@@ -263,22 +267,52 @@ app.PlaylistCustomListsView = Backbone.View.extend({
       this.$el.append(el.el);
     }, this);
 
-    // Add thumbs up to the top
-    this.$el.prepend('<li class="list-item thumbsup-link"><a href="#thumbsup" class="name">Thumbs Up</a></li>');
+    // Add heading
+    this.$el.prepend('<li class="list-heading"><i class="fa fa-file"></i> Lists</li>');
+    // menu for heading
+    var $menu = $('<span class="menu lists-menu"><i class="fa fa-ellipsis-v"></i></span>');
+    // bind click
+    $menu.on('click', function(e){
+      self.showDialog();
+    });
+    // add to heading
+    $('.list-heading', this.$el).append($menu);
 
     return this;
   },
 
-  toggleDetail: function(e){
-    var $this = $(e.target),
-      $parent = $this.closest('li');
 
-    if($parent.hasClass('open')){
-      $parent.removeClass('open');
-    } else {
-      $parent.parent().find('li').removeClass('open');
-      $parent.addClass('open');
-    }
+  /**
+   * Open the dialog
+   */
+  showDialog: function(){
+
+    // dialog structure
+    var structure = {
+      title: 'Custom Lists',
+      key: 'customList',
+      omitwrapper: true,
+      items: [
+        {url: '#', class: 'lists-new', title: 'Add a new list', callback: function(){
+          // Create a list
+          app.playlists.saveCustomPlayListsDialog('song', [], true);
+        }},
+        {url: '#', class: 'lists-remove-all', title: 'Delete all lists', callback: function(){
+          // delete all lists prompt
+          app.helpers.confirm('Are you sure? This will remove ALL browser playlists and cannot be undone!', function(){
+            app.storageController.setStorage(app.playlists.storageKeyLists, []);
+            app.notification('All playlists removed, refresh your browser');
+          });
+        }},
+        {url: '#', class: 'lists-import', title: 'Import a list', callback: function(){
+          // import list
+          app.ui.featureNotBuiltDialog();
+        }}
+      ]
+    };
+
+    // do the dialog
+    app.helpers.menuDialog(structure);
 
   }
 
@@ -303,6 +337,9 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
 
   render:function () {
     this.$el.html(this.template(this.model.attributes));
+    if(app.helpers.arg(0) == 'playlist' && app.helpers.arg(1) == this.model.attributes.id){
+      this.$el.find('a').addClass('active');
+    }
     return this;
   }
 

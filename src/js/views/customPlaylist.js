@@ -13,6 +13,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     "click .playlist-replace": "replacePlaylist",
     "click .playlist-browser-replace": "browserReplacePlaylist",
     "click .playlist-delete": "deleteCustomListPlaylist",
+    "click .playlist-export": "exportCustomListPlaylist",
     "click .thumbsup-append": "appendThumbsup",
     "click .thumbsup-replace": "replaceThumbsup",
     "click .thumbsup-browser-replace": "browserReplacePlaylist"
@@ -49,6 +50,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     // menu
     var menu = app.playlists.getDropdown();
     this.$el.prepend(menu);
+    $('.playlist-actions', this.$el).prepend('<small>' + this.model.models.length + ' items</small>');
 
     return this;
   },
@@ -217,7 +219,18 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
         callback(result);
       }
     });
+  },
+
+
+  /**
+   * Export a custom playlist
+   */
+  exportCustomListPlaylist: function(e){
+    e.preventDefault();
+    app.ui.featureNotBuiltDialog();
   }
+
+
 });
 
 

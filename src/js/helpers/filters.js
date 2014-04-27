@@ -196,6 +196,17 @@ app.filters = {
       }
     }
 
+    // Add custom playlists to music
+    // @todo incorporate in a nicer way
+    if(type == 'music'){
+      $links.append($('<div />', {id: 'sidebar-after'}));
+      //add custom playlists to dom
+      app.playlists.addCustomPlayLists(function(view){
+        var $sb = $('#sidebar-after', $links);
+        $sb.html(view.render().$el);
+      });
+    }
+
     // Build
     $container.append($sort);
 

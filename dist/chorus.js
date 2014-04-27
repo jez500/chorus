@@ -13810,11 +13810,11 @@ var notificationTimoutObj = {};
  * Generic Helper Utils Binds
  */
 $(window).on('shellReady', function(){
-  // Get our dialog ready for use
-  app.helpers.dialogInit();
   // get version
   $.get('addon.xml',function(data){
     app.addonData = $(data).find('addon').attr();
+    // Get our dialog ready for use
+    app.helpers.dialogInit();
   });
 });
 
@@ -14047,6 +14047,16 @@ $(document).ready(function(){
     var seconds = totalSec % 60;
 
     return { hours: hours, minutes: minutes, seconds: seconds };
+  };
+
+
+  /**
+   * Convert time to seconds
+   */
+  app.helpers.timeToSec = function(time){
+    var hours = parseInt( time.hours ) * (60 * 60);
+    var minutes = parseInt( time.minutes ) * 60;
+    return parseInt( hours ) + parseInt( minutes) + parseInt( time.seconds );
   };
 
 
@@ -14531,6 +14541,25 @@ $(document).ready(function(){
 
 
   /**
+   * Simple info only, ok button to close
+   *
+   * @param title
+   * @param msg
+   */
+  app.helpers.info = function(title, msg){
+    var opts = {
+      title: title,
+      buttons: {
+        "OK": function(){
+          $( this ).dialog( "close" );
+        }
+      }
+    };
+    app.helpers.dialog(msg, opts);
+  };
+
+
+  /**
    * About Dialog
    */
   app.helpers.aboutDialog = function(){
@@ -14664,18 +14693,29 @@ $(document).ready(function(){
           key: 'song',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'song-download', title: 'Download song', callback: function(){
-              app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
-            }},
             {url: '#', class: 'song-custom-playlist', title: 'Add to custom playlist', callback: function(){
-              //@TODO do an id lookup if no songid
-              if(model.songid){ app.playlists.playlistAddItems('lists', 'new', 'song', model.songid); }
-            }},
-            {url: '#', class: 'song-browser-play', title: 'Play in browser', callback: function(){
-              if(model.songid){ app.playlists.playlistAddItems('local', 'replace', 'song', model.songid); }
+              // is there a songid?
+              if(parseInt( model.songid ) > 0){
+                app.playlists.playlistAddItems('lists', 'new', 'song', model.songid);
+              } else {
+                // file item
+                app.playlists.saveCustomPlayListsDialog('local', [model], false, false); // no redirect
+              }
             }}
           ]
         };
+
+        // if songid add extra options
+        // @todo fix this
+        if(parseInt( model.songid ) > 0){
+          opts.items.push({url: '#', class: 'song-download', title: 'Download song', callback: function(){
+            app.AudioController.downloadFile(model.file, function(url){ window.location = url; });
+          }});
+          opts.items.push({url: '#', class: 'song-browser-play', title: 'Play in browser', callback: function(){
+            if(model.songid){ app.playlists.playlistAddItems('local', 'replace', 'song', model.songid); }
+          }});
+        }
+
         break;
 
       // also contains callbacks
@@ -14987,6 +15027,8 @@ $(document).ready(function(){
 
   nextPageLoading: false,
 
+  playingInterval: false,
+
   // variables (settings defaults)
   vars: {
     lastHash: '#',
@@ -15255,7 +15297,7 @@ app.Router = Backbone.Router.extend({
     if(id !== undefined){
       m.id = id;
     } else {
-      app.ui.setLoading('Playlist', true);
+      app.ui.setLoading('Music', true);
     }
 
     // menu
@@ -15307,12 +15349,16 @@ app.Router = Backbone.Router.extend({
       app.cached.customPlaylistSongListView = new app.CustomPlaylistSongListView({"model":res});
       self.$content.html(app.cached.customPlaylistSongListView.render().el);
 
+      // menu
+      app.filters.renderFilters('music');
+      $('.music-filters').addClass('active-pl active-pl-' + id);
+
       // set title
       var list = app.playlists.getCustomPlaylist(id);
       app.ui.setTitle('Playlist', {addATag: '#playlist/' + list.id, icon: 'music', subTitle: list.name});
 
       // set menu
-      app.shellView.selectMenuItem('playlist', 'no-sidebar');
+      app.shellView.selectMenuItem('playlist', 'sidebar');
 
     }});
 
@@ -16352,6 +16398,17 @@ app.fields = {
       }
     }
 
+    // Add custom playlists to music
+    // @todo incorporate in a nicer way
+    if(type == 'music'){
+      $links.append($('<div />', {id: 'sidebar-after'}));
+      //add custom playlists to dom
+      app.playlists.addCustomPlayLists(function(view){
+        var $sb = $('#sidebar-after', $links);
+        $sb.html(view.render().$el);
+      });
+    }
+
     // Build
     $container.append($sort);
 
@@ -16768,8 +16825,15 @@ app.settings = {
     }
     // return storage
     return s;
-  }
+  },
 
+
+  /**
+   * Get Beer url
+   */
+   getBeerUrl: function(){
+     return 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ZCGV976794JHE&lc=AU&item_name=Chorus%20Beer%20Fund&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted';
+   }
 
 
 };;/**
@@ -16792,6 +16856,12 @@ app.ui = {
 
     // title
     app.ui.setTitle('Loading', { addATag: '#', icon: 'refresh'});
+
+    // remove backstretch
+    var $bs = $('.backstretch');
+    if($bs.length > 0){
+       $.backstretch("destroy", false);
+    }
 
   },
 
@@ -16856,7 +16926,90 @@ app.ui = {
    */
   getTitle: function(){
     return app.currentPageTitle;
+  },
+
+
+  /**
+   * Render no result html to #content
+   * @param text
+   */
+  renderNoResult: function(text){
+    $('#content').html('<div class="loading-box no-result">' + (text === undefined ? 'Nothing found' : text) + '</div>');
+  },
+
+
+  /**
+   * Open feature not yet built dialog
+   */
+  featureNotBuiltDialog: function(){
+    app.helpers.info(
+      'Feature not yet built',
+      'This is still just an idea, to help turn it into reality, ' + app.ui.beerLink('Beer') + ' is always a good incentive :)'
+    );
+  },
+
+
+  /**
+   * Beer link html
+   */
+  beerLink: function(text){
+    return '<a href="' + app.settings.getBeerUrl() + '" target="_blank">' + text + '</a>';
+  },
+
+
+  /**
+   * Start internal progress timer
+   * 1 second loop
+   */
+  timerStart: function(){
+    app.playingInterval = setTimeout(app.ui.timerUpdate,1000);
+  },
+
+
+  /**
+   * Stop the internal timer
+   */
+  timerStop: function(){
+    clearTimeout(app.playingInterval);
+  },
+
+
+  /**
+   * If playing, increase the time by 1 sec, refresh time and progress
+   * Will stop the timer if not playing, and restart it if playing
+   */
+  timerUpdate: function(){
+
+    var data = app.playlists.getNowPlaying();
+
+    // stop existing timers and restart if playing
+    app.ui.timerStop();
+
+    // is playing
+    if(data.status == 'playing' && data.player.time !== undefined){
+
+      // parse time
+      var cur = app.helpers.timeToSec(data.player.time) + 1,
+        dur = app.helpers.timeToSec(data.player.totaltime),
+        per = Math.ceil( ( (cur / dur )  * 100 ) ),
+        curObj = app.helpers.secToTime(cur);
+
+      // update cache with new time
+      app.cached.nowPlaying.player.time = curObj;
+
+      // update ui
+      $('#footer .time-cur').html(app.helpers.formatTime(curObj));
+      app.shellView.$progressSlider.slider( "value", per );
+
+      // Restart timer
+      app.ui.timerStart();
+    }
+
+
   }
+
+
+
 
 };
 
@@ -17079,6 +17232,9 @@ app.TVShow = Backbone.Model.extend({
       if($.inArray('fanart', fields) == -1){
         fields.push('fanart');
       }
+      if($.inArray('watchedepisodes', fields) == -1){
+        fields.push('watchedepisodes');
+      }
 
       // Fetch Show
       app.xbmcController.command('VideoLibrary.GetTVShowDetails',[parseInt(this.id), fields], function(data){
@@ -17114,9 +17270,11 @@ app.TVEpisode = Backbone.Model.extend({
 
   sync: function(method, model, options) {
     if (method === "read") {
-      // options.success(data);
 
-      app.xbmcController.command('VideoLibrary.GetEpisodeDetails',[parseInt(this.id), app.fields.get('tvepisode')], function(data){
+      var fields = app.fields.get('tvepisode');
+
+      // Get the episode
+      app.xbmcController.command('VideoLibrary.GetEpisodeDetails',[parseInt(this.id), fields], function(data){
         var m = data.result.episodedetails;
         // get thumbsup
         m.thumbsup = app.playlists.getThumbsUp('episode', m.episodeid);
@@ -17481,6 +17639,20 @@ app.AudioController.playSongById = function(songid, type, id, clearList){
  */
 app.AudioController.insertAndPlay = function(type, id, callback){
   app.playlists.insertAndPlay(app.AudioController.playlistId, type, id, callback);
+};
+
+
+
+/**
+ * Player Open (raw call, avoids playlist)
+ * Use sparingly
+ *
+ * @param type
+ * @param id
+ * @param callback
+ */
+app.AudioController.playerOpen = function(type, id, callback){
+  app.playlists.playerOpen(app.AudioController.playlistId, type, id, callback);
 };
 
 
@@ -18698,6 +18870,8 @@ app.notifications = {
   // playlist add timeout object
   plTimeout: {},
 
+  inputTimeout: false,
+
   /**
    * Kick off our connection and bind callbacks
    */
@@ -18781,11 +18955,13 @@ app.notifications = {
       // playback started
       case 'Player.OnPlay':
         self.getNowPlaying();
+        app.ui.timerStart();
         break;
 
       // playback stopped
       case 'Player.OnStop':
         self.getNowPlaying();
+        app.ui.timerStop();
         break;
 
       // eg. shuffled, repeat, partymode
@@ -18798,6 +18974,7 @@ app.notifications = {
       case 'Player.OnPause':
         app.cached.nowPlaying.player.pause = 0;
         self.updateState();
+        app.ui.timerStop();
         break;
 
       // progress changed
@@ -18847,11 +19024,24 @@ app.notifications = {
       // input box has opened
       case 'Input.OnInputRequested':
         $window.trigger('Input.OnInputRequested');
+        var wait = 60;
+
+        // We set a timeout for {wait} seconds for a fallback for no input
+        // this is to prevent an open dialog preventing api requests
+        app.notifications.inputTimeout = setTimeout(function(){
+          var msg = '<p>About ' + wait + ' seconds ago, an input dialog opened on xbmc and it is still open! To prevent ' +
+            'a mainframe implosion, you should probably give me some text. I don\'t really care what it is at this point, ' +
+            'why not be creative? Do you have a <a href="http://goo.gl/PGE7wg" target="_blank">word of the day</a>? I won\'t tell...</p>';
+          app.xbmcController.inputRequestedDialog(msg);
+        }, (1000 * wait));
+
         break;
 
       // input box has closed
       case 'Input.OnInputFinished':
         $window.trigger('Input.OnInputFinished');
+        clearTimeout(app.notifications.inputTimeout);
+        app.helpers.dialogClose();
         break;
 
       // xbmc shutdown
@@ -18926,11 +19116,13 @@ $(window).on('shellReady', function(){
   $('.playlist-actions-wrapper', this.$el).html(
     app.helpers.makeDropdown( app.helpers.menuTemplates('playlistShell') )
   );
-  //add custom playlists to dom
-  app.playlists.addCustomPlayLists(function(view){
-    var $sb = $('#playlist-lists', self.$el);
-    $sb.html(view.render().el);
-  });
+
+//  //add custom playlists to dom
+//  app.playlists.addCustomPlayLists(function(view){
+//    var $sb = $('#playlist-lists', self.$el);
+//    $sb.html(view.render().el);
+//  });
+
 });
 
 
@@ -19034,6 +19226,8 @@ app.playlists.playlistGetItems = function(type, delta, callback){
         callback(res);
       }});
       break;
+
+
   }
 
   // callback
@@ -19162,10 +19356,12 @@ app.playlists.addFileFieldToSongCollection = function(collection){
   $.each(collection.models, function(i,d){
     // get song from dictionary
     var song = app.store.getSongBy('id', d.attributes.songid);
-    // add the file field
-    d.attributes.file = song.file;
-    // save
-    collection.models[i] = d;
+    // add the file field if we have it
+    if(song !== null){
+      d.attributes.file = song.file;
+      // save
+      collection.models[i] = d;
+    }
   });
 
   // return parsed collection
@@ -19266,11 +19462,12 @@ app.playlists.changePlaylistView = function(type){
  * @param hideList
  *  set to true if you only want the add new option
  */
-app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
+app.playlists.saveCustomPlayListsDialog = function(type, items, hideList, redirect){
 
   // validate type & items
   type = (typeof type == 'undefined' ? 'xbmc' : type);
   items = (typeof items == 'undefined' ? [] : items);
+  redirect = (typeof redirect == 'undefined' ? true : redirect);
 
   // vars
   var lists = app.playlists.getCustomPlaylist(),
@@ -19281,7 +19478,7 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
   }
 
   // for when we want to force create a new list
-  if(typeof hideList != 'undefined'){
+  if(typeof hideList != 'undefined' && hideList === true){
     htmlList = '';
   }
 
@@ -19299,7 +19496,10 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
     var name = $('#newlistname').val(),
       pl = app.playlists.saveCustomPlayLists('new', name, type, items);
     app.helpers.dialogClose();
-    document.location = '#playlist/' + pl.id;
+    if(redirect){
+      document.location = '#playlist/' + pl.id;
+    }
+    app.notification('Playlist updated');
   });
 
   // add to existing
@@ -19307,7 +19507,10 @@ app.playlists.saveCustomPlayListsDialog = function(type, items, hideList){
     var id = $(this).data('id'),
       pl = app.playlists.saveCustomPlayLists('existing', id, type, items);
     app.helpers.dialogClose();
-    document.location = '#playlist/' + pl.id;
+    if(redirect){
+      document.location = '#playlist/' + pl.id;
+    }
+    app.notification('Playlist updated');
   });
 
 };
@@ -19512,7 +19715,7 @@ app.playlists.updateCustomPlayLists = function(){
 
   //custom playlists
   app.playlists.addCustomPlayLists(function(view){
-    $('#playlist-lists').html(view.render().el);
+    $('#sidebar-after').html(view.render().el);
   });
 
 };
@@ -19569,7 +19772,8 @@ app.playlists.getDropdown = function(){
     buttons = {
       append: 'Add to playlist',
       replace: 'Replace playlist',
-      'browser-replace': 'Play in browser'
+      'browser-replace': 'Play in browser',
+      export: 'Export Playlist'
     };
 
   if(type != 'thumbsup'){
@@ -19782,8 +19986,35 @@ app.playlists.playlistClear = function(playlistId, callback){
  * @param callback
  */
 app.playlists.playlistPlayPosition = function(playlistId, position, callback){
-  app.xbmcController.command('Player.Open', [{"playlistid": playlistId,"position":position}], function(result){
-    callback(result.result); // return items
+  app.playlists.playerOpen(playlistId, "position", position, callback);
+};
+
+
+
+/**
+ * Call Player.Open directly and does not add the item to the playlist
+ * should only be called directly only if the item cannot be added to the
+ * playlist. eg streams, partymode, etc.
+ *
+ * @param playlistId
+ * @param type
+ *  eg position
+ * @param value
+ *  eg 5
+ * @param callback
+ */
+app.playlists.playerOpen = function(playlistId, type, value, callback){
+  var data = {};
+  // only l
+  if(type == 'position'){
+    data.playlistid = playlistId;
+  }
+  data[type] = value;
+
+  app.xbmcController.command('Player.Open', [data], function(result){
+    if(callback){
+      callback(result.result); // return items
+    }
   });
 };
 
@@ -19834,12 +20065,24 @@ app.playlists.setPartyMode = function(playlistId, callback){
 
   var data = app.playlists.getNowPlaying('player');
 
-  app.xbmcController.command('Player.setPartyMode', [ playlistId, (data.partymode !== true)], function(result){
-    app.notification('Partymode ' + (!data.partymode ? 'on' : 'off'));
-    if(callback){
-      callback(result.result); // return items
-    }
-  });
+  // partymode off, so start it!
+  if(data.partymode === false){
+    var type = (playlistId === 0 ? 'music' : 'video');
+    app.playlists.playerOpen(playlistId, 'partymode', type, function(result){
+      app.notification('Partymode on');
+      if(callback){
+        callback(result.result); // return items
+      }
+    });
+  } else {
+    // Stop partymode
+    app.xbmcController.command('Player.setPartyMode', [ playlistId, false], function(result){
+      app.notification('Partymode off');
+      if(callback){
+        callback(result.result); // return items
+      }
+    });
+  }
 
 };
 
@@ -19939,6 +20182,19 @@ app.playlists.insertAndPlay = function(playlistId, type, id, callback){
 
 };
 
+
+
+
+/**
+ * Starts streaming something
+ *
+ * @param playlistId
+ * @param url
+ * @param callback
+ */
+app.playlists.playStream = function(playlistId, url, callback){
+
+};
 
 
 /**
@@ -20061,7 +20317,6 @@ app.pvr = {
 
     // lookup
     app.xbmcController.command('PVR.GetChannels', [group, app.fields.get('channel')], function(data){
-      console.log(data.result);
       callback(data.result.channels);
     });
 
@@ -20253,6 +20508,19 @@ app.VideoController.insertAndPlay = function(type, id, callback){
   app.playlists.insertAndPlay(app.VideoController.playlistId, type, id, callback);
 };
 
+
+
+/**
+ * Player Open (raw call, avoids playlist)
+ * Use sparingly
+ *
+ * @param type
+ * @param value
+ * @param callback
+ */
+app.VideoController.playerOpen = function(type, value, callback){
+  app.playlists.playerOpen(app.VideoController.playlistId, type, id, callback);
+};
 
 
 /**
@@ -20854,6 +21122,24 @@ app.xbmcController.entityLoadMultiple = function(type, items, callback){
 };
 
 
+/**
+ * Input requested from xbmc
+ * Opens prompt dialog and sends the user inputted text to xbmc via Input.SendText
+ *
+ * @param msg
+ */
+app.xbmcController.inputRequestedDialog = function(msg){
+  // If a dialog is not already open
+  if($('.ui-widget-overlay').length === 0){
+    // Prompt for input with the msg
+    app.helpers.prompt(msg, function(text){
+      app.xbmcController.command('Input.SendText', [text], function(res){
+        app.notification(text + ' sent');
+      });
+    });
+  }
+};
+
 
 ;/****************************************************************************
  * AUDIO
@@ -21002,6 +21288,7 @@ app.AlbumRecentlyAddedXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.albums === undefined){ return []; }
     // mark as recently added in the model
     $.each(resp.albums, function(i,d){
       resp.albums[i].recent = 'added';
@@ -21033,6 +21320,7 @@ app.AlbumRecentlyPlayedXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.albums === undefined){ return []; }
     // mark as recently played in the model
     $.each(resp.albums, function(i,d){
       resp.albums[i].recent = 'played';
@@ -21067,6 +21355,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.artists === undefined){ return []; }
     return app.helpers.buildUrls(resp.artists, 'artist', 'artistid');
   }
 });
@@ -21103,6 +21392,7 @@ app.MovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.movies === undefined){ return []; }
     return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });
@@ -21126,6 +21416,7 @@ app.AllMovieXbmcCollection = Backbone.Collection.extend({
   },
   //return the artists key from the result
   parse:  function(resp, xhr){
+    if(resp.movies === undefined){ return []; }
     return app.helpers.buildUrls(resp.movies, 'movie', 'movieid');
   }
 });
@@ -21513,11 +21804,8 @@ app.TvshowAllCollection = Backbone.Collection.extend({
 
       // no cache, do a lookup
       var allTv = new app.AllTvshowXbmcCollection({sort: sort});
+
       allTv.fetch({"success": function(data){
-
-        // Sort
-       // data.models.sort(function(a,b){ return app.helpers.aphabeticalSort(a.attributes.label, b.attributes.label);	});
-
         // Make a dictionary and flag as not loaded
         app.stores.allTvshowsLookup = {};
         for(var i in data.models){
@@ -21673,7 +21961,7 @@ app.RecentTvepisodeCollection = Backbone.Collection.extend({
           var ep = data.result.episodes[i],
             show = app.stores.allTvshowsLookup[ep.tvshowid];
           data.result.episodes[i].url = '#tvshow/' + ep.tvshowid + '/' + ep.season + '/' + ep.episodeid;
-          data.result.episodes[i].thumbnail = show.thumbnail;
+          data.result.episodes[i].thumbnail = (show !== undefined ? show.thumbnail : '');
         }
 
         // save cache
@@ -22668,6 +22956,12 @@ app.FileCollection = Backbone.Collection.extend({
         m.filetype = 'file';
       }
 
+      // if a stream
+      if(m.mimetype !== undefined &&
+        m.mimetype == "application/octet-stream"){
+        m.type = 'stream';
+      }
+
       // let addons tinker
       m = app.addOns.invokeAll('parseFileRecord', m);
 
@@ -23454,6 +23748,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     "click .playlist-replace": "replacePlaylist",
     "click .playlist-browser-replace": "browserReplacePlaylist",
     "click .playlist-delete": "deleteCustomListPlaylist",
+    "click .playlist-export": "exportCustomListPlaylist",
     "click .thumbsup-append": "appendThumbsup",
     "click .thumbsup-replace": "replaceThumbsup",
     "click .thumbsup-browser-replace": "browserReplacePlaylist"
@@ -23490,6 +23785,7 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
     // menu
     var menu = app.playlists.getDropdown();
     this.$el.prepend(menu);
+    $('.playlist-actions', this.$el).prepend('<small>' + this.model.models.length + ' items</small>');
 
     return this;
   },
@@ -23658,7 +23954,18 @@ app.CustomPlaylistSongListView = Backbone.View.extend({
         callback(result);
       }
     });
+  },
+
+
+  /**
+   * Export a custom playlist
+   */
+  exportCustomListPlaylist: function(e){
+    e.preventDefault();
+    app.ui.featureNotBuiltDialog();
   }
+
+
 });
 
 
@@ -24011,19 +24318,21 @@ app.FileView = Backbone.View.extend({
    * @param e
    */
   menu: function(e){
-
     e.preventDefault();
     var file = this.model.attributes,
       self = this;
-    app.AudioController.downloadFile(file.file, function(url){
-      if(file.sourcetype == 'music'){
-        file.label = file.title;
-        app.helpers.menuDialog( app.helpers.menuTemplates('song', file) );
-      } else {
-          file.downloadUrl = url;
-          app.helpers.menuDialog( self.getVideoDialog(file ));
-      }
-    });
+    self.getDialog();
+  },
+
+  getDialog: function(){
+    var file = this.model.attributes,
+      self = this;
+    if(file.sourcetype == 'music'){
+      file.label = file.title;
+      app.helpers.menuDialog( app.helpers.menuTemplates('song', file) );
+    } else {
+      app.helpers.menuDialog( self.getVideoDialog(file ));
+    }
   },
 
   getVideoDialog: function(model){
@@ -24033,9 +24342,12 @@ app.FileView = Backbone.View.extend({
       key: 'video',
       omitwrapper: true,
       items: [
-        {url: '#', class: 'video-download', title: '<a target="_blank" href="/' + model.url + '">Download</a>', callback: function(){
+        {url: '#', class: 'video-download', title: 'Download URL', callback: function(){
           // do nothing, url in a tag
           // window.location = url;
+          app.AudioController.downloadFile(file.file, function(url){
+            app.helpers.info( 'Download Url', '<p>' + url + '</p>' );
+          });
         }},
         {url: '#', class: 'video-stream', title: 'Stream Video', callback: function(){
           app.VideoController.stream('html5', model);
@@ -24101,12 +24413,20 @@ app.FileView = Backbone.View.extend({
 
     if(file.type == 'album' ||
       file.type == 'artist' ||
-      file.type == 'song' ||
+   //   file.type == 'song' ||
       file.type == 'movie' ||
       file.type == 'episode'){
 
+      // if not a stream
+      if(file.mimetype != "application/octet-stream"){
         ret.key = file.type + 'id';
         ret.value = file.id;
+      }
+
+    }
+
+    if(file.type == "directory"){
+      ret.key = file.type;
     }
 
     return ret;
@@ -24120,10 +24440,20 @@ app.FileView = Backbone.View.extend({
       controller = app[file.controller],
       typeid = this.fileGetTypeId(file);
 
-    controller.insertAndPlay(typeid.key, typeid.value, function(result){
-      app.notification(file.label + ' added to the playlist');
-      controller.playlistRender();
-    });
+//    if(file.mimetype == "application/octet-stream"){
+//      // Is a stream (can't add it to the playlist)
+//      controller.playerOpen('path', file.file, function(){
+//        app.notification('Started playing ' + file.label);
+//      });
+//    } else {
+      // Not a stream, default behaviour
+      controller.insertAndPlay(typeid.key, typeid.value, function(result){
+        app.notification(file.label + ' added to the playlist');
+        controller.playlistRender();
+      });
+
+ //   }
+
 
   },
 
@@ -24815,6 +25145,13 @@ app.MusicView = Backbone.View.extend({
 
   initialize:function () {
 
+    this.model.viewStyle = this.getViewStyle();
+
+  },
+
+  events: {
+    "click .view-cards": "viewCards",
+    "click .view-songs": "viewSongs"
   },
 
 
@@ -24897,17 +25234,25 @@ app.MusicView = Backbone.View.extend({
 
       // build
       //var $content = $('<div />');
-      var $content = $('#content');
-      $content.empty();
+      var $content = $('#content'),
+        $albums = $('<div />', {class: 'album-style as-' + self.model.viewStyle});
+
       $.each(albumsAdded.models, function(i,d){
-        $content.append(self.renderFullAlbum(d));
+        $albums.append(self.renderFullAlbum(d));
       });
 
+      self.$el.empty();
+      self.$el.append(self.renderViewToggle());
+      self.$el.append($albums);
+
       // fanart
-      $content.prepend(app.image.getFanartFromCollection(albumsAdded));
-      return $content;
+      self.$el.prepend(app.image.getFanartFromCollection(albumsAdded));
+
+      $content.html(self.$el);
 
     }});
+
+    return this;
   },
 
 
@@ -24924,17 +25269,25 @@ app.MusicView = Backbone.View.extend({
 
       // build
       //var $content = $('<div />');
-      var $content = $('#content');
-      $content.empty();
+      var $content = $('#content'),
+        $albums = $('<div />', {class: 'album-style as-' + self.model.viewStyle});
+
       $.each(albumsPlayed.models, function(i,d){
-        $content.append(self.renderFullAlbum(d));
+        $albums.append(self.renderFullAlbum(d));
       });
 
+      self.$el.empty();
+      self.$el.append(self.renderViewToggle());
+      self.$el.append($albums);
+
       // fanart
-      $content.prepend(app.image.getFanartFromCollection(albumsPlayed));
-      return $content;
+      self.$el.prepend(app.image.getFanartFromCollection(albumsPlayed));
+
+      $content.html(self.$el);
 
     }});
+
+    return this;
   },
 
 
@@ -25046,6 +25399,54 @@ app.MusicView = Backbone.View.extend({
 
     return $album;
 
+  },
+
+
+  /**
+   * Gets last used view for this list
+   *
+   * @param type
+   * @returns {*}
+   */
+  getViewStyle: function(){
+    return app.settings.get('list-style-' + this.model.page, 'cards');
+  },
+
+  /**
+   * Change to card view
+   */
+  viewCards: function(){
+    $('.album-style').removeClass('as-songs').addClass('as-cards');
+    // set active toggle
+    $('.view-toggles .btn').removeClass('active');
+    $('.btn.view-cards').addClass('active');
+    // remember setting
+    app.settings.set('list-style-' + this.model.page, 'cards');
+  },
+
+  /**
+   * Change to song list view
+   */
+  viewSongs: function(){
+    $('.album-style').addClass('as-songs').removeClass('as-cards');
+    // set active toggle
+    $('.view-toggles .btn').removeClass('active');
+    $('.btn.view-songs').addClass('active');
+    // remember setting
+    app.settings.set('list-style-' + this.model.page, 'songs');
+  },
+
+
+  /**
+   * Return toggle buttons
+   * @returns {string}
+   */
+  renderViewToggle: function(){
+    var state = this.getViewStyle();
+    return '<div class="view-toggles"> ' +
+      '<button class="btn view-songs ' + (state == 'songs' ? 'active' : '') + '"><i class="fa fa-list"></i></button>' +
+      '<button class="btn view-cards ' + (state == 'cards' ? 'active' : '') + '"><i class="fa fa-th-large"></i></button>' +
+      '</div>';
   }
 
 
@@ -25185,24 +25586,24 @@ app.playerStateView = Backbone.View.extend({
     //set playlist meta and playing row
     $('.playing-song-meta').html(meta);
 
-    //set progress
-    app.shellView.$progressSlider.slider( "value",data.player.percentage );
+    //set progress (done by timer)
+    //app.shellView.$progressSlider.slider( "value",data.player.percentage );
 
     // switch between audio / video formatting
     if(data.activePlayer == 1){
       // Video
-      dur = app.helpers.formatTime(data.player.totaltime);
-      cur = app.helpers.formatTime(data.player.time);
+      dur = data.player.totaltime;
+      cur = data.player.time;
     } else if (data.activePlayer === 0){
       // Audio
-      dur = app.helpers.formatTime(app.helpers.secToTime(parseInt(data.item.duration)));
-      cur = app.helpers.formatTime(data.player.time);
+      dur = app.helpers.secToTime(parseInt(data.item.duration));
+      cur = data.player.time;
       //cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
     }
 
     // set time
-    $time.find('.time-cur').html(cur);
-    $time.find('.time-total').html(dur);
+    $time.find('.time-cur').html(app.helpers.formatTime(cur));
+    $time.find('.time-total').html(app.helpers.formatTime(dur));
 
     // If episode is playing, remove cache so watched status is updated
     if(data.item.type == 'episode'){
@@ -25611,8 +26012,7 @@ app.PlaylistCustomListsView = Backbone.View.extend({
   className:'custom-lists',
 
   events: {
-    "dblclick li": "replacePlaylist",
-    "click .name": "toggleDetail"
+    "dblclick li": "replacePlaylist"
   },
 
   initialize:function () {
@@ -25622,7 +26022,12 @@ app.PlaylistCustomListsView = Backbone.View.extend({
   render:function () {
 
     this.$el.empty();
-    var pos = 0;
+    var pos = 0,
+      self = this;
+
+//    if(this.model.models.length === 0){
+//      return this;
+//    }
 
     _.each(this.model.models, function (item) {
       item.pos = pos; pos++;
@@ -25631,22 +26036,52 @@ app.PlaylistCustomListsView = Backbone.View.extend({
       this.$el.append(el.el);
     }, this);
 
-    // Add thumbs up to the top
-    this.$el.prepend('<li class="list-item thumbsup-link"><a href="#thumbsup" class="name">Thumbs Up</a></li>');
+    // Add heading
+    this.$el.prepend('<li class="list-heading"><i class="fa fa-file"></i> Lists</li>');
+    // menu for heading
+    var $menu = $('<span class="menu lists-menu"><i class="fa fa-ellipsis-v"></i></span>');
+    // bind click
+    $menu.on('click', function(e){
+      self.showDialog();
+    });
+    // add to heading
+    $('.list-heading', this.$el).append($menu);
 
     return this;
   },
 
-  toggleDetail: function(e){
-    var $this = $(e.target),
-      $parent = $this.closest('li');
 
-    if($parent.hasClass('open')){
-      $parent.removeClass('open');
-    } else {
-      $parent.parent().find('li').removeClass('open');
-      $parent.addClass('open');
-    }
+  /**
+   * Open the dialog
+   */
+  showDialog: function(){
+
+    // dialog structure
+    var structure = {
+      title: 'Custom Lists',
+      key: 'customList',
+      omitwrapper: true,
+      items: [
+        {url: '#', class: 'lists-new', title: 'Add a new list', callback: function(){
+          // Create a list
+          app.playlists.saveCustomPlayListsDialog('song', [], true);
+        }},
+        {url: '#', class: 'lists-remove-all', title: 'Delete all lists', callback: function(){
+          // delete all lists prompt
+          app.helpers.confirm('Are you sure? This will remove ALL browser playlists and cannot be undone!', function(){
+            app.storageController.setStorage(app.playlists.storageKeyLists, []);
+            app.notification('All playlists removed, refresh your browser');
+          });
+        }},
+        {url: '#', class: 'lists-import', title: 'Import a list', callback: function(){
+          // import list
+          app.ui.featureNotBuiltDialog();
+        }}
+      ]
+    };
+
+    // do the dialog
+    app.helpers.menuDialog(structure);
 
   }
 
@@ -25671,6 +26106,9 @@ app.PlaylistCustomListItemView = Backbone.View.extend({
 
   render:function () {
     this.$el.html(this.template(this.model.attributes));
+    if(app.helpers.arg(0) == 'playlist' && app.helpers.arg(1) == this.model.attributes.id){
+      this.$el.find('a').addClass('active');
+    }
     return this;
   }
 
@@ -25956,7 +26394,8 @@ app.searchView = Backbone.View.extend({
     app.addOns.ready(function(){
       // get addons
       var $addons = $('#search-addons');
-      $addons.html(app.addOns.invokeAll('searchAddons', $addons, key));
+      $addons.empty();
+      app.addOns.invokeAll('searchAddons', $addons, key);
     });
 
   },
@@ -26224,11 +26663,15 @@ app.searchView = Backbone.View.extend({
       value: 0,
       min: 0,
       max: 100,
+      start: function(){
+        app.ui.timerStop(); // stop timer while dragging
+      },
       stop: function( event, ui ) {
         app.AudioController.seek(ui.value);
-
+        app.ui.timerStart(); // start timer again
       }
     });
+
 
     //init the volume bar
     this.$volumeSlider = $( "#volume", this.el );
@@ -26252,6 +26695,8 @@ app.searchView = Backbone.View.extend({
     app.AudioController.getNowPlayingSong(function(){
       // init polling
       setInterval(app.AudioController.updatePlayerState, 5000);
+      // init timer
+      app.ui.timerStart();
       // init web sockets
       app.notifications.init();
     }, true);
@@ -27280,6 +27725,10 @@ app.TvshowView = Backbone.View.extend({
 
     model.thumbsup = app.playlists.isThumbsUp('tvshow', model.tvshowid);
 
+    model.widethumb = (model.type == 'episode' ? model.thumbnail : model.fanart);
+
+    model.watchedText = self.watchedStatsParse();
+
     //main detail
     this.$el.html(this.template(model));
 
@@ -27421,6 +27870,17 @@ app.TvshowView = Backbone.View.extend({
 
     app.VideoController.stream(player, this.model.attributes);
 
+  },
+
+  watchedStatsParse: function(){
+    var model = this.model.attributes;
+
+    switch(model.type){
+      case 'tvshow':
+
+        break;
+    }
+    return 'text';
   }
 
 
@@ -27446,14 +27906,20 @@ app.TvSeasonListView = Backbone.View.extend({
 
     this.$el.empty();
 
-    // sort by episode or season
-    this.model.models.sort(function(a,b){
-      if(a.attributes.episodeid !== ''){
-        return app.helpers.aphabeticalSort(a.attributes.episode, b.attributes.episode);
-      } else {
-        return app.helpers.aphabeticalSort( a.attributes.season, b.attributes.season);
-      }
-    });
+    // if on a tvshow, sort by ep/season, else, no sort
+    if(app.helpers.arg(0) == 'tvshow'){
+
+      // sort by episode or season
+      this.model.models.sort(function(a,b){
+        if(a.attributes.episodeid !== ''){
+          return app.helpers.aphabeticalSort(a.attributes.episode, b.attributes.episode);
+        } else {
+          return app.helpers.aphabeticalSort( a.attributes.season, b.attributes.season);
+        }
+      });
+
+    }
+
 
     // append results
     _.each(this.model.models, function (season) {
@@ -27655,6 +28121,15 @@ app.TvshowTagListView = Backbone.View.extend({
       list.renderTagItems(this.model, 'TvshowFilteredCollection', 'TvshowListView');
 
     }
+
+  },
+
+
+  /**
+   * An intelligent button suggesting what to watch next given the context
+   *
+   */
+  watchCTA: function(){
 
   }
 
@@ -28009,10 +28484,166 @@ app.XbmcJSONrpcView = Backbone.View.extend({
 /***********************************************
  * Soundcloud
  ***********************************************/
-app.addOns.addon.pluginaudiosoundcloud = {
+app.addOns.addon.pluginaudioradio_de = {
 
-  // the time to wait before sending keyboard commands
-  waitTime: 4000,
+  key: 'pluginaudioradio_de',
+  id: 'plugin.audio.radio_de',
+  label: 'Radio Station',
+
+  getAddon: function(){
+    return app.addOns.getAddon(app.addOns.addon.pluginaudioradio_de.key);
+  },
+
+  getSearchPath: function(){
+    return 'plugin://plugin.audio.radio_de/stations/search/';
+  },
+
+  /**
+   * Parses a file record
+   * @param record
+   * @returns {*}
+   */
+  parseFileRecord: function(record){
+    var self = app.addOns.addon.pluginaudioradio_de;
+    if(self.isRadio(record)){
+      if(record.filetype == 'file'){
+
+      }
+    }
+
+    return record;
+  },
+
+  /**
+   * Hook into file dir click
+   * @param record
+   * @returns {*}
+   */
+  clickDir: function(record){
+    var self = app.addOns.addon.pluginaudioradio_de;
+    if(self.isRadio(record)){
+      // is search?
+      if(record.file == self.getSearchPath()){
+        app.xbmcController.inputRequestedDialog('Enter the name of a station');
+      }
+    }
+    return record;
+  },
+
+
+
+  /**
+   * This adds radio to the search page
+   * @param $el
+   * @param key
+   * @returns {*}
+   */
+  searchAddons: function($container, key){
+
+    var $el = $('<div></div>');
+
+    var self = app.addOns.addon.pluginaudioradio_de,
+      $nores = $('<div>', {class: 'addon-box', id: 'radio-search'}),
+      sc = self.getAddon(),
+      $heading = $( self.searchHeading(self.label + ' search for: <span>' + key + '</span>', 'radio')),
+      cache = self.cache('get', key, false);
+
+    // add logo to heading
+
+    // if cache
+    if(cache !== false){
+      // just set results from cached view
+      $el.html(cache.render().$el);
+      $el.prepend($heading);
+    } else {
+      // no cache, do the search
+      $nores.append( self.searchHeading('Search ' + self.label + 's for: <span>' + key + '</span>', 'radio can-click') );
+      $el.append($nores);
+
+      // click/search action
+      $('#radio-search', $el).on('click', function(){
+        // Loading
+        $el.html( $(self.searchHeading('Searching ' + self.label + 's for: <span>' + key + '</span>', 'loading')) );
+        // Callback
+        self.getSearchResults(key, function(view){
+          $el.html(view.render().$el);
+          // add heading
+          $el.prepend($heading);
+          // set cache
+          self.cache('set', key, view);
+        });
+      });
+    }
+
+    $('#search-addons').append($el);
+  },
+
+  // Heading creator
+  searchHeading: function(text, classes){
+    var icon = '<i class="fa fa-rss entity-icon" style="background-color: #44aa5b"></i>';
+    return '<h3 class="search-heading entity-heading ' + classes + '">' + icon + text + '</h3>';
+  },
+
+  /**
+   * Get and set cache, when get, data is default
+   * @param op
+   * @param key
+   * @param data
+   * @returns {*}
+   */
+  cache:function(op, key, data){
+    if(typeof app.cached.radioSearch == 'undefined'){
+      app.cached.radioSearch = {};
+    }
+    switch (op){
+      case 'get':
+        return (typeof app.cached.radioSearch[key] == 'undefined' ? data : app.cached.radioSearch[key]);
+      case 'set':
+        app.cached.radioSearch[key] = data;
+        return app.cached.radioSearch[key];
+    }
+  },
+
+
+
+  /**
+   * Get a radio search result view
+   * @param query
+   */
+  getSearchResults: function(query, callback){
+
+    // get search directory
+    var self = app.addOns.addon.pluginaudioradio_de,
+      dir = self.getSearchPath(),
+      path = dir + encodeURIComponent(query);
+
+    app.cached.fileCollection = new app.FileCollection();
+    app.cached.fileCollection.fetch({"sourcetype": 'music', "name": path, "success": function(result){
+
+      // return view
+      app.cached.fileListView = new app.FilesListView({model: result});
+      callback(app.cached.fileListView);
+
+    }});
+
+  },
+
+
+  /**
+   * If radio file
+   * @param record
+   * @returns {*}
+   */
+  isRadio: function(record){
+    return (record.file.indexOf('plugin.audio.radio_de') != -1);
+  }
+
+
+};;
+/***********************************************
+ * Soundcloud
+ ***********************************************/
+app.addOns.addon.pluginaudiosoundcloud = {
 
   getAddon: function(){
     return app.addOns.getAddon('pluginaudiosoundcloud');
@@ -28033,7 +28664,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
       // rewrite the url to contain the label
       record.file = record.file.replace(
         'plugin://plugin.audio.soundcloud/',
-        'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label)
+        'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label) + '+'
       );
     }
 
@@ -28141,7 +28772,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
       });
     }
 
-    return $el;
+    $('#search-addons').append($el);
   },
 
   // Heading creator
@@ -28195,38 +28826,18 @@ app.addOns.addon.pluginaudiosoundcloud = {
 
     // get search directory
     var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath(),
+      // add the query string
+      path = dir + '&q=' + query,
       $window = $(window);
 
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"sourcetype": 'music', "name":dir, "success": function(result){
+    app.cached.fileCollection.fetch({"sourcetype": 'music', "name": path, "success": function(result){
 
       // return view
       app.cached.fileListView = new app.FilesListView({model: result});
       callback(app.cached.fileListView);
 
     }});
-
-    if(!app.notifications.wsActive){
-
-      // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
-      // this is a fallback function that is only used when websockets are not active
-      window.setTimeout(function(){
-        app.xbmcController.command('Input.SendText', [query], function(res){ });
-      }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
-
-    } else {
-
-      // Bind to websockets window open
-      $window.bind('Input.OnInputRequested', function(){
-
-        // send the text input (search)
-        app.xbmcController.command('Input.SendText', [query], function(res){});
-
-        // only run once
-        $window.unbind('Input.OnInputRequested');
-
-      });
-    }
 
   },
 

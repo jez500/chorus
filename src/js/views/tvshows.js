@@ -387,7 +387,7 @@ app.TvshowView = Backbone.View.extend({
 
   watchedStatsParse: function(){
     var model = this.model.attributes;
-console.log(model);
+
     switch(model.type){
       case 'tvshow':
 
@@ -419,14 +419,20 @@ app.TvSeasonListView = Backbone.View.extend({
 
     this.$el.empty();
 
-    // sort by episode or season
-    this.model.models.sort(function(a,b){
-      if(a.attributes.episodeid !== ''){
-        return app.helpers.aphabeticalSort(a.attributes.episode, b.attributes.episode);
-      } else {
-        return app.helpers.aphabeticalSort( a.attributes.season, b.attributes.season);
-      }
-    });
+    // if on a tvshow, sort by ep/season, else, no sort
+    if(app.helpers.arg(0) == 'tvshow'){
+
+      // sort by episode or season
+      this.model.models.sort(function(a,b){
+        if(a.attributes.episodeid !== ''){
+          return app.helpers.aphabeticalSort(a.attributes.episode, b.attributes.episode);
+        } else {
+          return app.helpers.aphabeticalSort( a.attributes.season, b.attributes.season);
+        }
+      });
+
+    }
+
 
     // append results
     _.each(this.model.models, function (season) {
@@ -628,6 +634,15 @@ app.TvshowTagListView = Backbone.View.extend({
       list.renderTagItems(this.model, 'TvshowFilteredCollection', 'TvshowListView');
 
     }
+
+  },
+
+
+  /**
+   * An intelligent button suggesting what to watch next given the context
+   *
+   */
+  watchCTA: function(){
 
   }
 

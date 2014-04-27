@@ -94,6 +94,19 @@ app.VideoController.insertAndPlay = function(type, id, callback){
 
 
 /**
+ * Player Open (raw call, avoids playlist)
+ * Use sparingly
+ *
+ * @param type
+ * @param value
+ * @param callback
+ */
+app.VideoController.playerOpen = function(type, value, callback){
+  app.playlists.playerOpen(app.VideoController.playlistId, type, id, callback);
+};
+
+
+/**
  * Clear the playlist
  *
  * @param callback

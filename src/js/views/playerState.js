@@ -134,24 +134,24 @@ app.playerStateView = Backbone.View.extend({
     //set playlist meta and playing row
     $('.playing-song-meta').html(meta);
 
-    //set progress
-    app.shellView.$progressSlider.slider( "value",data.player.percentage );
+    //set progress (done by timer)
+    //app.shellView.$progressSlider.slider( "value",data.player.percentage );
 
     // switch between audio / video formatting
     if(data.activePlayer == 1){
       // Video
-      dur = app.helpers.formatTime(data.player.totaltime);
-      cur = app.helpers.formatTime(data.player.time);
+      dur = data.player.totaltime;
+      cur = data.player.time;
     } else if (data.activePlayer === 0){
       // Audio
-      dur = app.helpers.formatTime(app.helpers.secToTime(parseInt(data.item.duration)));
-      cur = app.helpers.formatTime(data.player.time);
+      dur = app.helpers.secToTime(parseInt(data.item.duration));
+      cur = data.player.time;
       //cur = app.helpers.secToTime(Math.floor((parseInt(data.player.percentage) / 100) * parseInt(data.item.duration)));
     }
 
     // set time
-    $time.find('.time-cur').html(cur);
-    $time.find('.time-total').html(dur);
+    $time.find('.time-cur').html(app.helpers.formatTime(cur));
+    $time.find('.time-total').html(app.helpers.formatTime(dur));
 
     // If episode is playing, remove cache so watched status is updated
     if(data.item.type == 'episode'){

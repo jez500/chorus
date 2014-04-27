@@ -103,6 +103,12 @@ app.FileCollection = Backbone.Collection.extend({
         m.filetype = 'file';
       }
 
+      // if a stream
+      if(m.mimetype !== undefined &&
+        m.mimetype == "application/octet-stream"){
+        m.type = 'stream';
+      }
+
       // let addons tinker
       m = app.addOns.invokeAll('parseFileRecord', m);
 

@@ -16,6 +16,8 @@ var app = {
 
   nextPageLoading: false,
 
+  playingInterval: false,
+
   // variables (settings defaults)
   vars: {
     lastHash: '#',
@@ -336,12 +338,16 @@ app.Router = Backbone.Router.extend({
       app.cached.customPlaylistSongListView = new app.CustomPlaylistSongListView({"model":res});
       self.$content.html(app.cached.customPlaylistSongListView.render().el);
 
+      // menu
+      app.filters.renderFilters('music');
+      $('.music-filters').addClass('active-pl active-pl-' + id);
+
       // set title
       var list = app.playlists.getCustomPlaylist(id);
       app.ui.setTitle('Playlist', {addATag: '#playlist/' + list.id, icon: 'music', subTitle: list.name});
 
       // set menu
-      app.shellView.selectMenuItem('playlist', 'no-sidebar');
+      app.shellView.selectMenuItem('playlist', 'sidebar');
 
     }});
 

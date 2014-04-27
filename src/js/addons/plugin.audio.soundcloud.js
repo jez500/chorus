@@ -4,9 +4,6 @@
  ***********************************************/
 app.addOns.addon.pluginaudiosoundcloud = {
 
-  // the time to wait before sending keyboard commands
-  waitTime: 4000,
-
   getAddon: function(){
     return app.addOns.getAddon('pluginaudiosoundcloud');
   },
@@ -26,7 +23,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
       // rewrite the url to contain the label
       record.file = record.file.replace(
         'plugin://plugin.audio.soundcloud/',
-        'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label)
+        'plugin://plugin.audio.soundcloud/' + encodeURIComponent(record.label) + '+'
       );
     }
 
@@ -134,7 +131,7 @@ app.addOns.addon.pluginaudiosoundcloud = {
       });
     }
 
-    return $el;
+    $('#search-addons').append($el);
   },
 
   // Heading creator
@@ -188,38 +185,18 @@ app.addOns.addon.pluginaudiosoundcloud = {
 
     // get search directory
     var dir = app.addOns.addon.pluginaudiosoundcloud.getSearchPath(),
+      // add the query string
+      path = dir + '&q=' + query,
       $window = $(window);
 
     app.cached.fileCollection = new app.FileCollection();
-    app.cached.fileCollection.fetch({"sourcetype": 'music', "name":dir, "success": function(result){
+    app.cached.fileCollection.fetch({"sourcetype": 'music', "name": path, "success": function(result){
 
       // return view
       app.cached.fileListView = new app.FilesListView({model: result});
       callback(app.cached.fileListView);
 
     }});
-
-    if(!app.notifications.wsActive){
-
-      // yuk hack - it seems to need a bit of time to init the search dialog and cannot be in the dir callback
-      // this is a fallback function that is only used when websockets are not active
-      window.setTimeout(function(){
-        app.xbmcController.command('Input.SendText', [query], function(res){ });
-      }, app.addOns.addon.pluginaudiosoundcloud.waitTime);
-
-    } else {
-
-      // Bind to websockets window open
-      $window.bind('Input.OnInputRequested', function(){
-
-        // send the text input (search)
-        app.xbmcController.command('Input.SendText', [query], function(res){});
-
-        // only run once
-        $window.unbind('Input.OnInputRequested');
-
-      });
-    }
 
   },
 

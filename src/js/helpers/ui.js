@@ -90,9 +90,88 @@ app.ui = {
     return app.currentPageTitle;
   },
 
+
+  /**
+   * Render no result html to #content
+   * @param text
+   */
   renderNoResult: function(text){
     $('#content').html('<div class="loading-box no-result">' + (text === undefined ? 'Nothing found' : text) + '</div>');
+  },
+
+
+  /**
+   * Open feature not yet built dialog
+   */
+  featureNotBuiltDialog: function(){
+    app.helpers.info(
+      'Feature not yet built',
+      'This is still just an idea, to help turn it into reality, ' + app.ui.beerLink('Beer') + ' is always a good incentive :)'
+    );
+  },
+
+
+  /**
+   * Beer link html
+   */
+  beerLink: function(text){
+    return '<a href="' + app.settings.getBeerUrl() + '" target="_blank">' + text + '</a>';
+  },
+
+
+  /**
+   * Start internal progress timer
+   * 1 second loop
+   */
+  timerStart: function(){
+    app.playingInterval = setTimeout(app.ui.timerUpdate,1000);
+  },
+
+
+  /**
+   * Stop the internal timer
+   */
+  timerStop: function(){
+    clearTimeout(app.playingInterval);
+  },
+
+
+  /**
+   * If playing, increase the time by 1 sec, refresh time and progress
+   * Will stop the timer if not playing, and restart it if playing
+   */
+  timerUpdate: function(){
+
+    var data = app.playlists.getNowPlaying();
+
+    // stop existing timers and restart if playing
+    app.ui.timerStop();
+
+    // is playing
+    if(data.status == 'playing' && data.player.time !== undefined){
+
+      // parse time
+      var cur = app.helpers.timeToSec(data.player.time) + 1,
+        dur = app.helpers.timeToSec(data.player.totaltime),
+        per = Math.ceil( ( (cur / dur )  * 100 ) ),
+        curObj = app.helpers.secToTime(cur);
+
+      // update cache with new time
+      app.cached.nowPlaying.player.time = curObj;
+
+      // update ui
+      $('#footer .time-cur').html(app.helpers.formatTime(curObj));
+      app.shellView.$progressSlider.slider( "value", per );
+
+      // Restart timer
+      app.ui.timerStart();
+    }
+
+
   }
+
+
+
 
 };
 

@@ -1,3 +1,18 @@
+Version 0.3.7
+- Added support for the Radio AddOn
+- Improvements to AddOn framework
+- Moved Lists to music and fixed ui
+- Progress now updates every 1 second using an internal timer
+- Greatly improved SoundCloud search speed and reliability
+- Party mode start if nothing playing
+- Added fallback dialog if input dialog has been left open on xbmc for 60 seconds
+- Recent TV order fix
+- Music recently added and played get a view toggle option
+- Bug fixes: tv menu on mobile, tv recent not listing episodes + more
+- Style Updates: tv and movie mobile view + lots more
+- Testing now based on Gotham
+
+
 Version 0.3.6
 - Bug fix: Background changing while pvr playing
 - Feature: pvr channels (unfinished due to tuner breaking during dev)

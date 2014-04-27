@@ -166,7 +166,7 @@ body.fixed-header {
       float: left;
       width: $width-sidebar-second-small - $width-header;
       padding-left: 20px;
-      margin-right: 20px;
+      margin-right: 15px;
       margin-left: -20px;
       height: $height-header;
       overflow: hidden;
@@ -583,7 +583,7 @@ body.fixed-header {
         margin: 0 0px 0 0;
         padding: 15px 10px;
         color: $color-whitesmoke;
-        font-size: 112%;
+        font-size: 105%;
         cursor: pointer;
         @include breakpoint($width-small){
           padding: 15px 22px 15px 19px;
@@ -603,7 +603,7 @@ body.fixed-header {
           background: rgba(255,255,255,0.1);
         }
         &.active {
-          background: rgba(255, 255, 255, 0.92);
+          background: #F8F8F8;
           color: $color-dark-xbmc;
         }
       }
@@ -789,6 +789,7 @@ body {
     }
   }
   &.section-tv,
+  &.section-playlist,
   &.section-movies,
   &.section-music,
   &.section-album,
@@ -801,6 +802,9 @@ body {
     }
   }
 
+  // prevents content adding a scrollbar or being visible
+  &.section-mymusic,
+  &.section-mymovies,
   &.section-mytv {
     #content-wrapper {
       position: fixed;

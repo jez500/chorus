@@ -235,4 +235,22 @@ app.xbmcController.entityLoadMultiple = function(type, items, callback){
 };
 
 
+/**
+ * Input requested from xbmc
+ * Opens prompt dialog and sends the user inputted text to xbmc via Input.SendText
+ *
+ * @param msg
+ */
+app.xbmcController.inputRequestedDialog = function(msg){
+  // If a dialog is not already open
+  if($('.ui-widget-overlay').length === 0){
+    // Prompt for input with the msg
+    app.helpers.prompt(msg, function(text){
+      app.xbmcController.command('Input.SendText', [text], function(res){
+        app.notification(text + ' sent');
+      });
+    });
+  }
+};
+
 

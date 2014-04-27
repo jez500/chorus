@@ -75,7 +75,9 @@ This looks like the best we can get until XBMC supports transcoding. Look for th
 
 
 ## Supported xbmc addons
-- Soundcloud
+- [SoundCloud AddOn](http://addons.xbmc.org/show/plugin.audio.soundcloud/)
+- [Radio AddOn](http://addons.xbmc.org/show/plugin.audio.radio_de/) - [fix for labels](https://github.com/dersphere/plugin.audio.radio_de/pull/7)
+
 
 ## Issues, Bugs and Suggestions
 Post them here https://github.com/jez500/chorus/issues - mention what version you are using

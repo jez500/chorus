@@ -60,11 +60,15 @@ app.ShellView = Backbone.View.extend({
       value: 0,
       min: 0,
       max: 100,
+      start: function(){
+        app.ui.timerStop(); // stop timer while dragging
+      },
       stop: function( event, ui ) {
         app.AudioController.seek(ui.value);
-
+        app.ui.timerStart(); // start timer again
       }
     });
+
 
     //init the volume bar
     this.$volumeSlider = $( "#volume", this.el );
@@ -88,6 +92,8 @@ app.ShellView = Backbone.View.extend({
     app.AudioController.getNowPlayingSong(function(){
       // init polling
       setInterval(app.AudioController.updatePlayerState, 5000);
+      // init timer
+      app.ui.timerStart();
       // init web sockets
       app.notifications.init();
     }, true);

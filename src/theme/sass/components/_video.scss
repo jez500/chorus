@@ -460,3 +460,15 @@ ul.video-list {
     //@include card('episode');
   }
 }
+
+h1.video-title {
+  font-size: 32px;
+  color: #444;
+  letter-spacing: -1px;
+  &.tv-title {
+    padding: 0 15px;
+  }
+  @include breakpoint($width-tablet) {
+    display: none;
+  }
+}

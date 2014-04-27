@@ -154,19 +154,21 @@ app.FileView = Backbone.View.extend({
    * @param e
    */
   menu: function(e){
-
     e.preventDefault();
     var file = this.model.attributes,
       self = this;
-    app.AudioController.downloadFile(file.file, function(url){
-      if(file.sourcetype == 'music'){
-        file.label = file.title;
-        app.helpers.menuDialog( app.helpers.menuTemplates('song', file) );
-      } else {
-          file.downloadUrl = url;
-          app.helpers.menuDialog( self.getVideoDialog(file ));
-      }
-    });
+    self.getDialog();
+  },
+
+  getDialog: function(){
+    var file = this.model.attributes,
+      self = this;
+    if(file.sourcetype == 'music'){
+      file.label = file.title;
+      app.helpers.menuDialog( app.helpers.menuTemplates('song', file) );
+    } else {
+      app.helpers.menuDialog( self.getVideoDialog(file ));
+    }
   },
 
   getVideoDialog: function(model){
@@ -176,9 +178,12 @@ app.FileView = Backbone.View.extend({
       key: 'video',
       omitwrapper: true,
       items: [
-        {url: '#', class: 'video-download', title: '<a target="_blank" href="/' + model.url + '">Download</a>', callback: function(){
+        {url: '#', class: 'video-download', title: 'Download URL', callback: function(){
           // do nothing, url in a tag
           // window.location = url;
+          app.AudioController.downloadFile(file.file, function(url){
+            app.helpers.info( 'Download Url', '<p>' + url + '</p>' );
+          });
         }},
         {url: '#', class: 'video-stream', title: 'Stream Video', callback: function(){
           app.VideoController.stream('html5', model);
@@ -244,12 +249,20 @@ app.FileView = Backbone.View.extend({
 
     if(file.type == 'album' ||
       file.type == 'artist' ||
-      file.type == 'song' ||
+   //   file.type == 'song' ||
       file.type == 'movie' ||
       file.type == 'episode'){
 
+      // if not a stream
+      if(file.mimetype != "application/octet-stream"){
         ret.key = file.type + 'id';
         ret.value = file.id;
+      }
+
+    }
+
+    if(file.type == "directory"){
+      ret.key = file.type;
     }
 
     return ret;
@@ -263,10 +276,20 @@ app.FileView = Backbone.View.extend({
       controller = app[file.controller],
       typeid = this.fileGetTypeId(file);
 
-    controller.insertAndPlay(typeid.key, typeid.value, function(result){
-      app.notification(file.label + ' added to the playlist');
-      controller.playlistRender();
-    });
+//    if(file.mimetype == "application/octet-stream"){
+//      // Is a stream (can't add it to the playlist)
+//      controller.playerOpen('path', file.file, function(){
+//        app.notification('Started playing ' + file.label);
+//      });
+//    } else {
+      // Not a stream, default behaviour
+      controller.insertAndPlay(typeid.key, typeid.value, function(result){
+        app.notification(file.label + ' added to the playlist');
+        controller.playlistRender();
+      });
+
+ //   }
+
 
   },
 
