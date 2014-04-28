@@ -912,7 +912,7 @@ $(document).ready(function(){
         };
 
         // if songid add extra options
-        // @todo fix this
+        // @todo fix this - wrap stream check instead?
         if(parseInt( model.songid ) > 0){
           opts.items.push({url: '#', class: 'song-download', title: 'Download song', callback: function(){
             app.AudioController.downloadFile(model.file, function(url){ window.location = url; });

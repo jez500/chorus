@@ -399,11 +399,11 @@ app.CustomPlaylistSongView = Backbone.View.extend({
 
 
   removeSong: function(e){
-    var songid = this.model.attributes.songid,
+    var position = this.model.attributes.position,
       listid = this.model.attributes.list.id,
       $target = $(e.target);
 
-    app.playlists.deleteCustomPlaylistSong(listid, songid);
+    app.playlists.deleteCustomPlaylistSong(listid, position);
     $target.closest('li').slideUp(function(){ $(this).remove(); });
   },
 

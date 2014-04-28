@@ -600,14 +600,19 @@ app.playlists.deleteCustomPlaylist = function(id){
 /**
  * delete playlist Song
  */
-app.playlists.deleteCustomPlaylistSong = function(listId, songId){
+app.playlists.deleteCustomPlaylistSong = function(listId, position){
 
   var list = app.playlists.getCustomPlaylist(listId),
-  newItems = list.items.filter(function (element) {
-    return (songId != element);
-  });
+    newList = [];
 
-  app.playlists.replaceCustomPlayList(listId, newItems);
+  // loop over all and only add items that != position
+  for (var i in list.items){
+   if(position != i){
+     newList.push(list.items[i]);
+   }
+  }
+
+  app.playlists.replaceCustomPlayList(listId, newList);
 
 };
 
