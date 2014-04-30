@@ -671,7 +671,7 @@ app.playlists.replaceCustomPlayList = function(listId, items){
 
 /**
  * Html for the sub tasks of a playlist
- * @todo use other funtion that does this
+ * @todo use other function that does this
  *
  */
 app.playlists.getDropdown = function(){
@@ -714,9 +714,9 @@ app.playlists.getDropdown = function(){
  * @param op
  *  add, remove
  * @param type
- *  song, album, artist
+ *  song, album, artist, dir
  * @param id
- *  id of type
+ *  int id of type. If dir is used, this is an object (file model attributes)
  */
 app.playlists.setThumbsUp = function(op, type, id){
 
@@ -750,8 +750,9 @@ app.playlists.setThumbsUp = function(op, type, id){
     case 'remove':
       // loop and re add all but the id to remove
       for(i in currentThumbsUp.items){
-        if(currentThumbsUp.items[i] != id && currentThumbsUp.items[i] !== null){
-          newList.push(currentThumbsUp.items[i]);
+        var item = currentThumbsUp.items[i];
+        if(item !== null && app.playlists.getThumbsUpId(item) != id){
+          newList.push(item);
         }
       }
       currentThumbsUp.items = newList;
@@ -766,6 +767,17 @@ app.playlists.setThumbsUp = function(op, type, id){
 
   // update cache
   app.playlists.getThumbsUp();
+};
+
+
+/**
+ * Thumbs up item can be a file model or a id, this generically returns the id (key) from the item
+ */
+app.playlists.getThumbsUpId = function(item){
+  if(typeof item == 'object'){
+    return item.id;
+  }
+  return item;
 };
 
 
@@ -792,7 +804,7 @@ app.playlists.getThumbsUp = function(type){
       var id = lists[t].items[n];
       if(id !== null){
         items.push(id);
-        app.cached.thumbsUp[t].lookup[id] = true;
+        app.cached.thumbsUp[t].lookup[app.playlists.getThumbsUpId(id)] = true;
       }
     }
     lists[t].items = items;
@@ -972,7 +984,7 @@ app.playlists.renderXbmcPlaylist = function(playlistId, callback){
  */
 app.playlists.setPartyMode = function(playlistId, callback){
 
-  var data = app.playlists.getNowPlaying('player');
+  var data = app.playerState.xbmc.getNowPlaying('player');
 
   // partymode off, so start it!
   if(data.partymode === false){
@@ -1056,7 +1068,7 @@ app.playlists.playlistSwap = function(playlistId, type, pos1, pos2, callback){
  */
 app.playlists.insertAndPlay = function(playlistId, type, id, callback){
 
-  var player = app.playlists.getNowPlaying('player'),
+  var player = app.playerState.xbmc.getNowPlaying('player'),
     playingPos = (typeof player.position != 'undefined' ? player.position : 0),
     pos = playingPos + 1,
     insert = {};
@@ -1064,7 +1076,7 @@ app.playlists.insertAndPlay = function(playlistId, type, id, callback){
   insert[type] = id;
 
   // if nothing is playing, we will clear the playlist first
-  if(app.playlists.getNowPlaying('status') == 'notPlaying' || app.playlists.getNowPlaying('status') == 'stopped'){
+  if(app.playerState.xbmc.getNowPlaying('status') == 'notPlaying' || app.playerState.xbmc.getNowPlaying('status') == 'stopped'){
     // clear
     app.playlists.playlistClear(playlistId, function(){
       // insert
@@ -1102,47 +1114,5 @@ app.playlists.insertAndPlay = function(playlistId, type, id, callback){
  * @param callback
  */
 app.playlists.playStream = function(playlistId, url, callback){
-
-};
-
-
-/**
- * Gets the current now playing cache, will not do a lookup
- * @param key
- */
-app.playlists.getNowPlaying = function(key){
-
-  // A empty shell of what should be populated
-  var model = {
-    activePlayer: 0,
-    status: "notPlaying",
-    playingItemChanged: false,
-    volume: {
-      volume: 50,
-      muted: false
-    },
-    player: {
-      repeat: "off",
-      shuffled: false,
-      partymode: false
-    },
-    item: {
-      thumbnail: '', fanart: '', id: 0, label: 'Nothing Playing', songid: 0, episodeid: 0, album: '', albumid: 'file', file: '', duration: 0, type: 'song'
-    }
-  };
-
-  // get cache
-  var data = app.cached.nowPlaying;
-  if(data !== undefined){
-    // update model with cache
-    model = $.extend(model, data);
-  }
-
-  // return key or all
-  if(key !== undefined){
-    return model[key];
-  } else {
-    return model;
-  }
 
 };

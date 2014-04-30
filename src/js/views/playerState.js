@@ -18,7 +18,7 @@ app.playerStateView = Backbone.View.extend({
   render:function () {
 
     // get model
-    var data = app.playlists.getNowPlaying(),
+    var data = app.playerState.xbmc.getNowPlaying(),
       $window = $(window),
       lastPlaying = app.helpers.varGet('lastPlaying', '');
 
@@ -87,7 +87,7 @@ app.playerStateView = Backbone.View.extend({
    */
   bodyClasses:function () {
 
-    var data = app.playlists.getNowPlaying();
+    var data = app.playerState.xbmc.getNowPlaying();
 
     this.$body
       // remove all old classes and list the options in use
@@ -122,7 +122,7 @@ app.playerStateView = Backbone.View.extend({
     // set the title
     this.setTitle();
 
-    var data = app.playlists.getNowPlaying(),
+    var data = app.playerState.xbmc.getNowPlaying(),
       // time stuff
       $time = $('#time'),
       cur = 0,
@@ -166,7 +166,7 @@ app.playerStateView = Backbone.View.extend({
    */
   nowPlayingMajor:function(){
 
-    var data = app.playlists.getNowPlaying();
+    var data = app.playerState.xbmc.getNowPlaying();
 
     //set thumb
     this.$nowPlaying.find('#playing-thumb')
@@ -198,7 +198,7 @@ app.playerStateView = Backbone.View.extend({
 
     // refresh playlist
     var controller;
-    if(app.playlists.getNowPlaying('activePlayer') === 0){
+    if(app.playerState.xbmc.getNowPlaying('activePlayer') === 0){
       controller = app.AudioController;
     } else {
       controller = app.VideoController;

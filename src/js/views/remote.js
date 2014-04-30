@@ -22,7 +22,7 @@ app.RemoteView = Backbone.View.extend({
     };
     this.$el.html(this.template(vars));
 
-    var data = app.playlists.getNowPlaying();
+    var data = app.playerState.xbmc.getNowPlaying();
     $('.playing-fanart', this.$el).css('background-image', 'url("' + app.image.url(data.item.fanart, 'fanart') + '")');
 
     $('.fa', this.$el).disableSelection();

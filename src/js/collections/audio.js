@@ -198,6 +198,11 @@ app.ThumbsUpCollection = Backbone.Collection.extend({
             options.success(tvshows);
           });
           break;
+
+        case 'dir':
+          // lookup folders
+
+          break;
       }
 
     }

@@ -142,7 +142,7 @@ app.ui = {
    */
   timerUpdate: function(){
 
-    var data = app.playlists.getNowPlaying();
+    var data = app.playerState.xbmc.getNowPlaying();
 
     // stop existing timers and restart if playing
     app.ui.timerStop();

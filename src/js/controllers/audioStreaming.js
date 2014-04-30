@@ -177,7 +177,7 @@ app.audioStreaming = {
     if(player == 'xbmc'){
       $body.addClass(app.audioStreaming.classXbmc).removeClass(app.audioStreaming.classLocal);
       // Homepage Backstretch for xbmc (if applicable)
-      song = app.playlists.getNowPlaying('item');
+      song = app.playerState.xbmc.getNowPlaying('item');
       app.helpers.applyBackstretch(song.fanart, 'xbmc');
     }
 

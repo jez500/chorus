@@ -134,7 +134,7 @@ app.Router = Backbone.Router.extend({
   home: function () { //Not in use atm
 
     var backstretchImage = '',
-      data = app.playlists.getNowPlaying();
+      data = app.playerState.xbmc.getNowPlaying();
 
     // empty content
     this.$content.html('');

@@ -91,7 +91,7 @@ app.PlaylistItemView = Backbone.View.extend({
   render:function () {
     // file fallback
     var model = this.model,
-      playing = app.playlists.getNowPlaying();
+      playing = app.playerState.xbmc.getNowPlaying();
 
     model.id = (typeof model.id != 'undefined' ? model.id : 'file');
     model.albumid = (typeof model.albumid != 'undefined' ? model.albumid : 'file');
