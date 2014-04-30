@@ -89,9 +89,9 @@ app.ShellView = Backbone.View.extend({
 
 
     // Init player state cycle, load up now playing first
-    app.AudioController.getNowPlayingSong(function(){
+    app.playerState.xbmc.fetchRemote(function(){
       // init polling
-      setInterval(app.AudioController.updatePlayerState, 5000);
+      setInterval(app.playerState.xbmc.fetch, 5000);
       // init timer
       app.ui.timerStart();
       // init web sockets

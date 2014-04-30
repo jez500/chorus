@@ -960,7 +960,7 @@ app.playlists.renderXbmcPlaylist = function(playlistId, callback){
     $pl.html(app.playlistView.render().el);
 
     if(!app.notifications.wsActive){
-      app.AudioController.getNowPlayingSong(function(data){
+      app.playerState.xbmc.fetchRemote(function(data){
         //update shell to now playing info
         app.shellView.updateState(data);
       });

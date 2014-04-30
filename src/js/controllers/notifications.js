@@ -210,7 +210,7 @@ app.notifications = {
   * does a full load of current state
   */
   getNowPlaying: function(){
-    app.AudioController.getNowPlayingSong(function(data){
+    app.playerState.xbmc.fetchRemote(function(data){
       app.shellView.updateState(data);
     }, true);
   },
