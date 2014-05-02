@@ -803,10 +803,10 @@ app.Router = Backbone.Router.extend({
         self.$content.html(new app.TvshowView({model: data}).render().el);
 
         // title
-        app.ui.setTitle(ep.showtitle + '  Season ' + season, {
+        app.ui.setTitle(ep.showtitle, {
           addATag: '#tvshow/' + ep.tvshowid,
           icon: 'desktop',
-          subTitle: 'E' + ep.episode + '. ' + ep.label
+          subTitle: 'Season ' + season + ' Episode ' + ep.episode
         });
 
         // set menu

@@ -242,6 +242,8 @@ app.TvshowView = Backbone.View.extend({
 
     model.watchedText = self.watchedStatsParse();
 
+    model.watched = app.VideoController.watchedStatus(model);
+
     //main detail
     this.$el.html(this.template(model));
 

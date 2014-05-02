@@ -69,7 +69,19 @@ ul.video-list {
   // fixed sidebar of movie
   .video-side {
     padding: 10px;
-
+    .video-large-progress {
+      //display: none;
+      height: 5px;
+      margin-top: -5px;
+      position: relative;
+      z-index: 0;
+      background: rgba(0,0,0,0.1);
+      span {
+        display: block;
+        height: 5px;
+        background: $color-carrot;
+      }
+    }
     .thumb {
       display: none;
     }
@@ -462,13 +474,23 @@ ul.video-list {
 }
 
 h1.video-title {
-  font-size: 32px;
+  font-size: 31px;
   color: #444;
   letter-spacing: -1px;
+  font-weight: normal;
   &.tv-title {
     padding: 0 15px;
   }
   @include breakpoint($width-tablet) {
     display: none;
   }
+}
+.tvtype-episode {
+  h1.video-title {
+    margin: 20px 0 -20px;
+    @include breakpoint($width-tablet) {
+      display: block;
+    }    
+  }
+
 }

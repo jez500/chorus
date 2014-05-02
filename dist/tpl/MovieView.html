@@ -1,6 +1,6 @@
 <div id="fanart-background"></div>
 <div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %>">
-    <div class="video-side">
+    <div class="video-side watched-<%=watched.status%>">
         <div class="video-thumb">
             <img src="<%= app.image.url(fanart) %>" class="widethumb" />
             <img src="<%= app.image.url(thumbnail) %>" class="thumb" />
@@ -13,7 +13,7 @@
                 </div>
             </div>
         </div>
-
+        <div class="video-large-progress"><span style="width: <%=watched.progress%>%" class="progress-movie-<%= movieid %>"></span></div>
     </div>
     <div class="video-tab-wrapper">
 

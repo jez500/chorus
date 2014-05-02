@@ -172,6 +172,9 @@ app.playerStateView = Backbone.View.extend({
     //set progress (done by timer)
     //app.shellView.$progressSlider.slider( "value",data.player.percentage );
 
+    // update the progress if viewing model page
+    $('.progress-' + data.item.type + '-' + data.item.id).css( 'width' , Math.ceil( data.player.percentage) + '%' );
+
     // switch between audio / video formatting
     if(data.activePlayer == 1){
       // Video

@@ -1,6 +1,6 @@
 <div id="fanart-background"></div>
-<div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %>">
-    <div class="video-side">
+<div id="details" class="tabbable <%= ( fanart != '' ? 'has-fanart' : '') %> tvtype-<%= type %>">
+    <div class="video-side watched-<%=watched.status%>">
         <div class="video-thumb">
             <% if(widethumb != ''){ %>
               <img src="<%= app.image.url(widethumb) %>" class="widethumb" />
@@ -15,7 +15,9 @@
                 </div>
             </div>
         </div>
-
+        <% if(type == 'episode'){ %>
+            <div class="video-large-progress"><span style="width: <%=watched.progress%>%" class="progress-episode-<%= episodeid %>"></span></div>
+        <% } %>
     </div>
     <div class="video-tab-wrapper">
 
