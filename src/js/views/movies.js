@@ -178,7 +178,7 @@ app.MovieListItemView = Backbone.View.extend({
   playMovie: function(e){
     e.preventDefault();
     e.stopPropagation();
-    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', function(data){
+    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', this.model.attributes, function(data){
       // movie should be playing
       app.VideoController.playlistRender();
     });
@@ -344,7 +344,7 @@ app.MovieView = Backbone.View.extend({
    */
   playMovie: function(e){
     e.preventDefault();
-    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', function(data){
+    app.VideoController.playVideoId(this.model.attributes.movieid, 'movieid', this.model.attributes, function(data){
       // movie should be playing
       app.VideoController.playlistRender();
     });

@@ -2,7 +2,8 @@
 app.VideoController = {
 
   playlistId: 1, // video activePlayer
-  currentPlaylist: [] // cache of current video playlist
+  currentPlaylist: [], // cache of current video playlist
+  subtitle: 'on' // just for toggling, doesn't set anything
 
 };
 
@@ -13,10 +14,12 @@ app.VideoController = {
  *  int of id to add
  * @param type
  *  eg. movieid
+ * @param model
+ *  used for resume
  * @param callback
  *  result
  */
-app.VideoController.playVideoId = function(id, type, callback){
+app.VideoController.playVideoId = function(id, type, model, callback){
 
   // clear playlist
   app.VideoController.playlistClear(function(){
@@ -24,8 +27,12 @@ app.VideoController.playVideoId = function(id, type, callback){
     // Add video to playlist based on type/id
     app.VideoController.addToPlaylist(id, type, 'add', function(data){
 
+      // play
       app.VideoController.playPlaylistPosition(0, function(play){
-        callback(data.result);
+
+        // resume
+        app.VideoController.resumeVideo( model, callback );
+
       });
     });
   });
@@ -283,18 +290,29 @@ app.VideoController.tvshowPlay = function(model, callback){
       // play first pos
       app.VideoController.playPlaylistPosition(0, function(data){
 
-        // if in progress, seek to that position
-        if(model.resume !== undefined && model.resume.position > 0){
-          app.VideoController.seek( Math.round((model.resume.position / model.resume.total) * 100), callback );
-        } else {
-          //callback - play, no seek
-          callback();
-        }
+        // resume
+        app.VideoController.resumeVideo( model, callback );
+
       });
     });
   });
 
 };
+
+
+/**
+ * Resume a video if resume data is available
+ */
+app.VideoController.resumeVideo = function(model, callback ){
+  // if in progress, seek to that position
+  if(model.resume !== undefined && model.resume.position > 0){
+    app.VideoController.seek( Math.round((model.resume.position / model.resume.total) * 100), callback );
+  } else {
+    //callback - play, no seek
+    if(callback){ callback(); }
+  }
+};
+
 
 
 /**
@@ -307,6 +325,18 @@ app.VideoController.seek = function(position, callback ){
     }
   });
 };
+
+
+/**
+ * Set subtitle
+ */
+app.VideoController.toggleSubTitle = function(){
+  var type = (app.VideoController.subtitle == 'on' ? 'off' : 'on');
+  app.xbmcController.command('Player.SetSubtitle', [app.VideoController.playlistId, type], function(result){
+    app.VideoController.subtitle = type;
+  });
+};
+
 
 
 /**

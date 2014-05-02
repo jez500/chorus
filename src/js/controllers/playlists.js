@@ -924,14 +924,21 @@ app.playlists.playlistPlayPosition = function(playlistId, position, callback){
  * @param callback
  */
 app.playlists.playerOpen = function(playlistId, type, value, callback){
-  var data = {};
+  var data = {},
+    params = [];
   // only l
   if(type == 'position'){
     data.playlistid = playlistId;
   }
   data[type] = value;
+  params.push(data);
 
-  app.xbmcController.command('Player.Open', [data], function(result){
+  // if video turn resume on - THIS DOES NOT WORK :( seems to be a broken feature. workarounds in video controller
+  if(app.VideoController.playlistId == playlistId){
+    params.push( { resume: true } );
+  }
+
+  app.xbmcController.command('Player.Open', params, function(result){
     if(callback){
       callback(result.result); // return items
     }

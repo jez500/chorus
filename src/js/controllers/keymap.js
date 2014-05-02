@@ -42,7 +42,7 @@ app.keymap = {
     }
 
     var controller = app.xbmcController;
-
+    console.log(e.which);
     switch (e.which) {
       case 37: // left
         controller.input('Left');
@@ -75,6 +75,12 @@ app.keymap = {
         break;
       case 32: // spacebar
         app.AudioController.sendPlayerCommand('Player.PlayPause', 'toggle');
+        break;
+      case 88: // x
+        app.xbmcController.command('Player.Stop', [app.playerState.xbmc.getNowPlaying('activePlayer')]);
+        break;
+      case 84: // t
+        app.VideoController.toggleSubTitle();
         break;
       default: // return everything else here
         return;

@@ -48,7 +48,7 @@ app.RemoteView = Backbone.View.extend({
   playerButton:function (e) {
     var $el = $(e.target),
       type = $el.data('type'),
-      data = app.playlists.getNowPlaying();
+      data = app.playerState.xbmc.getNowPlaying();
 
     switch(type){
       case 'Stop':
