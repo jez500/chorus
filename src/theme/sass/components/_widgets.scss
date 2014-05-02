@@ -443,7 +443,7 @@ input[type="text"] {
     cursor: pointer;
     width: 100%;
     @include breakpoint($width-large){
-      margin-top: -6%;
+      margin-top: -3%;
     }
     min-width: 400px;
   }

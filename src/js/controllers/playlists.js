@@ -229,7 +229,6 @@ app.playlists.playlistAddItems = function(playlist, op, type, delta, callback){
       // Add to Custom Lists
       case 'lists':
 
-        app.playlists.changePlaylistView('lists');
         app.playlists.saveCustomPlayListsDialog('local', items);
 
         break;

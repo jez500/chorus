@@ -251,30 +251,7 @@ app.ShellView = Backbone.View.extend({
       }
       $body.removeClass('home');
 
-      // specifics for non home pages
-      switch (menuItem) {
-
-        case 'playlist':
-          // all this to open the sidebar playlist item
-          //app.playlists.changePlaylistView('local');
-          $('ul.custom-lists .custom-playlist-item').each(function(i,d){
-            var $d = $(d), $parent = $d.parent();
-            if($d.data('id') == app.helpers.arg(1)){
-              $parent.addClass('open');
-            } else {
-              $parent.removeClass('open');
-            }
-          });
-          break;
-
-        case 'thumbsup':
-          $('.custom-lists li').removeClass('open');
-          $('.thumbsup-link').addClass('open');
-          //app.playlists.changePlaylistView('local');
-          break;
-      }
     }
-
 
 
     if (menuItem) {
@@ -358,7 +335,6 @@ app.ShellView = Backbone.View.extend({
     e.preventDefault();
     // Save playlist
     app.playlists.saveCustomPlayListsDialog();
-    app.playlists.changePlaylistView('lists');
   },
 
   /**

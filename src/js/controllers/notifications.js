@@ -113,6 +113,7 @@ app.notifications = {
 
       // eg. shuffled, repeat, partymode
       case 'Player.OnPropertyChanged':
+        console.log(data.params.data);
         app.cached.nowPlaying.player = $.extend(app.playerState.xbmc.getNowPlaying('player'), data.params.data.property);
         self.updateState();
         break;

@@ -8,7 +8,15 @@
 
 app.playerStateView = Backbone.View.extend({
 
+  // force a full refresh after this many runs (12 = 60sec)
+  runForce: 12,
+
   initialize: function () {
+
+    // how many times this has run until reset (runForce)
+    if(app.counts.runCount === undefined){
+      app.counts.runCount = 0;
+    }
 
     this.$body = $('body');
     this.$nowPlaying = $('#now-playing');
@@ -23,6 +31,13 @@ app.playerStateView = Backbone.View.extend({
       lastPlaying = app.helpers.varGet('lastPlaying', '');
 
     this.$songs = $('.song');
+
+    // force a refresh if playing a url stream and hit runForce count (will see the update next run)
+    // there is no notification for song change :(
+    if(data.status == 'playing' && this.isUrl(data.item.file) && this.runForce <= app.counts.runCount){
+      app.playerState.xbmc.fetchRemote(function(){}, true);
+      app.counts.runCount = 0;
+    }
 
     // enrich
     data.playingItemChanged = (lastPlaying != this.playingKey(data));
@@ -53,6 +68,11 @@ app.playerStateView = Backbone.View.extend({
 
       }
 
+      // increase run count if playing
+      if(data.status == 'playing'){
+        app.counts.runCount++;
+      }
+
     } else {
       this.notPlaying();
     }
@@ -72,9 +92,24 @@ app.playerStateView = Backbone.View.extend({
    * @returns {key}
    */
   playingKey: function(data){
+    // urls have changing labels so we check on that instead of file
+    if(this.isUrl(data.item.file)){
+      return data.item.label;
+    }
+    // otherwise a file/id is more reliable
     return (data.item !== undefined ?
       (data.item.file !== undefined ? data.item.file : data.item.type + data.item.id)
       : null);
+  },
+
+
+  /**
+   * is a url?
+   * @param str
+   * @returns {boolean}
+   */
+  isUrl: function(str){
+    return (str.lastIndexOf("http://", 0) === 0) || (str.lastIndexOf("https://", 0) === 0);
   },
 
 
@@ -217,13 +252,13 @@ app.playerStateView = Backbone.View.extend({
    */
   tagPlayingRow:function(){
 
-    var data = app.cached.nowPlaying;
+    var data = app.playerState.xbmc.getNowPlaying();
 
     // playing row we should have a loaded item
     this.$songs.each(function(i,d){
       var $d = $(d);
       // correct song id
-      if(data.item !== undefined && $d.attr('data-songid') == data.item.id && !$d.hasClass('playlist-item')){
+      if($d.attr('data-songid') == data.item.id && !$d.hasClass('playlist-item')){
         $d.addClass('playing-row');
       } else if($d.hasClass('playlist-item')){
 
