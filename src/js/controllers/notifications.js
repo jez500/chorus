@@ -55,6 +55,7 @@ app.notifications = {
       // bind close
       ws.onclose = function (e) {
         console.log('socket closed', e);
+        app.notifications.wsActive = false;
       };
 
     }

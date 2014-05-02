@@ -7,9 +7,29 @@
 
 app.fields = {
 
-  get: function(type){
+
+  /**
+   * Get fields for a given type
+   * If the second param is true it will provide all available fields for that type via {type}Full property
+   *
+   * @param type string
+   * @param full bool
+   * @returns []
+   */
+  get: function(type, full){
     if(app.fields.data[type] !== undefined){
-      return app.fields.data[type];
+      var list = app.fields.data[type],
+        fullName = type + 'Full';
+      // If a full set of fields is requested we add them to the list
+      if(full !== undefined && full === true &&
+        app.fields.data[fullName] !== undefined &&
+        $.inArray(app.fields.data[fullName][0], list) == -1){
+          $.each(app.fields.data[fullName], function(i,d){
+            list.push(d);
+          });
+      }
+      // return array of field names
+      return list;
     }
     return [];
   },
@@ -50,7 +70,8 @@ app.fields = {
       "artistid",
       "displayartist"
     ],
-    song: ["title",
+    song: [
+      "title",
       "artist",
       "albumartist",
       "genre",
@@ -71,65 +92,72 @@ app.fields = {
       "displayartist",
       "albumartistid"
     ],
+
     movie: [
       "title",
       "genre",
       "year",
-      "rating",
-      "director",
-      "trailer",
       "tagline",
-      "plot",
-      "plotoutline",
       "originaltitle",
       "lastplayed",
       "playcount",
+      "runtime",
+      "thumbnail",
+      "file",
+      "sorttitle",
+      "resume",
+      "fanart",
+      "dateadded"
+    ],
+
+    movieFull: [
+      "rating",
+      "director",
+      "trailer",
+      "plot",
+      "plotoutline",
       "writer",
       "studio",
       "mpaa",
       "cast",
       "country",
       "imdbnumber",
-      "runtime",
-      //"set",
+      "set",
       "showlink",
       "streamdetails",
-      //"top250",
+      "top250",
       "votes",
-      "fanart",
-      "thumbnail",
-      "file",
-      "sorttitle",
-      "resume",
-      //"setid",
-      "dateadded",
+      "setid",
       "tag",
       "art"
     ],
 
     tvshow: [
       "title",
-      "genre",
       "year",
+      "playcount",
+      "episode",
+      "thumbnail",
+      "file",
+      "season",
+      "watchedepisodes"
+    ],
+
+    tvshowFull: [
+      "lastplayed",
+      "genre",
       "rating",
       "plot",
       "studio",
       "mpaa",
       "cast",
-      "playcount",
-      "episode",
       "imdbnumber",
       "premiered",
       "votes",
-      "lastplayed",
-      // "fanart",
-      "thumbnail",
-      "file",
+      "fanart",
       "originaltitle",
       "sorttitle",
       "episodeguide",
-      "season",
-      "watchedepisodes",
       "dateadded",
       "tag",
       "art"
@@ -137,30 +165,33 @@ app.fields = {
 
     tvepisode: [
       "title",
-      "plot",
-      "votes",
-      "rating",
-      "writer",
-      "firstaired",
       "playcount",
       "runtime",
-      "director",
-      "productioncode",
       "season",
       "episode",
       "originaltitle",
       "showtitle",
-      "cast",
-      "streamdetails",
       "lastplayed",
-      "fanart",
       "thumbnail",
       "file",
       "resume",
       "tvshowid",
       "dateadded",
       "uniqueid",
-      "art"
+      "fanart"
+    ],
+
+    tvepisodeFull: [
+      "art",
+      "cast",
+      "productioncode",
+      "director",
+      "plot",
+      "votes",
+      "rating",
+      "writer",
+      "firstaired",
+      "streamdetails"
     ],
 
     tvseason: [

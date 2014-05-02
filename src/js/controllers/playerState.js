@@ -120,7 +120,9 @@ app.playerState = {
         // up the count and set the state
         app.counts[503]++;
         app.state = 'notconnected';
-        app.notification('Lost connection to XBMC');
+        if(app.counts[503] == 3){
+          app.notification('Lost connection to XBMC');
+        }
         return;
       } else {
         // up the count so gets checked on success

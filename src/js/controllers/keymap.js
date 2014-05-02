@@ -65,7 +65,18 @@ app.keymap = {
       case 67: // c
         controller.input('ContextMenu');
         break;
-      default:
+      case 107: // +
+        var volUp = app.playerState.xbmc.getNowPlaying('volume').volume + 5;
+        app.AudioController.setVolume( (volUp > 100 ? 100 : Math.ceil(volUp)) );
+        break;
+      case 109: // -
+        var volDown = app.playerState.xbmc.getNowPlaying('volume').volume - 5;
+        app.AudioController.setVolume( (volDown < 0 ? 0 : Math.floor(volDown)) );
+        break;
+      case 32: // spacebar
+        app.AudioController.sendPlayerCommand('Player.PlayPause', 'toggle');
+        break;
+      default: // return everything else here
         return;
     }
 

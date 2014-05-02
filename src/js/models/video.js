@@ -11,7 +11,7 @@ app.Movie = Backbone.Model.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
-      app.xbmcController.command('VideoLibrary.GetMovieDetails',[parseInt(this.id), app.fields.get('movie')], function(data){
+      app.xbmcController.command('VideoLibrary.GetMovieDetails',[parseInt(this.id), app.fields.get('movie', true)], function(data){
         var m = data.result.moviedetails;
         // get thumbsup
         m.thumbsup = app.playlists.getThumbsUp('movie', m.movieid);
@@ -39,7 +39,7 @@ app.TVShow = Backbone.Model.extend({
       // options.success(data);
 
       // add fanart to full load
-      var fields = app.fields.get('tvshow');
+      var fields = app.fields.get('tvshow', true);
       if($.inArray('fanart', fields) == -1){
         fields.push('fanart');
       }
@@ -82,7 +82,7 @@ app.TVEpisode = Backbone.Model.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
-      var fields = app.fields.get('tvepisode');
+      var fields = app.fields.get('tvepisode', true);
 
       // Get the episode
       app.xbmcController.command('VideoLibrary.GetEpisodeDetails',[parseInt(this.id), fields], function(data){
