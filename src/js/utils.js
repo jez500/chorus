@@ -1206,9 +1206,7 @@ $(document).ready(function(){
 
       var obj = {};
       $.each(this[0].attributes, function() {
-        if(this.specified) {
           obj[this.name] = this.value;
-        }
       });
       return obj;
     }

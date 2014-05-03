@@ -75,8 +75,11 @@ This looks like the best we can get until XBMC supports transcoding. Look for th
 
 
 ## Supported xbmc addons
+With search integration
 - [SoundCloud AddOn](http://addons.xbmc.org/show/plugin.audio.soundcloud/)
-- [Radio AddOn](http://addons.xbmc.org/show/plugin.audio.radio_de/) - [fix for labels](https://github.com/dersphere/plugin.audio.radio_de/pull/7)
+- [Radio AddOn](http://addons.xbmc.org/show/plugin.audio.radio_de/) - [fix for labels](https://github.com/jez500/plugin.audio.radio_de)
+Tested and works
+- [SHOUTcast 2](http://addons.xbmc.org/show/plugin.audio.shoutcast/) - [fix for labels](https://github.com/jez500/plugin.audio.shoutcast)
 
 
 ## Issues, Bugs and Suggestions

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.chorus"
-  version="0.3.7"
+  version="0.3.8"
   name="Chorus"
   provider-name="jez500">
   <requires>

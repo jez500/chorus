@@ -135,6 +135,7 @@ app.fields = {
     tvshow: [
       "title",
       "year",
+      "genre",
       "playcount",
       "episode",
       "thumbnail",
@@ -145,7 +146,6 @@ app.fields = {
 
     tvshowFull: [
       "lastplayed",
-      "genre",
       "rating",
       "plot",
       "studio",

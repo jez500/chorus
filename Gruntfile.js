@@ -14,7 +14,7 @@ module.exports = function(grunt) {
         src: [
 
           // jQuery
-          jsPath + '/lib/required/jquery-1.10.2.js',
+          jsPath + '/lib/required/jquery-1.11.1.js',
 
           // underscore
           jsPath + '/lib/required/underscore-min.js',

@@ -1,3 +1,15 @@
+Version 0.3.8
+- Fixed ability to delete a custom playlist song
+- Refactored player state and added some improvements to stream playback
+- Refined fields used in listing calls
+- Movies now resume from last played position
+- Added more keymaps: spacebar, x, t, +, -, <, >
+- Added progress to full view of movie or episode
+- Progress on movie/episode full view updates while playing
+- Added "Ignore articles when sorting" to video lists for Martijn
+- Updated to jQuery v1.11.1
+
+
 Version 0.3.7
 - Added support for the Radio AddOn
 - Improvements to AddOn framework
