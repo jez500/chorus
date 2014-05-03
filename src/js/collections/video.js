@@ -468,7 +468,7 @@ app.RecentTvepisodeCollection = Backbone.Collection.extend({
     // constuct params
     opt.push(app.fields.get('tvepisode')); // tv eps
     opt.push({end: 10000, start: 0}); // show all
-    opt.push({method: 'date', order: 'descending'}); // new first
+    opt.push({method: 'date', ignorearticle: true, order: 'descending'}); // new first
 
     // lookup
     app.xbmcController.command('VideoLibrary.GetRecentlyAddedEpisodes', opt, function(data){

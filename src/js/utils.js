@@ -536,6 +536,7 @@ $(document).ready(function(){
       ret.method = sortAr[0];
       ret.order = sortAr[1];
     }
+    ret.ignorearticle = true;
     return ret;
   };
 
