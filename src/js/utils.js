@@ -278,6 +278,14 @@ $(document).ready(function(){
       ((time.minutes > 0 || time.hours > 0) && time.seconds < 10 ? '0' : '') + time.seconds;
   };
 
+  /**
+   * remove [COLOR] tags
+   */
+  app.helpers.uncolorText = function(text){
+      return text.replace(/\[\/?color([^\]]*)?\]/ig, '');
+  };
+
+
 
   /**
    * wrapper for if ! undefined (seem to use it a bit)

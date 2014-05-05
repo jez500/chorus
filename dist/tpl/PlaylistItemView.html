@@ -18,7 +18,7 @@ var plid = (typeof playlistId != 'undefined' ? playlistId : 0);
     </div>
     <% } %>
 
-    <a class="playlist-play" href="<%= url %>"><%= label %></a>
+    <a class="playlist-play" href="<%= url %>"><%= app.helpers.uncolorText(label) %></a>
     <div class="info"><%=subLink%></div>
     <span class="playlist-meta"></span>
 </div>

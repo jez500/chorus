@@ -14591,6 +14591,14 @@ $(document).ready(function(){
       ((time.minutes > 0 || time.hours > 0) && time.seconds < 10 ? '0' : '') + time.seconds;
   };
 
+  /**
+   * remove [COLOR] tags
+   */
+  app.helpers.uncolorText = function(text){
+      return text.replace(/\[\/?color([^\]]*)?\]/ig, '');
+  };
+
+
 
   /**
    * wrapper for if ! undefined (seem to use it a bit)
@@ -26396,7 +26404,7 @@ app.playerStateView = Backbone.View.extend({
       this.$nowPlaying.find('#playing-thumb').attr("#remote"); //('href', '#' + data.item.type + '/' + data.item.albumid);
     }
     // set title
-    $('.playing-song-title').html(data.item.label)
+    $('.playing-song-title').html(app.helpers.uncolorText(data.item.label))
       .attr('title', data.item.album)
       .attr('href', '#album/' + data.item.albumid); //now playing
 
@@ -26460,7 +26468,7 @@ app.playerStateView = Backbone.View.extend({
    * Set document title
    */
   setTitle:function () {
-    var data = app.cached.nowPlaying, title = data.item.label;
+    var data = app.cached.nowPlaying, title = app.helpers.uncolorText(data.item.label);
     if(app.audioStreaming.getPlayer() == 'xbmc'){
       document.title = (data.status == 'playing' ? '▶ ' : '') + (title !== undefined ? title + ' | ' : '') + 'Chorus.'; //doc
     }
