@@ -6,7 +6,7 @@
 app.Movie = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies', 'thumbsup': false, 'libraryId': 1},
+  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies', 'thumbsup': false, 'libraryId': 1, runtime: 0},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -32,7 +32,7 @@ app.Movie = Backbone.Model.extend({
 app.TVShow = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'tvshowid': '', 'label': '', 'watchedepisodes': '', 'genre': '', 'year': '', 'cast': [], 'rating': 0, url: '#tv', 'episodeid': ''},
+  defaults: {'tvshowid': '', 'label': '', 'watchedepisodes': '', 'genre': '', 'year': '', 'cast': [], 'rating': 0, url: '#tv', 'episodeid': '', runtime: 0},
 
   sync: function(method, model, options) {
     if (method === "read") {

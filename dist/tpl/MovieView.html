@@ -59,7 +59,16 @@
                         <div class="rating" title="<%=votes%> votes">
                             <div class="value"><%=app.helpers.rating(rating)%></div>
                             <i class="fa fa-star"></i>
-                         </div>   
+                         </div>
+
+                        <% if(runtime > 0){ %>
+                        <div class="duration sub-block">
+                            <h4>Duration</h4>
+                            <ul>
+                                <li><%=app.helpers.formatTime(app.helpers.secToTime(runtime))%></li>
+                            </ul>
+                        </div>
+                        <% } %>
 
                         <div class="quality sub-block">
                             <h4>Quality</h4>
@@ -123,6 +132,16 @@
                             Works well in Chrome and Firefox.</p>
                         <div class="buttons">
                             <a href="#" data-player="vlc" class="movie-stream btn">Launch VLC player</a>
+                        </div>
+                        <br />
+                        <div id="direct-download">
+                            <h2>Download</h2>
+                            <p>A direct link to download the media. Some browsers may attempt to play the media natively or you can right click
+                               and "Save as" to download the file to your computer/device.
+                            </p>
+                            <div class="buttons">
+                                <a href="#" class="download-link btn" target="_blank">Direct Download</a>
+                            </div>
                         </div>
                     </div>
 

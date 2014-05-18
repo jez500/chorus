@@ -272,8 +272,13 @@ app.MovieView = Backbone.View.extend({
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
     model.watched = app.VideoController.watchedStatus(model);
 
-    //main detail
+    // main detail
     this.$el.html(this.template(model));
+
+    // populate download link
+    app.AudioController.downloadFile(model.file, function(url){
+      $('.download-link').attr('href', url);
+    });
 
     // backstretch
     _.defer(function(){
