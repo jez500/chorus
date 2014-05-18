@@ -247,6 +247,11 @@ app.TvshowView = Backbone.View.extend({
     //main detail
     this.$el.html(this.template(model));
 
+    // populate download link
+    app.AudioController.downloadFile(model.file, function(url){
+      $('.download-link', this.$el).attr('href', url);
+    });
+
     // backstretch
     _.defer(function(){
       var $fart = $('#fanart-background',this.$el),

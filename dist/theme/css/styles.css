@@ -5967,7 +5967,7 @@ ul.video-list li.next-page:hover {
 
 /* line 350, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-1,
-#tvshow-detail .col-1,
+#tv-season .col-1,
 #movie-watch .col-1,
 #movie-detail .col-1 {
   margin-bottom: 20px;
@@ -5975,7 +5975,7 @@ ul.video-list li.next-page:hover {
 @media (min-width: 800px) {
   /* line 350, ../../../src/theme/sass/components/_video.scss */
   #tv-watch .col-1,
-  #tvshow-detail .col-1,
+  #tv-season .col-1,
   #movie-watch .col-1,
   #movie-detail .col-1 {
     width: 65.51724%;
@@ -5988,7 +5988,7 @@ ul.video-list li.next-page:hover {
 @media (min-width: 800px) {
   /* line 358, ../../../src/theme/sass/components/_video.scss */
   #tv-watch .col-2,
-  #tvshow-detail .col-2,
+  #tv-season .col-2,
   #movie-watch .col-2,
   #movie-detail .col-2 {
     width: 31.03448%;
@@ -6000,7 +6000,7 @@ ul.video-list li.next-page:hover {
 }
 /* line 365, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating,
-#tvshow-detail .col-2 .rating,
+#tv-season .col-2 .rating,
 #movie-watch .col-2 .rating,
 #movie-detail .col-2 .rating {
   margin-bottom: 30px;
@@ -6010,8 +6010,8 @@ ul.video-list li.next-page:hover {
 /* line 369, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating .fa-star,
 #tv-watch .col-2 .rating .value,
-#tvshow-detail .col-2 .rating .fa-star,
-#tvshow-detail .col-2 .rating .value,
+#tv-season .col-2 .rating .fa-star,
+#tv-season .col-2 .rating .value,
 #movie-watch .col-2 .rating .fa-star,
 #movie-watch .col-2 .rating .value,
 #movie-detail .col-2 .rating .fa-star,
@@ -6024,7 +6024,7 @@ ul.video-list li.next-page:hover {
 }
 /* line 377, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating .fa-star,
-#tvshow-detail .col-2 .rating .fa-star,
+#tv-season .col-2 .rating .fa-star,
 #movie-watch .col-2 .rating .fa-star,
 #movie-detail .col-2 .rating .fa-star {
   font-size: 50px;
@@ -6032,7 +6032,7 @@ ul.video-list li.next-page:hover {
 }
 /* line 381, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 .rating .votes,
-#tvshow-detail .col-2 .rating .votes,
+#tv-season .col-2 .rating .votes,
 #movie-watch .col-2 .rating .votes,
 #movie-detail .col-2 .rating .votes {
   clear: both;
@@ -6042,7 +6042,7 @@ ul.video-list li.next-page:hover {
 }
 /* line 388, ../../../src/theme/sass/components/_video.scss */
 #tv-watch .col-2 h4,
-#tvshow-detail .col-2 h4,
+#tv-season .col-2 h4,
 #movie-watch .col-2 h4,
 #movie-detail .col-2 h4 {
   text-align: right;
@@ -6074,11 +6074,12 @@ ul.video-list li.next-page:hover {
 
 /* line 421, ../../../src/theme/sass/components/_video.scss */
 #seasons {
+  clear: both;
   overflow: hidden;
   padding-bottom: 20px;
   margin-right: -10px;
 }
-/* line 434, ../../../src/theme/sass/components/_video.scss */
+/* line 426, ../../../src/theme/sass/components/_video.scss */
 #seasons h3 {
   color: rgba(53, 53, 53, 0.28);
   margin: 0;
@@ -6086,15 +6087,15 @@ ul.video-list li.next-page:hover {
   padding: 0 0 6px 5px;
   font-size: 17px;
 }
-/* line 440, ../../../src/theme/sass/components/_video.scss */
+/* line 432, ../../../src/theme/sass/components/_video.scss */
 #seasons h3 a {
   color: rgba(53, 53, 53, 0.45);
 }
-/* line 444, ../../../src/theme/sass/components/_video.scss */
+/* line 436, ../../../src/theme/sass/components/_video.scss */
 #seasons ul.video-list {
   margin: 0;
 }
-/* line 447, ../../../src/theme/sass/components/_video.scss */
+/* line 439, ../../../src/theme/sass/components/_video.scss */
 #seasons ul.video-list li .card {
   width: 149px;
   min-width: 149px;
@@ -6144,7 +6145,7 @@ ul.video-list li.next-page:hover {
 #seasons ul.video-list li .card.watched-yes .is-watched {
   display: block;
 }
-/* line 456, ../../../src/theme/sass/components/_video.scss */
+/* line 448, ../../../src/theme/sass/components/_video.scss */
 #seasons.episodes ul.video-list li .card {
   width: 228px;
   min-width: 228px;
@@ -6183,38 +6184,17 @@ ul.video-list li.next-page:hover {
   display: none;
 }
 
-/* line 465, ../../../src/theme/sass/components/_video.scss */
+/* line 457, ../../../src/theme/sass/components/_video.scss */
 #tvshow-detail {
   overflow: hidden;
 }
 
-/* line 476, ../../../src/theme/sass/components/_video.scss */
+/* line 468, ../../../src/theme/sass/components/_video.scss */
 h1.video-title {
   font-size: 31px;
   color: #444;
   letter-spacing: -1px;
   font-weight: normal;
-}
-/* line 481, ../../../src/theme/sass/components/_video.scss */
-h1.video-title.tv-title {
-  padding: 0 15px;
-}
-@media (min-width: 800px) {
-  /* line 476, ../../../src/theme/sass/components/_video.scss */
-  h1.video-title {
-    display: none;
-  }
-}
-
-/* line 489, ../../../src/theme/sass/components/_video.scss */
-.tvtype-episode h1.video-title {
-  margin: 20px 0 -20px;
-}
-@media (min-width: 800px) {
-  /* line 489, ../../../src/theme/sass/components/_video.scss */
-  .tvtype-episode h1.video-title {
-    display: block;
-  }
 }
 
 /**

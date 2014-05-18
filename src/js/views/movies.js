@@ -277,7 +277,7 @@ app.MovieView = Backbone.View.extend({
 
     // populate download link
     app.AudioController.downloadFile(model.file, function(url){
-      $('.download-link').attr('href', url);
+      $('.download-link', this.$el).attr('href', url);
     });
 
     // backstretch
