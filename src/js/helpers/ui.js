@@ -167,9 +167,39 @@ app.ui = {
       app.ui.timerStart();
     }
 
+  },
 
-  }
 
+  /**
+   * Create a sub-title string for a given model
+   */
+   getModelMeta: function(model){
+
+     // need a model or type to continue
+     if(model === undefined || model.type === undefined){
+       return '';
+     }
+
+     // meta depends on type
+     meta = '';
+     switch(model.type){
+       case 'song':
+         meta = app.helpers.parseArtistsArray(model);
+         break;
+       case 'movie':
+         meta = model.year;
+         break;
+       case 'episode':
+         meta = model.showtitle + ' (S' + model.season + ' E' + model.episode + ')';
+         break;
+       case 'channel':
+         meta = model.title;
+         break;
+     }
+
+     // return the meta
+     return meta;
+   }
 
 
 

@@ -446,8 +446,10 @@ app.Router = Backbone.Router.extend({
     // fetch results
     app.cached.movieCollection.fetch({"fullRange": fullRange, "success": function(collection){
 
+      // if fully loaded, we don't want a next button
+      collection.showNext = !app.cached.movieCollection.fullyLoaded;
+
       // get the view of results
-      collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
 
       if(isNewPage === true || app.moviePageNum === 0 || append !== true){ // Replace content //

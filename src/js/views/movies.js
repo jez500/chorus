@@ -64,8 +64,11 @@ app.MovieListView = Backbone.View.extend({
   },
 
   nextPage: function(e){
-    var $el = $('.next-page').last();
-    app.pager.nextPage($el, 'movie');
+    // Do not run if we have no next button (sometime sneaks past even if button not rendered somehow?)
+    if(this.model.showNext !== undefined && this.model.showNext === true){
+      var $el = $('.next-page').last();
+      app.pager.nextPage($el, 'movie');
+    }
   },
 
 

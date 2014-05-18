@@ -18,12 +18,9 @@ app.MovieCollection = Backbone.Collection.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
-
       // Get a paginated
       var self = this,
         fullRange = (typeof options.fullRange != 'undefined' && options.fullRange === true);
-
-
 
       // load up a full cache for pagination
       app.cached.moviesPage = new app.MovieAllCollection();
@@ -33,7 +30,8 @@ app.MovieCollection = Backbone.Collection.extend({
         // return pagination from cache if exists
         var cache = self.cachedPagination(app.moviePageNum, fullRange);
         if(cache !== false){
-          options.success(cache);
+            self.fullyLoaded = (cache >= app.stores.allMovies.length);
+            options.success(cache);
           return;
         }
 
@@ -62,25 +60,18 @@ app.MovieCollection = Backbone.Collection.extend({
             });
           }
 
-          // if models less than ipp then must be the end
-          if(data.models.length > app.itemsPerPage){
-            self.fullyLoaded = true;
-          }
+          // if models less than ipp or we have a complete collection then must be the end
+          self.fullyLoaded = (data.models.length < app.itemsPerPage || data.models.length >= app.stores.allMovies.length);
+
           // return callback
           options.success(data.models);
           return data.models;
         }});
 
-
-
-
       }});
-
-      //return this
 
     }
   },
-
 
 
 

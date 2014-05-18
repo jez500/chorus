@@ -109,7 +109,7 @@ app.playerStateView = Backbone.View.extend({
    * @returns {boolean}
    */
   isUrl: function(str){
-    return (str.lastIndexOf("http://", 0) === 0) || (str.lastIndexOf("https://", 0) === 0);
+    return str !== undefined && ((str.lastIndexOf("http://", 0) === 0) || (str.lastIndexOf("https://", 0) === 0));
   },
 
 
@@ -163,7 +163,7 @@ app.playerStateView = Backbone.View.extend({
       cur = 0,
       dur = 0,
       // playlist stuff
-      meta = app.helpers.parseArtistsArray(data.item),
+      meta = app.ui.getModelMeta(data.item),
       $playlistActive = $('.playlist .playing-row');
 
     //set playlist meta and playing row
