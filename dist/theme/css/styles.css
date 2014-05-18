@@ -2486,6 +2486,7 @@ body.section-search #sidebar-first {
 
 #now-playing,
 #browser-now-playing {
+  position: absolute;
   font-size: 12px;
   margin-right: 0;
   margin-left: 0;
