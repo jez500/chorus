@@ -205,7 +205,7 @@ app.ShellView = Backbone.View.extend({
     var keyDelay = 200, self = this;
 
     // set and clear timeout to leave a gap
-    $('#search').keyup(function (e) {
+    $('#search').on('input', function (e) {
     //  e.preventDefault();
       clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
       app.cached.keyupTimeout = setTimeout(function(){
