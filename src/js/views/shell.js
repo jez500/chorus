@@ -285,8 +285,8 @@ app.ShellView = Backbone.View.extend({
 
   // toggle remote
   remoteControl: function(e){
+    e.preventDefault();
     if(app.helpers.arg(0) == 'remote'){
-      e.preventDefault();
       // same as using the back button
       window.history.back();
     } else {
