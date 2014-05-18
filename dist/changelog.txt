@@ -1,3 +1,17 @@
+Version 0.3.9
+- changed search trigger to only respond to input change #39 - thanks to kopf
+- Strip [color] text from labels #33 - thanks to thorstenhirsch
+- Fix for iOS bug in footer #40 - thanks to joshjowen
+- Add iOS icon #47 - thanks to joshjowen
+- Add Android icon
+- Fixed bug where movies reloaded complete list when you get to the end #35
+- Improved now playing meta info in footer
+- Fixed LiveTV now playing information #38
+- Added duration and direct download link to movie view
+- Added duration and direct download link to tv episode view, moved plot into overview tab
+- Fixed bug with closing the remote (having to click button twice)
+
+
 Version 0.3.8
 - Fixed ability to delete a custom playlist song
 - Refactored player state and added some improvements to stream playback

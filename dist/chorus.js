@@ -15983,8 +15983,10 @@ app.Router = Backbone.Router.extend({
     // fetch results
     app.cached.movieCollection.fetch({"fullRange": fullRange, "success": function(collection){
 
+      // if fully loaded, we don't want a next button
+      collection.showNext = !app.cached.movieCollection.fullyLoaded;
+
       // get the view of results
-      collection.showNext = true;
       app.cached.movieListView = new app.MovieListView({model: collection});
 
       if(isNewPage === true || app.moviePageNum === 0 || append !== true){ // Replace content //
@@ -17566,9 +17568,39 @@ app.ui = {
       app.ui.timerStart();
     }
 
+  },
 
-  }
 
+  /**
+   * Create a sub-title string for a given model
+   */
+   getModelMeta: function(model){
+
+     // need a model or type to continue
+     if(model === undefined || model.type === undefined){
+       return '';
+     }
+
+     // meta depends on type
+     meta = '';
+     switch(model.type){
+       case 'song':
+         meta = app.helpers.parseArtistsArray(model);
+         break;
+       case 'movie':
+         meta = model.year;
+         break;
+       case 'episode':
+         meta = model.showtitle + ' (S' + model.season + ' E' + model.episode + ')';
+         break;
+       case 'channel':
+         meta = model.title;
+         break;
+     }
+
+     // return the meta
+     return meta;
+   }
 
 
 
@@ -17756,7 +17788,7 @@ app.PvrChannel = Backbone.Model.extend({
 app.Movie = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies', 'thumbsup': false, 'libraryId': 1},
+  defaults: {movieid: 1, thumbnail: '', fanart: '', year: '', url: '#movies', 'thumbsup': false, 'libraryId': 1, runtime: 0},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -17782,7 +17814,7 @@ app.Movie = Backbone.Model.extend({
 app.TVShow = Backbone.Model.extend({
 
   initialize:function () {},
-  defaults: {'tvshowid': '', 'label': '', 'watchedepisodes': '', 'genre': '', 'year': '', 'cast': [], 'rating': 0, url: '#tv', 'episodeid': ''},
+  defaults: {'tvshowid': '', 'label': '', 'watchedepisodes': '', 'genre': '', 'year': '', 'cast': [], 'rating': 0, url: '#tv', 'episodeid': '', runtime: 0},
 
   sync: function(method, model, options) {
     if (method === "read") {
@@ -22188,12 +22220,9 @@ app.MovieCollection = Backbone.Collection.extend({
   sync: function(method, model, options) {
     if (method === "read") {
 
-
       // Get a paginated
       var self = this,
         fullRange = (typeof options.fullRange != 'undefined' && options.fullRange === true);
-
-
 
       // load up a full cache for pagination
       app.cached.moviesPage = new app.MovieAllCollection();
@@ -22203,7 +22232,8 @@ app.MovieCollection = Backbone.Collection.extend({
         // return pagination from cache if exists
         var cache = self.cachedPagination(app.moviePageNum, fullRange);
         if(cache !== false){
-          options.success(cache);
+            self.fullyLoaded = (cache >= app.stores.allMovies.length);
+            options.success(cache);
           return;
         }
 
@@ -22232,25 +22262,18 @@ app.MovieCollection = Backbone.Collection.extend({
             });
           }
 
-          // if models less than ipp then must be the end
-          if(data.models.length > app.itemsPerPage){
-            self.fullyLoaded = true;
-          }
+          // if models less than ipp or we have a complete collection then must be the end
+          self.fullyLoaded = (data.models.length < app.itemsPerPage || data.models.length >= app.stores.allMovies.length);
+
           // return callback
           options.success(data.models);
           return data.models;
         }});
 
-
-
-
       }});
-
-      //return this
 
     }
   },
-
 
 
 
@@ -25474,8 +25497,11 @@ app.MovieListView = Backbone.View.extend({
   },
 
   nextPage: function(e){
-    var $el = $('.next-page').last();
-    app.pager.nextPage($el, 'movie');
+    // Do not run if we have no next button (sometime sneaks past even if button not rendered somehow?)
+    if(this.model.showNext !== undefined && this.model.showNext === true){
+      var $el = $('.next-page').last();
+      app.pager.nextPage($el, 'movie');
+    }
   },
 
 
@@ -25679,8 +25705,13 @@ app.MovieView = Backbone.View.extend({
     model.thumbsup = app.playlists.isThumbsUp('movie', model.movieid);
     model.watched = app.VideoController.watchedStatus(model);
 
-    //main detail
+    // main detail
     this.$el.html(this.template(model));
+
+    // populate download link
+    app.AudioController.downloadFile(model.file, function(url){
+      $('.download-link', this.$el).attr('href', url);
+    });
 
     // backstretch
     _.defer(function(){
@@ -26299,7 +26330,7 @@ app.playerStateView = Backbone.View.extend({
    * @returns {boolean}
    */
   isUrl: function(str){
-    return (str.lastIndexOf("http://", 0) === 0) || (str.lastIndexOf("https://", 0) === 0);
+    return str !== undefined && ((str.lastIndexOf("http://", 0) === 0) || (str.lastIndexOf("https://", 0) === 0));
   },
 
 
@@ -26353,7 +26384,7 @@ app.playerStateView = Backbone.View.extend({
       cur = 0,
       dur = 0,
       // playlist stuff
-      meta = app.helpers.parseArtistsArray(data.item),
+      meta = app.ui.getModelMeta(data.item),
       $playlistActive = $('.playlist .playing-row');
 
     //set playlist meta and playing row
@@ -27584,7 +27615,7 @@ app.searchView = Backbone.View.extend({
     var keyDelay = 200, self = this;
 
     // set and clear timeout to leave a gap
-    $('#search').keyup(function (e) {
+    $('#search').on('input', function (e) {
     //  e.preventDefault();
       clearTimeout(app.cached.keyupTimeout); // doesn't matter if it's 0
       app.cached.keyupTimeout = setTimeout(function(){
@@ -27664,8 +27695,8 @@ app.searchView = Backbone.View.extend({
 
   // toggle remote
   remoteControl: function(e){
+    e.preventDefault();
     if(app.helpers.arg(0) == 'remote'){
-      e.preventDefault();
       // same as using the back button
       window.history.back();
     } else {
@@ -28485,6 +28516,11 @@ app.TvshowView = Backbone.View.extend({
 
     //main detail
     this.$el.html(this.template(model));
+
+    // populate download link
+    app.AudioController.downloadFile(model.file, function(url){
+      $('.download-link', this.$el).attr('href', url);
+    });
 
     // backstretch
     _.defer(function(){

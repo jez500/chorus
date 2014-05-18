@@ -16,6 +16,8 @@ mail@jez500.com
 - https://github.com/jez500/chorus
 - http://forum.xbmc.org/showthread.php?tid=183451
 - http://addons.xbmc.org/show/webinterface.chorus/
+- http://lifehacker.com/chorus-is-a-powerful-web-based-remote-control-for-xbmc-1577148641
+- http://www.makeuseof.com/tag/xbmc-users-turn-browser-remote-control-chorus/
 
 ## Requirements
 - XBMC v12 or 13
