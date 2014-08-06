@@ -14,7 +14,7 @@ var app = {
 
   state: 'notconnected', // Not connected yet
 
-  jsonRpcUrl: '/jsonrpc', // JsonRPC endpoint
+  jsonRpcUrl: 'jsonrpc', // JsonRPC endpoint
 
   itemsPerPage: 60, // Our default pagination amount
 
