@@ -58,7 +58,7 @@ app.image = {
       return app.image.defaultImage(type);
     }
     // return image with correct path
-    return app.settings.get('basePath', '/') + 'image/' + encodeURIComponent(rawPath);
+    return 'image/' + encodeURIComponent(rawPath);
   },
 
 
