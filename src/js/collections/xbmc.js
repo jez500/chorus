@@ -17,7 +17,7 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: ["file"], //fields, keep this to an absolute minimum as adding fields makes it go real slow
   arg2: {"start": 0, "end": 50000}, //limit @todo move to settings
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}}, // doesn't appear to work? maybe lost in sorting elsewhere
+  arg3: {"method": "dateadded", "order": "descending"},
   //method/params
   methods: {
     read:  ['AudioLibrary.GetSongs', 'arg1', 'arg2', 'arg3']
@@ -49,7 +49,7 @@ app.SongFilteredXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.fields.get('song'), //fields
   arg2: {"start": 0, "end": 500}, //count
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
+  arg3: {"method": "track"},
   //apply our filter - Required! or call will fail
   arg4: function(){
     return this.models[0].attributes.filter;
@@ -81,7 +81,7 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 15000}, //count
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
+  arg3: {"method": "dateadded", "order": "descending"},
   //method/params
   methods: {
     read:  ['AudioLibrary.GetAlbums', 'arg1', 'arg2', 'arg3']
@@ -108,7 +108,7 @@ app.AlbumFilteredXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 15000}, //count
-  arg3: {"sort": {"method": "album", "order": "ascending"}},
+  arg3: {"method": "album"},
   arg4: function(){
     return this.models[0].attributes.filter;
   },
@@ -205,7 +205,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   arg1: true, //albumartistsonly
   arg2: app.fields.get('artist'), //properties
   arg3: {"start": 0, "end": 10000}, //count
-  arg4: {"sort": {"method": "artist"}},
+  arg4: {"method": "artist"},
   //method/params
   methods: {
     read:  ['AudioLibrary.GetArtists', 'arg1', 'arg2', 'arg3', 'arg4']
