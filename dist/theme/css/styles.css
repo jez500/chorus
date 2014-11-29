@@ -2492,6 +2492,7 @@ body.section-search #sidebar-first {
   margin-right: 0;
   margin-left: 0;
   padding-top: 1px;
+  width: 100%;
 }
 #now-playing .song-image,
 #browser-now-playing .song-image {
@@ -2876,7 +2877,6 @@ body.partymode-on a.party-mode i {
 .xbmc-remote .direction {
   background: #262b2a;
   height: 155px;
-  margin-top: -12px;
   width: 75%;
   float: left;
   margin-right: -100%;
