@@ -210,8 +210,8 @@
     color: #ddd;
   }
   @include breakpoint($width-tablet){
-    margin-right: $width-sidebar-second-small + 70;
-    margin-left: $width-sidebar-second-small;
+    right: $width-sidebar-second-small + 70;
+    left: $width-sidebar-second-small;
   }
 }
 
