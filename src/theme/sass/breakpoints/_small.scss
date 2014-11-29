@@ -70,8 +70,8 @@ body {
     }
     #now-playing,
     #browser-now-playing {
-      right: $width-sidebar-second + 70;
-      left: $width-sidebar-first;
+      margin-right: $width-sidebar-second + 70;
+      margin-left: $width-sidebar-first;
     }
     .progress-wrapper {
       left: $width-sidebar-first + $height-footer;

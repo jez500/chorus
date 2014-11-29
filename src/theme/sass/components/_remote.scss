@@ -62,6 +62,7 @@ $dark-bg: #262b2a;
   .direction {
     background: $dark-bg;
     height: $pad-height + 10;
+    margin-top: -12px;
     @include grid-span(3,1,4,0);
     position: relative;
     z-index: 10;
