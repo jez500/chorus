@@ -128,22 +128,22 @@ Are you a fan of Chorus? You can [buy me a beer](https://www.paypal.com/cgi-bin/
 ## Screenshots
 
 ### Homepage (now playing)
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/home.jpg "Homepage/Now Playing")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/home.jpg "Homepage/Now Playing")
 
 ### Search
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/search.jpg "Search")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/search.jpg "Search")
 
 ### Artists
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist.jpg "Artists")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/artist.jpg "Artists")
 
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/artist1.jpg "Artists Landing")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/artist1.jpg "Artists Landing")
 
 ### Albums
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/album.jpg "Albums")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/album.jpg "Albums")
 
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/album1.jpg "Albums landing")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/album1.jpg "Albums landing")
 
 ### Movies
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/movies.jpg "Movies")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/movies.jpg "Movies")
 
-![alt text](https://raw2.github.com/jez500/chorus/master/screenshots/movie.jpg "Movie")
+![alt text](https://raw.githubusercontent.com/jez500/chorus/master/screenshots/movie.jpg "Movie")
