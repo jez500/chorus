@@ -15253,7 +15253,7 @@ $(document).ready(function(){
           key: 'album',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'album-add-xbmc', title: 'Add to XBMC', callback: function(){
+            {url: '#', class: 'album-add-xbmc', title: 'Add to Kodi', callback: function(){
               app.playlists.playlistAddItems('xbmc', 'append', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-local', title: 'Play in browser', callback: function(){
@@ -15273,7 +15273,7 @@ $(document).ready(function(){
           key: 'artist',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'artist-add-xbmc', title: 'Add to XBMC', callback: function(){
+            {url: '#', class: 'artist-add-xbmc', title: 'Add to Kodi', callback: function(){
               app.playlists.playlistAddItems('xbmc', 'append', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-local', title: 'Play in browser', callback: function(){
@@ -15310,7 +15310,7 @@ $(document).ready(function(){
             {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'},
             {url: '#', class: 'party-mode', title: 'Party Mode <i class="fa fa-check"></i>'},
             {class: 'dropdown-header', title: 'Audio'},
-            {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
+            {url: '#', class: 'save-playlist', title: 'Save Kodi Playlist'},
             {url: '#', class: 'new-custom-playlist', title: 'New Browser Playlist'}
           ]
         };
@@ -16434,7 +16434,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html(app.cached.xbmcView.render().$el);
 
     // set title
-    app.ui.setTitle('XBMC', {addATag: '#xbmc/home'});
+    app.ui.setTitle('Kodi', {addATag: '#xbmc/home'});
 
     // set menu
     app.shellView.selectMenuItem('xbmc', 'no-sidebar');
@@ -19318,7 +19318,7 @@ app.keymap = {
 
 ;/**
  * Deal with notifications from xbmc using web sockets
- * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Notifications_2
+ * http://kodi.wiki/view/JSON-RPC_API/v6#Notifications_2
  *
  * NOTE: for this to work You need to "Allow programs on other systems to control XBMC"
  */
@@ -19513,7 +19513,7 @@ app.notifications = {
 
       // xbmc shutdown
       case 'System.OnQuit':
-        app.notification('XBMC has quit');
+        app.notification('Kodi has quit');
         break;
     }
 
@@ -19665,12 +19665,12 @@ app.playerState = {
       // 10 mins with no connection - increase throttle
       if(app.counts['503total'] > 30){
         throttle = 6;
-        app.notification('No connection to XBMC for 10mins! I\'ll check if it\'s there less often now ');
+        app.notification('No connection to Kodi for 10mins! I\'ll check if it\'s there less often now ');
       }
       // 30 mins with no connection - increase throttle ((20min * 60sec) / (6throttle * 5interval)) + 30previousThrottle = 40
       if(app.counts['503total'] > 70){
         throttle = 12;
-        app.notification('No connection to XBMC for 30mins! I\'m pretty sure it has gone walkabout');
+        app.notification('No connection to Kodi for 30mins! I\'m pretty sure it has gone walkabout');
       }
 
       // reset count to 0 if at throttle
@@ -19684,7 +19684,7 @@ app.playerState = {
         app.counts[503]++;
         app.state = 'notconnected';
         if(app.counts[503] == 3){
-          app.notification('Lost connection to XBMC');
+          app.notification('Lost connection to Kodi');
         }
         return;
       } else {
@@ -21653,7 +21653,7 @@ app.xbmcController.command = function(command, options, callback, errorCallback)
 
 /**
  * Call an input command
- * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Input
+ * http://kodi.wiki/view/JSON-RPC_API/v6#Input
  *
  * @param type
  * @param callback
@@ -27079,7 +27079,7 @@ app.PvrChannelListItem = Backbone.View.extend({
       key: 'powerDown',
       omitwrapper: true,
       items: [
-        {url: '#', class: 'xbmc-quit', title: 'Quit XBMC', callback: function(){
+        {url: '#', class: 'xbmc-quit', title: 'Quit Kodi', callback: function(){
           // Quit xbmc
           app.xbmcController.command('Application.Quit');
         }},
@@ -29057,7 +29057,7 @@ app.XbmcChorusChangeLog = Backbone.View.extend({
       // render
       self.$el.html(app.nl2br(data));
       // set title
-      app.ui.setTitle('<a href="#xbmc/home">XBMC</a>Chorus ChangeLog');
+      app.ui.setTitle('<a href="#xbmc/home">Kodi</a>Chorus ChangeLog');
     });
 
     return this;
@@ -29092,7 +29092,7 @@ app.XbmcJSONrpcView = Backbone.View.extend({
   render:function () {
 
     // set title
-    app.ui.setTitle('<a href="#xbmc/home">XBMC</a>jsonRPC');
+    app.ui.setTitle('<a href="#xbmc/home">Kodi</a>jsonRPC');
 
     this.$el.empty();
 

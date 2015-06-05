@@ -45,7 +45,7 @@ app.xbmcController.command = function(command, options, callback, errorCallback)
 
 /**
  * Call an input command
- * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Input
+ * http://kodi.wiki/view/JSON-RPC_API/v6#Input
  *
  * @param type
  * @param callback
@@ -237,7 +237,7 @@ app.xbmcController.entityLoadMultiple = function(type, items, callback){
 
 /**
  * Input requested from xbmc
- * Opens prompt dialog and sends the user inputted text to xbmc via Input.SendText
+ * Opens prompt dialog and sends the user input text to xbmc via Input.SendText
  *
  * @param msg
  */

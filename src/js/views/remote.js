@@ -71,7 +71,7 @@ app.RemoteView = Backbone.View.extend({
       key: 'powerDown',
       omitwrapper: true,
       items: [
-        {url: '#', class: 'xbmc-quit', title: 'Quit XBMC', callback: function(){
+        {url: '#', class: 'xbmc-quit', title: 'Quit Kodi', callback: function(){
           // Quit xbmc
           app.xbmcController.command('Application.Quit');
         }},
