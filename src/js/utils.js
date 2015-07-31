@@ -728,25 +728,44 @@ $(document).ready(function(){
    * Emulates prompt() but using our dialog
    * @param msg
    *  string message to display
-   * @param success
-   *  function callback
+   * @param handler
+   *  function callback or map of string message to function callback
    */
-  app.helpers.prompt = function(msg, success){
-
-    var opts = {
-      title: 'Prompt',
-      buttons: {
+  app.helpers.prompt = function(msg, handler){
+    var buttons;
+    if(typeof handler !== 'object'){
+      // Default OK/Cancel buttons
+      buttons = {
         "OK": function(){
           var text = $('#promptText').val();
           if(text !== ''){
-            success(text);
+            handler(text);
             $( this ).dialog( "close" );
           }
         },
         "Cancel": function() {
           $( this ).dialog( "close" );
         }
+      };
+    } else {
+      // User has provided their own buttons
+      buttons = {};
+      // Get the text and send to callback
+      var wrap = function(callback){
+        return function(){
+          if(callback($('#promptText').val()) !== false)
+            $( this ).dialog( "close" );
+        };
+      };
+      for(var label in handler){
+        var callback = handler[label];
+        buttons[label] = wrap(callback);
       }
+    }
+
+    var opts = {
+      title: 'Prompt',
+      buttons: buttons
     };
 
     msg += '<div class="form-item"><input type="text" class="form-text" id="promptText" /></div>';
