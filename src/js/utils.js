@@ -639,7 +639,30 @@ $(document).ready(function(){
 
     settings = jQuery.extend(settings, options);
 
-    $( app.helpers.getSelector('dialog') ).dialog( settings );
+    var $dialog = $( app.helpers.getSelector('dialog') );
+
+    $dialog.dialog( settings );
+
+    // bind to enter
+    $dialog.keypress(function(e) {
+      if (e.keyCode == $.ui.keyCode.ENTER) {
+        // look for a button with class "bind-enter" first, fallback to OK btn, fallback to none.
+        var $parent = $(this).parent(),
+          $enterButton = $parent.find('.bind-enter'),
+          $btn = ($enterButton.length === 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
+        // if button pane exists
+        if($parent.find('.ui-dialog-buttonpane button').length > 0){
+          console.log("clicking");
+          $btn.trigger("click");
+        }
+      }
+    });
+
+    //fix scrollTo issue with dialog
+    $dialog.bind( "dialogopen", function(event, ui) {
+      $('.ui-widget-overlay, .ui-dialog').css('position', 'fixed');
+      $('.dialog-menu a:last').addClass('last');
+    });
 
   };
 
@@ -663,26 +686,6 @@ $(document).ready(function(){
     //set content and options
     $dialog.html(content);
     $dialog.dialog( "option", options );
-
-    //fix scrollTo issue with dialog
-    $dialog.bind( "dialogopen", function(event, ui) {
-      $('.ui-widget-overlay, .ui-dialog').css('position', 'fixed');
-      $('.dialog-menu a:last').addClass('last');
-
-      // bind to enter
-      $dialog.keypress(function(e) {
-        if (e.keyCode == $.ui.keyCode.ENTER) {
-          // look for a button with class "bind-enter" first, fallback to OK btn, fallback to none.
-          var $parent = $(this).parent(),
-            $enterButton = $parent.find('.bind-enter'),
-            $btn = ($enterButton.length === 0 ? $parent.find('.ui-dialog-buttonpane button:first') : $enterButton);
-          // if button pane exists
-          if($parent.find('.ui-dialog-buttonpane button').length > 0){
-            $btn.trigger("click");
-          }
-        }
-      });
-    });
 
     //open
     $dialog.dialog( "open" );
