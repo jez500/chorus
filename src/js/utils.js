@@ -664,6 +664,9 @@ $(document).ready(function(){
     $dialog.html(content);
     $dialog.dialog( "option", options );
 
+    // remove old event bindings
+    $dialog.unbind();
+
     //fix scrollTo issue with dialog
     $dialog.bind( "dialogopen", function(event, ui) {
       $('.ui-widget-overlay, .ui-dialog').css('position', 'fixed');
