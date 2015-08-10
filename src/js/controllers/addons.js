@@ -13,15 +13,31 @@ app.addOns = {addon: {}};
 
 app.addOns.getSources = function(callback){
 
-  // @TODO make work with video addons
-  app.xbmcController.command('Addons.GetAddons', ['xbmc.addon.audio', 'unknown', 'all', ["name", "thumbnail", "enabled"]], function(res){
+  var commands = [];
+  var params = ['unknown', 'all', ["name", "thumbnail", "enabled", "extrainfo"]];
+  commands.push({method: 'Addons.GetAddons', params: ['xbmc.addon.audio'].concat(params)});
+  commands.push({method: 'Addons.GetAddons', params: ['xbmc.addon.video'].concat(params)});
+
+  app.xbmcController.multipleCommand(commands, function(res){
     // add a title before return
-    var sources = res.result.addons,
+    var sources = res[0].result.addons.concat(res[1].result.addons),
       addons = [];
 
     // parse
     for(var i in sources){
       var item = sources[i], defaults = {};
+
+      // Attempt to determine content type from extrainfo
+      var provides = 'music';
+      for(var index in item.extrainfo){
+        // Argh, why couldn't Kodi just serve us an object?
+        if(item.extrainfo[index].key === 'provides'){
+          provides = item.extrainfo[index].value;
+          if(provides === 'audio') provides = 'music';
+          break;
+        }
+      }
+
       if(item.enabled){
         // extend
         defaults = {
@@ -29,7 +45,7 @@ app.addOns.getSources = function(callback){
           title: item.name,
           filetype: 'directory',
           id: item.addonid,
-          sourcetype: 'music', // @TODO make work with video addons
+          sourcetype: provides,
           playlistId: app.AudioController.playlistId
         };
         item = $.extend(item, defaults);
