@@ -1,8 +1,8 @@
 /**
- * Deal with notifications from xbmc using web sockets
- * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Notifications_2
+ * Deal with notifications from Kodi using web sockets
+ * http://kodi.wiki/view/JSON-RPC_API/v6#Notifications_2
  *
- * NOTE: for this to work You need to "Allow programs on other systems to control XBMC"
+ * NOTE: for this to work You need to "Allow programs on other systems to control Kodi"
  */
 
 
@@ -178,7 +178,7 @@ app.notifications = {
         // We set a timeout for {wait} seconds for a fallback for no input
         // this is to prevent an open dialog preventing api requests
         app.notifications.inputTimeout = setTimeout(function(){
-          var msg = '<p>About ' + wait + ' seconds ago, an input dialog opened on xbmc and it is still open! To prevent ' +
+          var msg = '<p>About ' + wait + ' seconds ago, an input dialog opened on Kodi and it is still open! To prevent ' +
             'a mainframe implosion, you should probably give me some text. I don\'t really care what it is at this point, ' +
             'why not be creative? Do you have a <a href="http://goo.gl/PGE7wg" target="_blank">word of the day</a>? I won\'t tell...</p>';
           app.xbmcController.inputRequestedDialog(msg);
@@ -195,7 +195,7 @@ app.notifications = {
 
       // xbmc shutdown
       case 'System.OnQuit':
-        app.notification('XBMC has quit');
+        app.notification('Kodi has quit');
         break;
     }
 

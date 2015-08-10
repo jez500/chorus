@@ -102,12 +102,12 @@ app.playerState = {
       // 10 mins with no connection - increase throttle
       if(app.counts['503total'] > 30){
         throttle = 6;
-        app.notification('No connection to XBMC for 10mins! I\'ll check if it\'s there less often now ');
+        app.notification('No connection to Kodi for 10mins! I\'ll check if it\'s there less often now ');
       }
       // 30 mins with no connection - increase throttle ((20min * 60sec) / (6throttle * 5interval)) + 30previousThrottle = 40
       if(app.counts['503total'] > 70){
         throttle = 12;
-        app.notification('No connection to XBMC for 30mins! I\'m pretty sure it has gone walkabout');
+        app.notification('No connection to Kodi for 30mins! I\'m pretty sure it has gone walkabout');
       }
 
       // reset count to 0 if at throttle
@@ -121,7 +121,7 @@ app.playerState = {
         app.counts[503]++;
         app.state = 'notconnected';
         if(app.counts[503] == 3){
-          app.notification('Lost connection to XBMC');
+          app.notification('Lost connection to Kodi');
         }
         return;
       } else {

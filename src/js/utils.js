@@ -962,7 +962,7 @@ $(document).ready(function(){
           key: 'album',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'album-add-xbmc', title: 'Add to XBMC', callback: function(){
+            {url: '#', class: 'album-add-xbmc', title: 'Add to Kodi', callback: function(){
               app.playlists.playlistAddItems('xbmc', 'append', 'album', model.albumid);
             }},
             {url: '#', class: 'album-add-local', title: 'Play in browser', callback: function(){
@@ -982,7 +982,7 @@ $(document).ready(function(){
           key: 'artist',
           omitwrapper: true,
           items: [
-            {url: '#', class: 'artist-add-xbmc', title: 'Add to XBMC', callback: function(){
+            {url: '#', class: 'artist-add-xbmc', title: 'Add to Kodi', callback: function(){
               app.playlists.playlistAddItems('xbmc', 'append', 'artist', model.artistid);
             }},
             {url: '#', class: 'artist-add-local', title: 'Play in browser', callback: function(){
@@ -1019,7 +1019,7 @@ $(document).ready(function(){
             {url: '#', class: 'refresh-playlist', title: 'Refresh Playlist'},
             {url: '#', class: 'party-mode', title: 'Party Mode <i class="fa fa-check"></i>'},
             {class: 'dropdown-header', title: 'Audio'},
-            {url: '#', class: 'save-playlist', title: 'Save XBMC Playlist'},
+            {url: '#', class: 'save-playlist', title: 'Save Kodi Playlist'},
             {url: '#', class: 'new-custom-playlist', title: 'New Browser Playlist'}
           ]
         };

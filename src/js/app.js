@@ -575,7 +575,7 @@ app.Router = Backbone.Router.extend({
   /**
    * if it is a genre (string) do lookup for id then redirect
    * @TODO make... better, something other than this, problem is getMovies doesn't give you a genreid
-   * http://wiki.xbmc.org/?title=JSON-RPC_API/v6#Video.Fields.Movie
+   * http://kodi.wiki/view/JSON-RPC_API/v6#Video.Fields.Movie
    */
   movieGenre: function(name){
 
@@ -727,7 +727,7 @@ app.Router = Backbone.Router.extend({
         self.$content.html(new app.TvshowView({model: data}).render().el);
 
         // title
-        app.ui.setTitle('TVShows', { addATag: '#mytv', icon: 'desktop', subTitle: data.attributes.label });
+        app.ui.setTitle('TV Shows', { addATag: '#mytv', icon: 'desktop', subTitle: data.attributes.label });
 
         // set menu
         app.shellView.selectMenuItem('tvshow', 'sidebar');
@@ -897,7 +897,7 @@ app.Router = Backbone.Router.extend({
     $('#content').html(app.cached.xbmcView.render().$el);
 
     // set title
-    app.ui.setTitle('XBMC', {addATag: '#xbmc/home'});
+    app.ui.setTitle('Kodi', {addATag: '#xbmc/home'});
 
     // set menu
     app.shellView.selectMenuItem('xbmc', 'no-sidebar');
