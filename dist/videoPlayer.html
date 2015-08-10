@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>Chorus video.</title>
 
-    <link href="//vjs.zencdn.net/4.4/video-js.css" rel="stylesheet">
-    <script src="//vjs.zencdn.net/4.4/video.js"></script>
+    <link href="//vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">
+    <script src="//vjs.zencdn.net/4.12/video.js"></script>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
     <script>
@@ -35,7 +35,6 @@
                     "data-setup": {}
                 });
                 $player.append($('<source>', {
-                    "type": 'video/mp4; codecs="a_ac3, avc"',
                     "src": src
                 }));
                 $player.attr('width', width).attr('height', height);
