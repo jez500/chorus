@@ -25187,6 +25187,10 @@ app.FileView = Backbone.View.extend({
     if(file.type == "directory"){
       ret.key = file.type;
     }
+    
+    if(file.filetype && file.filetype == "directory"){
+        ret.key = file.filetype;
+    }
 
     return ret;
   },
