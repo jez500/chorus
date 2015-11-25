@@ -15,5 +15,8 @@
     <description lang="en">Only use this version for dev, see dist folder for production ready</description>
     <platform>all</platform>
     <language>en</language>
+    <license></license>
+    <forum>http://forum.kodi.tv/showthread.php?tid=183451</forum>
+    <source>https://github.com/jez500/chorus</source>
   </extension>
 </addon>
