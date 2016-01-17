@@ -26,7 +26,6 @@ mail@jez500.com
 ## Installing / Updating
 You can download Chorus via the official XBMC repo
 - XBMC > Settings > Services > Web Server > Web Interface > get more
-- Or use the zip in this repo
 
 ## Enabling
 - XBMC > Stystem > Settings > Services > Webserver
