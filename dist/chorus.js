@@ -14977,6 +14977,9 @@ $(document).ready(function(){
     $dialog.html(content);
     $dialog.dialog( "option", options );
 
+    // remove old event bindings
+    $dialog.unbind();
+
     //fix scrollTo issue with dialog
     $dialog.bind( "dialogopen", function(event, ui) {
       $('.ui-widget-overlay, .ui-dialog').css('position', 'fixed');
@@ -15041,25 +15044,44 @@ $(document).ready(function(){
    * Emulates prompt() but using our dialog
    * @param msg
    *  string message to display
-   * @param success
-   *  function callback
+   * @param handler
+   *  function callback or map of string message to function callback
    */
-  app.helpers.prompt = function(msg, success){
-
-    var opts = {
-      title: 'Prompt',
-      buttons: {
+  app.helpers.prompt = function(msg, handler){
+    var buttons;
+    if(typeof handler !== 'object'){
+      // Default OK/Cancel buttons
+      buttons = {
         "OK": function(){
           var text = $('#promptText').val();
           if(text !== ''){
-            success(text);
+            handler(text);
             $( this ).dialog( "close" );
           }
         },
         "Cancel": function() {
           $( this ).dialog( "close" );
         }
+      };
+    } else {
+      // User has provided their own buttons
+      buttons = {};
+      // Get the text and send to callback
+      var wrap = function(callback){
+        return function(){
+          if(callback($('#promptText').val()) !== false)
+            $( this ).dialog( "close" );
+        };
+      };
+      for(var label in handler){
+        var callback = handler[label];
+        buttons[label] = wrap(callback);
       }
+    }
+
+    var opts = {
+      title: 'Prompt',
+      buttons: buttons
     };
 
     msg += '<div class="form-item"><input type="text" class="form-text" id="promptText" /></div>';
@@ -15551,7 +15573,7 @@ var app = {
 
   state: 'notconnected', // Not connected yet
 
-  jsonRpcUrl: '/jsonrpc', // JsonRPC endpoint
+  jsonRpcUrl: 'jsonrpc', // JsonRPC endpoint
 
   itemsPerPage: 60, // Our default pagination amount
 
@@ -17059,7 +17081,7 @@ app.image = {
       return app.image.defaultImage(type);
     }
     // return image with correct path
-    return app.settings.get('basePath', '/') + 'image/' + encodeURIComponent(rawPath);
+    return 'image/' + encodeURIComponent(rawPath);
   },
 
 
@@ -17911,15 +17933,31 @@ app.addOns = {addon: {}};
 
 app.addOns.getSources = function(callback){
 
-  // @TODO make work with video addons
-  app.xbmcController.command('Addons.GetAddons', ['xbmc.addon.audio', 'unknown', 'all', ["name", "thumbnail", "enabled"]], function(res){
+  var commands = [];
+  var params = ['unknown', 'all', ["name", "thumbnail", "enabled", "extrainfo"]];
+  commands.push({method: 'Addons.GetAddons', params: ['xbmc.addon.audio'].concat(params)});
+  commands.push({method: 'Addons.GetAddons', params: ['xbmc.addon.video'].concat(params)});
+
+  app.xbmcController.multipleCommand(commands, function(res){
     // add a title before return
-    var sources = res.result.addons,
+    var sources = res[0].result.addons.concat(res[1].result.addons),
       addons = [];
 
     // parse
     for(var i in sources){
       var item = sources[i], defaults = {};
+
+      // Attempt to determine content type from extrainfo
+      var provides = 'music';
+      for(var index in item.extrainfo){
+        // Argh, why couldn't Kodi just serve us an object?
+        if(item.extrainfo[index].key === 'provides'){
+          provides = item.extrainfo[index].value;
+          if(provides === 'audio') provides = 'music';
+          break;
+        }
+      }
+
       if(item.enabled){
         // extend
         defaults = {
@@ -17927,7 +17965,7 @@ app.addOns.getSources = function(callback){
           title: item.name,
           filetype: 'directory',
           id: item.addonid,
-          sourcetype: 'music', // @TODO make work with video addons
+          sourcetype: provides,
           playlistId: app.AudioController.playlistId
         };
         item = $.extend(item, defaults);
@@ -21881,7 +21919,7 @@ app.SongXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: ["file"], //fields, keep this to an absolute minimum as adding fields makes it go real slow
   arg2: {"start": 0, "end": 50000}, //limit @todo move to settings
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}}, // doesn't appear to work? maybe lost in sorting elsewhere
+  arg3: {"method": "dateadded", "order": "descending"},
   //method/params
   methods: {
     read:  ['AudioLibrary.GetSongs', 'arg1', 'arg2', 'arg3']
@@ -21913,7 +21951,7 @@ app.SongFilteredXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.fields.get('song'), //fields
   arg2: {"start": 0, "end": 500}, //count
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
+  arg3: {"method": "track"},
   //apply our filter - Required! or call will fail
   arg4: function(){
     return this.models[0].attributes.filter;
@@ -21945,7 +21983,7 @@ app.AlbumXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 15000}, //count
-  arg3: {"sort": {"method": "dateadded", "order": "descending"}},
+  arg3: {"method": "dateadded", "order": "descending"},
   //method/params
   methods: {
     read:  ['AudioLibrary.GetAlbums', 'arg1', 'arg2', 'arg3']
@@ -21972,7 +22010,7 @@ app.AlbumFilteredXbmcCollection = Backbone.Collection.extend({
   //collection params
   arg1: app.fields.get('album'), //properties
   arg2: {"start": 0, "end": 15000}, //count
-  arg3: {"sort": {"method": "album", "order": "ascending"}},
+  arg3: {"method": "album"},
   arg4: function(){
     return this.models[0].attributes.filter;
   },
@@ -22069,7 +22107,7 @@ app.ArtistXbmcCollection = Backbone.Collection.extend({
   arg1: true, //albumartistsonly
   arg2: app.fields.get('artist'), //properties
   arg3: {"start": 0, "end": 10000}, //count
-  arg4: {"sort": {"method": "artist"}},
+  arg4: {"method": "artist"},
   //method/params
   methods: {
     read:  ['AudioLibrary.GetArtists', 'arg1', 'arg2', 'arg3', 'arg4']
@@ -29641,5 +29679,219 @@ app.addOns.addon.pluginaudiosoundcloud = {
     return (record.file.indexOf('plugin.audio.soundcloud') != -1);
   }
 
+
+};;/***********************************************
+ * YouTube
+ ***********************************************/
+app.addOns.addon.pluginvideoyoutube = {
+  getAddon: function(){
+    return app.addOns.getAddon('pluginvideoyoutube');
+  },
+
+  matchId: function(text){
+    var id = null;
+    var regex = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)?([a-zA-Z0-9_-]{6,11})/g;
+    var match = regex.exec(text);
+    if(match){
+      id = match[1];
+    }
+    return id;
+  },
+
+  getSearchPath: function(query){
+    return 'plugin://plugin.video.youtube/search/?q=' + query;
+  },
+
+  getPlayIdPath: function(id){
+    return 'plugin://plugin.video.youtube/play/?video_id=' + id;
+  },
+
+  /**
+   * Hook into file dir click
+   * @param record
+   * @returns {*}
+   */
+  clickDir: function(record){
+    if(app.addOns.addon.pluginvideoyoutube.isYouTube(record)){
+      if(record.title == 'Search'){
+
+        app.addOns.addon.pluginvideoyoutube.doSearchDialog();
+      }
+    }
+    return record;
+  },
+
+
+  /**
+   * Hook into post file row creation
+   * @param $el
+   * @param file
+   * @returns {*}
+   */
+  postProcessFileView: function($el, file){
+    var self = app.addOns.addon.pluginvideoyoutube;
+    if(self.isYouTube(file)){
+      var yt = self.getAddon();
+
+      // if root item for addon
+      if(file.file == yt.file){
+        var $actions = $('.file-actions', $el);
+
+        // replace play and add with open and search
+        $actions.html(
+          '<button class="btn" id="youtubeOpen"><i class="icon-folder-open"></i></button>' +
+          '<button class="btn" id="youtubeSearch"><i class="icon-search"></i></button>'
+        );
+
+        $('#youtubeOpen', $actions).on('click', function(e){
+          e.stopPropagation();
+          self.doOpenDialog();
+        });
+
+        $('#youtubeSearch', $actions).on('click', function(e){
+          e.stopPropagation();
+          self.doSearchDialog();
+        });
+
+        // add class to show actions
+        $el.find('.file-item').addClass('show-actions');
+      }
+    }
+    return $el;
+  },
+
+  /**
+   * This adds youtube to the search page
+   * @param $el
+   * @param key
+   * @returns {*}
+   */
+  searchAddons: function($container, key){
+
+    var $el = $('<div></div>');
+
+    var self = app.addOns.addon.pluginvideoyoutube,
+      $nores = $('<div>', {class: 'addon-box', id: 'yt-search'}),
+      $heading = $( self.searchHeading('YouTube search for: <span>' + key + '</span>', 'youtube')),
+      cache = self.cache('get', key, false);
+
+    // if cache
+    if(cache !== false){
+      // just set results from cached view
+      $el.html(new app.FilesListView({model: cache}).render().$el);
+      $el.prepend($heading);
+    } else {
+      // no cache, do the search
+      $nores.append( self.searchHeading('Search YouTube for: <span>' + key + '</span>', 'youtube can-click') );
+      $el.append($nores);
+
+      // click/search action
+      $('#yt-search', $el).on('click', function(){
+        // Loading
+        $el.html( $(self.searchHeading('Searching YouTube for: <span>' + key + '</span>', 'loading')) );
+        // Callback
+        self.getSearchResults(key, function(result){
+          app.cached.fileListView = new app.FilesListView({model: result});
+          view = app.cached.fileListView;
+          $el.html(view.render().$el);
+          // add heading
+          $el.prepend($heading);
+          // set cache
+          self.cache('set', key, result);
+        });
+      });
+    }
+
+    $('#search-addons').append($el);
+  },
+
+  // Heading creator
+  searchHeading: function(text, classes){
+    var icon = '<i class="fa fa-youtube-play entity-icon" style="background-color: #E5302B"></i>';
+    return '<h3 class="search-heading entity-heading ' + classes + '">' + icon + text + '</h3>';
+  },
+
+  /**
+   * Get and set cache, when get, data is default
+   * @param op
+   * @param key
+   * @param data
+   * @returns {*}
+   */
+  cache:function(op, key, data){
+    if(typeof app.cached.youTubeSearch == 'undefined'){
+      app.cached.youTubeSearch = {};
+    }
+    switch (op){
+      case 'get':
+        return (typeof app.cached.youTubeSearch[key] == 'undefined' ? data : app.cached.youTubeSearch[key]);
+      case 'set':
+        app.cached.youTubeSearch[key] = data;
+        return app.cached.youTubeSearch[key];
+    }
+  },
+
+
+  /**
+   * Search dialog
+   */
+  doSearchDialog: function(){
+    var self = app.addOns.addon.pluginvideoyoutube;
+    app.helpers.prompt('Search', function(text){
+      // set title and notify
+      $('#folder-name').html('Search for "' + text + '"');
+      var msg = 'Searching for ' + text;
+      // set content while loading
+      $('#files-container').html('<div class="loading-box">'+msg+'</div>');
+
+      self.getSearchResults(text, function(result){
+        app.cached.filesSearchView = new app.FilesView({"model":result}).render();
+      });
+    });
+  },
+
+
+  /**
+   * Open dialog
+   */
+  doOpenDialog: function(){
+    var self = app.addOns.addon.pluginvideoyoutube;
+    app.helpers.prompt('Open link', {
+      "Play": function(text){
+        if(text.length < 1) return false;
+        var id = self.matchId(text);
+        if(id !== null)
+          app.VideoController.insertAndPlay('file', self.getPlayIdPath(id), function(){});
+        // TODO: Display an error if the video ID can't be parsed.
+      },
+      "Add": function(text){
+        if(text.length < 1) return false;
+        var id = self.matchId(text);
+        if(id !== null)
+          app.VideoController.addToPlaylist(self.getPlayIdPath(id), 'file', 'add', function(){});
+      }
+    });
+  },
+
+  /**
+   * Get a youtube search result view
+   * @param query
+   */
+  getSearchResults: function(query, callback){
+    // get search directory
+    var path = app.addOns.addon.pluginvideoyoutube.getSearchPath(query);
+
+    app.cached.fileCollection = new app.FileCollection();
+    app.cached.fileCollection.fetch({"sourcetype": 'video', "name": path, "success": callback});
+  },
+
+  /**
+   * If youtube file record
+   * @param record
+   * @returns {*}
+   */
+  isYouTube: function(record){
+    return (record.file.indexOf('plugin.video.youtube') >= 0);
+  }
 
 };
