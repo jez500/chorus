@@ -4,3 +4,4 @@ src/theme/.sass-cache
 /node_modules
 .bundle/
 Gemfile.lock
+.sass-cache

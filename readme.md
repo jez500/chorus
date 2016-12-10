@@ -1,4 +1,15 @@
-# Chorus
+# Chorus has been replaced with Chorus2
+This version is no longer supported because it has been replaced by a bigger and better Chorus2!
+Chorus2 is now the default web interface for Kodi v17 (Krypton) onwards. All development, feature
+additions and fixes will occur there only. Chorus1 will eventually be decommissioned.
+
+## Chorus2 links
+* [Follow the progress of Chorus2](https://github.com/xbmc/chorus2)
+* [Download the latest version of Chorus2 here](https://github.com/xbmc/chorus2/releases)
+* [Is Chorus2 missing a feature you loved in Chorus1? Post an issue here](https://github.com/xbmc/chorus2/issues)
+* [Kodi blog post about Chorus2](https://kodi.tv/a-new-webinterface-called-chorus2/)
+
+# Chorus v1
 A nice modern Web UI for your Kodi. Browse your Music, Movies or TV Shows from the comfort of your
 own web browser. You can play media via Kodi or stream it in your browser. Works best with Chrome
 but plays well with most modern browsers.

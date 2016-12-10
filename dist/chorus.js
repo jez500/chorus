@@ -25225,6 +25225,11 @@ app.FileView = Backbone.View.extend({
     if(file.type == "directory"){
       ret.key = file.type;
     }
+    
+    // Fix: Issue #59 Play Folder @Charky 
+    if(file.filetype && file.filetype == "directory"){
+        ret.key = file.filetype;
+    }
 
     return ret;
   },

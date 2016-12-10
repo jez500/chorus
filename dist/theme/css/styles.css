@@ -45,10 +45,10 @@
   border: 1px solid #aaa;
   border-radius: 5px;
   background-color: #fff;
-  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, white), color-stop(50%, #f6f6f6), color-stop(52%, #eeeeee), color-stop(100%, #f4f4f4));
-  background: -webkit-linear-gradient(top, white 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
-  background: -moz-linear-gradient(top, white 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
-  background: -o-linear-gradient(top, white 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #ffffff), color-stop(50%, #f6f6f6), color-stop(52%, #eeeeee), color-stop(100%, #f4f4f4));
+  background: -webkit-linear-gradient(top, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
+  background: -moz-linear-gradient(top, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
+  background: -o-linear-gradient(top, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
   background: linear-gradient(to bottom, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
   background-clip: padding-box;
   box-shadow: 0 0 3px white inset, 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -128,10 +128,10 @@
   outline: 0;
   border: 1px solid #aaa;
   background: white url("../../images/chosen-sprite.png") no-repeat 100% -20px;
-  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(1%, #eeeeee), color-stop(15%, white));
-  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -webkit-linear-gradient(#eeeeee 1%, white 15%);
-  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -moz-linear-gradient(#eeeeee 1%, white 15%);
-  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -o-linear-gradient(#eeeeee 1%, white 15%);
+  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(1%, #eeeeee), color-stop(15%, #ffffff));
+  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -webkit-linear-gradient(#eeeeee 1%, #ffffff 15%);
+  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -moz-linear-gradient(#eeeeee 1%, #ffffff 15%);
+  background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, -o-linear-gradient(#eeeeee 1%, #ffffff 15%);
   background: url("../../images/chosen-sprite.png") no-repeat 100% -20px, linear-gradient(#eeeeee 1%, #ffffff 15%);
   font-size: 1em;
   font-family: sans-serif;
@@ -226,10 +226,10 @@
   height: 1%;
   border: 1px solid #aaa;
   background-color: #fff;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(1%, #eeeeee), color-stop(15%, white));
-  background-image: -webkit-linear-gradient(#eeeeee 1%, white 15%);
-  background-image: -moz-linear-gradient(#eeeeee 1%, white 15%);
-  background-image: -o-linear-gradient(#eeeeee 1%, white 15%);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(1%, #eeeeee), color-stop(15%, #ffffff));
+  background-image: -webkit-linear-gradient(#eeeeee 1%, #ffffff 15%);
+  background-image: -moz-linear-gradient(#eeeeee 1%, #ffffff 15%);
+  background-image: -o-linear-gradient(#eeeeee 1%, #ffffff 15%);
   background-image: linear-gradient(#eeeeee 1%, #ffffff 15%);
   cursor: text;
 }
@@ -342,10 +342,10 @@
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 0;
   border-bottom-left-radius: 0;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #eeeeee), color-stop(80%, white));
-  background-image: -webkit-linear-gradient(#eeeeee 20%, white 80%);
-  background-image: -moz-linear-gradient(#eeeeee 20%, white 80%);
-  background-image: -o-linear-gradient(#eeeeee 20%, white 80%);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #eeeeee), color-stop(80%, #ffffff));
+  background-image: -webkit-linear-gradient(#eeeeee 20%, #ffffff 80%);
+  background-image: -moz-linear-gradient(#eeeeee 20%, #ffffff 80%);
+  background-image: -o-linear-gradient(#eeeeee 20%, #ffffff 80%);
   background-image: linear-gradient(#eeeeee 20%, #ffffff 80%);
   box-shadow: 0 1px 0 #fff inset;
 }
@@ -454,10 +454,10 @@
 .chosen-rtl .chosen-search input[type="text"] {
   padding: 4px 5px 4px 20px;
   background: white url("../../images/chosen-sprite.png") no-repeat -30px -20px;
-  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(1%, #eeeeee), color-stop(15%, white));
-  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -webkit-linear-gradient(#eeeeee 1%, white 15%);
-  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -moz-linear-gradient(#eeeeee 1%, white 15%);
-  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -o-linear-gradient(#eeeeee 1%, white 15%);
+  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(1%, #eeeeee), color-stop(15%, #ffffff));
+  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -webkit-linear-gradient(#eeeeee 1%, #ffffff 15%);
+  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -moz-linear-gradient(#eeeeee 1%, #ffffff 15%);
+  background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, -o-linear-gradient(#eeeeee 1%, #ffffff 15%);
   background: url("../../images/chosen-sprite.png") no-repeat -30px -20px, linear-gradient(#eeeeee 1%, #ffffff 15%);
   direction: rtl;
 }
@@ -512,8 +512,8 @@ body {
 
 a {
   text-decoration: none !important;
-  color: #2c3e50;
-  color: #34495e;
+  color: #2C3E50;
+  color: #34495E;
   outline: none;
 }
 a:focus {
@@ -574,13 +574,13 @@ h4 {
   color: #2b2f30;
 }
 .page-list a:hover {
-  color: #e67e22;
+  color: #E67E22;
 }
 
 .loading-box {
   font-size: 30px;
-  color: #6e7374;
-  background: #fafafa url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
+  color: #6E7374;
+  background: #FAFAFA url('../images/loading-box-bg.jpg?1475807740') 0 bottom repeat-x;
   padding: 40px 10px 40px 10px;
   width: 70%;
   margin: 80px auto 0 auto;
@@ -594,7 +594,6 @@ h4 {
   0% {
     background-position: 0% bottom;
   }
-
   100% {
     background-position: 100% bottom;
   }
@@ -603,7 +602,6 @@ h4 {
   0% {
     background-position: 0 bottom;
   }
-
   100% {
     background-position: 100% bottom;
   }
@@ -695,7 +693,7 @@ input[type="text"] {
 }
 .ui-dialog .ui-dialog-titlebar-close:hover .ui-icon-closethick, .ui-dialog .ui-dialog-titlebar-close:focus .ui-icon-closethick,
 .ui-dialog .ui-dialog-titlebar-close .ui-icon-closethick:hover {
-  background-image: url('../images/ui-icons_888888_256x240.png?1371898626');
+  background-image: url('../images/ui-icons_888888_256x240.png?1475807740');
 }
 .ui-dialog .ui-dialog-titlebar,
 .ui-dialog .form-text,
@@ -946,7 +944,7 @@ input[type="text"] {
   background: rgba(110, 115, 116, 0.1);
 }
 .sidebar-content .links a.active {
-  background: #6e7374;
+  background: #6E7374;
   color: #f7f7f7;
 }
 .sidebar-content .links .list-heading {
@@ -1003,7 +1001,7 @@ input[type="text"] {
   color: #2b2f30;
 }
 .content-actions.thumbs-up .fa-thumbs-up {
-  color: #e67e22;
+  color: #E67E22;
 }
 
 .content-fanart {
@@ -1099,7 +1097,7 @@ input[type="text"] {
 }
 .card.watched-progress .video-progress span span,
 .card.watched-progress .video-progress span {
-  background: #e67e22;
+  background: #E67E22;
 }
 .card.watched-progress .video-progress {
   margin-top: -5px;
@@ -1166,8 +1164,8 @@ input[type="text"] {
   bottom: 0;
   width: 30px;
   content: "";
-  background-image: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, white));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), white);
+  background-image: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, #FFF));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #FFF);
   background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), white);
   background-image: -ms-linear-gradient(left, rgba(255, 255, 255, 0), white);
   background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), white);
@@ -1218,17 +1216,17 @@ input[type="text"] {
   left: auto;
 }
 .card .thumbs-up button.thumbs-up, .card.thumbs-up button.thumbs-up {
-  color: #e67e22;
+  color: #E67E22;
 }
 .card.watched-yes button.watched-btn i.fa:before {
   content: "\f058";
-  color: #e67e22;
+  color: #E67E22;
 }
 .card .is-watched {
   position: absolute;
   bottom: 10px;
   z-index: 10;
-  color: #e67e22;
+  color: #E67E22;
   right: 10px;
   display: none;
   font-size: 16px;
@@ -1360,7 +1358,7 @@ input[type="text"] {
   opacity: 0.5;
 }
 .entity-heading.loading {
-  background: #fafafa url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
+  background: #FAFAFA url('../images/loading-box-bg.jpg?1475807740') 0 bottom repeat-x;
   animation: wave 16s infinite linear;
   -webkit-animation: wave 16s infinite linear;
 }
@@ -1372,7 +1370,7 @@ input[type="text"] {
   height: 45px;
   text-align: center;
   background: #3b3f40;
-  color: #eeeeee;
+  color: #EEE;
   margin: -5px 10px -5px -5px;
   font-size: 20px;
   display: block;
@@ -1459,7 +1457,7 @@ input[type="text"] {
   font-size: 16px;
 }
 #header .mainnav ul li a {
-  color: #6e7374;
+  color: #6E7374;
   display: block;
   padding: 12px 0;
 }
@@ -1520,7 +1518,7 @@ body.fixed-header #search-box {
 
 #page-header {
   background: rgba(59, 63, 64, 0.84);
-  color: #eeeeee;
+  color: #EEE;
   height: 50px;
   position: fixed;
   left: 50px;
@@ -1541,14 +1539,14 @@ body.fixed-header #search-box {
 #page-header h1 {
   font-weight: normal;
   margin: 0px;
-  color: #eeeeee;
+  color: #EEE;
   font-size: 20px;
   line-height: 50px;
   padding-left: 20px;
   display: none;
 }
 #page-header h1 a {
-  color: #6e7374;
+  color: #6E7374;
   display: block;
   float: left;
   width: 210px;
@@ -1713,7 +1711,7 @@ body.fixed-header #search-box {
   overflow: hidden;
   margin-bottom: 0px;
   margin-left: 3px;
-  color: #6e7374;
+  color: #6E7374;
   padding: 4px 3px 4px 5px;
   position: relative;
 }
@@ -1773,7 +1771,7 @@ body.fixed-header #search-box {
 #sidebar-first ul.artist-thumbs-up li a.active,
 #sidebar-first ul.artist-search-list li a.active,
 #sidebar-first ul.artist-list li a.active {
-  background: #6e7374;
+  background: #6E7374;
   color: #fff;
   font-size: 110%;
   padding-left: 5px;
@@ -1834,7 +1832,7 @@ body.fixed-header #search-box {
   color: #444;
 }
 #sidebar-first .file-lists li.loading {
-  background-image: url('../images/loader.gif?1387808230');
+  background-image: url('../images/loader.gif?1475807740');
   background-position: 98% 6px;
   background-repeat: no-repeat;
 }
@@ -1931,7 +1929,7 @@ body.fixed-header #search-box {
   opacity: 1;
 }
 #sidebar-first ul.album-list-small li.card.thumbs-up .album-actions .album-thumbsup {
-  color: #e67e22;
+  color: #E67E22;
 }
 #sidebar-first ul.album-list-small li.card .details p {
   position: relative;
@@ -2102,7 +2100,7 @@ body.home #search-box #search {
   background: rgba(255, 255, 255, 0.5);
 }
 body.home #search-box #search:hover, body.home #search-box #search:focus {
-  color: #6e7374;
+  color: #6E7374;
   background: rgba(255, 255, 255, 0.8);
 }
 body.home #footer .footer-right {
@@ -2148,14 +2146,14 @@ body.home #header {
   height: 30px;
   padding: 10px 10px 10px 40px;
   font-size: 18px;
-  color: #eeeeee;
+  color: #EEE;
   width: 80%;
   outline: none;
   background: rgba(255, 255, 255, 0);
-  color: #6e7374;
+  color: #6E7374;
 }
 #search-box #search:hover, #search-box #search:focus {
-  color: #6e7374;
+  color: #6E7374;
   background: rgba(255, 255, 255, 0.47);
 }
 @media (min-width: 800px) {
@@ -2180,7 +2178,7 @@ body.home #header {
   width: 260px;
   padding: 10px;
   background: rgba(255, 255, 255, 0.8);
-  border-top: 2px solid #34495e;
+  border-top: 2px solid #34495E;
   color: #2b2f30;
   opacity: 1;
   transition: 0.8s all ease;
@@ -2332,7 +2330,7 @@ body.section-search #sidebar-first {
 }
 #footer .footer-left .player-button:hover,
 #browser-player-footer .footer-left .player-button:hover {
-  color: #eeeeee;
+  color: #EEE;
 }
 #footer .footer-left .player-button.player-play,
 #browser-player-footer .footer-left .player-button.player-play {
@@ -2395,7 +2393,7 @@ body.section-search #sidebar-first {
 }
 #footer .footer-right .actions-wrapper .player-button:hover,
 #browser-player-footer .footer-right .actions-wrapper .player-button:hover {
-  color: #eeeeee;
+  color: #EEE;
 }
 @media (min-width: 800px) {
   #footer .footer-right,
@@ -2659,14 +2657,14 @@ body.section-search #sidebar-first {
 
 #browser-player-footer {
   display: none;
-  background: #7f8486;
+  background: #7F8486;
 }
 #browser-player-footer .fa-pause {
   display: none;
 }
 #browser-player-footer .footer-left,
 #browser-player-footer .footer-right {
-  background: #6c6f6f;
+  background: #6C6F6F;
 }
 #browser-player-footer #browser-volume .ui-slider-range,
 #browser-player-footer #browser-progress-bar.ui-slider .ui-slider-range {
@@ -2680,7 +2678,7 @@ body.section-search #sidebar-first {
 a.party-mode i {
   display: none;
   float: right;
-  color: #e67e22;
+  color: #E67E22;
   font-size: 12px;
   padding-top: 5px;
 }
@@ -2690,14 +2688,14 @@ body.notconnected #header #logo {
   border-bottom-color: #511e14 !important;
 }
 body.notconnected .track.playing-row {
-  background-image: url('../images/icons/row-pause.png?1378549596') !important;
+  background-image: url('../images/icons/row-pause.png?1475807741') !important;
 }
 body .player-play .fa-pause {
   display: none;
   margin-top: 3px;
 }
 body.paused .playing-row .song-tracknum, body.playing .playing-row .song-tracknum {
-  background: url('../images/row-playing.gif?1378547169') 50% 50% no-repeat;
+  background: url('../images/row-playing.gif?1475807740') 50% 50% no-repeat;
   text-indent: -999999px;
 }
 body.playing .player-play .fa-pause {
@@ -2707,23 +2705,23 @@ body.playing .player-play .fa-play {
   display: none;
 }
 body.playing #sidebar-second .sidebar-header .playlist-primary-tabs li.xbmc-tab i {
-  color: #e67e22;
+  color: #E67E22;
   display: none;
 }
 body.playing #sidebar-second .sidebar-header .playlist-primary-tabs li.xbmc-tab i.fa-play {
   display: inline;
 }
 body.playing #header #logo {
-  border-bottom-color: #e67e22;
+  border-bottom-color: #E67E22;
 }
 body.playing #progress-bar.ui-slider .ui-slider-range {
-  border-top: 3px solid #f39c12;
+  border-top: 3px solid #F39C12;
 }
 body.paused .playing-row .song-tracknum {
-  background: url('../images/icons/row-pause.png?1378549596') 50% 50% no-repeat;
+  background: url('../images/icons/row-pause.png?1475807741') 50% 50% no-repeat;
 }
 body.paused ul.playlist .playing-row {
-  background-image: url('../images/icons/row-pause.png?1378549596');
+  background-image: url('../images/icons/row-pause.png?1475807741');
 }
 body.muted #footer .footer-right .actions-wrapper .fa-volume-up {
   display: block;
@@ -2750,14 +2748,14 @@ body.player-view-local #browser-player-footer {
   display: block;
 }
 body.player-view-local #logo {
-  background: #e67e22;
+  background: #E67E22;
 }
 body.player-view-local #header #logo {
-  background: #7f8486;
-  border-bottom-color: #7f8486;
+  background: #7F8486;
+  border-bottom-color: #7F8486;
 }
 body.player-view-local #sidebar-second .sidebar-header {
-  background: #6c6f6f;
+  background: #6C6F6F;
 }
 body.player-view-local #page-header {
   background: rgba(72, 78, 80, 0.84);
@@ -2766,7 +2764,7 @@ body.player-view-local.fixed-header #page-header {
   background: rgba(72, 78, 80, 0.97);
 }
 body.browser-playing .browser-playlist-song-list div.playlist-item.browser-playing-row {
-  background-image: url('../images/row-playing.gif?1378547169');
+  background-image: url('../images/row-playing.gif?1475807740');
 }
 body.browser-playing #browser-player-footer .footer-left .fa-play {
   display: none;
@@ -2775,17 +2773,17 @@ body.browser-playing #browser-player-footer .footer-left .fa-pause {
   display: inline;
 }
 body.browser-playing #sidebar-second .sidebar-header .playlist-primary-tabs li.local-tab i {
-  color: #2ba5cc;
+  color: #2BA5CC;
   display: none;
 }
 body.browser-playing #sidebar-second .sidebar-header .playlist-primary-tabs li.local-tab i.fa-play {
   display: inline;
 }
 body.browser-playing #header #logo {
-  border-bottom-color: #2ba5cc;
+  border-bottom-color: #2BA5CC;
 }
 body.browser-playing #browser-progress-bar.ui-slider .ui-slider-range {
-  border-top: 3px solid #2ba5cc;
+  border-top: 3px solid #2BA5CC;
 }
 body.bp-random-on #browser-player-footer .footer-right .browser-player-random {
   color: #EDEFF0;
@@ -3080,7 +3078,7 @@ body.section-remote #footer .footer-left .player-button.player-play {
   font-size: 2.4em;
 }
 body.section-remote #footer #progress-bar.ui-slider .ui-slider-range {
-  background: #e67e22;
+  background: #E67E22;
 }
 @media (min-width: 800px) {
   body.section-remote #footer {
@@ -3378,7 +3376,7 @@ body.section-remote #footer #progress-bar.ui-slider .ui-slider-range {
   opacity: 0.9;
 }
 .content-tabs .nav-tabs > li > a:hover {
-  background: #6e7374;
+  background: #6E7374;
   opacity: 1;
   border: none;
 }
@@ -3418,7 +3416,7 @@ body.section-remote #footer #progress-bar.ui-slider .ui-slider-range {
   color: rgba(68, 68, 68, 0.9);
 }
 .tab-content .buttons .btn.cta {
-  background: #e67e22;
+  background: #E67E22;
   color: #fff;
   font-weight: bold;
 }
@@ -3482,8 +3480,10 @@ body.section-tv #content, body.section-movies #content {
   background: #fff;
   *zoom: 1;
   filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FFFAFAFA', endColorstr='#FFFFFFFF');
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIxJSIgc3RvcC1jb2xvcj0iI2ZhZmFmYSIgc3RvcC1vcGFjaXR5PSIwLjAiLz48c3RvcCBvZmZzZXQ9IjQxJSIgc3RvcC1jb2xvcj0iI2ZhZmFmYSIgc3RvcC1vcGFjaXR5PSIwLjAiLz48c3RvcCBvZmZzZXQ9Ijk4JSIgc3RvcC1jb2xvcj0iI2ZhZmFmYSIgc3RvcC1vcGFjaXR5PSIwLjk3Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmFmYWZhIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(1%, rgba(250, 250, 250, 0)), color-stop(41%, rgba(250, 250, 250, 0)), color-stop(98%, rgba(250, 250, 250, 0.97)), color-stop(100%, #fafafa));
   background-image: -moz-linear-gradient(top, rgba(250, 250, 250, 0) 1%, rgba(250, 250, 250, 0) 41%, rgba(250, 250, 250, 0.97) 98%, #fafafa 100%);
-  background-image: -o-linear-gradient(top, rgba(250, 250, 250, 0) 1%, rgba(250, 250, 250, 0) 41%, rgba(250, 250, 250, 0.97) 98%, #fafafa 100%);
   background-image: -webkit-linear-gradient(top, rgba(250, 250, 250, 0) 1%, rgba(250, 250, 250, 0) 41%, rgba(250, 250, 250, 0.97) 98%, #fafafa 100%);
   background-image: linear-gradient(to bottom, rgba(250, 250, 250, 0) 1%, rgba(250, 250, 250, 0) 41%, rgba(250, 250, 250, 0.97) 98%, #fafafa 100%);
   min-height: 400px;
@@ -3510,14 +3510,14 @@ body.section-thumbsup .playlist-song-list li .song-actions-wrapper .btn.song-rem
     background: #f7f7f7;
   }
   body.section-movies #sidebar-first .active-recent a:first-child, body.section-playlist #sidebar-first .active-recent a:first-child, body.section-movie-genre #sidebar-first .active-recent a:first-child, body.section-tv #sidebar-first .active-recent a:first-child, body.section-mymusic #sidebar-first .active-recent a:first-child, body.section-mymovies #sidebar-first .active-recent a:first-child, body.section-mytv #sidebar-first .active-recent a:first-child, body.section-music #sidebar-first .active-recent a:first-child {
-    background: #6e7374;
+    background: #6E7374;
     color: #f7f7f7;
   }
   body.section-movies #sidebar-first .links .btn, body.section-playlist #sidebar-first .links .btn, body.section-movie-genre #sidebar-first .links .btn, body.section-tv #sidebar-first .links .btn, body.section-mymusic #sidebar-first .links .btn, body.section-mymovies #sidebar-first .links .btn, body.section-mytv #sidebar-first .links .btn, body.section-music #sidebar-first .links .btn {
     font-size: 14px;
   }
   body.section-movies #sidebar-first .links .btn.active, body.section-playlist #sidebar-first .links .btn.active, body.section-movie-genre #sidebar-first .links .btn.active, body.section-tv #sidebar-first .links .btn.active, body.section-mymusic #sidebar-first .links .btn.active, body.section-mymovies #sidebar-first .links .btn.active, body.section-mytv #sidebar-first .links .btn.active, body.section-music #sidebar-first .links .btn.active {
-    background: #6e7374;
+    background: #6E7374;
   }
   body.section-movies #main, body.section-playlist #main, body.section-movie-genre #main, body.section-tv #main, body.section-mymusic #main, body.section-mymovies #main, body.section-mytv #main, body.section-music #main {
     margin-left: 235px !important;
@@ -3665,11 +3665,11 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   }
 }
 .album-row .album-title a {
-  color: #6e7374;
+  color: #6E7374;
 }
 .album-row .album-info {
-  background: url('../images/loading-box-bg.jpg?1390099084') 0 bottom repeat-x;
-  color: #6e7374;
+  background: url('../images/loading-box-bg.jpg?1475807740') 0 bottom repeat-x;
+  color: #6E7374;
   border-bottom: 3px solid #eee;
 }
 .album-row .album-info .image,
@@ -4095,7 +4095,7 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   }
 }
 .tag-list .tag-list-item .tag-label:hover {
-  background: #6e7374;
+  background: #6E7374;
   color: #f7f7f7;
 }
 .tag-list .tag-container {
@@ -4242,10 +4242,10 @@ body.section-movie-genre #sidebar-first .sublink-genres {
 .playlist div.playlist-item,
 .browser-playlist-song-list li.list-item,
 .browser-playlist-song-list div.playlist-item {
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid #EEE;
   background: #f7f7f7 no-repeat;
   position: relative;
-  color: #6e7374;
+  color: #6E7374;
   height: 40px;
   -webkit-transition: all 0.1s linear;
   -moz-transition: all 0.1s linear;
@@ -4380,7 +4380,7 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   top: 0;
   position: absolute;
   opacity: 0;
-  background: #eeeff0;
+  background: #EEEFF0;
   z-index: 1;
   background-size: cover;
 }
@@ -4427,7 +4427,7 @@ body.section-movie-genre #sidebar-first .sublink-genres {
 .browser-playlist-song-list li.list-item .playlist-meta a,
 .browser-playlist-song-list div.playlist-item .playlist-meta a {
   font-size: 12px;
-  color: #6e7374;
+  color: #6E7374;
 }
 .playlist li.list-item.playing-row, .playlist li.list-item.browser-playing-row,
 .playlist div.playlist-item.playing-row,
@@ -4442,10 +4442,10 @@ body.section-movie-genre #sidebar-first .sublink-genres {
   -o-transition: all 0.3s linear;
   transition: all 0.3s linear;
   height: 80px;
-  background: #eeeff0;
-  background: url('../images/row-playing.gif?1378547169') 0px 0px no-repeat;
+  background: #EEEFF0;
+  background: url('../images/row-playing.gif?1475807740') 0px 0px no-repeat;
   padding-right: 75px;
-  background-color: #eeeeee;
+  background-color: #EEE;
 }
 .playlist li.list-item.playing-row .actions, .playlist li.list-item.browser-playing-row .actions,
 .playlist div.playlist-item.playing-row .actions,
@@ -4620,11 +4620,11 @@ body.section-movie-genre #sidebar-first .sublink-genres {
 .playlist div.playlist-item.browser-playing-row,
 .browser-playlist-song-list li.list-item.browser-playing-row,
 .browser-playlist-song-list div.playlist-item.browser-playing-row {
-  background: #eeeeee url(../images/icons/row-pause.png) 0 0 no-repeat;
+  background: #EEE url(../images/icons/row-pause.png) 0 0 no-repeat;
 }
 .playlist li.thumbs-up .playlist-song-actions-wrapper .playlist-song-thumbsup,
 .browser-playlist-song-list li.thumbs-up .playlist-song-actions-wrapper .playlist-song-thumbsup {
-  color: #e67e22;
+  color: #E67E22;
 }
 
 #thumbsup-bottom {
@@ -4761,7 +4761,7 @@ ul.video-list li.next-page:hover {
 .section-movie .video-side .video-large-progress span {
   display: block;
   height: 5px;
-  background: #e67e22;
+  background: #E67E22;
 }
 .section-tvshow .video-side .thumb,
 .section-movie .video-side .thumb {
@@ -4865,7 +4865,7 @@ ul.video-list li.next-page:hover {
 .section-tvshow .video-side .actions-wrapper .thumbs-up .movie-thumbsup,
 .section-movie .video-side .actions-wrapper .thumbs-up .tvshow-thumbsup,
 .section-movie .video-side .actions-wrapper .thumbs-up .movie-thumbsup {
-  color: #e67e22;
+  color: #E67E22;
 }
 @media (min-width: 1360px) {
   .section-tvshow .video-side,
@@ -5262,7 +5262,7 @@ ul.video-list li.next-page:hover {
 }
 #seasons ul.video-list li .card.watched-progress .video-progress span span,
 #seasons ul.video-list li .card.watched-progress .video-progress span {
-  background: #e67e22;
+  background: #E67E22;
 }
 #seasons ul.video-list li .card.watched-progress .video-progress {
   margin-top: -5px;
@@ -5295,7 +5295,7 @@ ul.video-list li.next-page:hover {
   font-size: 190%;
 }
 #seasons.episodes ul.video-list li .card.active {
-  background: #999ea0;
+  background: #999EA0;
 }
 #seasons.episodes ul.video-list li .card.active p.item-title a {
   color: #f7f7f7;
