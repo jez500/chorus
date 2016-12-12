@@ -2562,8 +2562,8 @@ body.section-search #sidebar-first {
 @media (min-width: 800px) {
   #now-playing,
   #browser-now-playing {
-    margin-right: 330px;
-    margin-left: 260px;
+    right: 330px;
+    left: 260px;
   }
 }
 
@@ -2874,7 +2874,6 @@ body.partymode-on a.party-mode i {
 .xbmc-remote .direction {
   background: #262b2a;
   height: 155px;
-  margin-top: -12px;
   width: 75%;
   float: left;
   margin-right: -100%;
@@ -5378,8 +5377,8 @@ h1.video-title {
   body #footer #browser-now-playing,
   body #browser-player-footer #now-playing,
   body #browser-player-footer #browser-now-playing {
-    margin-right: 430px;
-    margin-left: 330px;
+    right: 430px;
+    left: 330px;
   }
   body #footer .progress-wrapper,
   body #browser-player-footer .progress-wrapper {
